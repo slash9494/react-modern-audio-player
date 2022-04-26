@@ -1,0 +1,1 @@
+ul,li{list-style-type:none}.sortable-list .list-item{padding:10px 0;border-top:2px solid transparent}.sortable-list .list-item *{pointer-events:none}.sortable-list .list-item.dragstart{opacity:.5}.sortable-list .list-item.dragover{border-top-color:green}
