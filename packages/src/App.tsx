@@ -1,4 +1,4 @@
-import MusicPlayer from "./components/MusicPlayer";
+import { MusicPlayerWithProvider } from "./components/MusicPlayer";
 import { PlayList } from "./lib/musicContext/StateContext";
 
 const playList: PlayList = [
@@ -41,12 +41,13 @@ const playList: PlayList = [
 
 function App() {
   return (
-    <>
-      <MusicPlayer
+    <div>
+      <MusicPlayerWithProvider
         playList={playList}
         audioInitialState={{ autoPlay: true, muted: true, volume: 0.5 }}
+        cssStyle={{ width: "500px" }}
       />
-    </>
+    </div>
   );
 }
 

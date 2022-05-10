@@ -1,7 +1,7 @@
-// import { SortableList } from "../../../packages/dist/index";
-// import { SortableList } from "react-simple-music-player";
+import MusicPlayer from "../../../packages";
+// import { SortableList } from "../../node_modules/react-simple-music-player";
 
-const playList: PlayList = [
+const playList = [
   {
     name: "Relax And Sleep",
     artist: "Anton Vlasov",
@@ -39,11 +39,26 @@ const playList: PlayList = [
   },
 ];
 
+const dummyData = [
+  { id: 1, name: "A" },
+  { id: 2, name: "B" },
+  { id: 3, name: "C" },
+  { id: 4, name: "D" },
+];
 export const Test = () => {
   return (
-    <MusicPlayer
-      playList={playList}
-      audioInitialState={{ autoPlay: true, muted: true, volume: 0.5 }}
-    />
+    <>
+      <MusicPlayer
+        playList={playList}
+        audioInitialState={{ autoPlay: true, muted: true, volume: 0.5 }}
+      />
+      {/* <SortableList
+        data={dummyData}
+        renderItem={(dummyData, index) => (
+          <div key={index}>{dummyData.name}</div>
+        )}
+        onDropCb={(newData) => console.log(newData)}
+      /> */}
+    </>
   );
 };

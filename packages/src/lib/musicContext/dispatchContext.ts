@@ -1,6 +1,11 @@
 import { Dispatch, createContext } from "react";
 import { AudioInitialState } from "../../components/MusicPlayer";
-import { RepeatType, PlayList } from "./StateContext";
+import {
+  RepeatType,
+  PlayList,
+  DropdownPlacement,
+  PlayerPlacement,
+} from "./StateContext";
 
 export type MusicContextAction =
   | { type: "NEXT_MUSIC" }
@@ -9,7 +14,12 @@ export type MusicContextAction =
   | { type: "SET_INITIAL_AUDIO_STATE"; audioInitialState: AudioInitialState }
   | { type: "SET_PlAY_STATE" }
   | { type: "SET_CURRENT_INDEX"; currentIndex: number; currentMusicId: number }
-  | { type: "SET_REPEAT_TYPE"; repeatType: RepeatType };
+  | { type: "SET_REPEAT_TYPE"; repeatType: RepeatType }
+  | {
+      type: "SET_PLACEMENTS";
+      playerPlacement?: PlayerPlacement;
+      dropdownPlacement?: DropdownPlacement;
+    };
 
 export type MusicPlayerDispatchContext = Dispatch<MusicContextAction>;
 
