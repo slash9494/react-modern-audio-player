@@ -6,21 +6,29 @@ import { musicPlayerReducer } from "./reducer";
 export const MusicPlayerProvider: FC<PropsWithChildren<unknown>> = ({
   children,
 }) => {
-  const [musicContextState, disPatchMusicContextState] = useReducer(
+  const [musicContextState, dispatchMusicContextState] = useReducer(
     musicPlayerReducer,
     {
       playList: [],
+      curPlayId: 0,
       curAudioState: {
         isPlaying: false,
         repeatType: "ALL",
         muted: false,
       },
+      activeUI: {
+        playButton: true,
+        prevNnext: true,
+        repeatType: true,
+      },
+      dropdownPlacement: "top",
+      playerPlacement: "bottom-left",
     }
   );
 
   return (
     <musicPlayerStateContext.Provider value={musicContextState}>
-      <musicPlayerDispatchContext.Provider value={disPatchMusicContextState}>
+      <musicPlayerDispatchContext.Provider value={dispatchMusicContextState}>
         {children}
       </musicPlayerDispatchContext.Provider>
     </musicPlayerStateContext.Provider>

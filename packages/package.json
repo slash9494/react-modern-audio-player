@@ -26,7 +26,8 @@
     "publish": "rm -rf dist && tsc && vite build"
   },
   "peerDependencies": {
-    "react": ">=16.14.0"
+    "react": ">=16.14.0",
+    "react-dom": ">=16.14.0"
   },
   "dependencies": {
     "@types/styled-components": "^5.1.25",

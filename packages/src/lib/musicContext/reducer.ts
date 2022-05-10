@@ -24,6 +24,25 @@ export const musicPlayerReducer = (
           isPlaying: !state.curAudioState?.isPlaying,
         },
       };
+    case "SET_CURRENT_INDEX":
+      return {
+        ...state,
+        curPlayId: action.currentMusicId,
+      };
+    case "SET_REPEAT_TYPE":
+      return {
+        ...state,
+        curAudioState: {
+          ...state.curAudioState,
+          repeatType: action.repeatType,
+        },
+      };
+    case "SET_PLACEMENTS":
+      return {
+        ...state,
+        playerPlacement: action.playerPlacement || state.playerPlacement,
+        dropdownPlacement: action.dropdownPlacement || state.dropdownPlacement,
+      };
     default:
       throw new Error("Unhandled action");
   }
