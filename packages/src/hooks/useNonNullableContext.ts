@@ -1,10 +1,10 @@
 import { Context, useContext } from "react";
-import { MusicPlayerDispatchContext } from "../lib/musicContext/dispatchContext";
-import { MusicPlayerStateContext } from "../lib/musicContext/StateContext";
+import { AudioPlayerDispatchContext } from "../lib/audioContext/dispatchContext";
+import { AudioPlayerStateContext } from "../lib/audioContext/StateContext";
 
-type ContextType = MusicPlayerStateContext | MusicPlayerDispatchContext;
+type _ContextType = AudioPlayerStateContext | AudioPlayerDispatchContext;
 
-export const useNonNullableContext = <T extends ContextType>(
+export const useNonNullableContext = <T extends _ContextType>(
   context: Context<T | null>
 ): T => {
   const state = useContext(context);

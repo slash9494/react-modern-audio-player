@@ -1,0 +1,24 @@
+ul,li{
+    list-style-type:none;
+}
+
+.sortable-list{
+    cursor: pointer;
+}
+
+.sortable-list .list-item-root-container {
+
+    border-top: 2px solid transparent;
+}
+
+.sortable-list .list-item-root-container *{
+    pointer-events:none;
+}
+
+.sortable-list .list-item-root-container.dragstart{
+    opacity: 0.5;
+}  
+
+.sortable-list .list-item-root-container.dragover{
+    border-top-color: green;
+}

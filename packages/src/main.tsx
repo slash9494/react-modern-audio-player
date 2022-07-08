@@ -7,8 +7,4 @@ const root = createRoot(container as HTMLElement, {
   onRecoverableError: (error) => console.log("recovering", error),
 });
 
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
+root.render(<App />);

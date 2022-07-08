@@ -12,7 +12,7 @@
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "react-scripts": "5.0.1",
-    "react-simple-music-player": "^0.0.4",
+    "react-simple-audio-player": "^0.0.4",
     "typescript": "^4.4.2",
     "web-vitals": "^2.1.0"
   },

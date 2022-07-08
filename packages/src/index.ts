@@ -1,4 +1,4 @@
-export * from "./components/MusicPlayer";
+export * from "./components/AudioPlayer";
 
-import { MusicPlayerWithProvider as MusicPlayer } from "./components/MusicPlayer";
-export default MusicPlayer;
+import { AudioPlayerWithProvider as AudioPlayer } from "./components/AudioPlayer";
+export default AudioPlayer;

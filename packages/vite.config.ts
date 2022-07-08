@@ -15,7 +15,7 @@ export default defineConfig({
   build: {
     lib: {
       entry: path.resolve(__dirname, "src/index.ts"),
-      name: "react-simple-music-player",
+      name: "react-simple-audio-player",
       formats: ["es", "umd"],
       fileName: (format) => `index.${format}.js`,
     },

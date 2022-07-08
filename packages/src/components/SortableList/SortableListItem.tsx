@@ -1,6 +1,6 @@
 import React, { FC, PropsWithChildren, useRef } from "react";
 
-interface SortableListItemProps {
+interface _SortableListItemProps {
   index: number;
   draggable?: boolean;
   onDragStartCb?: (index: number) => void;
@@ -8,14 +8,9 @@ interface SortableListItemProps {
   onClickCb?: (index: number) => void;
 }
 
-export const SortableListItem: FC<PropsWithChildren<SortableListItemProps>> = ({
-  index,
-  draggable,
-  children,
-  onDragStartCb,
-  onDropCb,
-  onClickCb,
-}) => {
+export const SortableListItem: FC<
+  PropsWithChildren<_SortableListItemProps>
+> = ({ index, draggable, children, onDragStartCb, onDropCb, onClickCb }) => {
   const itemRef = useRef<HTMLLIElement>(null);
   const onDragStart = (e: React.DragEvent<HTMLLIElement>) => {
     e.stopPropagation();
@@ -42,7 +37,7 @@ export const SortableListItem: FC<PropsWithChildren<SortableListItemProps>> = ({
   return (
     <li
       ref={itemRef}
-      className="list-item"
+      className="list-item-root-container"
       draggable={!!draggable}
       onDragStart={onDragStart}
       onDragEnd={onDragEnd}
@@ -53,6 +48,8 @@ export const SortableListItem: FC<PropsWithChildren<SortableListItemProps>> = ({
         e.stopPropagation();
       }}
       onDrop={onDrop}
+      onClick={onClickCb && (() => onClickCb(index))}
+      style={{ display: "flex", alignItems: "center" }}
     >
       {children}
     </li>
