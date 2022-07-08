@@ -4,14 +4,18 @@ import "./index.css";
 
 export type ListData<T> = Array<T>;
 
-export interface SortableListProps<T extends Record<string, any>> {
+export interface SortableListProps<
+  T extends Record<string, any> & { index: number }
+> {
   data: ListData<T>;
   renderItem: (item: T, index: number) => JSX.Element;
   onDropCb: (newData: ListData<T>) => void;
   onClickCb?: (index: number) => void;
 }
 
-export const SortableList = <T extends Record<string, any>>({
+export const SortableList = <
+  T extends Record<string, any> & { index: number }
+>({
   data: initialData,
   onDropCb,
   onClickCb,
@@ -29,9 +33,9 @@ export const SortableList = <T extends Record<string, any>>({
       const newListData =
         startIdx < dropIdx
           ? [
-              ...curListData.slice(0, dropIdx - 1),
+              ...curListData.slice(0, dropIdx),
               draggedItem,
-              ...curListData.slice(dropIdx - 1, curListData.length),
+              ...curListData.slice(dropIdx, curListData.length),
             ]
           : [
               ...curListData.slice(0, dropIdx),
@@ -39,8 +43,8 @@ export const SortableList = <T extends Record<string, any>>({
               ...curListData.slice(dropIdx, curListData.length),
             ];
 
-      setListData(newListData);
-      onDropCb(newListData);
+      setListData(newListData.map((data, index) => ({ ...data, index })));
+      onDropCb(newListData.map((data, index) => ({ ...data, index })));
     },
     [listData, onDropCb, startIdx]
   );
@@ -59,11 +63,6 @@ export const SortableList = <T extends Record<string, any>>({
           {renderItem(item, index)}
         </SortableListItem>
       ))}
-      <SortableListItem
-        index={listData.length}
-        draggable={false}
-        onDropCb={onDrop}
-      />
     </ul>
   );
 };

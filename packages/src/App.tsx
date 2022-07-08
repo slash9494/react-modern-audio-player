@@ -1,51 +1,64 @@
-import { MusicPlayerWithProvider } from "./components/MusicPlayer";
-import { PlayList } from "./lib/musicContext/StateContext";
+import { AudioPlayerWithProvider } from "./components/AudioPlayer";
+import { PlayList } from "./lib/audioContext/StateContext";
 
 const playList: PlayList = [
   {
     name: "Relax And Sleep",
     artist: "Anton Vlasov",
-    img: "/public/images/music-1.jpg",
-    src: "/public/music/music-1.mp3",
+    img: "/images/audio-1.jpg",
+    src: "/public/audio/audio-1.mp3",
     id: 1,
+    index: 0,
   },
   {
     name: "Don't You Think Lose",
     artist: "Anton Vlasov",
-    img: "/public/images/music-2.jpg",
-    src: "/public/music/music-2.mp3",
+    img: "/images/audio-2.jpg",
+    src: "/public/audio/audio-2.mp3",
     id: 2,
+    index: 1,
   },
   {
     name: "The Cradle of Your Soul",
-    artist: "lemonmusicstudio",
-    img: "/public/images/music-3.jpg",
-    src: "/public/music/music-3.mp3",
+    artist: "lemonaudiostudio",
+    img: "/images/audio-3.jpg",
+    src: "/public/audio/audio-3.mp3",
     id: 3,
+    index: 2,
   },
   {
     name: "Spirit Blossom",
     artist: "RomanBelov",
-    img: "/public/images/music-4.jpg",
-    src: "/public/music/music-4.mp3",
+    img: "/images/audio-4.jpg",
+    src: "/public/audio/audio-4.mp3",
     id: 4,
+    index: 3,
   },
   {
     name: "Everything Feels New",
     artist: "EvgenyBardyuzha",
-    img: "/public/images/music-5.jpg",
-    src: "/public/music/music-5.mp3",
+    img: "/images/audio-5.jpg",
+    src: "/public/audio/audio-5.mp3",
     id: 5,
+    index: 4,
   },
 ];
 
 function App() {
   return (
     <div>
-      <MusicPlayerWithProvider
+      <AudioPlayerWithProvider
         playList={playList}
-        audioInitialState={{ autoPlay: true, muted: true, volume: 0.5 }}
+        audioInitialState={{
+          muted: true,
+          volume: 0.2,
+          curPlayId: 1,
+        }}
+        playerPlacement={"bottom"}
+        dropdownPlacement={"top"}
         cssStyle={{ width: "500px" }}
+        activeUI={{ all: true }}
+        interfacePlacement={{ playButton: "1-2" }}
       />
     </div>
   );

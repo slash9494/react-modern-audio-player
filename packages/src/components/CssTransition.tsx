@@ -2,7 +2,6 @@ import {
   cloneElement,
   FC,
   PropsWithChildren,
-  useEffect,
   useLayoutEffect,
   useState,
 } from "react";
@@ -34,7 +33,7 @@ export const appearanceOut = keyframes({
   },
 });
 
-interface CssTransitionProps {
+interface _CssTransitionProps {
   visible: boolean;
   name: string;
   leaveTime: number;
@@ -44,7 +43,7 @@ interface CssTransitionProps {
   onEntered?: () => void;
 }
 
-export const CssTransition: FC<PropsWithChildren<CssTransitionProps>> = ({
+export const CssTransition: FC<PropsWithChildren<_CssTransitionProps>> = ({
   visible,
   name,
   leaveTime,

@@ -11665,9 +11665,9 @@ react-scripts@5.0.1:
   optionalDependencies:
     fsevents "^2.3.2"
 
-react-simple-music-player@^0.0.4:
+react-simple-audio-player@^0.0.4:
   version "0.0.4"
-  resolved "https://registry.yarnpkg.com/react-simple-music-player/-/react-simple-music-player-0.0.4.tgz#1754f212bd4774387430cba6ce266de70d49167f"
+  resolved "https://registry.yarnpkg.com/react-simple-audio-player/-/react-simple-audio-player-0.0.4.tgz#1754f212bd4774387430cba6ce266de70d49167f"
   integrity sha512-Lg3STufSYfXsrWFXo+LE59ntGo5FJMxxtXiS+EOs8mrUWfFfiQ9TizoJYWB2Ysb3ojzc5EmXtOf/32d/4y+r/Q==
   dependencies:
     react "^18.0.0"

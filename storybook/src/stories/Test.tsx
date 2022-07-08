@@ -1,40 +1,40 @@
-import MusicPlayer from "../../../packages";
-// import { SortableList } from "../../node_modules/react-simple-music-player";
+import AudioPlayer from "../../../packages";
+// import { SortableList } from "../../node_modules/react-simple-audio-player";
 
 const playList = [
   {
     name: "Relax And Sleep",
     artist: "Anton Vlasov",
-    img: "/public/images/music-1.jpg",
-    src: "/public/music/music-1.mp3",
+    img: "/public/images/audio-1.jpg",
+    src: "/public/audio/audio-1.mp3",
     id: 1,
   },
   {
     name: "Don't You Think Lose",
     artist: "Anton Vlasov",
-    img: "/public/images/music-2.jpg",
-    src: "/public/music/music-2.mp3",
+    img: "/public/images/audio-2.jpg",
+    src: "/public/audio/audio-2.mp3",
     id: 2,
   },
   {
     name: "The Cradle of Your Soul",
-    artist: "lemonmusicstudio",
-    img: "/public/images/music-3.jpg",
-    src: "/public/music/music-3.mp3",
+    artist: "lemonaudiostudio",
+    img: "/public/images/audio-3.jpg",
+    src: "/public/audio/audio-3.mp3",
     id: 3,
   },
   {
     name: "Spirit Blossom",
     artist: "RomanBelov",
-    img: "/public/images/music-4.jpg",
-    src: "/public/music/music-4.mp3",
+    img: "/public/images/audio-4.jpg",
+    src: "/public/audio/audio-4.mp3",
     id: 4,
   },
   {
     name: "Everything Feels New",
     artist: "EvgenyBardyuzha",
-    img: "/public/images/music-5.jpg",
-    src: "/public/music/music-5.mp3",
+    img: "/public/images/audio-5.jpg",
+    src: "/public/audio/audio-5.mp3",
     id: 5,
   },
 ];
@@ -48,7 +48,7 @@ const dummyData = [
 export const Test = () => {
   return (
     <>
-      <MusicPlayer
+      <AudioPlayer
         playList={playList}
         audioInitialState={{ autoPlay: true, muted: true, volume: 0.5 }}
       />
