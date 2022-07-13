@@ -47,8 +47,6 @@
     "@storybook/preset-create-react-app": "^4.1.0",
     "@storybook/react": "^6.4.22",
     "@storybook/testing-library": "^0.0.11",
-    "eslint-plugin-react-hooks": "^4.4.0",
-    "prettier": "^2.6.2",
     "webpack": "^5.72.0"
   }
 }
