@@ -1,4 +1,4 @@
-import AudioPlayer from "../../../packages";
+import AudioPlayer from "../../../package";
 // import { SortableList } from "../../node_modules/react-simple-audio-player";
 
 const playList = [

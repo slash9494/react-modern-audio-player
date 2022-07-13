@@ -1,0 +1,55 @@
+{
+  "name": "react-simple-audio-player",
+  "version": "0.0.4",
+  "homepage": "https://github.com/slash9494/react-simple-audio-player/",
+  "module": "dist/index.es.js",
+  "main": "dist/index.umd.js",
+  "esnext": "dist/index.es.js",
+  "typings": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "import": "./dist/index.es.js",
+      "require": "./dist/index.umd.js"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/slash9494/react-simple-audio-player.git"
+  },
+  "scripts": {
+    "dev": "vite --host",
+    "build": "rm -rf dist && tsc && vite build",
+    "preview": "vite preview",
+    "publish": "rm -rf dist && tsc && vite build"
+  },
+  "peerDependencies": {
+    "react": ">=16.14.0",
+    "react-dom": ">=16.14.0"
+  },
+  "dependencies": {
+    "@react-spectrum/layout": "^3.3.1",
+    "@react-spectrum/view": "^3.2.1",
+    "@types/lodash-es": "^4.17.6",
+    "@types/styled-components": "^5.1.25",
+    "@types/wavesurfer.js": "^6.0.3",
+    "classnames": "^2.3.1",
+    "lodash-es": "^4.17.21",
+    "react": "^18.0.0",
+    "react-icons": "^4.4.0",
+    "styled-components": "^5.3.5",
+    "wavesurfer.js": "^6.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^17.0.25",
+    "@types/react": "^18.0.1",
+    "@types/react-dom": "^18.0.0",
+    "@vitejs/plugin-react": "^1.0.7",
+    "react-dom": "^18.0.0",
+    "typescript": "^4.6.3",
+    "vite": "^2.9.0",
+    "vite-plugin-dts": "^1.1.0"
+  }
+}

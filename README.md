@@ -13,10 +13,13 @@ use icon module - `react-icons`
 - playlist classnames
   - sortable-play-list-content-wrapper (root)
     - sortable-list
-      - list-item-root-container
+      - list-item-root
         - list-item-container
           - album-cover-wrapper
           - album-info-wrapper
+      - list-item-root dragstart
+      - list-item-root dragover
+  
 
 ### color variables
 - --rs-audio-player-volume-fill
