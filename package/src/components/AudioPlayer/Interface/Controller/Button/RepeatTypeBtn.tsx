@@ -66,6 +66,8 @@ export const RepeatTypeBtn: FC<InterfaceChildrenProps> = () => {
   ]);
 
   return activeUI.repeatType ?? activeUI.all ? (
-    <StyledBtn onClick={onClick}>{RepeatIcon}</StyledBtn>
+    <StyledBtn onClick={onClick} className="repeat-button">
+      {RepeatIcon}
+    </StyledBtn>
   ) : null;
 };

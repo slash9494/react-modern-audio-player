@@ -1,8 +1,11 @@
 import { useNonNullableContext } from "hooks/useNonNullableContext";
 import { audioPlayerDispatchContext } from "lib/audioContext/dispatchContext";
-import { audioPlayerStateContext } from "lib/audioContext/StateContext";
+import {
+  audioPlayerStateContext,
+  TrackTimeUI,
+} from "lib/audioContext/StateContext";
 import { FC, useEffect, useRef } from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 export const TrackTimeCurrent: FC = () => {
   const trackCurTimeRef = useRef<HTMLSpanElement>(null);
@@ -18,7 +21,10 @@ export const TrackTimeCurrent: FC = () => {
     }
   }, [trackCurTimeRef.current, audioPlayerDispatch]);
   return activeUI.trackTime ?? activeUI.all ? (
-    <TrackTimeCurrentContainer>
+    <TrackTimeCurrentContainer
+      type={activeUI.trackTime}
+      className="track-time-current-container"
+    >
       <span ref={trackCurTimeRef} className="track-current-time">
         00:00
       </span>
@@ -40,14 +46,20 @@ export const TrackTimeDuration: FC = () => {
     }
   }, [trackDurationRef.current, audioPlayerDispatch]);
   return activeUI.trackTime ?? activeUI.all ? (
-    <TrackTimeDurationContainer>
-      <span className="slash">/</span>
+    <TrackTimeDurationContainer
+      type={activeUI.trackTime}
+      className="track-time-duration-container"
+    >
       <span ref={trackDurationRef} className="track-duration">
         00:00
       </span>
     </TrackTimeDurationContainer>
   ) : null;
 };
+
+interface TrackTimeContainerProps {
+  type?: TrackTimeUI;
+}
 const TrackTimeContainer = styled.div`
   display: flex;
   align-items: center;
@@ -58,20 +70,29 @@ const TrackTimeContainer = styled.div`
 `;
 
 const TrackTimeCurrentContainer = styled(TrackTimeContainer)`
-  .track-current-time {
-    font-weight: 700;
-    letter-spacing: -0.1rem;
-    color: var(--rs-audio-player-track-current-time-color, #39c1de);
-  }
+  ${({ type }: TrackTimeContainerProps) => css`
+    .track-current-time {
+      font-weight: 700;
+      letter-spacing: -0.1rem;
+      color: var(--rs-audio-player-track-current-time);
+      margin-right: ${type !== "separation mode" && "-10px"};
+    }
+  `}
 `;
 
 const TrackTimeDurationContainer = styled(TrackTimeContainer)`
-  .track-duration {
-    display: flex;
-    color: var(--rs-audio-track-duration-color, #8c8c8c);
-    letter-spacing: -0.1rem;
-  }
-  .slash {
-    margin: 0 0.3rem;
-  }
+  ${({ type }: TrackTimeContainerProps) => css`
+    .track-duration {
+      display: flex;
+      color: var(--rs-audio-player-track-duration);
+      letter-spacing: -0.1rem;
+    }
+    ${type !== "separation mode" &&
+    css`
+      .track-duration:before {
+        content: "/";
+        margin: 0 0.3rem;
+      }
+    `}
+  `}
 `;

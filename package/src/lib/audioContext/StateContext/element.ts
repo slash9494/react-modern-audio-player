@@ -3,6 +3,8 @@ import { AudioData } from "./audio";
 
 export type PlayList = Array<AudioData>;
 
+export type TrackTimeUI = "separation mode" | "unification mode" | false;
+export type ProgressUI = "waveform" | "bar" | false;
 export type ActiveUI = Partial<{
   all: boolean;
   playButton: boolean;
@@ -10,10 +12,10 @@ export type ActiveUI = Partial<{
   prevNnext: boolean;
   volume: boolean;
   repeatType: boolean;
-  trackTime: "separation mode" | "unification mode" | false;
+  trackTime: TrackTimeUI;
   trackInfo: boolean;
   artwork: boolean;
-  progress: "waveform" | "bar" | false;
+  progress: ProgressUI;
 }>;
 
 export type IconImgs = Partial<{

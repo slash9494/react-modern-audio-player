@@ -7,6 +7,12 @@ const TrackInfoContainer = styled.div`
   display: grid;
   align-items: center;
   row-gap: 5px;
+  width: 200px;
+  span {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+  }
   .title {
     font-size: 1rem;
   }
@@ -21,7 +27,7 @@ export const TrackInfo: FC = () => {
   );
   const curPlayData = playList[curIdx];
   return curPlayData && (activeUI.trackInfo ?? activeUI.all) ? (
-    <TrackInfoContainer>
+    <TrackInfoContainer className="track-info-container">
       {curPlayData.customTrackInfo ? (
         curPlayData.customTrackInfo
       ) : (

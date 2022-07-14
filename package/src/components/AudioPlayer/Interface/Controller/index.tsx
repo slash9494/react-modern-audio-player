@@ -7,8 +7,8 @@ import {
 import { PlayBtn, PrevNnextBtn, RepeatTypeBtn } from "./Button";
 import { Volume, SortablePlayList } from "./Dropdown";
 import { Progress } from "./Input";
-import { View } from "@react-spectrum/view";
 import { Flex } from "@react-spectrum/layout";
+import Grid from "components/AudioPlayer/Grid";
 
 /**
  * //TODO
@@ -21,27 +21,31 @@ export const Controller: FC = () => {
 
   return (
     <>
-      <View
+      <Grid.Item
         gridArea={
-          interfacePlacement?.progress || defaultInterfacePlacement.progress
+          interfacePlacement?.itemArea?.progress ||
+          interfacePlacement?.templateArea?.progress ||
+          defaultInterfacePlacement.templateArea.progress
         }
-        justifySelf={"center"}
+        width={"100%"}
       >
         <Progress />
-      </View>
-      <View
+      </Grid.Item>
+      <Grid.Item
         gridArea={
-          interfacePlacement?.repeatType || defaultInterfacePlacement.repeatType
+          interfacePlacement?.itemArea?.repeatType ||
+          interfacePlacement?.templateArea?.repeatType ||
+          defaultInterfacePlacement.templateArea.repeatType
         }
-        justifySelf={"center"}
       >
         <RepeatTypeBtn />
-      </View>
-      <View
+      </Grid.Item>
+      <Grid.Item
         gridArea={
-          interfacePlacement?.playButton || defaultInterfacePlacement.playButton
+          interfacePlacement?.itemArea?.playButton ||
+          interfacePlacement?.templateArea?.playButton ||
+          defaultInterfacePlacement.templateArea.playButton
         }
-        justifySelf={"center"}
       >
         <Flex
           UNSAFE_className="btn-wrapper"
@@ -52,23 +56,25 @@ export const Controller: FC = () => {
           <PlayBtn />
           <PrevNnextBtn type="next" />
         </Flex>
-      </View>
-      <View
+      </Grid.Item>
+      <Grid.Item
         gridArea={
-          interfacePlacement?.volume || defaultInterfacePlacement.volume
+          interfacePlacement?.itemArea?.volume ||
+          interfacePlacement?.templateArea?.volume ||
+          defaultInterfacePlacement.templateArea.volume
         }
-        justifySelf={"center"}
       >
         <Volume />
-      </View>
-      <View
+      </Grid.Item>
+      <Grid.Item
         gridArea={
-          interfacePlacement?.playList || defaultInterfacePlacement.playList
+          interfacePlacement?.itemArea?.playList ||
+          interfacePlacement?.templateArea?.playList ||
+          defaultInterfacePlacement.templateArea.playList
         }
-        justifySelf={"center"}
       >
         <SortablePlayList />
-      </View>
+      </Grid.Item>
     </>
   );
 };

@@ -1,9 +1,15 @@
 import { useNonNullableContext } from "hooks/useNonNullableContext";
 import { audioPlayerStateContext } from "lib/audioContext/StateContext";
 import { FC, useMemo } from "react";
+import styled from "styled-components";
 import { InterfaceChildrenProps } from "../../../types";
 import { BarProgress } from "./BarProgress";
 import { WaveformProgress } from "./WaveformProgress";
+
+const ProgressContainer = styled.div`
+  width: 100%;
+  min-width: 200px;
+`;
 
 export const Progress: FC<InterfaceChildrenProps> = () => {
   const { activeUI } = useNonNullableContext(audioPlayerStateContext);
@@ -13,5 +19,9 @@ export const Progress: FC<InterfaceChildrenProps> = () => {
     if (activeUI.progress === "waveform") return <WaveformProgress />;
     return <BarProgress />;
   }, [activeUI.progress]);
-  return active ? <div className="progress-wrapper">{CurProgress}</div> : null;
+  return active ? (
+    <ProgressContainer className="progress-container">
+      {CurProgress}
+    </ProgressContainer>
+  ) : null;
 };

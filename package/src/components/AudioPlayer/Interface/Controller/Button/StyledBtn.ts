@@ -8,4 +8,12 @@ export const StyledBtn = styled.button`
     width: 100%;
     height: 100%;
   }
+  &:hover {
+    transform: scale(1.1);
+  }
+  &:active {
+    transform: scale(0.8);
+    opacity: 0.5;
+    transition: all 0.2s ease-out;
+  }
 `;

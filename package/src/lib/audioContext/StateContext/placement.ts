@@ -17,7 +17,7 @@ type InterfacePlacementKey =
   | "trackTimeCurrent"
   | "trackTimeDuration";
 
-export type InterfacePlacement = Partial<
+export type InterfaceGridTemplateArea = Partial<
   Record<
     InterfacePlacementKey,
     `row${NumbersToUnionNum<
@@ -25,15 +25,26 @@ export type InterfacePlacement = Partial<
     >}-${NumbersToUnionNum<typeof interfacePlacementMaxLength>}`
   >
 >;
+export type InterfaceGridItemArea = Partial<
+  Record<InterfacePlacementKey, string>
+>;
+export type InterfacePlacement = {
+  templateArea: InterfaceGridTemplateArea;
+  itemArea?: InterfaceGridItemArea;
+};
 
-export const defaultInterfacePlacement: InterfacePlacement = {
-  artwork: "row1-1",
-  trackInfo: "row1-2",
-  trackTimeCurrent: "row1-3",
-  trackTimeDuration: "row1-4",
-  progress: "row1-5",
-  repeatType: "row1-6",
-  volume: "row1-7",
-  playButton: "row1-8",
-  playList: "row1-9",
+export const defaultInterfacePlacement: {
+  templateArea: Required<InterfaceGridTemplateArea>;
+} = {
+  templateArea: {
+    artwork: "row1-1",
+    trackInfo: "row1-2",
+    trackTimeCurrent: "row1-3",
+    trackTimeDuration: "row1-4",
+    progress: "row1-5",
+    repeatType: "row1-6",
+    volume: "row1-7",
+    playButton: "row1-8",
+    playList: "row1-9",
+  },
 };

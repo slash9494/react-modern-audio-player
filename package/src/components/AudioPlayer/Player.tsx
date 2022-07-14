@@ -94,6 +94,7 @@ export const AudioPlayer: FC<AudioPlayerProps> = ({
       ref={playerContainerRef}
       style={{ ...cssRoot }}
       placement={contextPlayerPlacement}
+      className="rs-audio-player-container"
     >
       <Audio />
       <Interface />
