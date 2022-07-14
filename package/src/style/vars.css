@@ -1,0 +1,13 @@
+:root {
+    --rs-audio-player-selected-list-item-background:#f2f2f2;
+    --rs-audio-player-volume-background: #ccc;
+    --rs-audio-player-volume-panel-background:#f2f2f2;
+    --rs-audio-player-volume-panel-border:#ccc;
+    --rs-audio-player-volume-thumb: #e5e5e5;
+    --rs-audio-player-volume-fill:rgba(0, 0, 0, 0.5);
+    --rs-audio-player-volume-track:#ababab;
+    --rs-audio-player-progress-bar:#ff0000;
+    --rs-audio-player-progress-bar-background:#ccc;
+    --rs-audio-player-track-current-time:#39c1de;
+    --rs-audio-player-track-duration:#8c8c8c;
+}

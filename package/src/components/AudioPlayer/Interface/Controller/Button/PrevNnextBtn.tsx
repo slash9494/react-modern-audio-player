@@ -33,6 +33,8 @@ export const PrevNnextBtn: FC<PrevNnextBtnProps> = ({ type }) => {
   }, [iconImgs?.next, iconImgs?.prev, type]);
 
   return activeUI.prevNnext ?? activeUI.all ? (
-    <StyledBtn onClick={onClickBtn}>{PrevNnextIcon}</StyledBtn>
+    <StyledBtn onClick={onClickBtn} className="prev-n-next-button">
+      {PrevNnextIcon}
+    </StyledBtn>
   ) : null;
 };

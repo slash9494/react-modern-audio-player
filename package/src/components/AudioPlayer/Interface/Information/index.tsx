@@ -1,4 +1,4 @@
-import { View } from "@react-spectrum/view";
+import Grid from "components/AudioPlayer/Grid";
 import { useNonNullableContext } from "hooks/useNonNullableContext";
 import {
   audioPlayerStateContext,
@@ -13,40 +13,45 @@ export const Information: FC = () => {
   const { interfacePlacement } = useNonNullableContext(audioPlayerStateContext);
   return (
     <>
-      <View
+      <Grid.Item
         gridArea={
-          interfacePlacement?.artwork || defaultInterfacePlacement.artwork
+          interfacePlacement?.itemArea?.artwork ||
+          interfacePlacement?.templateArea?.artwork ||
+          defaultInterfacePlacement.templateArea.artwork
         }
-        justifySelf={"center"}
       >
         <Artwork />
-      </View>
-      <View
+      </Grid.Item>
+      <Grid.Item
         gridArea={
-          interfacePlacement?.trackInfo || defaultInterfacePlacement.trackInfo
+          interfacePlacement?.itemArea?.trackInfo ||
+          interfacePlacement?.templateArea?.trackInfo ||
+          defaultInterfacePlacement.templateArea.trackInfo
         }
         justifySelf={"center"}
       >
         <TrackInfo />
-      </View>
-      <View
+      </Grid.Item>
+      <Grid.Item
         gridArea={
-          interfacePlacement?.trackTimeCurrent ||
-          defaultInterfacePlacement.trackTimeCurrent
+          interfacePlacement?.itemArea?.trackTimeCurrent ||
+          interfacePlacement?.templateArea?.trackTimeCurrent ||
+          defaultInterfacePlacement.templateArea.trackTimeCurrent
         }
         justifySelf={"center"}
       >
         <TrackTimeCurrent />
-      </View>
-      <View
+      </Grid.Item>
+      <Grid.Item
         gridArea={
-          interfacePlacement?.trackTimeDuration ||
-          defaultInterfacePlacement.trackTimeDuration
+          interfacePlacement?.itemArea?.trackTimeDuration ||
+          interfacePlacement?.templateArea?.trackTimeDuration ||
+          defaultInterfacePlacement.templateArea.trackTimeDuration
         }
         justifySelf={"center"}
       >
         <TrackTimeDuration />
-      </View>
+      </Grid.Item>
     </>
   );
 };

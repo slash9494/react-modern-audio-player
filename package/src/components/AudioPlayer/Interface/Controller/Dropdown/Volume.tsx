@@ -42,7 +42,7 @@ export const Volume: FC<InterfaceChildrenProps> = () => {
 
   const VolumeIcon = useMemo(() => {
     const volumeOpt: IconBaseProps = {
-      size: "80%",
+      size: "100%",
     };
     if (curAudioState.muted)
       return (
@@ -91,7 +91,10 @@ export const Volume: FC<InterfaceChildrenProps> = () => {
 
   const TriggerEl = useMemo(() => {
     return (
-      <TriggerElContainer onClick={onClickMuted}>
+      <TriggerElContainer
+        onClick={onClickMuted}
+        className="volume-trigger-container"
+      >
         {VolumeIcon}
       </TriggerElContainer>
     );
@@ -103,6 +106,7 @@ export const Volume: FC<InterfaceChildrenProps> = () => {
         playerPlacement={playerPlacement}
         volumeValue={curAudioState.volume * 100}
         ref={contentRef}
+        className="volume-content-container"
       >
         <div className="volume-panel-wrapper">
           <input
@@ -113,7 +117,7 @@ export const Volume: FC<InterfaceChildrenProps> = () => {
             onChange={onChangeVolume}
             min="0"
             max="1"
-            step="0.1"
+            step="0.01"
           />
         </div>
       </ContentElContainer>
@@ -160,9 +164,10 @@ const ContentElContainer = styled.div`
       position: absolute;
       width: 30px;
       left: -3px;
-      bottom: 14px;
-      background-color: var(--rs-audio-player-volume-panel-background, #f2f2f2);
-      border: 1px solid #ccc;
+      bottom: 5px;
+      background-color: var(--rs-audio-player-volume-panel-background);
+      border: 1px solid var(--rs-audio-player-volume-panel-border);
+      border-radius: 5px;
       height: 118px;
       box-shadow: 0 2px 4px rgb(0 0 0 /10%);
       ${playerPlacement?.includes("top") &&
@@ -175,8 +180,8 @@ const ContentElContainer = styled.div`
         bottom: -10px;
         left: 7.9px;
         border-color: transparent transparent
-          var(--rs-audio-player-volume-panel-border, #ccc)
-          var(--rs-audio-player-volume-panel-border, #ccc);
+          var(--rs-audio-player-volume-panel-border)
+          var(--rs-audio-player-volume-panel-border);
         border-style: solid;
         border-width: 5px;
         box-shadow: -3px 3px 4px rgb(0 0 0 / 10%);
@@ -196,8 +201,8 @@ const ContentElContainer = styled.div`
         bottom: -8px;
         left: 9px;
         border-color: transparent transparent
-          var(--rs-audio-player-volume-panel-background, #f2f2f2)
-          var(--rs-audio-player-volume-panel-background, #f2f2f2);
+          var(--rs-audio-player-volume-panel-background)
+          var(--rs-audio-player-volume-panel-background);
         border-style: solid;
         border-width: 4px;
         z-index: 1;
@@ -223,7 +228,7 @@ const ContentElContainer = styled.div`
         height: 2px;
         width: 92px;
         -webkit-appearance: none;
-        background-color: var(--rs-audio-player-volume-background, #ccc);
+        background-color: var(--rs-audio-player-volume-background);
         outline-color: transparent;
         transform-origin: 75px 75px;
         transform: rotate(-90deg);
@@ -239,7 +244,7 @@ const ContentElContainer = styled.div`
         height: 16px;
         border-radius: 12px;
         overflow: visible;
-        background: var(--rs-audio-player-volume-thumb, #e5e5e5);
+        background: var(--rs-audio-player-volume-thumb);
       }
 
       &::-moz-range-thumb {
@@ -247,7 +252,7 @@ const ContentElContainer = styled.div`
         height: 16px;
         border-radius: 12px;
         overflow: visible;
-        background: var(--rs-audio-player-volume-thumb, #e5e5e5);
+        background: var(--rs-audio-player-volume-thumb);
         border: none;
       }
       &::-moz-range-track {
@@ -265,9 +270,8 @@ const ContentElContainer = styled.div`
         background-size: 100% 3px;
         background-image: linear-gradient(
           90deg,
-          var(--rs-audio-player-volume-fill, rgba(0, 0, 0, 0.5))
-            var(--rs-audio-player-volume-value),
-          var(--rs-audio-player-volume-track, #ababab)
+          var(--rs-audio-player-volume-fill) var(--rs-audio-player-volume-value),
+          var(--rs-audio-player-volume-track)
             var(--rs-audio-player-volume-value)
         );
       }
@@ -287,9 +291,8 @@ const ContentElContainer = styled.div`
         background-size: 100% 3px;
         background-image: linear-gradient(
           90deg,
-          var(--rs-audio-player-volume-fill, rgba(0, 0, 0, 0.5))
-            var(--rs-audio-player-volume-value),
-          var(--rs-audio-player-volume-track, #ababab)
+          var(--rs-audio-player-volume-fill) var(--rs-audio-player-volume-value),
+          var(--rs-audio-player-volume-track)
             var(--rs-audio-player-volume-value)
         );
       }

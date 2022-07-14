@@ -33,7 +33,10 @@ export const SortablePlayList: FC<InterfaceChildrenProps> = () => {
   const TriggerEl = (isOpen: boolean) =>
     useMemo(() => {
       return (
-        <TriggerElContainer isOpen={isOpen}>
+        <TriggerElContainer
+          isOpen={isOpen}
+          className="play-list-trigger-container"
+        >
           <Icon
             render={<MdOutlineKeyboardArrowDown size={"100%"} />}
             customImg={iconImgs?.dropDown}
@@ -132,7 +135,7 @@ const ListItemContainer = styled.div`
   align-items: center;
   padding: 10px 20px;
   &.curPlayed {
-    background: var(--selected-list-item-bg, #f2f2f2);
+    background: var(--rs-audio-player-selected-list-item-background);
   }
   .list-item-contents-wrapper {
     width: 100%;

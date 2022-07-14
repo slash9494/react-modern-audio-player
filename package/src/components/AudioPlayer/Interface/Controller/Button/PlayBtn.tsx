@@ -27,6 +27,8 @@ export const PlayBtn: FC<InterfaceChildrenProps> = () => {
   }, [curAudioState.isPlaying, iconImgs?.pause, iconImgs?.play]);
 
   return activeUI.playButton ?? activeUI.all ? (
-    <StyledPlayBtn onClick={onClick}>{PlayIcon}</StyledPlayBtn>
+    <StyledPlayBtn onClick={onClick} className="play-button">
+      {PlayIcon}
+    </StyledPlayBtn>
   ) : null;
 };

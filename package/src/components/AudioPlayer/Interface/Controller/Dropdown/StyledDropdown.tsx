@@ -196,8 +196,8 @@ export const StyledDropdownContainer = styled.div`
     hoverContentsHeight,
   }: StyledDropdownContainerProps) => css`
     position: relative;
-    min-width: 30px;
-    min-height: 30px;
+    min-width: 20px;
+    min-height: 20px;
     .dropdown-trigger-wrapper {
       width: 100%;
       height: 100%;

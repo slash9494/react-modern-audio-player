@@ -1,9 +1,9 @@
 import { FC } from "react";
 import styled from "styled-components";
 
-const WaveformContainer = styled.div`
+const WaveformWrapper = styled.div`
   display: flex;
-  width: 200px;
+  width: 100%;
   #rs-waveform {
     width: 100%;
     wave {
@@ -14,8 +14,8 @@ const WaveformContainer = styled.div`
 
 export const WaveformProgress: FC = () => {
   return (
-    <WaveformContainer className="waveform-container">
+    <WaveformWrapper className="waveform-wrapper">
       <div id="rs-waveform" />
-    </WaveformContainer>
+    </WaveformWrapper>
   );
 };

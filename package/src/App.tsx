@@ -1,5 +1,6 @@
 import { AudioPlayerWithProvider } from "./components/AudioPlayer";
 import { PlayList } from "./lib/audioContext/StateContext";
+import "./style";
 
 const playList: PlayList = [
   {
@@ -56,7 +57,16 @@ function App() {
         }}
         playerPlacement={"bottom"}
         // cssRoot={{ width: "500px" }}
-        activeUI={{ all: true }}
+        activeUI={{ all: true, trackTime: "separation mode" }}
+        interfacePlacement={{
+          templateArea: {
+            trackTimeDuration: "row1-5",
+            progress: "row1-4",
+            playButton: "row1-6",
+            repeatType: "row1-7",
+            volume: "row1-8",
+          },
+        }}
       />
     </div>
   );

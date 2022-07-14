@@ -1,12 +1,13 @@
 import {
   ActiveUI,
+  defaultInterfacePlacement,
   InterfacePlacement,
   interfacePlacementMaxLength,
 } from "lib/audioContext/StateContext";
 
 export const generateGridTemplateValues = (
   activeUi: ActiveUI,
-  placement?: InterfacePlacement
+  placement?: InterfacePlacement["templateArea"]
 ) => {
   let maxRowLength = 1;
   let maxColLength = 1;
@@ -44,15 +45,25 @@ export const generateGridTemplateValues = (
     }
     return cols;
   });
-  const gridColumns = new Array(maxRowLength).fill("").map(() => {
+  const gridColumns = new Array(maxRowLength).fill("").map((_, rowIdx) => {
     //TODO : 서버사이드에서 체크
     const maxWidth = window ? window.innerWidth - 100 : 1500;
+    const [progressRow, progressCol] = (
+      placement?.progress || defaultInterfacePlacement.templateArea.progress
+    )
+      .replace("row", "")
+      .split("-");
+
     let cols = "";
     for (let i = 0; i < maxColLength; i++) {
-      cols += ` fit-content(${maxWidth}px)`;
       if (i === 0) {
         cols = cols.trim();
       }
+      if (rowIdx === 0 && i + 1 === +progressCol) {
+        cols += ` 1fr`;
+        continue;
+      }
+      cols += ` fit-content(${maxWidth}px)`;
     }
     return cols;
   });
