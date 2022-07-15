@@ -4,7 +4,7 @@ import {
   ActiveUI,
   CoverImgsCss,
   ElementRefs,
-  IconImgs,
+  CustomIcons,
   PlayList,
 } from "./element";
 import {
@@ -23,7 +23,7 @@ export interface AudioPlayerStateContext {
   playerPlacement?: PlayerPlacement;
   interfacePlacement?: InterfacePlacement;
   elementRefs?: ElementRefs;
-  iconImgs?: IconImgs;
+  customIcons?: CustomIcons;
   coverImgsCss?: CoverImgsCss;
 }
 

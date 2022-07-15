@@ -1,10 +1,10 @@
-import { PropsWithChildren, FC, useReducer } from "react";
-import { audioPlayerDispatchContext } from "./dispatchContext";
 import {
+  audioPlayerDispatchContext,
+  audioPlayerReducer,
   audioPlayerStateContext,
   defaultInterfacePlacement,
-} from "./StateContext";
-import { audioPlayerReducer } from "./reducer";
+} from "lib/audioContext";
+import { PropsWithChildren, FC, useReducer } from "react";
 
 export const AudioPlayerProvider: FC<PropsWithChildren<unknown>> = ({
   children,
@@ -18,7 +18,6 @@ export const AudioPlayerProvider: FC<PropsWithChildren<unknown>> = ({
       curAudioState: {
         isPlaying: false,
         repeatType: "ALL",
-        muted: true,
         volume: 1,
       },
       activeUI: {
@@ -26,7 +25,9 @@ export const AudioPlayerProvider: FC<PropsWithChildren<unknown>> = ({
       },
       dropdownPlacement: "bottom",
       interfacePlacement: {
-        playButton: defaultInterfacePlacement["playButton"],
+        templateArea: {
+          playButton: defaultInterfacePlacement.templateArea["playButton"],
+        },
       },
     }
   );

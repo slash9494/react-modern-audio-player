@@ -1,4 +1,4 @@
-import Grid from "components/AudioPlayer/Grid";
+import Grid from "components/Grid";
 import { useNonNullableContext } from "hooks/useNonNullableContext";
 import {
   audioPlayerStateContext,

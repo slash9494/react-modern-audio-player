@@ -7,8 +7,8 @@ import { BarProgress } from "./BarProgress";
 import { WaveformProgress } from "./WaveformProgress";
 
 const ProgressContainer = styled.div`
-  width: 100%;
   min-width: 200px;
+  padding: 0 10px;
 `;
 
 export const Progress: FC<InterfaceChildrenProps> = () => {

@@ -5,10 +5,11 @@ import {
   defaultInterfacePlacement,
 } from "../../../../lib/audioContext/StateContext";
 import { PlayBtn, PrevNnextBtn, RepeatTypeBtn } from "./Button";
-import { Volume, SortablePlayList } from "./Dropdown";
+import { SortablePlayList } from "./Dropdown";
 import { Progress } from "./Input";
 import { Flex } from "@react-spectrum/layout";
-import Grid from "components/AudioPlayer/Grid";
+import Grid from "components/Grid";
+import { Volume } from "./Tooltip";
 
 /**
  * //TODO
@@ -47,11 +48,7 @@ export const Controller: FC = () => {
           defaultInterfacePlacement.templateArea.playButton
         }
       >
-        <Flex
-          UNSAFE_className="btn-wrapper"
-          alignItems={"center"}
-          gap={"0.2rem"}
-        >
+        <Flex UNSAFE_className="btn-wrapper" alignItems={"center"} gap={"10px"}>
           <PrevNnextBtn type="prev" />
           <PlayBtn />
           <PrevNnextBtn type="next" />

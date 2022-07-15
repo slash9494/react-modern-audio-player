@@ -4,24 +4,16 @@ import {
   audioPlayerStateContext,
   PlayerPlacement,
 } from "lib/audioContext/StateContext";
-import { ChangeEvent, FC, useCallback, useMemo, useRef } from "react";
+import { ChangeEvent, FC, useCallback, useRef } from "react";
 import styled, { css } from "styled-components";
-import { StyledDropdown } from "./StyledDropdown";
-import { TbVolume3, TbVolume, TbVolume2 } from "react-icons/tb";
-import { IconBaseProps } from "react-icons/lib";
-import { Icon } from "../Icon";
-import { InterfaceChildrenProps } from "../../types";
 
-export const Volume: FC<InterfaceChildrenProps> = () => {
+export type ContentPlacement = "bottom" | "top";
+
+export const Content: FC<{ placement: ContentPlacement }> = ({ placement }) => {
   const contentRef = useRef<HTMLDivElement>(null);
-  const { curAudioState, playerPlacement, iconImgs, activeUI } =
-    useNonNullableContext(audioPlayerStateContext);
+  const { curAudioState } = useNonNullableContext(audioPlayerStateContext);
   const audioPlayerDispatch = useNonNullableContext(audioPlayerDispatchContext);
-  const onClickMuted = useCallback(
-    () =>
-      audioPlayerDispatch({ type: "SET_MUTED", muted: !curAudioState.muted }),
-    [audioPlayerDispatch, curAudioState.muted]
-  );
+
   const onChangeVolume = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
       e.stopPropagation();
@@ -39,138 +31,54 @@ export const Volume: FC<InterfaceChildrenProps> = () => {
     },
     [curAudioState.muted, audioPlayerDispatch]
   );
-
-  const VolumeIcon = useMemo(() => {
-    const volumeOpt: IconBaseProps = {
-      size: "100%",
-    };
-    if (curAudioState.muted)
-      return (
-        <Icon
-          render={<TbVolume3 {...volumeOpt} />}
-          customImg={iconImgs?.muted}
+  return (
+    <ContentContainer
+      contentPlacement={placement}
+      volumeValue={curAudioState.volume * 100}
+      ref={contentRef}
+      className="volume-content-container"
+    >
+      <div className="volume-panel-wrapper">
+        <input
+          className="volume-slider-input"
+          type="range"
+          style={{ cursor: "pointer" }}
+          defaultValue={curAudioState.volume}
+          onChange={onChangeVolume}
+          min="0"
+          max="1"
+          step="0.01"
         />
-      );
-    const volumeState = (value: number) => {
-      if (value === 0) return "mute";
-      if (value <= 0.5) return "low";
-      if (value > 0.5) return "high";
-    };
-    switch (volumeState(curAudioState.volume)) {
-      case "mute":
-        return (
-          <Icon
-            render={<TbVolume3 {...volumeOpt} />}
-            customImg={iconImgs?.muted}
-          />
-        );
-      case "low":
-        return (
-          <Icon
-            render={<TbVolume2 {...volumeOpt} />}
-            customImg={iconImgs?.volumeHalf}
-          />
-        );
-      case "high":
-        return (
-          <Icon
-            render={<TbVolume {...volumeOpt} />}
-            customImg={iconImgs?.volumeFull}
-          />
-        );
-      default:
-        return null;
-    }
-  }, [
-    curAudioState.muted,
-    curAudioState.volume,
-    iconImgs?.muted,
-    iconImgs?.volumeFull,
-    iconImgs?.volumeHalf,
-  ]);
-
-  const TriggerEl = useMemo(() => {
-    return (
-      <TriggerElContainer
-        onClick={onClickMuted}
-        className="volume-trigger-container"
-      >
-        {VolumeIcon}
-      </TriggerElContainer>
-    );
-  }, [onClickMuted, VolumeIcon]);
-
-  const ContentEl = useMemo(() => {
-    return (
-      <ContentElContainer
-        playerPlacement={playerPlacement}
-        volumeValue={curAudioState.volume * 100}
-        ref={contentRef}
-        className="volume-content-container"
-      >
-        <div className="volume-panel-wrapper">
-          <input
-            className="volume-slider-input"
-            type="range"
-            style={{ cursor: "pointer" }}
-            defaultValue={curAudioState.volume}
-            onChange={onChangeVolume}
-            min="0"
-            max="1"
-            step="0.01"
-          />
-        </div>
-      </ContentElContainer>
-    );
-  }, [curAudioState.volume, onChangeVolume, playerPlacement]);
-  return activeUI.volume ?? activeUI.all ? (
-    <StyledDropdown
-      TriggerEl={() => TriggerEl}
-      ContentEl={() => ContentEl}
-      hoverTriggerActive
-      hoverContentsHeight={200}
-    />
-  ) : null;
+      </div>
+    </ContentContainer>
+  );
 };
 
-const TriggerElContainer = styled.div`
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-
-const ContentElContainer = styled.div`
+const ContentContainer = styled.div`
   ${({
-    playerPlacement,
+    contentPlacement,
     volumeValue,
   }: {
-    playerPlacement?: PlayerPlacement;
+    contentPlacement?: PlayerPlacement;
     volumeValue: number;
   }) => css`
     --rs-audio-player-volume-value: ${volumeValue}%;
+    width: 30px;
+    height: 118px;
 
-    position: absolute;
-    bottom: 0;
-    padding: 1rem;
-    padding-left: 0;
-    ${playerPlacement?.includes("top") &&
+    ${contentPlacement?.includes("top") &&
     css`
       bottom: auto;
     `}
 
     .volume-panel-wrapper {
-      position: absolute;
       width: 30px;
-      left: -3px;
-      bottom: 5px;
       background-color: var(--rs-audio-player-volume-panel-background);
       border: 1px solid var(--rs-audio-player-volume-panel-border);
       border-radius: 5px;
       height: 118px;
       box-shadow: 0 2px 4px rgb(0 0 0 /10%);
-      ${playerPlacement?.includes("top") &&
+      ${contentPlacement?.includes("top") &&
       css`
         transform: rotateX(180deg);
         bottom: -115px;

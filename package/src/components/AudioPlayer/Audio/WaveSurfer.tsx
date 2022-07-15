@@ -4,7 +4,7 @@ import {
   AudioData,
   audioPlayerStateContext,
 } from "lib/audioContext/StateContext";
-import { FC, useCallback, useEffect, useState } from "react";
+import { FC, useCallback, useEffect, useLayoutEffect, useState } from "react";
 import WaveSurfer from "wavesurfer.js";
 import { getTimeWithPadStart } from "../../../utils/getTime";
 import { resetAudioValues } from "../../../utils/resetAudioValues";
@@ -21,25 +21,40 @@ export const WaveSurferAudio: FC = () => {
     trackCurTimeEl.innerText = getTimeWithPadStart(curTime);
   }, [elementRefs]);
 
+  /** get colors from style */
+  const [colors, setColors] = useState<{
+    progressColor: string;
+    waveColor: string;
+  }>();
+  useLayoutEffect(() => {
+    const progressColor = window
+      .getComputedStyle(document.documentElement)
+      .getPropertyValue("--rs-audio-player-waveform-bar");
+    const waveColor = window
+      .getComputedStyle(document.documentElement)
+      .getPropertyValue("--rs-audio-player-waveform-background");
+    setColors({ progressColor, waveColor });
+  }, []);
+
   /** init waveSurfer */
   useEffect(() => {
-    if (!elementRefs || elementRefs.waveformInst) return;
+    if (!elementRefs || elementRefs.waveformInst || !colors) return;
     const waveSurfer = WaveSurfer.create({
-      barWidth: 3,
-      cursorWidth: 1,
+      barWidth: 1,
+      cursorWidth: 2,
       container: "#rs-waveform",
       backend: "WebAudio",
       height: 80,
-      progressColor: "#2D5BFF",
+      progressColor: `${colors.progressColor}`,
       responsive: true,
-      waveColor: "#EFEFEF",
-      cursorColor: "transparent",
+      waveColor: `${colors.waveColor}`,
+      cursorColor: "var(--rs-audio-player-waveform-cursor)",
     });
     audioPlayerDispatch({
       type: "SET_ELEMENT_REFS",
       elementRefs: { waveformInst: waveSurfer },
     });
-  }, [elementRefs, elementRefs?.waveformInst, audioPlayerDispatch]);
+  }, [elementRefs, elementRefs?.waveformInst, audioPlayerDispatch, colors]);
 
   /** load file */
   const [curAudioData, setCurAudioData] = useState<AudioData>();

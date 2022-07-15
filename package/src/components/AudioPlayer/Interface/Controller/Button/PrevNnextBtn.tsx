@@ -12,7 +12,9 @@ interface PrevNnextBtnProps extends InterfaceChildrenProps {
 }
 
 export const PrevNnextBtn: FC<PrevNnextBtnProps> = ({ type }) => {
-  const { iconImgs, activeUI } = useNonNullableContext(audioPlayerStateContext);
+  const { customIcons, activeUI } = useNonNullableContext(
+    audioPlayerStateContext
+  );
   const audioPlayerDispatch = useNonNullableContext(audioPlayerDispatchContext);
   const onClickBtn = () => {
     if (type === "next") {
@@ -24,13 +26,13 @@ export const PrevNnextBtn: FC<PrevNnextBtnProps> = ({ type }) => {
   };
   const PrevNnextIcon = useMemo(() => {
     if (type === "next") {
-      return <Icon render={<ImNext />} customImg={iconImgs?.next} />;
+      return <Icon render={<ImNext />} customIcon={customIcons?.next} />;
     }
     if (type === "prev") {
-      return <Icon render={<ImPrevious />} customImg={iconImgs?.prev} />;
+      return <Icon render={<ImPrevious />} customIcon={customIcons?.prev} />;
     }
     return null;
-  }, [iconImgs?.next, iconImgs?.prev, type]);
+  }, [customIcons?.next, customIcons?.prev, type]);
 
   return activeUI.prevNnext ?? activeUI.all ? (
     <StyledBtn onClick={onClickBtn} className="prev-n-next-button">

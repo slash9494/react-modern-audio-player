@@ -4,8 +4,9 @@ import { Information } from "./Information";
 import { generateGridTemplateValues } from "../../../utils/generateGridTemplateValues";
 import { useNonNullableContext } from "hooks/useNonNullableContext";
 import { audioPlayerStateContext } from "lib/audioContext/StateContext";
-import Grid from "../Grid";
+
 import styled from "styled-components";
+import Grid from "components/Grid";
 
 const InterfaceContainer = styled.div`
   .interface-grid {

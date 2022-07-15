@@ -4,6 +4,8 @@ import "./index.css";
 
 export type ListData<T> = Array<T>;
 
+// TODO : 선언적으로
+
 export interface SortableListProps<
   T extends Record<string, any> & { index: number }
 > {
