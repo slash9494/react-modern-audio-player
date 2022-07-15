@@ -9,11 +9,11 @@ import { Icon } from "../Icon";
 import { InterfaceChildrenProps } from "../../types";
 
 const StyledPlayBtn = styled(StyledBtn)`
-  width: 30px;
+  width: 35px;
 `;
 
 export const PlayBtn: FC<InterfaceChildrenProps> = () => {
-  const { curAudioState, iconImgs, activeUI } = useNonNullableContext(
+  const { curAudioState, customIcons, activeUI } = useNonNullableContext(
     audioPlayerStateContext
   );
   const audioPlayerDispatch = useNonNullableContext(audioPlayerDispatchContext);
@@ -21,10 +21,15 @@ export const PlayBtn: FC<InterfaceChildrenProps> = () => {
   const PlayIcon = useMemo(() => {
     if (curAudioState.isPlaying)
       return (
-        <Icon render={<MdPauseCircleFilled />} customImg={iconImgs?.pause} />
+        <Icon
+          render={<MdPauseCircleFilled />}
+          customIcon={customIcons?.pause}
+        />
       );
-    return <Icon render={<MdPlayCircleFilled />} customImg={iconImgs?.play} />;
-  }, [curAudioState.isPlaying, iconImgs?.pause, iconImgs?.play]);
+    return (
+      <Icon render={<MdPlayCircleFilled />} customIcon={customIcons?.play} />
+    );
+  }, [curAudioState.isPlaying, customIcons?.pause, customIcons?.play]);
 
   return activeUI.playButton ?? activeUI.all ? (
     <StyledPlayBtn onClick={onClick} className="play-button">

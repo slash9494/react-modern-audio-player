@@ -1,12 +1,11 @@
-import { FC, useEffect, useLayoutEffect, useRef } from "react";
-import styled, { css } from "styled-components";
+import { View } from "@react-spectrum/view";
+import { FC, useEffect, useLayoutEffect } from "react";
 import { useNonNullableContext } from "../../hooks/useNonNullableContext";
 import { audioPlayerDispatchContext } from "../../lib/audioContext/dispatchContext";
 import {
   ActiveUI,
   DropdownPlacement,
-  IconImgs,
-  audioPlayerStateContext,
+  CustomIcons,
   PlayerPlacement,
   PlayList,
   AudioInitialState,
@@ -21,30 +20,24 @@ import { Interface } from "./Interface";
 export interface AudioPlayerProps {
   playList: PlayList;
   audioInitialState?: AudioInitialState;
-  cssRoot?: React.CSSProperties; //TODO : useCSS;
   playerPlacement?: PlayerPlacement;
   dropdownPlacement?: DropdownPlacement;
   interfacePlacement?: InterfacePlacement;
   activeUI?: ActiveUI;
-  iconImgs?: IconImgs;
+  customIcons?: CustomIcons;
   coverImgsCss?: CoverImgsCss;
 }
 
 export const AudioPlayer: FC<AudioPlayerProps> = ({
   playList,
   audioInitialState,
-  cssRoot,
   playerPlacement,
   dropdownPlacement,
   interfacePlacement,
   activeUI,
-  iconImgs,
+  customIcons,
   coverImgsCss,
 }) => {
-  const playerContainerRef = useRef<HTMLDivElement>(null);
-  const { playerPlacement: contextPlayerPlacement } = useNonNullableContext(
-    audioPlayerStateContext
-  );
   const audioPlayerDispatch = useNonNullableContext(audioPlayerDispatchContext);
 
   useLayoutEffect(() => {
@@ -83,52 +76,15 @@ export const AudioPlayer: FC<AudioPlayerProps> = ({
     audioPlayerDispatch({ type: "UPDATE_PLAY_LIST", playList });
   }, [audioPlayerDispatch, playList]);
   useEffect(() => {
-    if (iconImgs) {
-      audioPlayerDispatch({ type: "SET_ICON_IMGS", iconImgs });
+    if (customIcons) {
+      audioPlayerDispatch({ type: "SET_CUSTOM_ICONS", customIcons });
     }
-  }, [iconImgs, audioPlayerDispatch]);
+  }, [customIcons, audioPlayerDispatch]);
 
   return (
-    <AudioPlayerContainer
-      id="rs-audio-player"
-      ref={playerContainerRef}
-      style={{ ...cssRoot }}
-      placement={contextPlayerPlacement}
-      className="rs-audio-player-container"
-    >
+    <View id="rs-audio-player" UNSAFE_className="rs-audio-player-container">
       <Audio />
       <Interface />
-    </AudioPlayerContainer>
+    </View>
   );
 };
-
-interface AudioPlayerContainerProps {
-  placement?: PlayerPlacement;
-}
-
-const AudioPlayerContainer = styled.div`
-  ${({ placement }: AudioPlayerContainerProps) => css`
-    width: 100%;
-    border: 1px solid red;
-    ${placement &&
-    css`
-      position: fixed;
-      ${/bottom/.test(placement) &&
-      css`
-        bottom: 0;
-      `}
-      ${/top/.test(placement) &&
-      css`
-        top: 0;
-      `}
-    ${/left/.test(placement) &&
-      css`
-        left: 0;
-      `}
-    ${/right/.test(placement) &&
-      css`
-        right: 0;
-      `}
-    `}
-  `}
-`;

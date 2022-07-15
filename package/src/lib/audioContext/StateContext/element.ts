@@ -18,7 +18,7 @@ export type ActiveUI = Partial<{
   progress: ProgressUI;
 }>;
 
-export type IconImgs = Partial<{
+export type CustomIcons = Partial<{
   play: ReactNode;
   pause: ReactNode;
   prev: ReactNode;
@@ -29,7 +29,7 @@ export type IconImgs = Partial<{
   repeatShuffle: ReactNode;
   volumeFull: ReactNode;
   volumeHalf: ReactNode;
-  muted: ReactNode;
+  volumeMuted: ReactNode;
   dropDown: ReactNode;
 }>;
 

@@ -13,7 +13,7 @@ import { Icon } from "../Icon";
 import { InterfaceChildrenProps } from "../../types";
 
 export const RepeatTypeBtn: FC<InterfaceChildrenProps> = () => {
-  const { curAudioState, iconImgs, activeUI } = useNonNullableContext(
+  const { curAudioState, customIcons, activeUI } = useNonNullableContext(
     audioPlayerStateContext
   );
   const audioPlayerDispatch = useNonNullableContext(audioPlayerDispatchContext);
@@ -38,20 +38,22 @@ export const RepeatTypeBtn: FC<InterfaceChildrenProps> = () => {
   const RepeatIcon = useMemo(() => {
     switch (curAudioState.repeatType) {
       case "ALL":
-        return <Icon render={<TbRepeat />} customImg={iconImgs?.repeatAll} />;
+        return (
+          <Icon render={<TbRepeat />} customIcon={customIcons?.repeatAll} />
+        );
       case "ONE":
         return (
-          <Icon render={<TbRepeatOnce />} customImg={iconImgs?.repeatOne} />
+          <Icon render={<TbRepeatOnce />} customIcon={customIcons?.repeatOne} />
         );
       case "NONE":
         return (
-          <Icon render={<TbRepeatOff />} customImg={iconImgs?.repeatNone} />
+          <Icon render={<TbRepeatOff />} customIcon={customIcons?.repeatNone} />
         );
       case "SHUFFLE":
         return (
           <Icon
             render={<TbArrowsShuffle />}
-            customImg={iconImgs?.repeatShuffle}
+            customIcon={customIcons?.repeatShuffle}
           />
         );
       default:
@@ -59,10 +61,10 @@ export const RepeatTypeBtn: FC<InterfaceChildrenProps> = () => {
     }
   }, [
     curAudioState.repeatType,
-    iconImgs?.repeatAll,
-    iconImgs?.repeatNone,
-    iconImgs?.repeatOne,
-    iconImgs?.repeatShuffle,
+    customIcons?.repeatAll,
+    customIcons?.repeatNone,
+    customIcons?.repeatOne,
+    customIcons?.repeatShuffle,
   ]);
 
   return activeUI.repeatType ?? activeUI.all ? (

@@ -56,8 +56,11 @@ function App() {
           curPlayId: 1,
         }}
         playerPlacement={"bottom"}
-        // cssRoot={{ width: "500px" }}
-        activeUI={{ all: true, trackTime: "separation mode" }}
+        activeUI={{
+          all: true,
+          trackTime: "separation mode",
+          progress: "waveform",
+        }}
         interfacePlacement={{
           templateArea: {
             trackTimeDuration: "row1-5",

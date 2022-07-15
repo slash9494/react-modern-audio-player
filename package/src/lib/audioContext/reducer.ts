@@ -31,17 +31,19 @@ export const audioPlayerReducer = (
           curIdx: nextIdx,
         };
       }
-      const infiniteNextIdx = (state.curIdx + 1) % state.playList.length;
+      const infiniteLoopNextIdx = (state.curIdx + 1) % state.playList.length;
       return {
         ...state,
-        curIdx: infiniteNextIdx,
-        curPlayId: state.playList[infiniteNextIdx].id,
+        curIdx: infiniteLoopNextIdx,
+        curPlayId: state.playList[infiniteLoopNextIdx].id,
       };
     }
     case "PREV_AUDIO": {
       if (
         (state.elementRefs?.audioEl &&
-          state.elementRefs?.audioEl?.currentTime > 1) ||
+          state.elementRefs?.audioEl.currentTime > 1) ||
+        (state.elementRefs?.waveformInst &&
+          state.elementRefs?.waveformInst.getCurrentTime() > 1) ||
         (state.curAudioState.repeatType === "NONE" && state.curIdx === 0)
       ) {
         resetAudioValues(state.elementRefs, undefined, true);
@@ -57,12 +59,12 @@ export const audioPlayerReducer = (
           curIdx: shuffledPlayIdx,
         };
       }
-      const infinitePrevIdx =
+      const infiniteLoopPrevIdx =
         (state.curIdx - 1 + state.playList.length) % state.playList.length;
       return {
         ...state,
-        curPlayId: state.playList[infinitePrevIdx].id,
-        curIdx: infinitePrevIdx,
+        curPlayId: state.playList[infiniteLoopPrevIdx].id,
+        curIdx: infiniteLoopPrevIdx,
       };
     }
     case "UPDATE_PLAY_LIST": {
@@ -151,10 +153,10 @@ export const audioPlayerReducer = (
         ...state,
         elementRefs: { ...state.elementRefs, ...action.elementRefs },
       };
-    case "SET_ICON_IMGS":
+    case "SET_CUSTOM_ICONS":
       return {
         ...state,
-        iconImgs: { ...state.iconImgs, ...action.iconImgs },
+        customIcons: { ...state.customIcons, ...action.customIcons },
       };
     case "SET_COVER_IMGS_CSS":
       return {

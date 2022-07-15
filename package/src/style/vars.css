@@ -6,8 +6,11 @@
     --rs-audio-player-volume-thumb: #e5e5e5;
     --rs-audio-player-volume-fill:rgba(0, 0, 0, 0.5);
     --rs-audio-player-volume-track:#ababab;
-    --rs-audio-player-progress-bar:#ff0000;
-    --rs-audio-player-progress-bar-background:#ccc;
-    --rs-audio-player-track-current-time:#39c1de;
+    --rs-audio-player-track-current-time:#0072F5;
     --rs-audio-player-track-duration:#8c8c8c;
+    --rs-audio-player-progress-bar:#0072F5;
+    --rs-audio-player-progress-bar-background:#D1D1D1;
+    --rs-audio-player-waveform-cursor:var(--spectrum-alias-text-color);
+    --rs-audio-player-waveform-background:var(--rs-audio-player-progress-bar-background);
+    --rs-audio-player-waveform-bar:var(--rs-audio-player-progress-bar);
 }

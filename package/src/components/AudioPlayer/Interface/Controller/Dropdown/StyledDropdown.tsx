@@ -140,6 +140,7 @@ export const StyledDropdown: FC<StyledDropdownProps> = ({
       contentRef={contentRef.current}
       playerPlacement={playerPlacement}
       hoverContentsHeight={hoverContentsHeight}
+      className="dropdown-container"
     >
       {dropdownPlacement === "bottom" && (
         <DropdownTrigger

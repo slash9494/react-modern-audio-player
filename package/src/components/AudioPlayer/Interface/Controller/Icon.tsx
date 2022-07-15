@@ -3,9 +3,9 @@ import { IconType } from "react-icons/lib";
 
 interface _IconProps {
   render: ReactElement<IconType>;
-  customImg?: ReactNode;
+  customIcon?: ReactNode;
 }
 
-export const Icon: FC<_IconProps> = ({ render, customImg }) => {
-  return customImg ? <>{customImg}</> : <>{render}</>;
+export const Icon: FC<_IconProps> = ({ render, customIcon }) => {
+  return <>{customIcon ?? render}</>;
 };

@@ -16,7 +16,7 @@ import { Icon } from "../Icon";
 import { InterfaceChildrenProps } from "../../types";
 
 export const SortablePlayList: FC<InterfaceChildrenProps> = () => {
-  const { playList, curPlayId, iconImgs, activeUI, coverImgsCss } =
+  const { playList, curPlayId, customIcons, activeUI, coverImgsCss } =
     useNonNullableContext(audioPlayerStateContext);
   const audioPlayerDispatch = useNonNullableContext(audioPlayerDispatchContext);
   const onClickItem = useCallback(
@@ -39,7 +39,7 @@ export const SortablePlayList: FC<InterfaceChildrenProps> = () => {
         >
           <Icon
             render={<MdOutlineKeyboardArrowDown size={"100%"} />}
-            customImg={iconImgs?.dropDown}
+            customIcon={customIcons?.dropDown}
           />
         </TriggerElContainer>
       );

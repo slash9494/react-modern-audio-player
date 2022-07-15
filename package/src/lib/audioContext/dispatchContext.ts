@@ -6,7 +6,7 @@ import {
   PlayerPlacement,
   ActiveUI,
   ElementRefs,
-  IconImgs,
+  CustomIcons,
   AudioInitialState,
   InterfacePlacement,
   CoverImgsCss,
@@ -30,7 +30,7 @@ export type AudioContextAction =
   | { type: "SET_MUTED"; muted: boolean }
   | { type: "SET_ACTIVE_UI"; activeUI: ActiveUI }
   | { type: "SET_ELEMENT_REFS"; elementRefs: ElementRefs }
-  | { type: "SET_ICON_IMGS"; iconImgs: IconImgs }
+  | { type: "SET_CUSTOM_ICONS"; customIcons: CustomIcons }
   | { type: "SET_COVER_IMGS_CSS"; coverImgsCss: CoverImgsCss };
 export type AudioPlayerDispatchContext = Dispatch<AudioContextAction>;
 
