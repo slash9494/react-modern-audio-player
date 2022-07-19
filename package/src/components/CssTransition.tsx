@@ -1,4 +1,4 @@
-import {
+import React, {
   cloneElement,
   FC,
   PropsWithChildren,
@@ -94,5 +94,9 @@ export const CssTransition: FC<PropsWithChildren<_CssTransitionProps>> = ({
 
   if (!renderable) return null;
 
-  return cloneElement(children as React.ReactElement, { classNames });
+  return cloneElement(children as React.ReactElement, {
+    className: `${
+      (children as React.ReactElement).props.className
+    } ${classNames}`,
+  });
 };

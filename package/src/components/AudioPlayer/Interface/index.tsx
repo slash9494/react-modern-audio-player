@@ -1,12 +1,12 @@
-import { FC, useMemo } from "react";
+import { FC } from "react";
 import { Controller } from "./Controller";
 import { Information } from "./Information";
 import { generateGridTemplateValues } from "../../../utils/generateGridTemplateValues";
-import { useNonNullableContext } from "hooks/useNonNullableContext";
-import { audioPlayerStateContext } from "lib/audioContext/StateContext";
+import { useNonNullableContext } from "@/hooks/useNonNullableContext";
+import { audioPlayerStateContext } from "@/components/AudioPlayer/Context/StateContext";
 
 import styled from "styled-components";
-import Grid from "components/Grid";
+import Grid from "@/components/Grid";
 
 const InterfaceContainer = styled.div`
   .interface-grid {
@@ -15,20 +15,16 @@ const InterfaceContainer = styled.div`
 `;
 
 export const Interface: FC = () => {
-  const { interfacePlacement, activeUI, dropdownPlacement } =
+  const { interfacePlacement, activeUI, playListPlacement } =
     useNonNullableContext(audioPlayerStateContext);
   const { gridAreas, gridColumns } = generateGridTemplateValues(
     activeUI,
     interfacePlacement?.templateArea
   );
-  const sortableListContent = useMemo(
-    () => <div className="sortable-play-list-content-container" />,
-    []
-  );
 
   return (
     <InterfaceContainer className="interface-container">
-      {dropdownPlacement === "top" && sortableListContent}
+      {playListPlacement === "top" && <div className="sortable-play-list" />}
       <Grid
         alignItems={"center"}
         justifyContent={"center"}
@@ -40,7 +36,7 @@ export const Interface: FC = () => {
         <Information />
         <Controller />
       </Grid>
-      {dropdownPlacement === "bottom" && sortableListContent}
+      {playListPlacement === "bottom" && <div className="sortable-play-list" />}
     </InterfaceContainer>
   );
 };

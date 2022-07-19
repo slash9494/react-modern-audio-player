@@ -30,7 +30,7 @@ export type CustomIcons = Partial<{
   volumeFull: ReactNode;
   volumeHalf: ReactNode;
   volumeMuted: ReactNode;
-  dropDown: ReactNode;
+  playList: ReactNode;
 }>;
 
 export type ElementRefs = Partial<{

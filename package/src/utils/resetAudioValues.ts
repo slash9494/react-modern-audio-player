@@ -1,4 +1,4 @@
-import { ElementRefs } from "lib/audioContext/StateContext";
+import { ElementRefs } from "@/components/AudioPlayer/Context/StateContext";
 import { getTimeWithPadStart } from "./getTime";
 
 export const resetAudioValues = (

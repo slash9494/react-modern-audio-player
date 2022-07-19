@@ -1,5 +1,5 @@
 import { AudioPlayerWithProvider } from "./components/AudioPlayer";
-import { PlayList } from "./lib/audioContext/StateContext";
+import { PlayList } from "@/components/AudioPlayer/Context/StateContext";
 import "./style";
 
 const playList: PlayList = [

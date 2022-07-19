@@ -3,7 +3,7 @@ import {
   defaultInterfacePlacement,
   InterfacePlacement,
   interfacePlacementMaxLength,
-} from "lib/audioContext/StateContext";
+} from "@/components/AudioPlayer/Context/StateContext";
 
 export const generateGridTemplateValues = (
   activeUi: ActiveUI,

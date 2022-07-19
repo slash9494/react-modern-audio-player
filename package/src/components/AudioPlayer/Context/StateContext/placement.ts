@@ -1,7 +1,7 @@
-import { NumbersToUnionNum } from "../../../utils/generateUnionNumType";
+import { NumbersToUnionNum } from "@/utils/generateUnionNumType";
 import { ActiveUI } from "./element";
 
-export type DropdownPlacement = "bottom" | "top";
+export type PlayListPlacement = "bottom" | "top";
 export type PlayerPlacement =
   | "bottom"
   | "top"

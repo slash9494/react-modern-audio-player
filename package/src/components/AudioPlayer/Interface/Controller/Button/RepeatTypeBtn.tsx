@@ -1,7 +1,7 @@
 import { FC, useCallback, useMemo } from "react";
-import { useNonNullableContext } from "hooks/useNonNullableContext";
-import { audioPlayerDispatchContext } from "lib/audioContext/dispatchContext";
-import { audioPlayerStateContext } from "lib/audioContext/StateContext";
+import { useNonNullableContext } from "@/hooks/useNonNullableContext";
+import { audioPlayerDispatchContext } from "@/components/AudioPlayer/Context/dispatchContext";
+import { audioPlayerStateContext } from "@/components/AudioPlayer/Context/StateContext";
 import { StyledBtn } from "./StyledBtn";
 import {
   TbRepeatOff,

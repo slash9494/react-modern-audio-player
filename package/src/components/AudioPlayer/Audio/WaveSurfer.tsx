@@ -1,10 +1,11 @@
-import { useNonNullableContext } from "hooks/useNonNullableContext";
-import { audioPlayerDispatchContext } from "lib/audioContext/dispatchContext";
+import { useNonNullableContext } from "@/hooks/useNonNullableContext";
+import { useVariableColor } from "@/hooks/useVariableColor";
+import { audioPlayerDispatchContext } from "@/components/AudioPlayer/Context/dispatchContext";
 import {
   AudioData,
   audioPlayerStateContext,
-} from "lib/audioContext/StateContext";
-import { FC, useCallback, useEffect, useLayoutEffect, useState } from "react";
+} from "@/components/AudioPlayer/Context/StateContext";
+import { FC, useCallback, useEffect, useState } from "react";
 import WaveSurfer from "wavesurfer.js";
 import { getTimeWithPadStart } from "../../../utils/getTime";
 import { resetAudioValues } from "../../../utils/resetAudioValues";
@@ -21,20 +22,10 @@ export const WaveSurferAudio: FC = () => {
     trackCurTimeEl.innerText = getTimeWithPadStart(curTime);
   }, [elementRefs]);
 
-  /** get colors from style */
-  const [colors, setColors] = useState<{
-    progressColor: string;
-    waveColor: string;
-  }>();
-  useLayoutEffect(() => {
-    const progressColor = window
-      .getComputedStyle(document.documentElement)
-      .getPropertyValue("--rs-audio-player-waveform-bar");
-    const waveColor = window
-      .getComputedStyle(document.documentElement)
-      .getPropertyValue("--rs-audio-player-waveform-background");
-    setColors({ progressColor, waveColor });
-  }, []);
+  const colors = useVariableColor({
+    progressColor: "--rs-audio-player-waveform-bar",
+    waveColor: "--rs-audio-player-waveform-background",
+  });
 
   /** init waveSurfer */
   useEffect(() => {

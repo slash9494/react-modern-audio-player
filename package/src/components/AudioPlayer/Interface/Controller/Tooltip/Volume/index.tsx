@@ -1,10 +1,12 @@
 import { FC, useEffect, useRef, useState } from "react";
 import { Tooltip, TooltipTrigger } from "@react-spectrum/tooltip";
 import { Trigger } from "./Trigger";
-import { useNonNullableContext } from "hooks/useNonNullableContext";
-import { audioPlayerStateContext } from "lib/audioContext/StateContext";
+import { useNonNullableContext } from "@/hooks/useNonNullableContext";
+import { audioPlayerStateContext } from "@/components/AudioPlayer/Context/StateContext";
 import { ActionButton } from "@react-spectrum/button";
 import { Content, ContentPlacement } from "./Content";
+
+// TODO: usePlacement 생성 with provider에 playerPlacement 적용
 
 export const Volume: FC = () => {
   const { activeUI } = useNonNullableContext(audioPlayerStateContext);

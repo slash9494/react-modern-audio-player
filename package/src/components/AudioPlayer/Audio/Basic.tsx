@@ -1,9 +1,9 @@
-import { useNonNullableContext } from "hooks/useNonNullableContext";
-import { audioPlayerDispatchContext } from "lib/audioContext/dispatchContext";
+import { useNonNullableContext } from "@/hooks/useNonNullableContext";
+import { audioPlayerDispatchContext } from "@/components/AudioPlayer/Context/dispatchContext";
 import {
   audioPlayerStateContext,
   AudioNativeProps,
-} from "lib/audioContext/StateContext";
+} from "@/components/AudioPlayer/Context/StateContext";
 import { FC, SyntheticEvent, useCallback, useEffect, useRef } from "react";
 import { getTimeWithPadStart } from "../../../utils/getTime";
 import { resetAudioValues } from "../../../utils/resetAudioValues";

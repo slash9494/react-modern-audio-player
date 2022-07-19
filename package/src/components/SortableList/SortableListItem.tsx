@@ -1,57 +1,67 @@
 import { Flex } from "@react-spectrum/layout";
-import React, { FC, PropsWithChildren, useRef } from "react";
+import { useVariableColor } from "@/hooks/useVariableColor";
+import { PropsWithChildren } from "react";
+import styled, { css } from "styled-components";
+import { ListItem } from "./index";
+import {
+  useSortableListItem,
+  UseSortableListItemProps,
+} from "./useSortableListItem";
 
-interface _SortableListItemProps {
-  index: number;
-  draggable?: boolean;
-  onDragStartCb?: (index: number) => void;
-  onDropCb?: (index: number) => void;
-  onClickCb?: (index: number) => void;
-}
+export type SortableListItemProps<T> = UseSortableListItemProps<T>;
 
-export const SortableListItem: FC<
-  PropsWithChildren<_SortableListItemProps>
-> = ({ index, draggable, children, onDragStartCb, onDropCb, onClickCb }) => {
-  const itemRef = useRef<HTMLLIElement>(null);
-  const onDragStart = (e: React.DragEvent<HTMLLIElement>) => {
-    e.stopPropagation();
-    itemRef.current?.classList.add("dragstart");
-    onDragStartCb && onDragStartCb(index);
-  };
-  const onDragEnd = (e: React.DragEvent<HTMLLIElement>) => {
-    e.stopPropagation();
-    itemRef.current?.classList.remove("dragstart");
-  };
-  const onDragEnter = (e: React.DragEvent<HTMLLIElement>) => {
-    e.stopPropagation();
-    itemRef.current?.classList.add("dragover");
-  };
-  const onDragLeave = (e: React.DragEvent<HTMLLIElement>) => {
-    e.stopPropagation();
-    itemRef.current?.classList.remove("dragover");
-  };
-  const onDrop = (e: React.DragEvent<HTMLLIElement>) => {
-    e.stopPropagation();
-    itemRef.current?.classList.remove("dragover");
-    onDropCb && onDropCb(index);
-  };
+export const SortableListItem = <T extends ListItem>(
+  props: PropsWithChildren<SortableListItemProps<T>>
+) => {
+  const { children, ...useListItemProps } = props;
+  const eventProps = useSortableListItem(useListItemProps);
+
+  const colors = useVariableColor({
+    dragOverBackgroundColor:
+      "--rs-audio-player-sortable-list-item-dragover-background",
+    dragOverBorderColor: "--rs-audio-player-sortable-list-item-dragover-border",
+  });
+  console.log(colors);
   return (
-    <li
-      ref={itemRef}
-      className="list-item-root"
-      draggable={!!draggable}
-      onDragStart={onDragStart}
-      onDragEnd={onDragEnd}
-      onDragEnter={onDragEnter}
-      onDragLeave={onDragLeave}
-      onDragOver={(e) => {
-        e.preventDefault();
-        e.stopPropagation();
-      }}
-      onDrop={onDrop}
-      onClick={onClickCb && (() => onClickCb(index))}
+    <SortableListItemContainer
+      className="list-item-root-container"
+      dragoverBackgroundColor={colors?.dragOverBackgroundColor}
+      dragoverBorderColor={colors?.dragOverBorderColor}
+      {...eventProps}
     >
       <Flex alignItems={"center"}>{children}</Flex>
-    </li>
+    </SortableListItemContainer>
   );
 };
+
+interface SortableListItemContainerProps {
+  dragoverBorderColor: string | undefined;
+  dragoverBackgroundColor: string | undefined;
+}
+
+const SortableListItemContainer = styled.li`
+  ${({
+    dragoverBackgroundColor,
+    dragoverBorderColor,
+  }: SortableListItemContainerProps) =>
+    css`
+      border: 2px solid transparent;
+      transition: all 0.3s ease-in-out;
+
+      & * {
+        pointer-events: none;
+      }
+
+      &.dragstart {
+        opacity: 0.5;
+      }
+
+      &.dragover {
+        transform: scale(1.02);
+        border-color: ${dragoverBorderColor};
+        background: ${dragoverBackgroundColor};
+        backdrop-filter: blur(20px);
+        box-shadow: 0px 3.58195px 22.3872px -2.68646px rgb(0 0 0 / 20%);
+      }
+    `}
+`;

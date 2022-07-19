@@ -1,17 +1,17 @@
 import { View } from "@react-spectrum/view";
 import { FC, useEffect, useLayoutEffect } from "react";
-import { useNonNullableContext } from "../../hooks/useNonNullableContext";
-import { audioPlayerDispatchContext } from "../../lib/audioContext/dispatchContext";
+import { useNonNullableContext } from "@/hooks/useNonNullableContext";
 import {
   ActiveUI,
-  DropdownPlacement,
+  PlayListPlacement,
   CustomIcons,
   PlayerPlacement,
   PlayList,
   AudioInitialState,
   InterfacePlacement,
   CoverImgsCss,
-} from "../../lib/audioContext/StateContext";
+  audioPlayerDispatchContext,
+} from "@/components/AudioPlayer/Context";
 import { Audio } from "./Audio";
 import { Interface } from "./Interface";
 
@@ -21,7 +21,7 @@ export interface AudioPlayerProps {
   playList: PlayList;
   audioInitialState?: AudioInitialState;
   playerPlacement?: PlayerPlacement;
-  dropdownPlacement?: DropdownPlacement;
+  playListPlacement?: PlayListPlacement;
   interfacePlacement?: InterfacePlacement;
   activeUI?: ActiveUI;
   customIcons?: CustomIcons;
@@ -32,7 +32,7 @@ export const AudioPlayer: FC<AudioPlayerProps> = ({
   playList,
   audioInitialState,
   playerPlacement,
-  dropdownPlacement,
+  playListPlacement,
   interfacePlacement,
   activeUI,
   customIcons,
@@ -44,11 +44,11 @@ export const AudioPlayer: FC<AudioPlayerProps> = ({
     audioPlayerDispatch({
       type: "SET_PLACEMENTS",
       playerPlacement,
-      dropdownPlacement,
+      playListPlacement,
       interfacePlacement,
     });
   }, [
-    dropdownPlacement,
+    playListPlacement,
     audioPlayerDispatch,
     playerPlacement,
     interfacePlacement,
