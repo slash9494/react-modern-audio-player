@@ -2,7 +2,7 @@ import { Dispatch, createContext } from "react";
 import {
   RepeatType,
   PlayList,
-  DropdownPlacement,
+  PlayListPlacement,
   PlayerPlacement,
   ActiveUI,
   ElementRefs,
@@ -23,7 +23,7 @@ export type AudioContextAction =
   | {
       type: "SET_PLACEMENTS";
       playerPlacement?: PlayerPlacement;
-      dropdownPlacement?: DropdownPlacement;
+      playListPlacement?: PlayListPlacement;
       interfacePlacement?: InterfacePlacement;
     }
   | { type: "SET_VOLUME"; volume: number }

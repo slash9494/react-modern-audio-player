@@ -1,14 +1,14 @@
 import { FC } from "react";
-import { useNonNullableContext } from "../../../../hooks/useNonNullableContext";
+import { useNonNullableContext } from "@/hooks/useNonNullableContext";
 import {
   audioPlayerStateContext,
   defaultInterfacePlacement,
-} from "../../../../lib/audioContext/StateContext";
+} from "@/components/AudioPlayer/Context/StateContext";
 import { PlayBtn, PrevNnextBtn, RepeatTypeBtn } from "./Button";
-import { SortablePlayList } from "./Dropdown";
+import { SortablePlayList } from "./Drawer";
 import { Progress } from "./Input";
 import { Flex } from "@react-spectrum/layout";
-import Grid from "components/Grid";
+import Grid from "@/components/Grid";
 import { Volume } from "./Tooltip";
 
 /**

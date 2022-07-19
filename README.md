@@ -41,9 +41,14 @@ use icon module - `react-icons`
 
 ## flexible and customable UI
 it can offer variant UI and you can also place each component easily
+`Volume Tooltip` is wrapped with `tooltip` of `react-spectrum`
+
+### Theme mode
+it apply color-theme from `system-theme` 
+and you can customize color-theme from `css-variable` of `theme-default` of `react-spectrum`  
 
 // TODO : 프로그레스가 아래에 있을때 (스포티파이)
-## grid item custom area
+### grid item custom area
 progress = 2-4
 playBtn = 2-4
 repeatBtn = row1-4 / 2 / row1-4 / 10

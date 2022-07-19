@@ -1,4 +1,4 @@
-import { resetAudioValues } from "../../utils/resetAudioValues";
+import { resetAudioValues } from "@/utils/resetAudioValues";
 import { AudioContextAction } from "./dispatchContext";
 import { AudioPlayerStateContext } from "./StateContext";
 
@@ -132,7 +132,7 @@ export const audioPlayerReducer = (
       return {
         ...state,
         playerPlacement: action.playerPlacement || state.playerPlacement,
-        dropdownPlacement: action.dropdownPlacement || state.dropdownPlacement,
+        playListPlacement: action.playListPlacement || state.playListPlacement,
         interfacePlacement: action.interfacePlacement,
       };
     case "SET_MUTED":

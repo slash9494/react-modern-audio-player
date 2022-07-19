@@ -1,5 +1,4 @@
 :root {
-    --rs-audio-player-selected-list-item-background:#f2f2f2;
     --rs-audio-player-volume-background: #ccc;
     --rs-audio-player-volume-panel-background:#f2f2f2;
     --rs-audio-player-volume-panel-border:#ccc;
@@ -13,4 +12,8 @@
     --rs-audio-player-waveform-cursor:var(--spectrum-alias-text-color);
     --rs-audio-player-waveform-background:var(--rs-audio-player-progress-bar-background);
     --rs-audio-player-waveform-bar:var(--rs-audio-player-progress-bar);
+    --rs-audio-player-sortable-list-button-active:#0072F5;
+    --rs-audio-player-selected-list-item-background:var(--spectrum-alias-text-color-selected);
+    --rs-audio-player-sortable-list-item-dragover-border:var(--spectrum-alias-text-color-selected);
+    --rs-audio-player-sortable-list-item-dragover-background:var(--spectrum-alias-text-color-selected);
 }

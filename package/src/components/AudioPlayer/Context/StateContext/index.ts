@@ -8,7 +8,7 @@ import {
   PlayList,
 } from "./element";
 import {
-  DropdownPlacement,
+  PlayListPlacement,
   InterfacePlacement,
   PlayerPlacement,
 } from "./placement";
@@ -19,7 +19,7 @@ export interface AudioPlayerStateContext {
   curIdx: number;
   curAudioState: CurAudioState;
   activeUI: ActiveUI;
-  dropdownPlacement: DropdownPlacement;
+  playListPlacement: PlayListPlacement;
   playerPlacement?: PlayerPlacement;
   interfacePlacement?: InterfacePlacement;
   elementRefs?: ElementRefs;

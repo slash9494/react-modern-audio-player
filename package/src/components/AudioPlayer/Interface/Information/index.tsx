@@ -1,9 +1,9 @@
-import Grid from "components/Grid";
-import { useNonNullableContext } from "hooks/useNonNullableContext";
+import Grid from "@/components/Grid";
+import { useNonNullableContext } from "@/hooks/useNonNullableContext";
 import {
   audioPlayerStateContext,
   defaultInterfacePlacement,
-} from "lib/audioContext/StateContext";
+} from "@/components/AudioPlayer/Context/StateContext";
 import { FC } from "react";
 import { Artwork } from "./Artwork";
 import { TrackInfo } from "./TrackInfo";

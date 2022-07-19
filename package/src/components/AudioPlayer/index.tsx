@@ -2,7 +2,7 @@ import {
   AudioPlayerProvider,
   SpectrumProvider,
   SpectrumProviderProps,
-} from "components/Provider";
+} from "@/components/Provider";
 import { FC } from "react";
 import { GlobalStyle } from "../../GlobalStyle";
 import { AudioPlayer, AudioPlayerProps } from "./Player";

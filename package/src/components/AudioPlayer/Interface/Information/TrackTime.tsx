@@ -1,9 +1,9 @@
-import { useNonNullableContext } from "hooks/useNonNullableContext";
-import { audioPlayerDispatchContext } from "lib/audioContext/dispatchContext";
+import { useNonNullableContext } from "@/hooks/useNonNullableContext";
+import { audioPlayerDispatchContext } from "@/components/AudioPlayer/Context/dispatchContext";
 import {
   audioPlayerStateContext,
   TrackTimeUI,
-} from "lib/audioContext/StateContext";
+} from "@/components/AudioPlayer/Context/StateContext";
 import { FC, useEffect, useRef } from "react";
 import styled, { css } from "styled-components";
 

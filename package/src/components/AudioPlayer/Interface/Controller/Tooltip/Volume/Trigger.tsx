@@ -1,6 +1,6 @@
-import { useNonNullableContext } from "hooks/useNonNullableContext";
-import { audioPlayerDispatchContext } from "lib/audioContext/dispatchContext";
-import { audioPlayerStateContext } from "lib/audioContext/StateContext";
+import { useNonNullableContext } from "@/hooks/useNonNullableContext";
+import { audioPlayerDispatchContext } from "@/components/AudioPlayer/Context/dispatchContext";
+import { audioPlayerStateContext } from "@/components/AudioPlayer/Context/StateContext";
 import { forwardRef, useCallback, useMemo } from "react";
 import { IconBaseProps } from "react-icons/lib";
 import { TbVolume3, TbVolume2, TbVolume } from "react-icons/tb";

@@ -3,7 +3,7 @@ import {
   audioPlayerReducer,
   audioPlayerStateContext,
   defaultInterfacePlacement,
-} from "lib/audioContext";
+} from "@/components/AudioPlayer/Context";
 import { PropsWithChildren, FC, useReducer } from "react";
 
 export const AudioPlayerProvider: FC<PropsWithChildren<unknown>> = ({
@@ -23,7 +23,7 @@ export const AudioPlayerProvider: FC<PropsWithChildren<unknown>> = ({
       activeUI: {
         playButton: true,
       },
-      dropdownPlacement: "bottom",
+      playListPlacement: "bottom",
       interfacePlacement: {
         templateArea: {
           playButton: defaultInterfacePlacement.templateArea["playButton"],
