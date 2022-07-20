@@ -9,7 +9,6 @@ storybook
 .gitattributes
 .gitignore
 .vscode
-README.md
 tsconfig.json
 yarn.lock
 vite.config.ts
