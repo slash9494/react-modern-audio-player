@@ -1,14 +1,12 @@
-import {
-  audioPlayerStateContext,
-  audioPlayerDispatchContext,
-} from "@/components/AudioPlayer/Context";
+import { audioPlayerStateContext } from "@/components/AudioPlayer/Context";
 import { CssTransition } from "@/components/CssTransition";
 import SortableList from "@/components/SortableList";
 import { useNonNullableContext } from "@/hooks/useNonNullableContext";
-import { FC, useCallback, useState } from "react";
+import { FC } from "react";
 import ReactDOM from "react-dom";
 import styled from "styled-components";
 import { PlayListItem } from "./PlayListItem";
+import { usePlayList } from "./usePlayList";
 
 export interface SortablePlayListProps {
   isOpen: boolean;
@@ -17,20 +15,14 @@ export interface SortablePlayListProps {
 
 export const PlayList: FC<SortablePlayListProps> = ({ isOpen, setIsOpen }) => {
   const { playList } = useNonNullableContext(audioPlayerStateContext);
-  const audioPlayerDispatch = useNonNullableContext(audioPlayerDispatchContext);
-
-  const [dragStartIdx, setDragStartIdx] = useState<number>(0);
-
-  const onClickItem = useCallback(
-    (e: React.MouseEvent<HTMLLIElement>, index: number) => {
-      audioPlayerDispatch({
-        type: "SET_CURRENT_INDEX",
-        currentIndex: index,
-        currentAudioId: playList[index].id,
-      });
-    },
-    [audioPlayerDispatch, playList]
-  );
+  const { cssTransitionEventProps, sortableItemEventProps } = usePlayList({
+    setIsOpen,
+  });
+  const {
+    onClick: onClickItem,
+    onDragStart: onDragStartItem,
+    ...otherSortableItemEventProps
+  } = sortableItemEventProps;
 
   return playList.length !== 0 ? (
     ReactDOM.createPortal(
@@ -40,8 +32,7 @@ export const PlayList: FC<SortablePlayListProps> = ({ isOpen, setIsOpen }) => {
         enterTime={20}
         leaveTime={20}
         clearTime={300}
-        onExited={() => setIsOpen(false)}
-        onEntered={() => setIsOpen(true)}
+        {...cssTransitionEventProps}
       >
         <PlayListContainer className="play-list-container">
           <SortableList>
@@ -49,17 +40,10 @@ export const PlayList: FC<SortablePlayListProps> = ({ isOpen, setIsOpen }) => {
               <SortableList.Item
                 key={`sortable-item-${index}`}
                 index={index}
-                draggable
-                dragStartIdx={dragStartIdx}
                 listData={playList}
-                onDragStart={() => setDragStartIdx(index)}
-                onDrop={(e, newPlayList) =>
-                  audioPlayerDispatch({
-                    type: "UPDATE_PLAY_LIST",
-                    playList: newPlayList,
-                  })
-                }
-                onClick={(e) => onClickItem(e, index)}
+                onClick={() => onClickItem(index)}
+                onDragStart={() => onDragStartItem(index)}
+                {...otherSortableItemEventProps}
               >
                 <PlayListItem data={data} />
               </SortableList.Item>

@@ -4,7 +4,7 @@ import {
   SpectrumProviderProps,
 } from "@/components/Provider";
 import { FC } from "react";
-import { GlobalStyle } from "../../GlobalStyle";
+import { GlobalStyle } from "../../styles/GlobalStyle";
 import { AudioPlayer, AudioPlayerProps } from "./Player";
 
 export const AudioPlayerWithProvider: FC<

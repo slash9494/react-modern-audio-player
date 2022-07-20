@@ -1,8 +1,7 @@
 {
-  "name": "react-simple-audio-player",
+  "name": "react-modern-audio-player-root",
   "version": "1.0.0",
   "workspaces": [
-    "storybook/*",
     "package/*"
   ],
   "repository": "https://github.com/slash9494/react-simple-audio-player.git",

@@ -48,9 +48,5 @@ const DrawerContentContainer = styled.div`
     bottom: ${placement === "bottom" ? "0" : undefined};
     left: ${placement === "left" ? "0" : undefined};
     right: ${placement === "right" ? "0" : undefined};
-    /* transition-property: transform,opacity;
-    transition-duration: .2s;
-    transition-timing-function: cubic-bezier(.66,-.41,1,1);
-    transform: translateY(100px); */
   `}
 `;

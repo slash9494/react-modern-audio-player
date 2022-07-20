@@ -33,7 +33,7 @@ export const appearanceOut = keyframes({
   },
 });
 
-interface _CssTransitionProps {
+export interface CssTransitionProps {
   visible: boolean;
   name: string;
   leaveTime: number;
@@ -43,7 +43,7 @@ interface _CssTransitionProps {
   onEntered?: () => void;
 }
 
-export const CssTransition: FC<PropsWithChildren<_CssTransitionProps>> = ({
+export const CssTransition: FC<PropsWithChildren<CssTransitionProps>> = ({
   visible,
   name,
   leaveTime,

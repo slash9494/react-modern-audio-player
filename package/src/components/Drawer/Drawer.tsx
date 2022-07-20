@@ -9,6 +9,7 @@ import styled, { css } from "styled-components";
 import { DrawerContext, drawerContext } from "./DrawerContext";
 import { DrawerTrigger } from "./DrawerTrigger";
 import { DrawerContent } from "./DrawerContent";
+import { appearanceIn, appearanceOut } from "../CssTransition";
 
 export interface DrawerProps extends Omit<Partial<DrawerContext>, "setIsOpen"> {
   outboundClickActive?: boolean;
@@ -100,37 +101,11 @@ export const DrawerContainer = styled.div`
     }
 
     .drawer-content-wrapper-enter {
-      animation: appearanceIn 0.25s ease-out normal forwards;
+      animation: ${appearanceIn} 0.25s ease-out normal forwards;
     }
 
     .drawer-content-wrapper-leave {
-      animation: appearanceOut 0.1s ease-in forwards;
-    }
-
-    @keyframes appearanceIn {
-      0% {
-        opacity: 0;
-        transform: scale(0.95);
-      }
-      60% {
-        opacity: 0.75;
-        transform: scale(1.05);
-      }
-      100% {
-        opacity: 1;
-        transform: scale(1);
-      }
-    }
-
-    @keyframes appearanceOut {
-      0% {
-        opacity: 1;
-        transform: scale(1);
-      }
-      100% {
-        opacity: 0;
-        transform: scale(0.5);
-      }
+      animation: ${appearanceOut} 0.1s ease-in forwards;
     }
   `}
 `;

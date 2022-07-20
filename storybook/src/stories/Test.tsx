@@ -1,64 +1,77 @@
-import AudioPlayer from "../../../package";
-// import { SortableList } from "../../node_modules/react-simple-audio-player";
+// import AudioPlayer from "../../../package/dist/index.es.js";
+// import { PlayList } from "../../../package/dist/types/components/AudioPlayer/Context";
+import AudioPlayer from 'react-modern-audio-player';
+import { PlayList } from 'react-modern-audio-player/dist/types/components/AudioPlayer/Context';
 
-const playList = [
+const playList: PlayList = [
   {
     name: "Relax And Sleep",
-    artist: "Anton Vlasov",
-    img: "/public/images/audio-1.jpg",
-    src: "/public/audio/audio-1.mp3",
+    writer: "Anton Vlasov",
+    img: "/images/audio-1.jpg",
+    src: "/audio/audio-1.mp3",
     id: 1,
+    index: 0,
   },
   {
     name: "Don't You Think Lose",
-    artist: "Anton Vlasov",
-    img: "/public/images/audio-2.jpg",
-    src: "/public/audio/audio-2.mp3",
+    writer: "Anton Vlasov",
+    img: "/images/audio-2.jpg",
+    src: "/audio/audio-2.mp3",
     id: 2,
+    index: 1,
   },
   {
-    name: "The Cradle of Your Soul",
-    artist: "lemonaudiostudio",
-    img: "/public/images/audio-3.jpg",
-    src: "/public/audio/audio-3.mp3",
+    name: "The Cradle of Your Soul dsdasdasdas",
+    writer: "lemonaudiostudio",
+    img: "/images/audio-3.jpg",
+    src: "/audio/audio-3.mp3",
     id: 3,
+    index: 2,
   },
   {
     name: "Spirit Blossom",
-    artist: "RomanBelov",
-    img: "/public/images/audio-4.jpg",
-    src: "/public/audio/audio-4.mp3",
+    writer: "RomanBelov",
+    img: "/images/audio-4.jpg",
+    src: "/audio/audio-4.mp3",
     id: 4,
+    index: 3,
   },
   {
     name: "Everything Feels New",
-    artist: "EvgenyBardyuzha",
-    img: "/public/images/audio-5.jpg",
-    src: "/public/audio/audio-5.mp3",
+    writer: "EvgenyBardyuzha",
+    img: "/images/audio-5.jpg",
+    src: "/audio/audio-5.mp3",
     id: 5,
+    index: 4,
   },
 ];
 
-const dummyData = [
-  { id: 1, name: "A" },
-  { id: 2, name: "B" },
-  { id: 3, name: "C" },
-  { id: 4, name: "D" },
-];
 export const Test = () => {
   return (
-    <>
+    <div>
       <AudioPlayer
         playList={playList}
-        audioInitialState={{ autoPlay: true, muted: true, volume: 0.5 }}
+        audioInitialState={{
+          muted: true,
+          volume: 0.2,
+          curPlayId: 1,
+        }}
+        playerPlacement={'bottom-left'}
+        activeUI={{
+          all: true,
+          trackTime: 'separation-mode',
+          progress: "waveform",
+        }}
+        interfacePlacement={{
+          templateArea: {
+            trackTimeDuration: "row1-5",
+            progress: "row1-4",
+            playButton: "row1-6",
+            repeatType: "row1-7",
+            volume: "row1-8",
+          },
+        }}
       />
-      {/* <SortableList
-        data={dummyData}
-        renderItem={(dummyData, index) => (
-          <div key={index}>{dummyData.name}</div>
-        )}
-        onDropCb={(newData) => console.log(newData)}
-      /> */}
-    </>
+    </div>
   );
 };
