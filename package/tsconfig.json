@@ -16,10 +16,10 @@
     "noEmit": true,
     "jsx": "react-jsx",
     "paths":{
-      "@/lib/*": ["./src/lib/*"],
       "@/components/*": ["./src/components/*"],
       "@/hooks/*":  ["./src/hooks/*"],
       "@/utils/*": ["./src/utils/*"],
+      "@/styles/*": ["./src/styles/*"],
     }
     // "declaration": true,
     // "declarationDir": "dist/types",

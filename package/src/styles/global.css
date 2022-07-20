@@ -1,0 +1,10 @@
+/** spectrum portal on body */
+body .volume-tooltip {
+    padding: 0;
+    margin-bottom:10px;
+    background:transparent;
+}
+
+body .volume-tooltip > .spectrum-Tooltip-tip_22ae94 {
+    display: none;
+}

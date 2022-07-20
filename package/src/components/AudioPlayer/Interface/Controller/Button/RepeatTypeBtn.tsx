@@ -10,9 +10,8 @@ import {
   TbArrowsShuffle,
 } from "react-icons/tb";
 import { Icon } from "../Icon";
-import { InterfaceChildrenProps } from "../../types";
 
-export const RepeatTypeBtn: FC<InterfaceChildrenProps> = () => {
+export const RepeatTypeBtn: FC = () => {
   const { curAudioState, customIcons, activeUI } = useNonNullableContext(
     audioPlayerStateContext
   );

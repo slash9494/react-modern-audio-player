@@ -5,9 +5,8 @@ import { FC, useMemo } from "react";
 import { StyledBtn } from "./StyledBtn";
 import { ImPrevious, ImNext } from "react-icons/im";
 import { Icon } from "../Icon";
-import { InterfaceChildrenProps } from "../../types";
 
-interface PrevNnextBtnProps extends InterfaceChildrenProps {
+interface PrevNnextBtnProps {
   type: "prev" | "next";
 }
 

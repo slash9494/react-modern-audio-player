@@ -1,5 +1,3 @@
-// TODO : 프로세스 파이프라인 , reference - react-h5-audio-player
-
 ## Override Style
 
 ### Icon Imgs
@@ -47,7 +45,6 @@ it can offer variant UI and you can also place each component easily
 it apply color-theme from `system-theme` 
 and you can customize color-theme from `css-variable` of `theme-default` of `react-spectrum`  
 
-// TODO : 프로그레스가 아래에 있을때 (스포티파이)
 ### grid item custom area
 progress = 2-4
 playBtn = 2-4

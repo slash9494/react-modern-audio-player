@@ -15,8 +15,6 @@ import {
 import { Audio } from "./Audio";
 import { Interface } from "./Interface";
 
-// TODO : codesandBox , click scale animation, esm cjs test, file size, react-icons 사이즈 확인
-
 export interface AudioPlayerProps {
   playList: PlayList;
   audioInitialState?: AudioInitialState;

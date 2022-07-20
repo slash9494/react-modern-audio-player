@@ -1,138 +1,37 @@
 import { useNonNullableContext } from "@/hooks/useNonNullableContext";
 import { useVariableColor } from "@/hooks/useVariableColor";
 import { audioPlayerDispatchContext } from "@/components/AudioPlayer/Context/dispatchContext";
-import {
-  AudioData,
-  audioPlayerStateContext,
-} from "@/components/AudioPlayer/Context/StateContext";
-import { FC, useCallback, useEffect, useState } from "react";
+import { audioPlayerStateContext } from "@/components/AudioPlayer/Context/StateContext";
+import { FC, useEffect } from "react";
 import WaveSurfer from "wavesurfer.js";
-import { getTimeWithPadStart } from "../../../utils/getTime";
-import { resetAudioValues } from "../../../utils/resetAudioValues";
+import { useWaveSurfer } from "./useWaveSurfer";
 
 export const WaveSurferAudio: FC = () => {
   const audioPlayerDispatch = useNonNullableContext(audioPlayerDispatchContext);
-  const { curAudioState, curIdx, playList, elementRefs } =
-    useNonNullableContext(audioPlayerStateContext);
-  const [isReady, setIsReady] = useState(false);
-  const getCurTime = useCallback(() => {
-    if (!elementRefs?.waveformInst || !elementRefs.trackCurTimeEl) return;
-    const { trackCurTimeEl } = elementRefs;
-    const curTime = elementRefs.waveformInst.getCurrentTime();
-    trackCurTimeEl.innerText = getTimeWithPadStart(curTime);
-  }, [elementRefs]);
-
-  const colors = useVariableColor({
+  const { elementRefs } = useNonNullableContext(audioPlayerStateContext);
+  const colorsRef = useVariableColor({
     progressColor: "--rs-audio-player-waveform-bar",
     waveColor: "--rs-audio-player-waveform-background",
   });
-
   /** init waveSurfer */
   useEffect(() => {
-    if (!elementRefs || elementRefs.waveformInst || !colors) return;
+    if (elementRefs?.waveformInst || !colorsRef.current) return;
     const waveSurfer = WaveSurfer.create({
       barWidth: 1,
       cursorWidth: 2,
       container: "#rs-waveform",
       backend: "WebAudio",
       height: 80,
-      progressColor: `${colors.progressColor}`,
+      progressColor: `${colorsRef.current.progressColor}`,
       responsive: true,
-      waveColor: `${colors.waveColor}`,
+      waveColor: `${colorsRef.current.waveColor}`,
       cursorColor: "var(--rs-audio-player-waveform-cursor)",
     });
     audioPlayerDispatch({
       type: "SET_ELEMENT_REFS",
       elementRefs: { waveformInst: waveSurfer },
     });
-  }, [elementRefs, elementRefs?.waveformInst, audioPlayerDispatch, colors]);
-
-  /** load file */
-  const [curAudioData, setCurAudioData] = useState<AudioData>();
-  useEffect(() => {
-    if (!elementRefs?.waveformInst || !playList[curIdx]) return;
-
-    // prevent reloading caused by updating sortable list
-    if (curAudioData?.src === playList[curIdx].src) return;
-
-    setCurAudioData(playList[curIdx]);
-    setIsReady(false);
-    elementRefs.waveformInst.load(playList[curIdx].src);
-    elementRefs.waveformInst.on("ready", () => {
-      resetAudioValues(elementRefs, elementRefs.waveformInst!.getDuration());
-      setIsReady(true);
-      elementRefs.waveformInst!.on("seek", () => getCurTime());
-    });
-  }, [
-    playList,
-    curIdx,
-    elementRefs?.waveformInst,
-    curAudioData,
-    elementRefs,
-    getCurTime,
-  ]);
-
-  /** play */
-  useEffect(() => {
-    if (!isReady || !elementRefs?.waveformInst) return;
-    if (curAudioState.isPlaying) {
-      elementRefs.waveformInst.play();
-    } else {
-      elementRefs.waveformInst.pause();
-    }
-  }, [isReady, curAudioState.isPlaying, elementRefs?.waveformInst]);
-
-  /** audio finish */
-  const [isFinished, setIsFinished] = useState(false);
-  useEffect(() => {
-    if (!elementRefs?.waveformInst) return;
-    elementRefs.waveformInst.on("finish", () => setIsFinished(true));
-
-    if (!isFinished) return;
-    const playNext = () => {
-      setIsFinished(false);
-      if (curAudioState.repeatType === "ONE") {
-        elementRefs.waveformInst?.seekTo(0);
-        elementRefs.waveformInst?.play();
-        return;
-      }
-
-      audioPlayerDispatch({ type: "NEXT_AUDIO" });
-    };
-    playNext();
-  }, [
-    elementRefs?.waveformInst,
-    audioPlayerDispatch,
-    curAudioState.repeatType,
-    isFinished,
-  ]);
-
-  /** audio current time per second */
-  useEffect(() => {
-    if (!isReady) return;
-    const setIntervalId = setInterval(getCurTime, 1000);
-
-    if (!curAudioState.isPlaying) {
-      clearInterval(setIntervalId);
-    }
-    return () => clearInterval(setIntervalId);
-  }, [curAudioState.isPlaying, getCurTime, isReady]);
-
-  /** volume */
-  useEffect(() => {
-    if (!elementRefs?.waveformInst || !isReady) return;
-    if (curAudioState.muted) {
-      elementRefs.waveformInst.setVolume(0);
-      elementRefs.waveformInst.setMute(true);
-      return;
-    }
-
-    elementRefs.waveformInst.setVolume(curAudioState.volume);
-  }, [
-    curAudioState.volume,
-    elementRefs?.waveformInst,
-    curAudioState.muted,
-    isReady,
-  ]);
+  }, [elementRefs?.waveformInst, audioPlayerDispatch, colorsRef.current]);
+  useWaveSurfer();
   return null;
 };

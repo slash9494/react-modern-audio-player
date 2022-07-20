@@ -75,7 +75,7 @@ const TrackTimeCurrentContainer = styled(TrackTimeContainer)`
       font-weight: 700;
       letter-spacing: -0.1rem;
       color: var(--rs-audio-player-track-current-time);
-      margin-right: ${type !== "separation mode" && "-10px"};
+      margin-right: ${type !== "separation-mode" && "-10px"};
     }
   `}
 `;
@@ -87,7 +87,7 @@ const TrackTimeDurationContainer = styled(TrackTimeContainer)`
       color: var(--rs-audio-player-track-duration);
       letter-spacing: -0.1rem;
     }
-    ${type !== "separation mode" &&
+    ${type !== "separation-mode" &&
     css`
       .track-duration:before {
         content: "/";

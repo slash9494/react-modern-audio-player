@@ -6,8 +6,6 @@ import { audioPlayerStateContext } from "@/components/AudioPlayer/Context/StateC
 import { ActionButton } from "@react-spectrum/button";
 import { Content, ContentPlacement } from "./Content";
 
-// TODO: usePlacement 생성 with provider에 playerPlacement 적용
-
 export const Volume: FC = () => {
   const { activeUI } = useNonNullableContext(audioPlayerStateContext);
   const triggerRef = useRef<HTMLDivElement>(null);

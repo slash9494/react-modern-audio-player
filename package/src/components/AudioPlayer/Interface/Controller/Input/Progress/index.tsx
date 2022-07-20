@@ -2,7 +2,6 @@ import { useNonNullableContext } from "@/hooks/useNonNullableContext";
 import { audioPlayerStateContext } from "@/components/AudioPlayer/Context/StateContext";
 import { FC, useMemo } from "react";
 import styled from "styled-components";
-import { InterfaceChildrenProps } from "../../../types";
 import { BarProgress } from "./BarProgress";
 import { WaveformProgress } from "./WaveformProgress";
 
@@ -11,7 +10,7 @@ const ProgressContainer = styled.div`
   padding: 0 10px;
 `;
 
-export const Progress: FC<InterfaceChildrenProps> = () => {
+export const Progress: FC = () => {
   const { activeUI } = useNonNullableContext(audioPlayerStateContext);
   const active =
     activeUI.progress !== undefined ? !!activeUI.progress : activeUI.all;

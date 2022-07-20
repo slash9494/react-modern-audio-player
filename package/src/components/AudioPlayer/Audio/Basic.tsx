@@ -4,14 +4,14 @@ import {
   audioPlayerStateContext,
   AudioNativeProps,
 } from "@/components/AudioPlayer/Context/StateContext";
-import { FC, SyntheticEvent, useCallback, useEffect, useRef } from "react";
-import { getTimeWithPadStart } from "../../../utils/getTime";
-import { resetAudioValues } from "../../../utils/resetAudioValues";
+import { FC, useEffect, useRef } from "react";
+import { useBasicAudio } from "./useBasicAudio";
 
 export const Basic: FC = () => {
   const audioRef = useRef<HTMLAudioElement>(null);
-  const { curAudioState, curPlayId, playList, elementRefs } =
-    useNonNullableContext(audioPlayerStateContext);
+  const { curAudioState, curPlayId, playList } = useNonNullableContext(
+    audioPlayerStateContext
+  );
   const audioPlayerDispatch = useNonNullableContext(audioPlayerDispatchContext);
   const curPlayedAudioData = playList.find(
     (audioData) => audioData.id === curPlayId
@@ -28,50 +28,8 @@ export const Basic: FC = () => {
       return true;
     })
   );
-  const onTimeUpdate = useCallback(
-    (event: SyntheticEvent<HTMLAudioElement>) => {
-      if (event.currentTarget.readyState === 0 || !elementRefs) return;
-      const currentTime = event.currentTarget.currentTime;
-      const duration = event.currentTarget.duration;
 
-      const {
-        trackCurTimeEl,
-        progressBarEl,
-        progressValueEl,
-        progressHandleEl,
-      } = elementRefs;
-      if (trackCurTimeEl) {
-        trackCurTimeEl.innerText = getTimeWithPadStart(currentTime);
-      }
-
-      if (progressBarEl && progressValueEl && progressHandleEl) {
-        const progressBarWidth = progressBarEl.clientWidth;
-        const progressHandlePosition =
-          (currentTime / duration) * progressBarWidth;
-
-        progressValueEl.style.transform = `scaleX(${currentTime / duration})`;
-        progressHandleEl.style.transform = `translateX(${progressHandlePosition}px)`;
-      }
-    },
-    [elementRefs]
-  );
-  const onEnded = useCallback(() => {
-    if (!audioRef.current) return;
-    if (curAudioState.repeatType === "ONE") {
-      audioRef.current.currentTime = 0;
-      audioRef.current.play();
-      return;
-    }
-    audioPlayerDispatch({ type: "NEXT_AUDIO" });
-  }, [audioPlayerDispatch, curAudioState.repeatType]);
-  const onLoadedMetadata = useCallback(
-    (e: SyntheticEvent<HTMLAudioElement, Event>) => {
-      if (!elementRefs) return;
-      const { duration } = e.currentTarget;
-      resetAudioValues(elementRefs, duration);
-    },
-    [elementRefs]
-  );
+  const useAudioEventProps = useBasicAudio();
 
   useEffect(() => {
     if (!audioRef.current) return;
@@ -81,31 +39,13 @@ export const Basic: FC = () => {
     });
   }, [audioRef.current, audioPlayerDispatch]);
 
-  /** play */
-  useEffect(() => {
-    if (!elementRefs?.audioEl) return;
-    if (curAudioState.isPlaying) {
-      elementRefs?.audioEl.play();
-    } else {
-      elementRefs?.audioEl.pause();
-    }
-  }, [elementRefs?.audioEl, curAudioState.isPlaying]);
-
-  /** volume */
-  useEffect(() => {
-    if (!elementRefs?.audioEl) return;
-    elementRefs.audioEl.volume = curAudioState.volume;
-  }, [elementRefs?.audioEl, curAudioState.volume]);
-
   return (
     <audio
       id="rs-audio-player-audio"
       autoPlay={curAudioState.isPlaying}
       ref={audioRef}
-      onTimeUpdate={onTimeUpdate}
-      onEnded={onEnded}
       src={curPlayedAudioData!.src}
-      onLoadedMetadata={onLoadedMetadata}
+      {...useAudioEventProps}
       {...audioNativeStates}
     ></audio>
   );

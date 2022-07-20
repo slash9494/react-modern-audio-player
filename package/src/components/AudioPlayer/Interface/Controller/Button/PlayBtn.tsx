@@ -6,13 +6,12 @@ import { audioPlayerStateContext } from "@/components/AudioPlayer/Context/StateC
 import { StyledBtn } from "./StyledBtn";
 import { MdPauseCircleFilled, MdPlayCircleFilled } from "react-icons/md";
 import { Icon } from "../Icon";
-import { InterfaceChildrenProps } from "../../types";
 
 const StyledPlayBtn = styled(StyledBtn)`
   width: 35px;
 `;
 
-export const PlayBtn: FC<InterfaceChildrenProps> = () => {
+export const PlayBtn: FC = () => {
   const { curAudioState, customIcons, activeUI } = useNonNullableContext(
     audioPlayerStateContext
   );

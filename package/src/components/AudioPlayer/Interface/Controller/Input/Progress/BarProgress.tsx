@@ -1,40 +1,16 @@
 import { useNonNullableContext } from "@/hooks/useNonNullableContext";
 import { audioPlayerDispatchContext } from "@/components/AudioPlayer/Context/dispatchContext";
-import { audioPlayerStateContext } from "@/components/AudioPlayer/Context/StateContext";
-import {
-  FC,
-  MouseEvent,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { FC, useEffect, useRef } from "react";
 import styled from "styled-components";
-
-// TODO : useBarProgress 생성.
+import { useBarProgress } from "./useBarProgress";
 
 export const BarProgress: FC = () => {
   const progressBarRef = useRef<HTMLDivElement>(null);
   const progressValueRef = useRef<HTMLDivElement>(null);
   const progressHandleRef = useRef<HTMLDivElement>(null);
   const audioPlayerDispatch = useNonNullableContext(audioPlayerDispatchContext);
-  const { elementRefs } = useNonNullableContext(audioPlayerStateContext);
+  const eventProps = useBarProgress();
 
-  const [isTimeChangeActive, setTimeChangeActive] = useState(false);
-
-  const onMoveAudioTime = useCallback(
-    (e: MouseEvent<HTMLDivElement>) => {
-      if (!elementRefs?.audioEl) return;
-      const { clientX } = e;
-      const { clientWidth } = e.currentTarget;
-      const boundingRect = e.currentTarget.getBoundingClientRect();
-      const curPositionX = clientX - boundingRect.x;
-      const curPositionPercent = curPositionX / clientWidth;
-      const curPositionTime = curPositionPercent * elementRefs.audioEl.duration;
-      elementRefs.audioEl.currentTime = curPositionTime;
-    },
-    [elementRefs?.audioEl]
-  );
   useEffect(() => {
     if (
       progressBarRef.current &&
@@ -57,14 +33,7 @@ export const BarProgress: FC = () => {
   ]);
 
   return (
-    <BarProgressWrapper
-      onMouseDown={() => setTimeChangeActive(true)}
-      onMouseUp={() => setTimeChangeActive(false)}
-      onMouseLeave={() => setTimeChangeActive(false)}
-      onMouseMove={isTimeChangeActive ? onMoveAudioTime : undefined}
-      onClick={onMoveAudioTime}
-      className="bar-progress-wrapper"
-    >
+    <BarProgressWrapper className="bar-progress-wrapper" {...eventProps}>
       <div className="rs-player-progress-bar" ref={progressBarRef}>
         <div className="rs-player-progress" ref={progressValueRef}></div>
       </div>

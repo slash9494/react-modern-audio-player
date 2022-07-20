@@ -1,27 +1,27 @@
 import { useLayoutEffect, useRef } from "react";
 
 export type VariableColors<T extends string> = Record<T, string>;
-export type ParsedVariableColors<T extends string> = Record<T, string>;
 
 export const useVariableColor = <Keys extends string>(
   variableColors: VariableColors<Keys>
 ) => {
-  const colors = useRef<ParsedVariableColors<Keys>>();
+  const colorsRef = useRef<VariableColors<Keys>>();
   useLayoutEffect(() => {
-    const parsedColors: ParsedVariableColors<Keys> = Object.entries(
+    const parsedColors: VariableColors<Keys> = Object.entries(
       variableColors
     ).reduce(
       (acc, [key, varName]) => ({
         ...acc,
         [key]: window
-          .getComputedStyle(document.documentElement)
+          .getComputedStyle(
+            document.getElementsByClassName("rs-audio-player-provider")[0]
+          )
           .getPropertyValue(`${varName}`),
       }),
-      {} as ParsedVariableColors<Keys>
+      {} as VariableColors<Keys>
     );
-    console.log(parsedColors);
-    colors.current = parsedColors;
+    colorsRef.current = parsedColors;
   }, [variableColors]);
 
-  return colors.current;
+  return colorsRef;
 };

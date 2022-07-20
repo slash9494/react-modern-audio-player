@@ -46,7 +46,7 @@ export const generateGridTemplateValues = (
     return cols;
   });
   const gridColumns = new Array(maxRowLength).fill("").map((_, rowIdx) => {
-    //TODO : 서버사이드에서 체크
+    //TODO : serverSide check
     const maxWidth = window ? window.innerWidth - 100 : 1500;
     const [progressRow, progressCol] = (
       placement?.progress || defaultInterfacePlacement.templateArea.progress

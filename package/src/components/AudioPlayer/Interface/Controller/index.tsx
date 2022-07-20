@@ -11,12 +11,6 @@ import { Flex } from "@react-spectrum/layout";
 import Grid from "@/components/Grid";
 import { Volume } from "./Tooltip";
 
-/**
- * //TODO
- * UI 정리, 애니메이션
- * refactoring with a reference to SLASH22
- */
-
 export const Controller: FC = () => {
   const { interfacePlacement } = useNonNullableContext(audioPlayerStateContext);
 
