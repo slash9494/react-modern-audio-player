@@ -1,6 +1,6 @@
 {
   "name": "react-modern-audio-player",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "homepage": "https://github.com/slash9494/react-modern-audio-player/",
   "module": "dist/index.es.js",
   "main": "dist/index.cjs",
@@ -25,13 +25,14 @@
     "preview": "vite preview",
     "publish": "rm -rf dist && tsc && vite build"
   },
-  "peerDependencies": {},
+  "peerDependencies": {
+    "react": ">=16.8.0",
+    "react-dom": ">=16.8.0"
+  },
   "dependencies": {
-    "@react-spectrum/button": "^3.8.1",
     "@react-spectrum/layout": "^3.3.1",
     "@react-spectrum/provider": "^3.4.1",
     "@react-spectrum/theme-default": "^3.3.1",
-    "@react-spectrum/tooltip": "^3.2.1",
     "@react-spectrum/view": "^3.2.1",
     "@types/styled-components": "^5.1.25",
     "@types/wavesurfer.js": "^6.0.3",

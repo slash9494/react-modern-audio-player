@@ -5,7 +5,11 @@ import path from "node:path";
 import libCss from "vite-plugin-libcss";
 
 export default defineConfig({
-  plugins: [react(), dts({ outputDir: "dist/types" }), libCss()],
+  plugins: [
+    react(),
+    dts({ outputDir: "dist/types", include: "src" }),
+    libCss(),
+  ],
   resolve: {
     alias: {
       "@/components": path.resolve(__dirname, "./src/components"),

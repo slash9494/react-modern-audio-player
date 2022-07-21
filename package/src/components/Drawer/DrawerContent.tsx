@@ -1,24 +1,27 @@
 import { useNonNullableContext } from "@/hooks/useNonNullableContext";
-import { FC, HTMLAttributes, PropsWithChildren } from "react";
-import styled, { css } from "styled-components";
+import { FC, PropsWithChildren, useMemo } from "react";
 import { CssTransition } from "../CssTransition";
 import { drawerContext } from "./DrawerContext";
 
 export type DrawerContentPlacement = "top" | "bottom" | "left" | "right";
 
-export type DrawerContentProps = HTMLAttributes<HTMLDivElement> & {
-  placement?: DrawerContentPlacement;
+export type DrawerContentProps = {
   isWithAnimation?: boolean;
 };
 
 export const DrawerContent: FC<PropsWithChildren<DrawerContentProps>> = ({
   children,
   isWithAnimation = true,
-  ...drawerContentProps
 }) => {
   const { isOpen, setIsOpen } = useNonNullableContext(drawerContext);
   const onExited = () => setIsOpen(false);
   const onEntered = () => setIsOpen(true);
+
+  const Content = useMemo(
+    () => <div className="drawer-content-container">{children}</div>,
+
+    [children]
+  );
 
   return isWithAnimation ? (
     <CssTransition
@@ -30,23 +33,9 @@ export const DrawerContent: FC<PropsWithChildren<DrawerContentProps>> = ({
       onExited={onExited}
       onEntered={onEntered}
     >
-      <DrawerContentContainer {...drawerContentProps}>
-        {children}
-      </DrawerContentContainer>
+      {Content}
     </CssTransition>
   ) : (
-    <DrawerContentContainer {...drawerContentProps}>
-      {children}
-    </DrawerContentContainer>
+    Content
   );
 };
-
-const DrawerContentContainer = styled.div`
-  ${({ placement }: DrawerContentProps) => css`
-    position: absolute;
-    top: ${placement === "top" ? "0" : undefined};
-    bottom: ${placement === "bottom" ? "0" : undefined};
-    left: ${placement === "left" ? "0" : undefined};
-    right: ${placement === "right" ? "0" : undefined};
-  `}
-`;

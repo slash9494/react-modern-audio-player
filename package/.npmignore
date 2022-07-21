@@ -3,6 +3,7 @@ docs
 media
 node_modules
 src
+preview
 storybook
 .eslintignore
 .eslintrc
@@ -12,3 +13,4 @@ storybook
 tsconfig.json
 yarn.lock
 vite.config.ts
+index.html

@@ -7,9 +7,11 @@ import {
 import { ChangeEvent, FC, useCallback, useRef } from "react";
 import styled, { css } from "styled-components";
 
-export type ContentPlacement = "bottom" | "top";
+export type VolumeSliderPlacement = "bottom" | "top";
 
-export const Content: FC<{ placement: ContentPlacement }> = ({ placement }) => {
+export const VolumeSlider: FC<{ placement: VolumeSliderPlacement }> = ({
+  placement,
+}) => {
   const contentRef = useRef<HTMLDivElement>(null);
   const { curAudioState } = useNonNullableContext(audioPlayerStateContext);
   const audioPlayerDispatch = useNonNullableContext(audioPlayerDispatchContext);
@@ -32,7 +34,7 @@ export const Content: FC<{ placement: ContentPlacement }> = ({ placement }) => {
     [curAudioState.muted, audioPlayerDispatch]
   );
   return (
-    <ContentContainer
+    <VolumeSliderContainer
       contentPlacement={placement}
       volumeValue={curAudioState.volume * 100}
       ref={contentRef}
@@ -50,11 +52,11 @@ export const Content: FC<{ placement: ContentPlacement }> = ({ placement }) => {
           step="0.01"
         />
       </div>
-    </ContentContainer>
+    </VolumeSliderContainer>
   );
 };
 
-const ContentContainer = styled.div`
+const VolumeSliderContainer = styled.div`
   ${({
     contentPlacement,
     volumeValue,
@@ -63,9 +65,12 @@ const ContentContainer = styled.div`
     volumeValue: number;
   }) => css`
     --rs-audio-player-volume-value: ${volumeValue}%;
-    width: 30px;
-    height: 118px;
-
+    position: relative;
+    height: 119px;
+    width: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     ${contentPlacement?.includes("top") &&
     css`
       bottom: auto;
@@ -78,10 +83,12 @@ const ContentContainer = styled.div`
       border-radius: 5px;
       height: 118px;
       box-shadow: 0 2px 4px rgb(0 0 0 /10%);
-      ${contentPlacement?.includes("top") &&
+      position: absolute;
+      bottom: 5px;
+      ${contentPlacement?.includes("bottom") &&
       css`
         transform: rotateX(180deg);
-        bottom: -115px;
+        top: 5px;
       `}
       &:before {
         content: "";

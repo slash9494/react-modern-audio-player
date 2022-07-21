@@ -18,20 +18,20 @@ import { Interface } from "./Interface";
 export interface AudioPlayerProps {
   playList: PlayList;
   audioInitialState?: AudioInitialState;
-  playerPlacement?: PlayerPlacement;
-  playListPlacement?: PlayListPlacement;
-  interfacePlacement?: InterfacePlacement;
   activeUI?: ActiveUI;
   customIcons?: CustomIcons;
   coverImgsCss?: CoverImgsCss;
+  placement?: {
+    player?: PlayerPlacement;
+    playList?: PlayListPlacement;
+    interface?: InterfacePlacement;
+  };
 }
 
 export const AudioPlayer: FC<AudioPlayerProps> = ({
   playList,
   audioInitialState,
-  playerPlacement,
-  playListPlacement,
-  interfacePlacement,
+  placement = {},
   activeUI,
   customIcons,
   coverImgsCss,
@@ -39,18 +39,18 @@ export const AudioPlayer: FC<AudioPlayerProps> = ({
   const audioPlayerDispatch = useNonNullableContext(audioPlayerDispatchContext);
 
   useLayoutEffect(() => {
+    const {
+      player: playerPlacement,
+      playList: playListPlacement,
+      interface: interfacePlacement,
+    } = placement;
     audioPlayerDispatch({
       type: "SET_PLACEMENTS",
       playerPlacement,
       playListPlacement,
       interfacePlacement,
     });
-  }, [
-    playListPlacement,
-    audioPlayerDispatch,
-    playerPlacement,
-    interfacePlacement,
-  ]);
+  }, [audioPlayerDispatch, placement]);
   useLayoutEffect(() => {
     if (activeUI) {
       audioPlayerDispatch({ type: "SET_ACTIVE_UI", activeUI });

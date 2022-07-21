@@ -1,7 +1,7 @@
-// import AudioPlayer from "../../../package/dist/index.es.js";
-// import { PlayList } from "../../../package/dist/types/components/AudioPlayer/Context";
-import AudioPlayer from 'react-modern-audio-player';
-import { PlayList } from 'react-modern-audio-player/dist/types/components/AudioPlayer/Context';
+import AudioPlayer from "../../../package/dist/index.es.js";
+import { PlayList } from "../../../package/dist/types/components/AudioPlayer/Context";
+// import AudioPlayer from 'react-modern-audio-player';
+// import { PlayList } from 'react-modern-audio-player/dist/types/components/AudioPlayer/Context';
 
 const playList: PlayList = [
   {

@@ -46,9 +46,8 @@ export const generateGridTemplateValues = (
     return cols;
   });
   const gridColumns = new Array(maxRowLength).fill("").map((_, rowIdx) => {
-    //TODO : serverSide check
     const maxWidth = window ? window.innerWidth - 100 : 1500;
-    const [progressRow, progressCol] = (
+    const [, progressCol] = (
       placement?.progress || defaultInterfacePlacement.templateArea.progress
     )
       .replace("row", "")

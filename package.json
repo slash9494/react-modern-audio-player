@@ -2,7 +2,8 @@
   "name": "react-modern-audio-player-root",
   "version": "1.0.0",
   "workspaces": [
-    "package/*"
+    "package/*",
+    "storybook/*"
   ],
   "repository": "https://github.com/slash9494/react-simple-audio-player.git",
   "author": "LYH",
@@ -18,5 +19,9 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "prettier": "^2.7.1",
     "typescript": "^4.7.4"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   }
 }
