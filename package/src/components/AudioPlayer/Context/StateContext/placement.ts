@@ -31,7 +31,7 @@ export type InterfaceGridItemArea = Partial<
 >;
 export type InterfacePlacement = {
   templateArea: InterfaceGridTemplateArea;
-  itemArea?: InterfaceGridItemArea;
+  itemCustomArea?: InterfaceGridItemArea;
 };
 
 export const defaultInterfacePlacement: {

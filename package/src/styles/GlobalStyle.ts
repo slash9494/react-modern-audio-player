@@ -1,6 +1,5 @@
 import { createGlobalStyle } from "styled-components";
 import "./vars.css";
-import "./global.css";
 export const GlobalStyle = createGlobalStyle`
 
 html,
@@ -134,6 +133,7 @@ button{
     cursor: pointer;
 }
 
-
-
+* {
+  box-sizing: border-box;
+}
 `;

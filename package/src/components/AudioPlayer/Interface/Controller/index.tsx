@@ -18,7 +18,7 @@ export const Controller: FC = () => {
     <>
       <Grid.Item
         gridArea={
-          interfacePlacement?.itemArea?.progress ||
+          interfacePlacement?.itemCustomArea?.progress ||
           interfacePlacement?.templateArea?.progress ||
           defaultInterfacePlacement.templateArea.progress
         }
@@ -28,7 +28,7 @@ export const Controller: FC = () => {
       </Grid.Item>
       <Grid.Item
         gridArea={
-          interfacePlacement?.itemArea?.repeatType ||
+          interfacePlacement?.itemCustomArea?.repeatType ||
           interfacePlacement?.templateArea?.repeatType ||
           defaultInterfacePlacement.templateArea.repeatType
         }
@@ -37,7 +37,7 @@ export const Controller: FC = () => {
       </Grid.Item>
       <Grid.Item
         gridArea={
-          interfacePlacement?.itemArea?.playButton ||
+          interfacePlacement?.itemCustomArea?.playButton ||
           interfacePlacement?.templateArea?.playButton ||
           defaultInterfacePlacement.templateArea.playButton
         }
@@ -50,7 +50,7 @@ export const Controller: FC = () => {
       </Grid.Item>
       <Grid.Item
         gridArea={
-          interfacePlacement?.itemArea?.volume ||
+          interfacePlacement?.itemCustomArea?.volume ||
           interfacePlacement?.templateArea?.volume ||
           defaultInterfacePlacement.templateArea.volume
         }
@@ -59,7 +59,7 @@ export const Controller: FC = () => {
       </Grid.Item>
       <Grid.Item
         gridArea={
-          interfacePlacement?.itemArea?.playList ||
+          interfacePlacement?.itemCustomArea?.playList ||
           interfacePlacement?.templateArea?.playList ||
           defaultInterfacePlacement.templateArea.playList
         }

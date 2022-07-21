@@ -21,9 +21,6 @@
       "@/utils/*": ["./src/utils/*"],
       "@/styles/*": ["./src/styles/*"],
     }
-    // "declaration": true,
-    // "declarationDir": "dist/types",
-    // "outDir": "dist",
   },
-  "include": ["src"],
+  "include": ["**/*.d.ts","src","preview"],
 }

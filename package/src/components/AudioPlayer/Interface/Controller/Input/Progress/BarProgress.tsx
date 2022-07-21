@@ -45,8 +45,8 @@ export const BarProgress: FC = () => {
 const BarProgressWrapper = styled.div`
   display: flex;
   width: 100%;
-  height: 2px;
-  padding: 0.5rem 0;
+  height: 18px;
+  padding: 8px 0;
   cursor: pointer;
   position: relative;
   align-items: center;

@@ -15,7 +15,7 @@ export const Information: FC = () => {
     <>
       <Grid.Item
         gridArea={
-          interfacePlacement?.itemArea?.artwork ||
+          interfacePlacement?.itemCustomArea?.artwork ||
           interfacePlacement?.templateArea?.artwork ||
           defaultInterfacePlacement.templateArea.artwork
         }
@@ -24,7 +24,7 @@ export const Information: FC = () => {
       </Grid.Item>
       <Grid.Item
         gridArea={
-          interfacePlacement?.itemArea?.trackInfo ||
+          interfacePlacement?.itemCustomArea?.trackInfo ||
           interfacePlacement?.templateArea?.trackInfo ||
           defaultInterfacePlacement.templateArea.trackInfo
         }
@@ -34,7 +34,7 @@ export const Information: FC = () => {
       </Grid.Item>
       <Grid.Item
         gridArea={
-          interfacePlacement?.itemArea?.trackTimeCurrent ||
+          interfacePlacement?.itemCustomArea?.trackTimeCurrent ||
           interfacePlacement?.templateArea?.trackTimeCurrent ||
           defaultInterfacePlacement.templateArea.trackTimeCurrent
         }
@@ -44,7 +44,7 @@ export const Information: FC = () => {
       </Grid.Item>
       <Grid.Item
         gridArea={
-          interfacePlacement?.itemArea?.trackTimeDuration ||
+          interfacePlacement?.itemCustomArea?.trackTimeDuration ||
           interfacePlacement?.templateArea?.trackTimeDuration ||
           defaultInterfacePlacement.templateArea.trackTimeDuration
         }
