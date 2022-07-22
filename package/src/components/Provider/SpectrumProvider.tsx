@@ -54,7 +54,7 @@ export const SpectrumProvider: FC<PropsWithChildren<SpectrumProviderProps>> = ({
       theme={theme}
       width={"100%"}
       position={contextPlayerPlacement && "fixed"}
-      UNSAFE_className="rs-audio-player-provider"
+      UNSAFE_className="rm-audio-player-provider"
       {...placementState}
       {...rootContainerProps}
     >

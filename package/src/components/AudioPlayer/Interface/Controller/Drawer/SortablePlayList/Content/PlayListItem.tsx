@@ -39,7 +39,7 @@ const ListItemContainer = styled.div`
   align-items: center;
   padding: 10px 20px;
   &.curPlayed {
-    background: var(--rs-audio-player-selected-list-item-background);
+    background: var(--rm-audio-player-selected-list-item-background);
   }
   .list-item-contents-wrapper {
     width: 100%;

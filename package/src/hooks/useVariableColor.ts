@@ -14,7 +14,7 @@ export const useVariableColor = <Keys extends string>(
         ...acc,
         [key]: window
           .getComputedStyle(
-            document.getElementsByClassName("rs-audio-player-provider")[0]
+            document.getElementsByClassName("rm-audio-player-provider")[0]
           )
           .getPropertyValue(`${varName}`),
       }),

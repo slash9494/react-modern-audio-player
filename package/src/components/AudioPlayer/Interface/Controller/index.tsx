@@ -12,8 +12,9 @@ import Grid from "@/components/Grid";
 import { Volume } from "./Tooltip";
 
 export const Controller: FC = () => {
-  const { interfacePlacement } = useNonNullableContext(audioPlayerStateContext);
-
+  const { interfacePlacement, activeUI } = useNonNullableContext(
+    audioPlayerStateContext
+  );
   return (
     <>
       <Grid.Item
@@ -23,6 +24,9 @@ export const Controller: FC = () => {
           defaultInterfacePlacement.templateArea.progress
         }
         width={"100%"}
+        visible={Boolean(
+          activeUI.progress !== undefined ? activeUI.progress : activeUI.all
+        )}
       >
         <Progress />
       </Grid.Item>
@@ -32,6 +36,7 @@ export const Controller: FC = () => {
           interfacePlacement?.templateArea?.repeatType ||
           defaultInterfacePlacement.templateArea.repeatType
         }
+        visible={Boolean(activeUI.repeatType ?? activeUI.all)}
       >
         <RepeatTypeBtn />
       </Grid.Item>
@@ -41,11 +46,18 @@ export const Controller: FC = () => {
           interfacePlacement?.templateArea?.playButton ||
           defaultInterfacePlacement.templateArea.playButton
         }
+        visible={Boolean(activeUI.playButton ?? activeUI.all)}
       >
         <Flex UNSAFE_className="btn-wrapper" alignItems={"center"} gap={"10px"}>
-          <PrevNnextBtn type="prev" />
+          <PrevNnextBtn
+            type="prev"
+            visible={Boolean(activeUI.prevNnext ?? activeUI.all)}
+          />
           <PlayBtn />
-          <PrevNnextBtn type="next" />
+          <PrevNnextBtn
+            type="next"
+            visible={Boolean(activeUI.prevNnext ?? activeUI.all)}
+          />
         </Flex>
       </Grid.Item>
       <Grid.Item
@@ -54,6 +66,7 @@ export const Controller: FC = () => {
           interfacePlacement?.templateArea?.volume ||
           defaultInterfacePlacement.templateArea.volume
         }
+        visible={Boolean(activeUI.volume ?? activeUI.all)}
       >
         <Volume />
       </Grid.Item>
@@ -63,6 +76,7 @@ export const Controller: FC = () => {
           interfacePlacement?.templateArea?.playList ||
           defaultInterfacePlacement.templateArea.playList
         }
+        visible={Boolean(activeUI.playList ?? activeUI.all)}
       >
         <SortablePlayList />
       </Grid.Item>

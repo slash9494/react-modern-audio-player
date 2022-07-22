@@ -56,21 +56,23 @@ export const Test = () => {
           volume: 0.2,
           curPlayId: 1,
         }}
-        playerPlacement={'bottom-left'}
-        activeUI={{
-          all: true,
-          trackTime: 'separation-mode',
-          progress: "waveform",
-        }}
-        interfacePlacement={{
-          templateArea: {
-            trackTimeDuration: "row1-5",
-            progress: "row1-4",
-            playButton: "row1-6",
-            repeatType: "row1-7",
-            volume: "row1-8",
+        placement={{
+          interface: {
+            templateArea: {
+              trackTimeDuration: "row1-5",
+              progress: "row1-4",
+              playButton: "row1-6",
+              repeatType: "row1-7",
+              volume: "row1-8",
+            },
           },
+          // player: "bottom-left",
         }}
+        // activeUI={{
+        //   all: true,
+        //   trackTime: "separation-mode",
+        //   // progress: 'waveform',
+        // }}
       />
     </div>
   );

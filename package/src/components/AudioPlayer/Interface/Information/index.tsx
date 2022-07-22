@@ -10,7 +10,15 @@ import { TrackInfo } from "./TrackInfo";
 import { TrackTimeCurrent, TrackTimeDuration } from "./TrackTime";
 
 export const Information: FC = () => {
-  const { interfacePlacement } = useNonNullableContext(audioPlayerStateContext);
+  const { interfacePlacement, playList, curIdx, activeUI } =
+    useNonNullableContext(audioPlayerStateContext);
+  const trackInfoActive =
+    Boolean(
+      playList[curIdx]?.customTrackInfo ??
+        playList[curIdx]?.writer ??
+        playList[curIdx]?.name
+    ) && Boolean(activeUI.trackInfo ?? activeUI.all);
+
   return (
     <>
       <Grid.Item
@@ -19,6 +27,9 @@ export const Information: FC = () => {
           interfacePlacement?.templateArea?.artwork ||
           defaultInterfacePlacement.templateArea.artwork
         }
+        visible={Boolean(
+          playList[curIdx]?.img && (activeUI.artwork ?? activeUI.all)
+        )}
       >
         <Artwork />
       </Grid.Item>
@@ -28,7 +39,7 @@ export const Information: FC = () => {
           interfacePlacement?.templateArea?.trackInfo ||
           defaultInterfacePlacement.templateArea.trackInfo
         }
-        justifySelf={"center"}
+        visible={trackInfoActive}
       >
         <TrackInfo />
       </Grid.Item>
@@ -38,7 +49,7 @@ export const Information: FC = () => {
           interfacePlacement?.templateArea?.trackTimeCurrent ||
           defaultInterfacePlacement.templateArea.trackTimeCurrent
         }
-        justifySelf={"center"}
+        visible={Boolean(activeUI.trackTime ?? activeUI.all)}
       >
         <TrackTimeCurrent />
       </Grid.Item>
@@ -48,7 +59,7 @@ export const Information: FC = () => {
           interfacePlacement?.templateArea?.trackTimeDuration ||
           defaultInterfacePlacement.templateArea.trackTimeDuration
         }
-        justifySelf={"center"}
+        visible={Boolean(activeUI.trackTime ?? activeUI.all)}
       >
         <TrackTimeDuration />
       </Grid.Item>

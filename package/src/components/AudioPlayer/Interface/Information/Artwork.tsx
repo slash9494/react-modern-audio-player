@@ -15,13 +15,13 @@ const ArtworkContainer = styled.div`
 `;
 
 export const Artwork: FC = () => {
-  const { activeUI, playList, curIdx, coverImgsCss } = useNonNullableContext(
+  const { playList, curIdx, coverImgsCss } = useNonNullableContext(
     audioPlayerStateContext
   );
 
-  return playList[curIdx] && (activeUI.artwork ?? activeUI.all) ? (
+  return (
     <ArtworkContainer className="artwork-container">
-      <img src={playList[curIdx].img} alt={""} style={coverImgsCss?.artwork} />
+      <img src={playList[curIdx]?.img} alt={""} style={coverImgsCss?.artwork} />
     </ArtworkContainer>
-  ) : null;
+  );
 };

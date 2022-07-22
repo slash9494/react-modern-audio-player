@@ -66,9 +66,9 @@ export const RepeatTypeBtn: FC = () => {
     customIcons?.repeatShuffle,
   ]);
 
-  return activeUI.repeatType ?? activeUI.all ? (
+  return (
     <StyledBtn onClick={onClick} className="repeat-button">
       {RepeatIcon}
     </StyledBtn>
-  ) : null;
+  );
 };

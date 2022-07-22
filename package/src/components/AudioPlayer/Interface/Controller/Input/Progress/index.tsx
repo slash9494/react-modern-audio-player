@@ -12,15 +12,13 @@ const ProgressContainer = styled.div`
 
 export const Progress: FC = () => {
   const { activeUI } = useNonNullableContext(audioPlayerStateContext);
-  const active =
-    activeUI.progress !== undefined ? !!activeUI.progress : activeUI.all;
   const CurProgress = useMemo(() => {
     if (activeUI.progress === "waveform") return <WaveformProgress />;
     return <BarProgress />;
   }, [activeUI.progress]);
-  return active ? (
+  return (
     <ProgressContainer className="progress-container">
       {CurProgress}
     </ProgressContainer>
-  ) : null;
+  );
 };

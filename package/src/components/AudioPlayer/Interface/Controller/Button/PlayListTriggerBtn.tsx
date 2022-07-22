@@ -19,7 +19,7 @@ export const PlayListTriggerBtn: FC<PlayListTriggerBtnProps> = ({ isOpen }) => {
             size={"100%"}
             color={
               isOpen
-                ? "var(--rs-audio-player-sortable-list-button-active)"
+                ? "var(--rm-audio-player-sortable-list-button-active)"
                 : undefined
             }
           />
