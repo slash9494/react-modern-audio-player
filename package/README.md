@@ -4,6 +4,9 @@
 </p>
 
 <p align="center">
+  <a href="https://github.com/slash9494/react-modern-audio-player/blob/main/package/LICENSE">
+    <img src="https://img.shields.io/npm/l/react-modern-audio-player" alt="License">
+  </a>
   <a href="https://www.npmjs.com/package/react-modern-audio-player">
     <img src="https://img.shields.io/npm/v/react-modern-audio-player" alt="Version">
   </a>
@@ -11,7 +14,7 @@
     <img src="https://img.shields.io/npm/dt/react-modern-audio-player" alt="Download">
   </a>
   <a href="https://bundlephobia.com/package/react-modern-audio-player@0.0.3">
-    <img src="https://badgen.net/bundlephobia/minzip/react-modern-audio-player" alt="Download">
+    <img src="https://img.shields.io/bundlephobia/minzip/react-modern-audio-player" alt="BundleSize">
   </a>
 </p>
 
