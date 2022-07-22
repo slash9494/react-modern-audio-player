@@ -3,7 +3,6 @@
 <h1 align="center">React Modern Audio Player</h1>
 </p>
 
-
 <p align="center">
   <a href="https://www.npmjs.com/package/react-modern-audio-player">
     <img src="https://img.shields.io/npm/v/react-modern-audio-player" alt="Version">
