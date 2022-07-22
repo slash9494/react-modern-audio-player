@@ -4,7 +4,7 @@ import styled from "styled-components";
 const WaveformWrapper = styled.div`
   display: flex;
   width: 100%;
-  #rs-waveform {
+  #rm-waveform {
     width: 100%;
     wave {
       cursor: pointer !important;
@@ -15,7 +15,7 @@ const WaveformWrapper = styled.div`
 export const WaveformProgress: FC = () => {
   return (
     <WaveformWrapper className="waveform-wrapper">
-      <div id="rs-waveform" />
+      <div id="rm-waveform" />
     </WaveformWrapper>
   );
 };

@@ -12,7 +12,7 @@ const StyledPlayBtn = styled(StyledBtn)`
 `;
 
 export const PlayBtn: FC = () => {
-  const { curAudioState, customIcons, activeUI } = useNonNullableContext(
+  const { curAudioState, customIcons } = useNonNullableContext(
     audioPlayerStateContext
   );
   const audioPlayerDispatch = useNonNullableContext(audioPlayerDispatchContext);
@@ -30,9 +30,9 @@ export const PlayBtn: FC = () => {
     );
   }, [curAudioState.isPlaying, customIcons?.pause, customIcons?.play]);
 
-  return activeUI.playButton ?? activeUI.all ? (
+  return (
     <StyledPlayBtn onClick={onClick} className="play-button">
       {PlayIcon}
     </StyledPlayBtn>
-  ) : null;
+  );
 };

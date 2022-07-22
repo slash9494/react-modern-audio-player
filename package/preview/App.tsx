@@ -10,44 +10,45 @@ import audio4 from "./assets/audio/audio-4.mp3";
 import audio4Img from "./assets/images/audio-4.jpg";
 import audio5 from "./assets/audio/audio-5.mp3";
 import audio5Img from "./assets/images/audio-5.jpg";
+import PlayerLogo from "./assets/images/noname.png";
 
 const playList: PlayList = [
   {
-    name: "Relax And Sleep",
-    writer: "Anton Vlasov",
-    img: `${audio1Img}`,
+    name: "React Modern Audio Player-1",
+    writer: "LYH",
+    img: `${PlayerLogo}`,
     src: `${audio1}`,
     id: 1,
     index: 0,
   },
   {
-    name: "audio1on't You Think Lose",
-    writer: "Anton Vlasov",
-    img: `${audio2Img}`,
+    name: "React Modern Audio Player-2",
+    writer: "LYH",
+    img: `${PlayerLogo}`,
     src: `${audio2}`,
     id: 2,
     index: 1,
   },
   {
-    name: "The Cradle of Your Soul dsdasdasdas",
-    writer: "lemonaudiostudio",
-    img: `${audio3Img}`,
+    name: "React Modern Audio Player-3",
+    writer: "LYH",
+    img: `${PlayerLogo}`,
     src: `${audio3}`,
     id: 3,
     index: 2,
   },
   {
-    name: "Spirit Blossom",
-    writer: "RomanBelov",
-    img: `${audio4Img}`,
+    name: "React Modern Audio Player-4",
+    writer: "LYH",
+    img: `${PlayerLogo}`,
     src: `${audio4}`,
     id: 4,
     index: 3,
   },
   {
-    name: "Everything Feels New",
-    writer: "EvgenyBardyuzha",
-    img: `${audio5Img}`,
+    name: "React Modern Audio Player-5",
+    writer: "LYH",
+    img: `${PlayerLogo}`,
     src: `${audio5}`,
     id: 5,
     index: 4,
@@ -56,31 +57,27 @@ const playList: PlayList = [
 
 function App() {
   return (
-    <div>
-      <AudioPlayerWithProvider
-        playList={playList}
-        audioInitialState={{
-          muted: true,
-          volume: 0.2,
-          curPlayId: 1,
+    <div
+      style={{
+        width: "100%",
+        display: "flex",
+        height: " 100vh",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: "1rem",
+        flexDirection: "column",
+      }}
+    >
+      <h1
+        style={{
+          fontSize: "48px",
         }}
-        placement={{
-          interface: {
-            templateArea: {
-              trackTimeDuration: "row1-5",
-              progress: "row1-4",
-              playButton: "row1-6",
-              repeatType: "row1-7",
-              volume: "row1-8",
-            },
-          },
-          player: "bottom",
-        }}
-        activeUI={{
-          all: true,
-          trackTime: "separation-mode",
-        }}
-      />
+      >
+        React modern audio player
+      </h1>
+      <div>
+        <AudioPlayerWithProvider playList={playList} />
+      </div>
     </div>
   );
 }

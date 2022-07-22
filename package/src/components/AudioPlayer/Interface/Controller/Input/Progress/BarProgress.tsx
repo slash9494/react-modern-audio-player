@@ -34,10 +34,10 @@ export const BarProgress: FC = () => {
 
   return (
     <BarProgressWrapper className="bar-progress-wrapper" {...eventProps}>
-      <div className="rs-player-progress-bar" ref={progressBarRef}>
-        <div className="rs-player-progress" ref={progressValueRef}></div>
+      <div className="rm-player-progress-bar" ref={progressBarRef}>
+        <div className="rm-player-progress" ref={progressValueRef}></div>
       </div>
-      <div className="rs-player-progress-handle" ref={progressHandleRef} />
+      <div className="rm-player-progress-handle" ref={progressHandleRef} />
     </BarProgressWrapper>
   );
 };
@@ -50,31 +50,31 @@ const BarProgressWrapper = styled.div`
   cursor: pointer;
   position: relative;
   align-items: center;
-  .rs-player-progress-bar {
+  .rm-player-progress-bar {
     position: relative;
     width: 100%;
     height: 100%;
     overflow: hidden;
-    background-color: var(--rs-audio-player-progress-bar-background);
+    background-color: var(--rm-audio-player-progress-bar-background);
   }
-  .rs-player-progress {
+  .rm-player-progress {
     position: absolute;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: var(--rs-audio-player-progress-bar);
+    background-color: var(--rm-audio-player-progress-bar);
     transform-origin: 0 0;
     transform: scaleX(0);
   }
   &:hover {
-    .rs-player-progress-handle {
+    .rm-player-progress-handle {
       opacity: 1;
     }
   }
-  .rs-player-progress-handle {
+  .rm-player-progress-handle {
     position: absolute;
     left: -4px;
-    background-color: var(--rs-audio-player-progress-bar);
+    background-color: var(--rm-audio-player-progress-bar);
     border-radius: 100%;
     height: 8px;
     width: 8px;

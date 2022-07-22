@@ -41,7 +41,7 @@ export const Basic: FC = () => {
 
   return (
     <audio
-      id="rs-audio-player-audio"
+      id="rm-audio-player-audio"
       autoPlay={curAudioState.isPlaying}
       ref={audioRef}
       src={curPlayedAudioData!.src}

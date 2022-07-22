@@ -20,7 +20,7 @@ export const TrackTimeCurrent: FC = () => {
       });
     }
   }, [trackCurTimeRef.current, audioPlayerDispatch]);
-  return activeUI.trackTime ?? activeUI.all ? (
+  return (
     <TrackTimeCurrentContainer
       type={activeUI.trackTime}
       className="track-time-current-container"
@@ -29,7 +29,7 @@ export const TrackTimeCurrent: FC = () => {
         00:00
       </span>
     </TrackTimeCurrentContainer>
-  ) : null;
+  );
 };
 
 export const TrackTimeDuration: FC = () => {
@@ -45,7 +45,7 @@ export const TrackTimeDuration: FC = () => {
       });
     }
   }, [trackDurationRef.current, audioPlayerDispatch]);
-  return activeUI.trackTime ?? activeUI.all ? (
+  return (
     <TrackTimeDurationContainer
       type={activeUI.trackTime}
       className="track-time-duration-container"
@@ -54,7 +54,7 @@ export const TrackTimeDuration: FC = () => {
         00:00
       </span>
     </TrackTimeDurationContainer>
-  ) : null;
+  );
 };
 
 interface TrackTimeContainerProps {
@@ -74,7 +74,7 @@ const TrackTimeCurrentContainer = styled(TrackTimeContainer)`
     .track-current-time {
       font-weight: 700;
       letter-spacing: -0.1rem;
-      color: var(--rs-audio-player-track-current-time);
+      color: var(--rm-audio-player-track-current-time);
       margin-right: ${type !== "separation-mode" && "-10px"};
     }
   `}
@@ -84,7 +84,7 @@ const TrackTimeDurationContainer = styled(TrackTimeContainer)`
   ${({ type }: TrackTimeContainerProps) => css`
     .track-duration {
       display: flex;
-      color: var(--rs-audio-player-track-duration);
+      color: var(--rm-audio-player-track-duration);
       letter-spacing: -0.1rem;
     }
     ${type !== "separation-mode" &&

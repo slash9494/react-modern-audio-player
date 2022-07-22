@@ -10,8 +10,8 @@ export const WaveSurferAudio: FC = () => {
   const audioPlayerDispatch = useNonNullableContext(audioPlayerDispatchContext);
   const { elementRefs } = useNonNullableContext(audioPlayerStateContext);
   const colorsRef = useVariableColor({
-    progressColor: "--rs-audio-player-waveform-bar",
-    waveColor: "--rs-audio-player-waveform-background",
+    progressColor: "--rm-audio-player-waveform-bar",
+    waveColor: "--rm-audio-player-waveform-background",
   });
   /** init waveSurfer */
   useEffect(() => {
@@ -19,13 +19,13 @@ export const WaveSurferAudio: FC = () => {
     const waveSurfer = WaveSurfer.create({
       barWidth: 1,
       cursorWidth: 2,
-      container: "#rs-waveform",
+      container: "#rm-waveform",
       backend: "WebAudio",
       height: 80,
       progressColor: `${colorsRef.current.progressColor}`,
       responsive: true,
       waveColor: `${colorsRef.current.waveColor}`,
-      cursorColor: "var(--rs-audio-player-waveform-cursor)",
+      cursorColor: "var(--rm-audio-player-waveform-cursor)",
     });
     audioPlayerDispatch({
       type: "SET_ELEMENT_REFS",

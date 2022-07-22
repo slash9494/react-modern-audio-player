@@ -13,7 +13,7 @@ export type PlayerPlacement =
 //TODO : declare dynamic length type depending on the number of activeUI;
 export const interfacePlacementMaxLength = 10; // plus 1 for deleted number 0;
 
-type InterfacePlacementKey =
+export type InterfacePlacementKey =
   | Exclude<keyof ActiveUI, "all" | "prevNnext" | "trackTime">
   | "trackTimeCurrent"
   | "trackTimeDuration";

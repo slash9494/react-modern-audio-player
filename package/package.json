@@ -1,6 +1,6 @@
 {
   "name": "react-modern-audio-player",
-  "version": "0.0.3",
+  "version": "1.0.0",
   "homepage": "https://github.com/slash9494/react-modern-audio-player/",
   "module": "dist/index.es.js",
   "main": "dist/index.cjs",
@@ -10,9 +10,7 @@
     "dist"
   ],
   "exports": {
-    ".": {
-      "import": "./dist/index.es.js",
-      "require": "./dist/index.cjs"
+    ".": { 
     }
   },
   "repository": {

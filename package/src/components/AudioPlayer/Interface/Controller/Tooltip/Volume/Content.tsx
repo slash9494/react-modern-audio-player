@@ -64,7 +64,7 @@ const VolumeSliderContainer = styled.div`
     contentPlacement?: PlayerPlacement;
     volumeValue: number;
   }) => css`
-    --rs-audio-player-volume-value: ${volumeValue}%;
+    --rm-audio-player-volume-value: ${volumeValue}%;
     position: relative;
     height: 119px;
     width: 32px;
@@ -78,8 +78,8 @@ const VolumeSliderContainer = styled.div`
 
     .volume-panel-wrapper {
       width: 30px;
-      background-color: var(--rs-audio-player-volume-panel-background);
-      border: 1px solid var(--rs-audio-player-volume-panel-border);
+      background-color: var(--rm-audio-player-volume-panel-background);
+      border: 1px solid var(--rm-audio-player-volume-panel-border);
       border-radius: 5px;
       height: 118px;
       box-shadow: 0 2px 4px rgb(0 0 0 /10%);
@@ -95,8 +95,8 @@ const VolumeSliderContainer = styled.div`
         bottom: -10px;
         left: 7.9px;
         border-color: transparent transparent
-          var(--rs-audio-player-volume-panel-border)
-          var(--rs-audio-player-volume-panel-border);
+          var(--rm-audio-player-volume-panel-border)
+          var(--rm-audio-player-volume-panel-border);
         border-style: solid;
         border-width: 5px;
         box-shadow: -3px 3px 4px rgb(0 0 0 / 10%);
@@ -116,8 +116,8 @@ const VolumeSliderContainer = styled.div`
         bottom: -8px;
         left: 9px;
         border-color: transparent transparent
-          var(--rs-audio-player-volume-panel-background)
-          var(--rs-audio-player-volume-panel-background);
+          var(--rm-audio-player-volume-panel-background)
+          var(--rm-audio-player-volume-panel-background);
         border-style: solid;
         border-width: 4px;
         z-index: 1;
@@ -143,7 +143,7 @@ const VolumeSliderContainer = styled.div`
         height: 2px;
         width: 92px;
         -webkit-appearance: none;
-        background-color: var(--rs-audio-player-volume-background);
+        background-color: var(--rm-audio-player-volume-background);
         outline-color: transparent;
         transform-origin: 75px 75px;
         transform: rotate(-90deg);
@@ -159,7 +159,7 @@ const VolumeSliderContainer = styled.div`
         height: 16px;
         border-radius: 12px;
         overflow: visible;
-        background: var(--rs-audio-player-volume-thumb);
+        background: var(--rm-audio-player-volume-thumb);
       }
 
       &::-moz-range-thumb {
@@ -167,7 +167,7 @@ const VolumeSliderContainer = styled.div`
         height: 16px;
         border-radius: 12px;
         overflow: visible;
-        background: var(--rs-audio-player-volume-thumb);
+        background: var(--rm-audio-player-volume-thumb);
         border: none;
       }
       &::-moz-range-track {
@@ -185,9 +185,9 @@ const VolumeSliderContainer = styled.div`
         background-size: 100% 3px;
         background-image: linear-gradient(
           90deg,
-          var(--rs-audio-player-volume-fill) var(--rs-audio-player-volume-value),
-          var(--rs-audio-player-volume-track)
-            var(--rs-audio-player-volume-value)
+          var(--rm-audio-player-volume-fill) var(--rm-audio-player-volume-value),
+          var(--rm-audio-player-volume-track)
+            var(--rm-audio-player-volume-value)
         );
       }
 
@@ -206,9 +206,9 @@ const VolumeSliderContainer = styled.div`
         background-size: 100% 3px;
         background-image: linear-gradient(
           90deg,
-          var(--rs-audio-player-volume-fill) var(--rs-audio-player-volume-value),
-          var(--rs-audio-player-volume-track)
-            var(--rs-audio-player-volume-value)
+          var(--rm-audio-player-volume-fill) var(--rm-audio-player-volume-value),
+          var(--rm-audio-player-volume-track)
+            var(--rm-audio-player-volume-value)
         );
       }
     }

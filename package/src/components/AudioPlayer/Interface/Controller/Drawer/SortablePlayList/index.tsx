@@ -1,16 +1,12 @@
 import { FC, useState } from "react";
-import { useNonNullableContext } from "@/hooks/useNonNullableContext";
-import { audioPlayerStateContext } from "@/components/AudioPlayer/Context";
 import Drawer from "@/components/Drawer";
 import { PlayList } from "./Content";
 import { PlayListTriggerBtn } from "../../Button";
 
 export const SortablePlayList: FC = () => {
-  const { activeUI } = useNonNullableContext(audioPlayerStateContext);
-
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
-  return activeUI.playList ?? activeUI.all ? (
+  return (
     <Drawer onOpenChange={setIsOpen}>
       <Drawer.Trigger>
         <PlayListTriggerBtn isOpen={isOpen} />
@@ -19,5 +15,5 @@ export const SortablePlayList: FC = () => {
         <PlayList isOpen={isOpen} setIsOpen={setIsOpen} />
       </Drawer.Content>
     </Drawer>
-  ) : null;
+  );
 };

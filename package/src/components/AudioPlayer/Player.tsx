@@ -80,7 +80,7 @@ export const AudioPlayer: FC<AudioPlayerProps> = ({
   }, [customIcons, audioPlayerDispatch]);
 
   return (
-    <View id="rs-audio-player" UNSAFE_className="rs-audio-player-container">
+    <View id="rm-audio-player" UNSAFE_className="rm-audio-player-container">
       <Audio />
       <Interface />
     </View>

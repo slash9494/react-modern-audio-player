@@ -8,12 +8,11 @@ import { Icon } from "../Icon";
 
 interface PrevNnextBtnProps {
   type: "prev" | "next";
+  visible: boolean;
 }
 
-export const PrevNnextBtn: FC<PrevNnextBtnProps> = ({ type }) => {
-  const { customIcons, activeUI } = useNonNullableContext(
-    audioPlayerStateContext
-  );
+export const PrevNnextBtn: FC<PrevNnextBtnProps> = ({ type, visible }) => {
+  const { customIcons } = useNonNullableContext(audioPlayerStateContext);
   const audioPlayerDispatch = useNonNullableContext(audioPlayerDispatchContext);
   const onClickBtn = () => {
     if (type === "next") {
@@ -33,7 +32,7 @@ export const PrevNnextBtn: FC<PrevNnextBtnProps> = ({ type }) => {
     return null;
   }, [customIcons?.next, customIcons?.prev, type]);
 
-  return activeUI.prevNnext ?? activeUI.all ? (
+  return visible ? (
     <StyledBtn onClick={onClickBtn} className="prev-n-next-button">
       {PrevNnextIcon}
     </StyledBtn>
