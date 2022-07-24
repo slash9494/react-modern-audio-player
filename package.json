@@ -9,6 +9,10 @@
   "author": "LYH",
   "license": "MIT",
   "private": true,
+  "scripts": {
+    "build": "cd package && yarn build",
+    "publish": "cd package && yarn publish"
+  },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.30.5",
     "@typescript-eslint/parser": "^5.30.5",

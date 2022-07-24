@@ -48,5 +48,6 @@
     "vite": "^2.9.0",
     "vite-plugin-dts": "^1.1.0",
     "vite-plugin-libcss": "^1.0.5"
-  }
+  },
+  "keywords": ["audio", "player", "react", "react-modern-audio-player"]
 }
