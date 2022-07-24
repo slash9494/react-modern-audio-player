@@ -33,14 +33,10 @@ jobs:
         run: yarn --frozen-lockfile
       - name: Build
         run: yarn build 
-      - uses: JS-DevTools/npm-publish@v1
-        with:
-          token: ${{ secrets.NPM_TOKEN }}
-          package: './package/package.json'
-      - name: Show published version
-        if: steps.publish.outputs.type != 'none'
-        run: |
-          echo "Version changed: ${{ steps.publish.outputs.old-version }} => ${{ steps.publish.outputs.version }}"
+      - name: publish npm
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       - name: Tag new version
         if: steps.publish.outputs.type != 'none'
         uses: Klemensas/action-autotag@stable

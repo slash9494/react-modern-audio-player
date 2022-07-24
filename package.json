@@ -10,8 +10,6 @@
     "url": "git+https://github.com/slash9494/react-simple-audio-player.git",
     "directory": "package"
   },
-  "author": "LYH",
-  "license": "MIT",
   "private": true,
   "scripts": {
     "build": "cd package && yarn build",
