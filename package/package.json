@@ -9,10 +9,6 @@
   "files": [
     "dist"
   ],
-  "exports": {
-    ".": { 
-    }
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/slash9494/react-modern-audio-player.git"
