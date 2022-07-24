@@ -34,7 +34,7 @@ jobs:
       - name: Build
         run: yarn build 
       - name: publish npm
-        run: npm publish --access public
+        run: yarn publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       - name: Tag new version

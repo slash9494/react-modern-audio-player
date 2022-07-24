@@ -17,7 +17,7 @@
     "dev": "vite --host",
     "build": "rm -rf dist && tsc && vite build",
     "preview": "vite preview",
-    "publish": "rm -rf dist && tsc && vite build"
+    "publish": "npm publish --access public"
   },
   "peerDependencies": {
     "react": ">=16.8.0",
