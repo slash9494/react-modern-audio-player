@@ -2,10 +2,14 @@
   "name": "react-modern-audio-player-root",
   "version": "1.0.0",
   "workspaces": [
-    "package/*",
-    "storybook/*"
+    "package",
+    "storybook"
   ],
-  "repository": "https://github.com/slash9494/react-simple-audio-player.git",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/slash9494/react-simple-audio-player.git",
+    "directory": "package"
+  },
   "author": "LYH",
   "license": "MIT",
   "private": true,
@@ -14,8 +18,6 @@
     "publish": "cd package && yarn publish"
   },
   "devDependencies": {
-    "@types/react": "^18.0.15",
-    "@types/react-dom": "^18.0.6",
     "@typescript-eslint/eslint-plugin": "^5.30.5",
     "@typescript-eslint/parser": "^5.30.5",
     "eslint": "^8.19.0",
