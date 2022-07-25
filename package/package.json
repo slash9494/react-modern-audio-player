@@ -1,6 +1,6 @@
 {
   "name": "react-modern-audio-player",
-  "version": "1.0.1",
+  "version": "2.0.0",
   "homepage": "https://github.com/slash9494/react-modern-audio-player/",
   "module": "dist/index.es.js",
   "main": "dist/index.cjs",
@@ -45,5 +45,10 @@
     "vite-plugin-dts": "^1.1.0",
     "vite-plugin-libcss": "^1.0.5"
   },
-  "keywords": ["audio", "player", "react", "react-modern-audio-player"]
+  "keywords": [
+    "audio",
+    "player",
+    "react",
+    "react-modern-audio-player"
+  ]
 }
