@@ -1,4 +1,4 @@
-name: publish
+name: release
 
 on:
   push:
@@ -16,11 +16,6 @@ jobs:
           registry-url: "https://registry.npmjs.org"
           scope: :LYH
 
-      - name: Configure git
-        run: |
-          git config user.email "slash9494@naver.com"
-          git config user.name "Yun Hyeon Lee"
-
       - id: yarn-cache-dir-path
         run: echo "::set-output name=dir::$(yarn cache dir)"
       - uses: actions/cache@v2
@@ -33,10 +28,13 @@ jobs:
         run: yarn --frozen-lockfile
       - name: Build
         run: yarn build 
-      - name: publish npm
-        run: yarn publish
+      - name: Create Release Pull Request or Publish to npm
+        uses: changesets/action@v1
+        with:
+          publish: yarn release
+          version: yarn version-packages
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Tag new version
         if: steps.publish.outputs.type != 'none'
         uses: Klemensas/action-autotag@stable
