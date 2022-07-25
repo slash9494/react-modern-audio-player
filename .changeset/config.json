@@ -1,0 +1,13 @@
+{
+  "$schema": "https://unpkg.com/@changesets/config@1.6.3/schema.json",
+  "changelog": [
+    "@changesets/changelog-github",
+    { "repo": "slash9494/react-modern-audio-player" }
+  ],
+  "commit": false,
+  "linked": [],
+  "access": "restricted",
+  "baseBranch": "main",
+  "updateInternalDependencies": "patch",
+  "ignore": []
+}
