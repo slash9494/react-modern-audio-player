@@ -36,13 +36,12 @@ jobs:
           EOF
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}        
-      - name: Create Release Pull Request or Publish to npm
-        uses: changesets/action@v1
+      - name: publish
+        uses: JS-DevTools/npm-publish@v1
         with:
-          publish: yarn release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          token: ${{ secrets.NPM_TOKEN }}
+          package: './package/package.json'
+          access: 'public'
       - name: Tag new version
         if: steps.publish.outputs.type != 'none'
         uses: Klemensas/action-autotag@stable
