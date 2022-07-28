@@ -13,6 +13,7 @@ export interface DropdownProps
   triggerType?: "click" | "hover";
   outboundClickActive?: boolean;
   placement?: DropdownContext["placement"];
+  disabled?: boolean;
 }
 
 const Dropdown: FC<PropsWithChildren<DropdownProps>> = ({
@@ -21,6 +22,7 @@ const Dropdown: FC<PropsWithChildren<DropdownProps>> = ({
   children,
   isOpen: isOpenProp,
   placement = "bottom",
+  disabled = false,
   onOpenChange,
 }) => {
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -51,7 +53,7 @@ const Dropdown: FC<PropsWithChildren<DropdownProps>> = ({
       >
         <>
           {trigger}
-          {content}
+          {!disabled && content}
         </>
       </dropdownContext.Provider>
     </DropdownContainer>

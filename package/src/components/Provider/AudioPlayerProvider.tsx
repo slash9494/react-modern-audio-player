@@ -22,6 +22,7 @@ export const AudioPlayerProvider: FC<PropsWithChildren<unknown>> = ({
       },
       activeUI: {
         playButton: true,
+        volumeSlider: true,
       },
       playListPlacement: "bottom",
       interfacePlacement: {

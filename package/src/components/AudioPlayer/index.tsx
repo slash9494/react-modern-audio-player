@@ -13,8 +13,8 @@ export const AudioPlayerWithProvider: FC<
   return (
     <AudioPlayerProvider>
       <SpectrumProvider rootContainerProps={rootContainerProps}>
-        <GlobalStyle />
         <AudioPlayer {...audioPlayProps} />
+        <GlobalStyle />
       </SpectrumProvider>
     </AudioPlayerProvider>
   );

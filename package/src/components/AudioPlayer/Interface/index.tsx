@@ -10,7 +10,14 @@ import Grid from "@/components/Grid";
 
 const InterfaceContainer = styled.div`
   .interface-grid {
+    background: var(--rm-audio-player-interface-container);
+  }
+  .interface-grid {
     padding: 0.5rem 10px;
+  }
+  .sortable-play-list {
+    background: var(--rm-audio-player-sortable-list);
+    box-shadow: -5px 2px 4px 0px rgb(0 0 0 / 4%) inset;
   }
 `;
 

@@ -88,7 +88,7 @@ Prop | Type | Default
 --- | --- | --- 
 `playList` | [PlayList](#playlist) | [ ] 
 `audioInitialState` | [AudioInitialState](#audioinitialstate) | isPlaying: false </br>repeatType: "ALL" </br>volume: 1 
-`activeUI` | [ActiveUI](#activeui) | playButton : true
+`activeUI` | [ActiveUI](#activeui) | playButton : true <br/> volumeSlider: true
 `customIcons` | [CustomIcons](#customicons) | undefined 
 `coverImgsCss` | [CoverImgsCss](#coverimgscss) | undefined 
 `placement` | [Placement](#placement) | playListPlacement : "bottom" </br>interfacePlacement :[DefaultInterfacePlacement](#default-interface-placement)
@@ -134,6 +134,7 @@ type ActiveUI = {
   playList: PlayListUI;
   prevNnext: boolean;
   volume: boolean;
+  volumeSlider: boolean;
   repeatType: boolean;
   trackTime: TrackTimeUI;
   trackInfo: boolean;
@@ -245,23 +246,25 @@ const defaultInterfacePlacement = {
 ### color variables
 
 ```tsx
+--rm-audio-player-interface-container:var(--spectrum-global-color-gray-100);
 --rm-audio-player-volume-background: #ccc;
---rm-audio-player-volume-panel-background: #f2f2f2;
---rm-audio-player-volume-panel-border: #ccc;
---rm-audio-player-volume-thumb: #e5e5e5;
---rm-audio-player-volume-fill: rgba(0, 0, 0, 0.5);
---rm-audio-player-volume-track: #ababab;
---rm-audio-player-track-current-time: #0072F5;
---rm-audio-player-track-duration: #8c8c8c;
---rm-audio-player-progress-bar: #0072F5;
---rm-audio-player-progress-bar-background: #D1D1D1;
---rm-audio-player-waveform-cursor: var(--spectrum-alias-text-color);
---rm-audio-player-waveform-background: var(--rm-audio-player-progress-bar-background);
---rm-audio-player-waveform-bar: var(--rm-audio-player-progress-bar);
---rm-audio-player-sortable-list-button-active: #0072F5;
---rm-audio-player-selected-list-item-background: var(--spectrum-alias-border-color);
+--rm-audio-player-volume-panel-background:#f2f2f2;
+--rm-audio-player-volume-panel-border:#ccc;
+--rm-audio-player-volume-thumb: #d3d3d3;
+--rm-audio-player-volume-fill:rgba(0, 0, 0, 0.5);
+--rm-audio-player-volume-track:#ababab;
+--rm-audio-player-track-current-time:#0072F5;
+--rm-audio-player-track-duration:#8c8c8c;
+--rm-audio-player-progress-bar:#0072F5;
+--rm-audio-player-progress-bar-background:#D1D1D1;
+--rm-audio-player-waveform-cursor:var(--spectrum-global-color-gray-800);
+--rm-audio-player-waveform-background:var(--rm-audio-player-progress-bar-background);
+--rm-audio-player-waveform-bar:var(--rm-audio-player-progress-bar);
+--rm-audio-player-sortable-list:var(--spectrum-global-color-gray-200);
+--rm-audio-player-sortable-list-button-active:#0072F5;
+--rm-audio-player-selected-list-item-background:var(--spectrum-global-color-gray-500);
 
-// ...spectrim theme palette and so on... //
+// ...spectrum theme palette and so on... //
 ```
 
 # ****Example****

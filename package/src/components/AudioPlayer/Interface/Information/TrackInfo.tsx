@@ -17,10 +17,10 @@ const TrackInfoContainer = styled.div`
     overflow: hidden;
   }
   .title {
-    font-size: 1rem;
+    font-size: 16px;
   }
   .writer {
-    font-size: 0.875rem;
+    font-size: 12px;
   }
 `;
 

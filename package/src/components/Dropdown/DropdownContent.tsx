@@ -75,9 +75,9 @@ export const DropdownContent: FC<PropsWithChildren<DropdownContentProps>> = ({
     >
       {Content}
     </CssTransition>
-  ) : (
+  ) : isOpen ? (
     Content
-  );
+  ) : null;
 };
 
 interface DropdownContainerProps {

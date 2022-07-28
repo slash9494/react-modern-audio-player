@@ -65,8 +65,8 @@ const TrackTimeContainer = styled.div`
   align-items: center;
   justify-content: center;
   min-height: 16px;
-  font-family: monospace;
-  font-size: 1.2rem;
+  font-family: monospace !important;
+  font-size: 16px !important;
 `;
 
 const TrackTimeCurrentContainer = styled(TrackTimeContainer)`
