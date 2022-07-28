@@ -14,7 +14,7 @@ export type PlayerPlacement =
 export const interfacePlacementMaxLength = 10; // plus 1 for deleted number 0;
 
 export type InterfacePlacementKey =
-  | Exclude<keyof ActiveUI, "all" | "prevNnext" | "trackTime">
+  | Exclude<keyof ActiveUI, "all" | "prevNnext" | "trackTime" | "volumeSlider">
   | "trackTimeCurrent"
   | "trackTimeDuration";
 

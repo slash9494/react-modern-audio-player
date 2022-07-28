@@ -26,7 +26,8 @@ export const SortableListItem = <T extends ListItem>(
 };
 
 const SortableListItemContainer = styled.li`
-  border: 2px solid transparent;
+  border-top: 2px solid transparent;
+  border-bottom: 2px solid transparent;
   transition: all 0.3s ease-in-out;
 
   & * {

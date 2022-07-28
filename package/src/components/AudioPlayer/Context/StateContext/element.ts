@@ -12,6 +12,7 @@ export type ActiveUI = Partial<{
   playList: PlayListUI;
   prevNnext: boolean;
   volume: boolean;
+  volumeSlider: boolean;
   repeatType: boolean;
   trackTime: TrackTimeUI;
   trackInfo: boolean;

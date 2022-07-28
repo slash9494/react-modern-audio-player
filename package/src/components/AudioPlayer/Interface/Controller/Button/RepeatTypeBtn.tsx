@@ -12,7 +12,7 @@ import {
 import { Icon } from "../Icon";
 
 export const RepeatTypeBtn: FC = () => {
-  const { curAudioState, customIcons, activeUI } = useNonNullableContext(
+  const { curAudioState, customIcons } = useNonNullableContext(
     audioPlayerStateContext
   );
   const audioPlayerDispatch = useNonNullableContext(audioPlayerDispatchContext);
