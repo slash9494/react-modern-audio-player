@@ -5,6 +5,8 @@ import { VolumeTriggerBtn } from "../../Button";
 import { useNonNullableContext } from "@/hooks/useNonNullableContext";
 import { audioPlayerStateContext } from "@/components/AudioPlayer/Context";
 
+// TODO : apply event callback props
+
 export const Volume: FC = () => {
   const triggerRef = useRef<HTMLButtonElement>(null);
   const {
@@ -31,7 +33,7 @@ export const Volume: FC = () => {
     <Dropdown
       placement={volumeSliderPlacement}
       triggerType="hover"
-      disabled={volumeSlider}
+      disabled={!volumeSlider}
     >
       <Dropdown.Trigger>
         <VolumeTriggerBtn ref={triggerRef} />
