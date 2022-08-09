@@ -1,43 +1,17 @@
-import { View } from "@react-spectrum/view";
-import { FC, useEffect, useLayoutEffect } from "react";
 import { useNonNullableContext } from "@/hooks/useNonNullableContext";
-import {
-  ActiveUI,
-  PlayListPlacement,
-  CustomIcons,
-  PlayerPlacement,
-  PlayList,
-  AudioInitialState,
-  InterfacePlacement,
-  CoverImgsCss,
-  audioPlayerDispatchContext,
-} from "@/components/AudioPlayer/Context";
-import { Audio } from "./Audio";
-import { Interface } from "./Interface";
+import { useLayoutEffect, useEffect } from "react";
+import { AudioPlayerProps } from ".";
+import { audioPlayerDispatchContext } from "../Context";
 
-export interface AudioPlayerProps {
-  playList: PlayList;
-  audioInitialState?: AudioInitialState;
-  activeUI?: ActiveUI;
-  customIcons?: CustomIcons;
-  coverImgsCss?: CoverImgsCss;
-  placement?: {
-    player?: PlayerPlacement;
-    playList?: PlayListPlacement;
-    interface?: InterfacePlacement;
-  };
-}
-
-export const AudioPlayer: FC<AudioPlayerProps> = ({
-  playList,
-  audioInitialState,
+export const usePropsStateEffect = ({
   placement = {},
   activeUI,
-  customIcons,
   coverImgsCss,
-}) => {
+  audioInitialState,
+  playList,
+  customIcons,
+}: AudioPlayerProps) => {
   const audioPlayerDispatch = useNonNullableContext(audioPlayerDispatchContext);
-
   useLayoutEffect(() => {
     const {
       player: playerPlacement,
@@ -51,11 +25,13 @@ export const AudioPlayer: FC<AudioPlayerProps> = ({
       interfacePlacement,
     });
   }, [audioPlayerDispatch, placement]);
+
   useLayoutEffect(() => {
     if (activeUI) {
       audioPlayerDispatch({ type: "SET_ACTIVE_UI", activeUI });
     }
   }, [activeUI, audioPlayerDispatch]);
+
   useLayoutEffect(() => {
     if (coverImgsCss) {
       audioPlayerDispatch({ type: "SET_COVER_IMGS_CSS", coverImgsCss });
@@ -70,19 +46,14 @@ export const AudioPlayer: FC<AudioPlayerProps> = ({
       });
     }
   }, [audioInitialState, audioPlayerDispatch]);
+
   useEffect(() => {
     audioPlayerDispatch({ type: "UPDATE_PLAY_LIST", playList });
   }, [audioPlayerDispatch, playList]);
+
   useEffect(() => {
     if (customIcons) {
       audioPlayerDispatch({ type: "SET_CUSTOM_ICONS", customIcons });
     }
   }, [customIcons, audioPlayerDispatch]);
-
-  return (
-    <View id="rm-audio-player" UNSAFE_className="rm-audio-player-container">
-      <Audio />
-      <Interface />
-    </View>
-  );
 };
