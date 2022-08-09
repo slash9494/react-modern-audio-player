@@ -13,6 +13,7 @@ export const Audio: FC = () => {
   );
   const playerValidation = curPlayAudioData && playList.length !== 0;
 
+  // refactor declarative ui by props
   if (!playerValidation) return null;
 
   return activeUI.progress === "waveform" ? <WaveSurferAudio /> : <Basic />;

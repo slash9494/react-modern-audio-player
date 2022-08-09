@@ -16,7 +16,9 @@ export const PlayBtn: FC = () => {
     audioPlayerStateContext
   );
   const audioPlayerDispatch = useNonNullableContext(audioPlayerDispatchContext);
-  const onClick = () => audioPlayerDispatch({ type: "SET_PlAY_STATE" });
+  // TODO : refactor variable name
+  // TODO : clarificate dispatch name
+  const changePlayState = () => audioPlayerDispatch({ type: "SET_PlAY_STATE" });
   const PlayIcon = useMemo(() => {
     if (curAudioState.isPlaying)
       return (
@@ -31,7 +33,7 @@ export const PlayBtn: FC = () => {
   }, [curAudioState.isPlaying, customIcons?.pause, customIcons?.play]);
 
   return (
-    <StyledPlayBtn onClick={onClick} className="play-button">
+    <StyledPlayBtn onClick={changePlayState} className="play-button">
       {PlayIcon}
     </StyledPlayBtn>
   );
