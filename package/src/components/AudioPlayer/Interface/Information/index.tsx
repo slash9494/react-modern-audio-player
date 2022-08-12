@@ -12,7 +12,7 @@ import { TrackTimeCurrent, TrackTimeDuration } from "./TrackTime";
 export const Information: FC = () => {
   const { interfacePlacement, playList, curIdx, activeUI } =
     useNonNullableContext(audioPlayerStateContext);
-  const trackInfoActive =
+  const isTrackInfoActive =
     Boolean(
       playList[curIdx]?.customTrackInfo ??
         playList[curIdx]?.writer ??
@@ -39,7 +39,7 @@ export const Information: FC = () => {
           interfacePlacement?.templateArea?.trackInfo ||
           defaultInterfacePlacement.templateArea.trackInfo
         }
-        visible={trackInfoActive}
+        visible={isTrackInfoActive}
       >
         <TrackInfo />
       </Grid.Item>

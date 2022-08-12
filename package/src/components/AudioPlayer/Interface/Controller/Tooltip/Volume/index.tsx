@@ -1,39 +1,28 @@
-import { FC, useEffect, useRef, useState } from "react";
-import { VolumeSlider, VolumeSliderPlacement } from "./Content";
+import { FC, useRef } from "react";
+import { VolumeSlider } from "./Content";
 import Dropdown from "@/components/Dropdown";
 import { VolumeTriggerBtn } from "../../Button";
 import { useNonNullableContext } from "@/hooks/useNonNullableContext";
 import { audioPlayerStateContext } from "@/components/AudioPlayer/Context";
+import { useVolumeSliderPlacement } from "./useVolume";
 
 // TODO : apply event callback props
 
 export const Volume: FC = () => {
   const triggerRef = useRef<HTMLButtonElement>(null);
   const {
-    activeUI: { volumeSlider },
+    activeUI: { volumeSlider: volumeSliderEl },
   } = useNonNullableContext(audioPlayerStateContext);
-  const [volumeSliderPlacement, setVolumeSliderPlacement] =
-    useState<VolumeSliderPlacement>("bottom");
-  useEffect(() => {
-    if (triggerRef.current) {
-      const placementValidation = () => {
-        if (
-          triggerRef.current!.getBoundingClientRect().top <
-          window.innerHeight / 2
-        ) {
-          return "bottom";
-        }
-        return "top";
-      };
-      setVolumeSliderPlacement(placementValidation());
-    }
-  }, [triggerRef.current]);
+  const volumeSliderPlacement = useVolumeSliderPlacement({
+    ref: triggerRef,
+    initialState: "bottom",
+  });
 
   return (
     <Dropdown
       placement={volumeSliderPlacement}
       triggerType="hover"
-      disabled={!volumeSlider}
+      disabled={!volumeSliderEl}
     >
       <Dropdown.Trigger>
         <VolumeTriggerBtn ref={triggerRef} />

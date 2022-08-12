@@ -16,7 +16,6 @@ export const PlayBtn: FC = () => {
     audioPlayerStateContext
   );
   const audioPlayerDispatch = useNonNullableContext(audioPlayerDispatchContext);
-  // TODO : refactor variable name
   // TODO : clarificate dispatch name
   const changePlayState = () => audioPlayerDispatch({ type: "SET_PlAY_STATE" });
   const PlayIcon = useMemo(() => {
