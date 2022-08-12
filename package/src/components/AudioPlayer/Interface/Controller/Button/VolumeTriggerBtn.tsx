@@ -12,7 +12,7 @@ export const VolumeTriggerBtn = forwardRef<HTMLButtonElement>((_, ref) => {
     audioPlayerStateContext
   );
   const audioPlayerDispatch = useNonNullableContext(audioPlayerDispatchContext);
-  const onClickMuted = useCallback(
+  const changeMuteState = useCallback(
     () =>
       audioPlayerDispatch({ type: "SET_MUTED", muted: !curAudioState.muted }),
     [audioPlayerDispatch, curAudioState.muted]
@@ -68,7 +68,7 @@ export const VolumeTriggerBtn = forwardRef<HTMLButtonElement>((_, ref) => {
   ]);
   return (
     <StyledBtn
-      onClick={onClickMuted}
+      onClick={changeMuteState}
       className="volume-trigger-container"
       ref={ref}
     >

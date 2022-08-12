@@ -14,7 +14,7 @@ interface PrevNnextBtnProps {
 export const PrevNnextBtn: FC<PrevNnextBtnProps> = ({ type, visible }) => {
   const { customIcons } = useNonNullableContext(audioPlayerStateContext);
   const audioPlayerDispatch = useNonNullableContext(audioPlayerDispatchContext);
-  const onClickBtn = () => {
+  const changeAudio = () => {
     if (type === "next") {
       audioPlayerDispatch({ type: "NEXT_AUDIO" });
     }
@@ -33,7 +33,7 @@ export const PrevNnextBtn: FC<PrevNnextBtnProps> = ({ type, visible }) => {
   }, [customIcons?.next, customIcons?.prev, type]);
 
   return visible ? (
-    <StyledBtn onClick={onClickBtn} className="prev-n-next-button">
+    <StyledBtn onClick={changeAudio} className="prev-n-next-button">
       {PrevNnextIcon}
     </StyledBtn>
   ) : null;

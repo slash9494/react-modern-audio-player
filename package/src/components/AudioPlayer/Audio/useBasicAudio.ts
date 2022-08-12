@@ -13,6 +13,7 @@ export const useBasicAudio = (): HTMLAttributes<HTMLAudioElement> => {
   );
   const audioPlayerDispatch = useNonNullableContext(audioPlayerDispatchContext);
 
+  // TODO : refactor dependency by exporting
   const onTimeUpdate = useCallback(
     (event: SyntheticEvent<HTMLAudioElement>) => {
       if (event.currentTarget.readyState === 0 || !elementRefs) return;

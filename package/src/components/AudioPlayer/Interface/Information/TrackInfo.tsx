@@ -1,8 +1,5 @@
 import { useNonNullableContext } from "@/hooks/useNonNullableContext";
-import {
-  AudioData,
-  audioPlayerStateContext,
-} from "@/components/AudioPlayer/Context/StateContext";
+import { audioPlayerStateContext } from "@/components/AudioPlayer/Context/StateContext";
 import { FC } from "react";
 import styled from "styled-components";
 

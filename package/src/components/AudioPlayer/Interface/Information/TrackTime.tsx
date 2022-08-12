@@ -10,16 +10,12 @@ import styled, { css } from "styled-components";
 export const TrackTimeCurrent: FC = () => {
   const trackCurTimeRef = useRef<HTMLSpanElement>(null);
   const { activeUI } = useNonNullableContext(audioPlayerStateContext);
-  const audioPlayerDispatch = useNonNullableContext(audioPlayerDispatchContext);
-  useEffect(() => {
-    if (trackCurTimeRef.current) {
-      const trackCurTimeEl = trackCurTimeRef.current;
-      audioPlayerDispatch({
-        type: "SET_ELEMENT_REFS",
-        elementRefs: { trackCurTimeEl },
-      });
-    }
-  }, [trackCurTimeRef.current, audioPlayerDispatch]);
+
+  useTrackTimeRefDispatchEffect({
+    ref: trackCurTimeRef,
+    refName: "trackCurTimeEl",
+  });
+
   return (
     <TrackTimeCurrentContainer
       type={activeUI.trackTime}
@@ -35,16 +31,12 @@ export const TrackTimeCurrent: FC = () => {
 export const TrackTimeDuration: FC = () => {
   const trackDurationRef = useRef<HTMLSpanElement>(null);
   const { activeUI } = useNonNullableContext(audioPlayerStateContext);
-  const audioPlayerDispatch = useNonNullableContext(audioPlayerDispatchContext);
-  useEffect(() => {
-    if (trackDurationRef.current) {
-      const trackDurationEl = trackDurationRef.current;
-      audioPlayerDispatch({
-        type: "SET_ELEMENT_REFS",
-        elementRefs: { trackDurationEl },
-      });
-    }
-  }, [trackDurationRef.current, audioPlayerDispatch]);
+
+  useTrackTimeRefDispatchEffect({
+    ref: trackDurationRef,
+    refName: "trackDurationEl",
+  });
+
   return (
     <TrackTimeDurationContainer
       type={activeUI.trackTime}
@@ -55,6 +47,25 @@ export const TrackTimeDuration: FC = () => {
       </span>
     </TrackTimeDurationContainer>
   );
+};
+
+const useTrackTimeRefDispatchEffect = ({
+  ref,
+  refName,
+}: {
+  ref: React.RefObject<HTMLElement>;
+  refName: "trackDurationEl" | "trackCurTimeEl";
+}) => {
+  const audioPlayerDispatch = useNonNullableContext(audioPlayerDispatchContext);
+  useEffect(() => {
+    const trackTimeRef = ref.current;
+    if (trackTimeRef) {
+      audioPlayerDispatch({
+        type: "SET_ELEMENT_REFS",
+        elementRefs: { [refName]: trackTimeRef },
+      });
+    }
+  }, [ref.current, audioPlayerDispatch, refName]);
 };
 
 interface TrackTimeContainerProps {

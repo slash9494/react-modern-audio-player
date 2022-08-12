@@ -16,7 +16,7 @@ export const RepeatTypeBtn: FC = () => {
     audioPlayerStateContext
   );
   const audioPlayerDispatch = useNonNullableContext(audioPlayerDispatchContext);
-  const onClick = useCallback(() => {
+  const changeRepeatType = useCallback(() => {
     switch (curAudioState.repeatType) {
       case "ALL":
         audioPlayerDispatch({ type: "SET_REPEAT_TYPE", repeatType: "ONE" });
@@ -67,7 +67,7 @@ export const RepeatTypeBtn: FC = () => {
   ]);
 
   return (
-    <StyledBtn onClick={onClick} className="repeat-button">
+    <StyledBtn onClick={changeRepeatType} className="repeat-button">
       {RepeatIcon}
     </StyledBtn>
   );
