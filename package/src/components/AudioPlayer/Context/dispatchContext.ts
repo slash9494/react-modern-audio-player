@@ -18,7 +18,7 @@ export type AudioContextAction =
   | { type: "UPDATE_PLAY_LIST"; playList: PlayList }
   | { type: "SET_INITIAL_AUDIO_STATE"; audioInitialState: AudioInitialState }
   | { type: "SET_PlAY_STATE"; state?: boolean }
-  | { type: "SET_CURRENT_INDEX"; currentIndex: number; currentAudioId: number }
+  | { type: "SET_CURRENT_AUDIO"; currentIndex: number; currentAudioId: number }
   | { type: "SET_REPEAT_TYPE"; repeatType: RepeatType }
   | {
       type: "SET_PLACEMENTS";

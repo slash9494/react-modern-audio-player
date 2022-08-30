@@ -33,7 +33,7 @@ export const usePlayList = ({
   const onClickItem = useCallback(
     (index: number) => {
       audioPlayerDispatch({
-        type: "SET_CURRENT_INDEX",
+        type: "SET_CURRENT_AUDIO",
         currentIndex: index,
         currentAudioId: playList[index].id,
       });
