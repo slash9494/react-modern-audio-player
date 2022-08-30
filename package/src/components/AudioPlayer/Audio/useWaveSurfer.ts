@@ -20,6 +20,14 @@ export const useWaveSurfer = () => {
     trackCurTimeEl.innerText = getTimeWithPadStart(curTime);
   }, [elementRefs]);
 
+  /** delete empty wave surfer */
+  const waveEl = document.getElementsByTagName("wave");
+  useEffect(() => {
+    if (waveEl.length > 1) {
+      waveEl[0].setAttribute("style", "display: none");
+    }
+  }, [waveEl]);
+
   /** load file */
   const [curAudioData, setCurAudioData] = useState<AudioData>();
   useEffect(() => {

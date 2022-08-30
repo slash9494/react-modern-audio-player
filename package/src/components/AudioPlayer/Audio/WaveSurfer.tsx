@@ -13,6 +13,7 @@ export const WaveSurferAudio: FC = () => {
     progressColor: "--rm-audio-player-waveform-bar",
     waveColor: "--rm-audio-player-waveform-background",
   });
+
   /** init waveSurfer */
   useEffect(() => {
     if (elementRefs?.waveformInst || !colorsRef.current) return;
@@ -32,6 +33,7 @@ export const WaveSurferAudio: FC = () => {
       elementRefs: { waveformInst: waveSurfer },
     });
   }, [elementRefs?.waveformInst, audioPlayerDispatch, colorsRef.current]);
+
   useWaveSurfer();
   return null;
 };
