@@ -2,7 +2,7 @@ name: release
 
 on:
   push:
-    branches: [main]
+    branches: [main,test/git-action]
 jobs:
   publish:
     runs-on: ubuntu-latest
@@ -13,13 +13,10 @@ jobs:
         with:
           cache: 'yarn'
           node-version: '16'
+          registry-url: "https://registry.npmjs.org"
+          scope: :LYH
 
-      - name: Adding License
-        uses: dephraiim/license-action@v1
-        with:
-          LICENSE_TYPE: MIT
-          AUTHOR: LYH
-          PROJECT_NAME: react-modern-audio-player
+      - run: ls -al
 
       - name: Configure git
         run: |
