@@ -77,10 +77,15 @@ export const audioPlayerReducer = (
         );
         return state;
       }
+
+      const curIdx = action.playList.findIndex(
+        (item) => item.id === state.curPlayId
+      );
+
       return {
         ...state,
         playList: action.playList,
-        curIdx: state.curIdx,
+        curIdx,
       };
     }
     case "SET_VOLUME":
