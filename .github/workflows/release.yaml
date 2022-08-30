@@ -29,10 +29,19 @@ jobs:
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-yarn-
+
+      - name: Adding License
+        uses: dephraiim/license-action@v1
+        with:
+          LICENSE_TYPE: MIT
+          AUTHOR: LYH
+            
       - name: Install dependencies
         run: yarn --frozen-lockfile
+
       - name: Build
         run: yarn build 
+
       - name: Creating .npmrc
         run: |
           cat << EOF > "$HOME/.npmrc"
@@ -41,12 +50,14 @@ jobs:
           EOF
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}        
+
       - name: publish
         uses: JS-DevTools/npm-publish@v1
         with:
           token: ${{ secrets.NPM_TOKEN }}
           package: './package/package.json'
           access: 'public'
+
       - name: Tag new version
         if: steps.publish.outputs.type != 'none'
         uses: Klemensas/action-autotag@stable

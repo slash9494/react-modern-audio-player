@@ -20,7 +20,6 @@ const playList: PlayList = [
     img: `${PlayerLogo}`,
     src: `${audio1}`,
     id: 1,
-    index: 0,
   },
   {
     name: "React Modern Audio Player-2",
@@ -28,7 +27,6 @@ const playList: PlayList = [
     img: `${PlayerLogo}`,
     src: `${audio2}`,
     id: 2,
-    index: 1,
   },
   {
     name: "React Modern Audio Player-3",
@@ -36,7 +34,6 @@ const playList: PlayList = [
     img: `${PlayerLogo}`,
     src: `${audio3}`,
     id: 3,
-    index: 2,
   },
   {
     name: "React Modern Audio Player-4",
@@ -44,7 +41,6 @@ const playList: PlayList = [
     img: `${PlayerLogo}`,
     src: `${audio4}`,
     id: 4,
-    index: 3,
   },
   {
     name: "React Modern Audio Player-5",
@@ -52,7 +48,6 @@ const playList: PlayList = [
     img: `${PlayerLogo}`,
     src: `${audio5}`,
     id: 5,
-    index: 4,
   },
 ];
 

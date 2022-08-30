@@ -17,7 +17,6 @@ export type AudioCustomProps = {
 export type AudioData = {
   src: string;
   id: number;
-  index: number;
   name?: string | ReactNode;
   writer?: string | ReactNode;
   img?: string;

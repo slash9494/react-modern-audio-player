@@ -80,7 +80,7 @@ export const audioPlayerReducer = (
       return {
         ...state,
         playList: action.playList,
-        curIdx: curPlayListItem.index,
+        curIdx: state.curIdx,
       };
     }
     case "SET_VOLUME":
@@ -114,7 +114,7 @@ export const audioPlayerReducer = (
           isPlaying: !state.curAudioState.isPlaying,
         },
       };
-    case "SET_CURRENT_INDEX":
+    case "SET_CURRENT_AUDIO":
       return {
         ...state,
         curPlayId: action.currentAudioId,
