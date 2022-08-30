@@ -9,6 +9,8 @@ export const StyledBtn = styled.button`
     height: 100%;
     pointer-events: none;
   }
+
+  /** //TODO : animation on off  */
   &:hover {
     transform: scale(1.1);
   }

@@ -77,7 +77,10 @@ function App() {
         React modern audio player
       </h1>
       <div>
-        <AudioPlayerWithProvider playList={playList} />
+        <AudioPlayerWithProvider
+          playList={playList}
+          activeUI={{ all: true, progress: "waveform" }}
+        />
       </div>
     </div>
   );

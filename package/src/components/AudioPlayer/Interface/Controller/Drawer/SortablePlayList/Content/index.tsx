@@ -36,6 +36,7 @@ export const PlayList: FC<SortablePlayListProps> = ({ isOpen, setIsOpen }) => {
       >
         <PlayListContainer className="play-list-container">
           <SortableList>
+            {/** //TODO : change props event to context  */}
             {playList.map((data, index) => (
               <SortableList.Item
                 key={`sortable-item-${index}`}
