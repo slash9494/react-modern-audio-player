@@ -201,7 +201,7 @@ type InterfacePlacementValue = "row1-1" | "row1-2" | "row1-3" | "row1-4" | ... m
 
 type InterfaceGridItemArea = Partial<Record<InterfacePlacementKey, string>>;
 	/** example
-    * check grid item MDN
+          * check grid item MDN
 	* progress : 2-4
 	* repeatBtn : row1-4 / 2 / row1-4 / 10
 	*/
