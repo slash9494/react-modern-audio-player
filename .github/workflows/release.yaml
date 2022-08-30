@@ -14,13 +14,6 @@ jobs:
           cache: 'yarn'
           node-version: '16'
 
-      - name: Adding License
-        uses: dephraiim/license-action@v1
-        with:
-          LICENSE_TYPE: MIT
-          AUTHOR: LYH
-          PROJECT_NAME: react-modern-audio-player
-
       - name: Configure git
         run: |
           git config user.email "slash9494@naver.com"
