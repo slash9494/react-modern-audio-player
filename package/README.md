@@ -57,7 +57,6 @@ const playList = [
     img: 'image.jpg',
     src: 'audio.mp3',
     id: 1,
-    index: 0,
   },
 ]
 function Player (){
@@ -100,7 +99,6 @@ type PlayList = Array<AudioData>;
 type AudioData = {
   src: string;
   id: number;
-  index: number;
   name?: string | ReactNode;
   writer?: string | ReactNode;
   img?: string;
@@ -201,7 +199,7 @@ type InterfacePlacementValue = "row1-1" | "row1-2" | "row1-3" | "row1-4" | ... m
 
 type InterfaceGridItemArea = Partial<Record<InterfacePlacementKey, string>>;
 	/** example
-          * check grid item MDN
+        * check grid item MDN
 	* progress : 2-4
 	* repeatBtn : row1-4 / 2 / row1-4 / 10
 	*/
