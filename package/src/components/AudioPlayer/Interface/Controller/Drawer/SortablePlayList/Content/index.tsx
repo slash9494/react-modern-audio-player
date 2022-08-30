@@ -60,7 +60,6 @@ export const PlayList: FC<SortablePlayListProps> = ({ isOpen, setIsOpen }) => {
 };
 
 const PlayListContainer = styled.div`
-  height: 20vh;
   transition-property: max-height, opacity;
   overflow-x: hidden;
   overflow-y: auto;
