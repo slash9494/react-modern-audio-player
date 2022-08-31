@@ -18,6 +18,9 @@
   </a>
 </p>
 
+## DEMO
+https://codesandbox.io/s/basic-ypvpyv?file=/src/App.js
+
 # ****Flexible and Customizable UI****
 ## This can offer waveform by `wavesurfer.js`
 <img width="100%" src="https://user-images.githubusercontent.com/70849655/180435472-f043dbb4-54df-43e0-bc5c-67492510e817.png" alt="">
