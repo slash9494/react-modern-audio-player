@@ -33,8 +33,6 @@
     "@react-spectrum/provider": "^3.4.1",
     "@react-spectrum/theme-default": "^3.3.1",
     "@react-spectrum/view": "^3.2.1",
-    "@types/styled-components": "^5.1.25",
-    "@types/wavesurfer.js": "^6.0.3",
     "classnames": "^2.3.1",
     "react-icons": "^4.4.0",
     "styled-components": "^5.3.5",
@@ -44,11 +42,18 @@
     "@types/node": "^17.0.25",
     "@types/react": "^18.0.1",
     "@types/react-dom": "^18.0.0",
+    "@types/styled-components": "^5.1.26",
+    "@types/wavesurfer.js": "^6.0.3",
     "@vitejs/plugin-react": "^1.0.7",
     "typescript": "^4.6.3",
     "vite": "^2.9.0",
     "vite-plugin-dts": "^1.1.0",
     "vite-plugin-libcss": "^1.0.5"
   },
-  "keywords": ["audio", "player", "react", "react-modern-audio-player"]
+  "keywords": [
+    "audio",
+    "player",
+    "react",
+    "react-modern-audio-player"
+  ]
 }
