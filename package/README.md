@@ -186,9 +186,9 @@ type PlayerPlacement =
   | "top-left"
   | "top-right";
 
-type PlayListPlacement = "bottom" | "top";
+type VolumeSliderPlacement = "bottom" | "top" | 'left' | 'right';
 
-type VolumeSliderPlacement = "bottom" | "top";
+type PlayListPlacement = "bottom" | "top";
 
 type InterfacePlacement = {
   templateArea?: InterfaceGridTemplateArea;
