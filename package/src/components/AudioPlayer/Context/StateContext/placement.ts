@@ -52,3 +52,10 @@ export const defaultInterfacePlacement: {
     playList: "row1-9",
   },
 };
+
+export interface Placements {
+  playListPlacement: PlayListPlacement;
+  interfacePlacement: InterfacePlacement;
+  volumeSliderPlacement: VolumeSliderPlacement | undefined;
+  playerPlacement: PlayerPlacement | undefined;
+}

@@ -4,9 +4,7 @@ import {
   audioPlayerStateContext,
   CurAudioState,
   defaultInterfacePlacement,
-  InterfacePlacement,
-  PlayerPlacement,
-  PlayListPlacement,
+  Placements,
 } from "@/components/AudioPlayer/Context";
 import { PropsWithChildren, FC, useReducer } from "react";
 import { AudioPlayerProps } from "../AudioPlayer/Player";
@@ -34,11 +32,7 @@ export const AudioPlayerProvider: FC<PropsWithChildren<AudioPlayerProps>> = ({
     playButton: true,
   };
 
-  const placement: {
-    playerPlacement?: PlayerPlacement;
-    playListPlacement: PlayListPlacement;
-    interfacePlacement?: InterfacePlacement;
-  } = {
+  const placement: Placements = {
     playerPlacement: placementProp?.player,
     playListPlacement: placementProp?.playList || "bottom",
     interfacePlacement: placementProp?.interface || {
@@ -46,6 +40,7 @@ export const AudioPlayerProvider: FC<PropsWithChildren<AudioPlayerProps>> = ({
         playButton: defaultInterfacePlacement.templateArea["playButton"],
       },
     },
+    volumeSliderPlacement: placementProp?.volumeSlider,
   };
 
   const [audioContextState, dispatchAudioContextState] = useReducer(
