@@ -26,7 +26,12 @@ export const useVolumeSliderPlacement = ({
         return "top";
       };
 
-      setVolumeSliderPlacement(placementValidation());
+      const volumeSliderPlacementTimeout = setTimeout(() => {
+        setVolumeSliderPlacement(placementValidation());
+      }, 0);
+      return () => {
+        clearTimeout(volumeSliderPlacementTimeout);
+      };
     }
   }, [playerPlacement, triggerRef]);
   return volumeSliderPlacement;
