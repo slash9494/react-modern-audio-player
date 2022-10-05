@@ -13,6 +13,7 @@ export const Basic: FC = () => {
     audioPlayerStateContext
   );
   const audioPlayerDispatch = useNonNullableContext(audioPlayerDispatchContext);
+
   const curPlayedAudioData = playList.find(
     (audioData) => audioData.id === curPlayId
   );
@@ -37,14 +38,14 @@ export const Basic: FC = () => {
       type: "SET_ELEMENT_REFS",
       elementRefs: { audioEl: audioRef.current },
     });
-  }, [audioRef.current, audioPlayerDispatch]);
+  }, [audioPlayerDispatch]);
 
   return (
     <audio
       id="rm-audio-player-audio"
       autoPlay={curAudioState.isPlaying}
       ref={audioRef}
-      src={curPlayedAudioData!.src}
+      src={curPlayedAudioData?.src}
       {...useAudioEventProps}
       {...audioNativeStates}
     ></audio>

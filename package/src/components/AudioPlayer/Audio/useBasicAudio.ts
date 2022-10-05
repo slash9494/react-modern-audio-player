@@ -67,7 +67,7 @@ export const useBasicAudio = (): HTMLAttributes<HTMLAudioElement> => {
     } else {
       elementRefs?.audioEl.pause();
     }
-  }, [elementRefs?.audioEl, curAudioState.isPlaying]);
+  }, [elementRefs?.audioEl, curAudioState.isPlaying, audioPlayerDispatch]);
 
   /** volume */
   useEffect(() => {
