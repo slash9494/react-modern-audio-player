@@ -10,6 +10,7 @@ import {
   AudioInitialState,
   InterfacePlacement,
   CoverImgsCss,
+  VolumeSliderPlacement,
 } from "./StateContext";
 
 export type AudioContextAction =
@@ -17,21 +18,22 @@ export type AudioContextAction =
   | { type: "PREV_AUDIO" }
   | { type: "UPDATE_PLAY_LIST"; playList: PlayList }
   | { type: "SET_INITIAL_AUDIO_STATE"; audioInitialState: AudioInitialState }
-  | { type: "SET_PlAY_STATE"; state?: boolean }
+  | { type: "CHANGE_PLAYING_STATE"; state?: boolean }
   | { type: "SET_CURRENT_AUDIO"; currentIndex: number; currentAudioId: number }
   | { type: "SET_REPEAT_TYPE"; repeatType: RepeatType }
-  | {
-      type: "SET_PLACEMENTS";
-      playerPlacement?: PlayerPlacement;
-      playListPlacement?: PlayListPlacement;
-      interfacePlacement?: InterfacePlacement;
-    }
   | { type: "SET_VOLUME"; volume: number }
   | { type: "SET_MUTED"; muted: boolean }
   | { type: "SET_ACTIVE_UI"; activeUI: ActiveUI }
   | { type: "SET_ELEMENT_REFS"; elementRefs: ElementRefs }
   | { type: "SET_CUSTOM_ICONS"; customIcons: CustomIcons }
-  | { type: "SET_COVER_IMGS_CSS"; coverImgsCss: CoverImgsCss };
+  | { type: "SET_COVER_IMGS_CSS"; coverImgsCss: CoverImgsCss }
+  | {
+      type: "SET_PLACEMENTS";
+      playerPlacement?: PlayerPlacement;
+      playListPlacement?: PlayListPlacement;
+      interfacePlacement?: InterfacePlacement;
+      volumeSliderPlacement?: VolumeSliderPlacement;
+    };
 export type AudioPlayerDispatchContext = Dispatch<AudioContextAction>;
 
 export const audioPlayerDispatchContext =

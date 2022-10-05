@@ -8,11 +8,14 @@ import {
   audioPlayerStateContext,
 } from "../Context";
 
+// TODO : useImperativeHandle to standardize the interface on the dispatch
+
 export const useWaveSurfer = () => {
   const audioPlayerDispatch = useNonNullableContext(audioPlayerDispatchContext);
   const { curAudioState, curIdx, playList, elementRefs } =
     useNonNullableContext(audioPlayerStateContext);
   const [isReady, setIsReady] = useState(false);
+
   const getCurTime = useCallback(() => {
     if (!elementRefs?.waveformInst || !elementRefs.trackCurTimeEl) return;
     const { trackCurTimeEl } = elementRefs;
@@ -21,12 +24,20 @@ export const useWaveSurfer = () => {
   }, [elementRefs]);
 
   /** delete empty wave surfer */
-  const waveEl = document.getElementsByTagName("wave");
-  useEffect(() => {
-    if (waveEl.length > 1) {
-      waveEl[0].setAttribute("style", "display: none");
-    }
-  }, [waveEl]);
+  useEffect(
+    () => () => {
+      const waveEl = document.getElementsByTagName("wave");
+      if (waveEl.length) {
+        waveEl[0].remove();
+        audioPlayerDispatch({
+          type: "SET_ELEMENT_REFS",
+          elementRefs: { waveformInst: undefined },
+        });
+        elementRefs?.waveformInst?.destroy();
+      }
+    },
+    []
+  );
 
   /** load file */
   const [curAudioData, setCurAudioData] = useState<AudioData>();
@@ -47,10 +58,10 @@ export const useWaveSurfer = () => {
   }, [
     playList,
     curIdx,
-    elementRefs?.waveformInst,
     curAudioData,
-    elementRefs,
+    elementRefs?.waveformInst,
     getCurTime,
+    elementRefs,
   ]);
 
   /** play */
@@ -103,11 +114,11 @@ export const useWaveSurfer = () => {
   useEffect(() => {
     if (!elementRefs?.waveformInst || !isReady) return;
     if (curAudioState.muted) {
-      elementRefs.waveformInst.setVolume(0);
       elementRefs.waveformInst.setMute(true);
       return;
     }
 
+    elementRefs.waveformInst.setMute(false);
     elementRefs.waveformInst.setVolume(curAudioState.volume);
   }, [
     curAudioState.volume,
@@ -115,5 +126,6 @@ export const useWaveSurfer = () => {
     curAudioState.muted,
     isReady,
   ]);
+
   return null;
 };

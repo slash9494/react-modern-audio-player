@@ -1,6 +1,6 @@
 import { useNonNullableContext } from "@/hooks/useNonNullableContext";
 import { audioPlayerStateContext } from "@/components/AudioPlayer/Context/StateContext";
-import { FC, useMemo } from "react";
+import { FC } from "react";
 import styled from "styled-components";
 import { BarProgress } from "./BarProgress";
 import { WaveformProgress } from "./WaveformProgress";
@@ -12,13 +12,11 @@ const ProgressContainer = styled.div`
 
 export const Progress: FC = () => {
   const { activeUI } = useNonNullableContext(audioPlayerStateContext);
-  const CurProgress = useMemo(() => {
-    if (activeUI.progress === "waveform") return <WaveformProgress />;
-    return <BarProgress />;
-  }, [activeUI.progress]);
+
   return (
     <ProgressContainer className="progress-container">
-      {CurProgress}
+      <WaveformProgress isActive={activeUI.progress === "waveform"} />
+      <BarProgress isActive={activeUI.progress !== "waveform"} />
     </ProgressContainer>
   );
 };

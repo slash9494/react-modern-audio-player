@@ -11,24 +11,27 @@ import { useVolumeSliderPlacement } from "./useVolume";
 export const Volume: FC = () => {
   const triggerRef = useRef<HTMLButtonElement>(null);
   const {
-    activeUI: { volumeSlider: volumeSliderEl },
+    activeUI: { volumeSlider: volumeSliderEl, all: allEl },
+    volumeSliderPlacement: ContextVolumePlacement,
   } = useNonNullableContext(audioPlayerStateContext);
   const volumeSliderPlacement = useVolumeSliderPlacement({
-    ref: triggerRef,
+    triggerRef,
     initialState: "bottom",
   });
 
   return (
     <Dropdown
-      placement={volumeSliderPlacement}
+      placement={ContextVolumePlacement || volumeSliderPlacement}
       triggerType="hover"
-      disabled={!volumeSliderEl}
+      disabled={!(volumeSliderEl ?? allEl)}
     >
       <Dropdown.Trigger>
         <VolumeTriggerBtn ref={triggerRef} />
       </Dropdown.Trigger>
       <Dropdown.Content>
-        <VolumeSlider placement={volumeSliderPlacement} />
+        <VolumeSlider
+          placement={ContextVolumePlacement || volumeSliderPlacement}
+        />
       </Dropdown.Content>
     </Dropdown>
   );

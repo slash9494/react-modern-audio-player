@@ -49,11 +49,16 @@ export const SpectrumProvider: FC<PropsWithChildren<SpectrumProviderProps>> = ({
       setPlacementState(placementValidation());
     }
   }, [contextPlayerPlacement]);
+
   return (
     <Provider
       theme={theme}
       width={"100%"}
-      position={contextPlayerPlacement && "fixed"}
+      position={
+        contextPlayerPlacement === "static" || !contextPlayerPlacement
+          ? "static"
+          : "fixed"
+      }
       UNSAFE_className="rm-audio-player-provider"
       {...placementState}
       {...rootContainerProps}

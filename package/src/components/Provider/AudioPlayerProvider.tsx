@@ -3,33 +3,63 @@ import {
   audioPlayerReducer,
   audioPlayerStateContext,
   defaultInterfacePlacement,
+  InterfacePlacement,
+  PlayerPlacement,
+  PlayListPlacement,
 } from "@/components/AudioPlayer/Context";
 import { PropsWithChildren, FC, useReducer } from "react";
+import { AudioPlayerProps } from "../AudioPlayer/Player";
 
-export const AudioPlayerProvider: FC<PropsWithChildren<unknown>> = ({
+export const AudioPlayerProvider: FC<PropsWithChildren<AudioPlayerProps>> = ({
   children,
+  ...props
 }) => {
+  const {
+    playList,
+    audioInitialState,
+    activeUI: activeUIProp,
+    placement: placementProp,
+    ...otherProps
+  } = props;
+
+  const curAudioState = {
+    isPlaying: audioInitialState?.isPlaying || false,
+    repeatType: audioInitialState?.repeatType || "ALL",
+    volume: audioInitialState?.volume || 1,
+  };
+
+  const activeUI = activeUIProp || {
+    playButton: true,
+  };
+
+  const placement: {
+    playerPlacement?: PlayerPlacement;
+    playListPlacement: PlayListPlacement;
+    interfacePlacement?: InterfacePlacement;
+  } = {
+    playerPlacement: placementProp?.player,
+    playListPlacement: placementProp?.playList || "bottom",
+    interfacePlacement: placementProp?.interface || {
+      templateArea: {
+        playButton: defaultInterfacePlacement.templateArea["playButton"],
+      },
+    },
+  };
+
   const [audioContextState, dispatchAudioContextState] = useReducer(
     audioPlayerReducer,
     {
-      playList: [],
-      curPlayId: 1,
-      curIdx: 0,
-      curAudioState: {
-        isPlaying: false,
-        repeatType: "ALL",
-        volume: 1,
-      },
-      activeUI: {
-        playButton: true,
-        volumeSlider: true,
-      },
-      playListPlacement: "bottom",
-      interfacePlacement: {
-        templateArea: {
-          playButton: defaultInterfacePlacement.templateArea["playButton"],
-        },
-      },
+      playList,
+      curPlayId: audioInitialState?.curPlayId || 1,
+      curIdx: audioInitialState?.curPlayId
+        ? playList.findIndex(
+            (audioData) => audioData.id === audioInitialState?.curPlayId
+          )
+        : 0,
+      curAudioState,
+      activeUI,
+      ...placement,
+      ...otherProps,
     }
   );
 
