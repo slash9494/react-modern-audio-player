@@ -3,7 +3,6 @@ import { getTimeWithPadStart } from "@/utils/getTime";
 import { resetAudioValues } from "@/utils/resetAudioValues";
 import { useState, useEffect, useCallback } from "react";
 import {
-  AudioData,
   audioPlayerDispatchContext,
   audioPlayerStateContext,
 } from "../Context";
@@ -12,8 +11,14 @@ import {
 
 export const useWaveSurfer = () => {
   const audioPlayerDispatch = useNonNullableContext(audioPlayerDispatchContext);
-  const { curAudioState, curIdx, playList, elementRefs } =
-    useNonNullableContext(audioPlayerStateContext);
+  const {
+    curAudioState,
+    curIdx,
+    playList,
+    elementRefs,
+    interfacePlacement,
+    playerPlacement,
+  } = useNonNullableContext(audioPlayerStateContext);
   const [isReady, setIsReady] = useState(false);
 
   const getCurTime = useCallback(() => {
@@ -40,29 +45,35 @@ export const useWaveSurfer = () => {
   );
 
   /** load file */
-  const [curAudioData, setCurAudioData] = useState<AudioData>();
+  const [reloadValidation, setReloadValidation] = useState({
+    curAudioData: playList[curIdx],
+    curInterfacePlacement: interfacePlacement,
+    curPlayerPlacement: playerPlacement,
+  });
+
+  if (
+    reloadValidation.curAudioData.src !== playList[curIdx].src ||
+    reloadValidation.curInterfacePlacement !== interfacePlacement ||
+    reloadValidation.curPlayerPlacement !== playerPlacement
+  ) {
+    setReloadValidation({
+      curAudioData: playList[curIdx],
+      curInterfacePlacement: interfacePlacement,
+      curPlayerPlacement: playerPlacement,
+    });
+  }
+
   useEffect(() => {
-    if (!elementRefs?.waveformInst || !playList[curIdx]) return;
+    if (!elementRefs?.waveformInst || !reloadValidation.curAudioData) return;
 
-    // prevent reloading caused by updating sortable list
-    if (curAudioData?.src === playList[curIdx].src) return;
-
-    setCurAudioData(playList[curIdx]);
     setIsReady(false);
-    elementRefs.waveformInst.load(playList[curIdx].src);
+    elementRefs.waveformInst.load(reloadValidation.curAudioData.src);
     elementRefs.waveformInst.on("ready", () => {
       resetAudioValues(elementRefs, elementRefs.waveformInst!.getDuration());
       setIsReady(true);
       elementRefs.waveformInst!.on("seek", () => getCurTime());
     });
-  }, [
-    playList,
-    curIdx,
-    curAudioData,
-    elementRefs?.waveformInst,
-    getCurTime,
-    elementRefs,
-  ]);
+  }, [elementRefs?.waveformInst, getCurTime, elementRefs, reloadValidation]);
 
   /** play */
   useEffect(() => {
