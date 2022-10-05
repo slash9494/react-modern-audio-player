@@ -7,7 +7,7 @@ import {
 import { FC } from "react";
 import { Artwork } from "./Artwork";
 import { TrackInfo } from "./TrackInfo";
-import { TrackTimeCurrent, TrackTimeDuration } from "./TrackTime";
+import { TrackTime } from "./TrackTime";
 
 export const Information: FC = () => {
   const { interfacePlacement, playList, curIdx, activeUI } =
@@ -43,26 +43,8 @@ export const Information: FC = () => {
       >
         <TrackInfo />
       </Grid.Item>
-      <Grid.Item
-        gridArea={
-          interfacePlacement?.itemCustomArea?.trackTimeCurrent ||
-          interfacePlacement?.templateArea?.trackTimeCurrent ||
-          defaultInterfacePlacement.templateArea.trackTimeCurrent
-        }
-        visible={Boolean(activeUI.trackTime ?? activeUI.all)}
-      >
-        <TrackTimeCurrent />
-      </Grid.Item>
-      <Grid.Item
-        gridArea={
-          interfacePlacement?.itemCustomArea?.trackTimeDuration ||
-          interfacePlacement?.templateArea?.trackTimeDuration ||
-          defaultInterfacePlacement.templateArea.trackTimeDuration
-        }
-        visible={Boolean(activeUI.trackTime ?? activeUI.all)}
-      >
-        <TrackTimeDuration />
-      </Grid.Item>
+
+      <TrackTime />
     </>
   );
 };
