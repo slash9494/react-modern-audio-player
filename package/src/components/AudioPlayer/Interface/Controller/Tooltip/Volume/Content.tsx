@@ -2,12 +2,10 @@ import { useNonNullableContext } from "@/hooks/useNonNullableContext";
 import { audioPlayerDispatchContext } from "@/components/AudioPlayer/Context/dispatchContext";
 import {
   audioPlayerStateContext,
-  PlayerPlacement,
+  VolumeSliderPlacement,
 } from "@/components/AudioPlayer/Context/StateContext";
 import { ChangeEvent, FC, useCallback, useRef } from "react";
 import styled, { css } from "styled-components";
-
-export type VolumeSliderPlacement = "bottom" | "top";
 
 export const VolumeSlider: FC<{ placement: VolumeSliderPlacement }> = ({
   placement,
@@ -61,7 +59,7 @@ const VolumeSliderContainer = styled.div`
     contentPlacement,
     volumeValue,
   }: {
-    contentPlacement?: PlayerPlacement;
+    contentPlacement?: VolumeSliderPlacement;
     volumeValue: number;
   }) => css`
     --rm-audio-player-volume-value: ${volumeValue}%;
@@ -71,9 +69,27 @@ const VolumeSliderContainer = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    ${contentPlacement?.includes("top") &&
+    ${contentPlacement === "top" &&
     css`
       bottom: auto;
+    `}
+
+    ${contentPlacement === "left" &&
+    css`
+      transform: rotate(-90deg);
+      right: 50px;
+    `}
+
+    ${contentPlacement === "right" &&
+    css`
+      transform: rotate(90deg);
+      left: 50px;
+    `}
+
+    ${contentPlacement === "bottom" &&
+    css`
+      transform: rotateX(180deg);
+      top: 5px;
     `}
 
     .volume-panel-wrapper {
@@ -85,11 +101,7 @@ const VolumeSliderContainer = styled.div`
       box-shadow: 0 2px 4px rgb(0 0 0 /10%);
       position: absolute;
       bottom: 5px;
-      ${contentPlacement?.includes("bottom") &&
-      css`
-        transform: rotateX(180deg);
-        top: 5px;
-      `}
+
       &:before {
         content: "";
         bottom: -10px;
