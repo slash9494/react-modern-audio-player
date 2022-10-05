@@ -1,6 +1,7 @@
 import { NumbersToUnionNum } from "@/utils/generateUnionNumType";
 import { ActiveUI } from "./element";
 
+export type VolumeSliderPlacement = "bottom" | "top";
 export type PlayListPlacement = "bottom" | "top";
 export type PlayerPlacement =
   | "bottom"
@@ -8,7 +9,8 @@ export type PlayerPlacement =
   | "bottom-left"
   | "bottom-right"
   | "top-left"
-  | "top-right";
+  | "top-right"
+  | "static";
 
 //TODO : declare dynamic length type depending on the number of activeUI;
 export const interfacePlacementMaxLength = 10; // plus 1 for deleted number 0;
@@ -30,7 +32,7 @@ export type InterfaceGridItemArea = Partial<
   Record<InterfacePlacementKey, string>
 >;
 export type InterfacePlacement = {
-  templateArea: InterfaceGridTemplateArea;
+  templateArea?: InterfaceGridTemplateArea;
   itemCustomArea?: InterfaceGridItemArea;
 };
 

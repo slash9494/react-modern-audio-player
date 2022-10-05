@@ -102,7 +102,7 @@ export const audioPlayerReducer = (
         curAudioState: { ...state.curAudioState, ...action.audioInitialState },
         curPlayId: action.audioInitialState.curPlayId,
       };
-    case "SET_PlAY_STATE":
+    case "CHANGE_PLAYING_STATE":
       if (action.state !== undefined) {
         return {
           ...state,
@@ -139,6 +139,7 @@ export const audioPlayerReducer = (
         playerPlacement: action.playerPlacement || state.playerPlacement,
         playListPlacement: action.playListPlacement || state.playListPlacement,
         interfacePlacement: action.interfacePlacement,
+        volumeSliderPlacement: action.volumeSliderPlacement,
       };
     case "SET_MUTED":
       return {
@@ -151,6 +152,13 @@ export const audioPlayerReducer = (
     case "SET_ACTIVE_UI":
       return {
         ...state,
+        curAudioState: {
+          ...state.curAudioState,
+          isPlaying:
+            state.activeUI.progress !== action.activeUI.progress
+              ? false
+              : state.curAudioState.isPlaying,
+        },
         activeUI: { ...action.activeUI },
       };
     case "SET_ELEMENT_REFS":

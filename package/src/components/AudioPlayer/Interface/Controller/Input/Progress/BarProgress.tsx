@@ -1,45 +1,33 @@
-import { useNonNullableContext } from "@/hooks/useNonNullableContext";
-import { audioPlayerDispatchContext } from "@/components/AudioPlayer/Context/dispatchContext";
-import { FC, useEffect, useRef } from "react";
+import { useRefsDispatch } from "@/hooks/useRefsDispatch";
+import { FC, useRef } from "react";
 import styled from "styled-components";
 import { useBarProgress } from "./useBarProgress";
 
-export const BarProgress: FC = () => {
+export const BarProgress: FC<{ isActive: boolean }> = ({ isActive }) => {
   const progressBarRef = useRef<HTMLDivElement>(null);
   const progressValueRef = useRef<HTMLDivElement>(null);
   const progressHandleRef = useRef<HTMLDivElement>(null);
-  const audioPlayerDispatch = useNonNullableContext(audioPlayerDispatchContext);
+  useRefsDispatch(
+    {
+      refs: {
+        progressBarEl: progressBarRef,
+        progressValueEl: progressValueRef,
+        progressHandleEl: progressHandleRef,
+      },
+    },
+    [isActive]
+  );
+
   const eventProps = useBarProgress();
 
-  useEffect(() => {
-    if (
-      progressBarRef.current &&
-      progressValueRef.current &&
-      progressHandleRef.current
-    ) {
-      const progressBarEl = progressBarRef.current;
-      const progressValueEl = progressValueRef.current;
-      const progressHandleEl = progressHandleRef.current;
-      audioPlayerDispatch({
-        type: "SET_ELEMENT_REFS",
-        elementRefs: { progressBarEl, progressValueEl, progressHandleEl },
-      });
-    }
-  }, [
-    progressHandleRef,
-    progressBarRef,
-    progressValueRef,
-    audioPlayerDispatch,
-  ]);
-
-  return (
+  return isActive ? (
     <BarProgressWrapper className="bar-progress-wrapper" {...eventProps}>
       <div className="rm-player-progress-bar" ref={progressBarRef}>
         <div className="rm-player-progress" ref={progressValueRef}></div>
       </div>
       <div className="rm-player-progress-handle" ref={progressHandleRef} />
     </BarProgressWrapper>
-  );
+  ) : null;
 };
 
 const BarProgressWrapper = styled.div`

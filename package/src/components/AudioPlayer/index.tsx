@@ -11,7 +11,7 @@ export const AudioPlayerWithProvider: FC<
   AudioPlayerProps & SpectrumProviderProps
 > = ({ rootContainerProps, ...audioPlayProps }) => {
   return (
-    <AudioPlayerProvider>
+    <AudioPlayerProvider {...audioPlayProps}>
       <SpectrumProvider rootContainerProps={rootContainerProps}>
         <AudioPlayer {...audioPlayProps} />
         <GlobalStyle />

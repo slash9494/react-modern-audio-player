@@ -15,6 +15,11 @@ export const Controller: FC = () => {
   const { interfacePlacement, activeUI } = useNonNullableContext(
     audioPlayerStateContext
   );
+
+  const volumeComponentKey = document
+    .querySelector(".rm-audio-player-provider")
+    ?.getBoundingClientRect().top;
+
   return (
     <>
       <Grid.Item
@@ -68,7 +73,7 @@ export const Controller: FC = () => {
         }
         visible={Boolean(activeUI.volume ?? activeUI.all)}
       >
-        <Volume />
+        <Volume key={volumeComponentKey} />
       </Grid.Item>
       <Grid.Item
         gridArea={

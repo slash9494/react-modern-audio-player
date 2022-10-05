@@ -11,7 +11,10 @@ import {
   PlayListPlacement,
   InterfacePlacement,
   PlayerPlacement,
+  VolumeSliderPlacement,
 } from "./placement";
+
+// TODO : add dark mode setting
 
 export interface AudioPlayerStateContext {
   playList: PlayList;
@@ -22,6 +25,7 @@ export interface AudioPlayerStateContext {
   playListPlacement: PlayListPlacement;
   playerPlacement?: PlayerPlacement;
   interfacePlacement?: InterfacePlacement;
+  volumeSliderPlacement?: VolumeSliderPlacement;
   elementRefs?: ElementRefs;
   customIcons?: CustomIcons;
   coverImgsCss?: CoverImgsCss;

@@ -9,6 +9,7 @@ import {
   AudioInitialState,
   InterfacePlacement,
   CoverImgsCss,
+  VolumeSliderPlacement,
 } from "@/components/AudioPlayer/Context";
 import { Audio } from "../Audio";
 import { Interface } from "../Interface";
@@ -24,6 +25,7 @@ export interface AudioPlayerProps {
     player?: PlayerPlacement;
     playList?: PlayListPlacement;
     interface?: InterfacePlacement;
+    volumeSlider?: VolumeSliderPlacement;
   };
 }
 
