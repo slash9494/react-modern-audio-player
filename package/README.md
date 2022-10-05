@@ -19,7 +19,7 @@
 </p>
 
 ## DEMO
-https://codesandbox.io/s/basic-ypvpyv?file=/src/App.js
+https://codesandbox.io/s/basic-91y82y?file=/src/App.tsx
 
 # ****Flexible and Customizable UI****
 ## This can offer waveform by `wavesurfer.js`
@@ -206,7 +206,9 @@ type InterfaceGridItemArea = Partial<Record<InterfacePlacementKey, string>>;
 	/** example
 	* progress : 2-4
 	* repeatBtn : row1-4 / 2 / row1-4 / 10
-    * check grid item MDN
+	*
+	* check MDN - grid area
+	* https://developer.mozilla.org/ko/docs/Web/CSS/grid-area
 	*/
 ```
 
