@@ -56,7 +56,7 @@ import AudioPlayer from 'react-modern-audio-player';
 const playList = [
   {
     name: 'name',
-    writer: 'write',
+    writer: 'writer',
     img: 'image.jpg',
     src: 'audio.mp3',
     id: 1,
@@ -82,6 +82,7 @@ interface AudioPlayerProps {
     player?: PlayerPlacement;
     playList?: PlayListPlacement;
     interface?: InterfacePlacement;
+    volumeSlider?: VolumeSliderPlacement;
   };
 }
 ```
@@ -90,7 +91,7 @@ Prop | Type | Default
 --- | --- | --- 
 `playList` | [PlayList](#playlist) | [ ] 
 `audioInitialState` | [AudioInitialState](#audioinitialstate) | isPlaying: false </br>repeatType: "ALL" </br>volume: 1 
-`activeUI` | [ActiveUI](#activeui) | playButton : true <br/> volumeSlider: true
+`activeUI` | [ActiveUI](#activeui) | playButton : true
 `customIcons` | [CustomIcons](#customicons) | undefined 
 `coverImgsCss` | [CoverImgsCss](#coverimgscss) | undefined 
 `placement` | [Placement](#placement) | playListPlacement : "bottom" </br>interfacePlacement :[DefaultInterfacePlacement](#default-interface-placement)
@@ -137,12 +138,11 @@ type ActiveUI = {
   volume: boolean;
   volumeSlider: boolean;
   repeatType: boolean;
-  trackTime: TrackTimeUI;
+  trackTime: boolean;
   trackInfo: boolean;
   artwork: boolean;
   progress: ProgressUI;
 };
-type TrackTimeUI = "separation-mode" | "unification-mode" | false;
 type ProgressUI = "waveform" | "bar" | false;
 type PlayListUI = "sortable" | "unSortable" | false;
 ```
@@ -188,8 +188,10 @@ type PlayerPlacement =
 
 type PlayListPlacement = "bottom" | "top";
 
+type VolumeSliderPlacement = "bottom" | "top";
+
 type InterfacePlacement = {
-  templateArea: InterfaceGridTemplateArea;
+  templateArea?: InterfaceGridTemplateArea;
   itemCustomArea?: InterfaceGridItemArea;
 };
 
@@ -202,9 +204,9 @@ type InterfacePlacementValue = "row1-1" | "row1-2" | "row1-3" | "row1-4" | ... m
 
 type InterfaceGridItemArea = Partial<Record<InterfacePlacementKey, string>>;
 	/** example
-        * check grid item MDN
 	* progress : 2-4
 	* repeatBtn : row1-4 / 2 / row1-4 / 10
+    * check grid item MDN
 	*/
 ```
 
@@ -294,7 +296,6 @@ function App() {
         }}
         activeUI={{
           all: true,
-          trackTime: "separation-mode",
           progress: "waveform",
         }}
       />
