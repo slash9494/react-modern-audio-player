@@ -2,6 +2,7 @@ import {
   audioPlayerDispatchContext,
   audioPlayerReducer,
   audioPlayerStateContext,
+  CurAudioState,
   defaultInterfacePlacement,
   InterfacePlacement,
   PlayerPlacement,
@@ -22,10 +23,11 @@ export const AudioPlayerProvider: FC<PropsWithChildren<AudioPlayerProps>> = ({
     ...otherProps
   } = props;
 
-  const curAudioState = {
+  const curAudioState: CurAudioState = {
     isPlaying: audioInitialState?.isPlaying || false,
     repeatType: audioInitialState?.repeatType || "ALL",
     volume: audioInitialState?.volume || 1,
+    muted: audioInitialState?.muted,
   };
 
   const activeUI = activeUIProp || {
