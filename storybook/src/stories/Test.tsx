@@ -1,3 +1,4 @@
+import { useState } from "react";
 import AudioPlayer from "../../../package/dist/index.es.js";
 import { PlayList } from "../../../package/dist/types/components/AudioPlayer/Context";
 // import AudioPlayer from 'react-modern-audio-player';
@@ -10,7 +11,6 @@ const playList: PlayList = [
     img: "/images/audio-1.jpg",
     src: "/audio/audio-1.mp3",
     id: 1,
-    index: 0,
   },
   {
     name: "Don't You Think Lose",
@@ -18,7 +18,6 @@ const playList: PlayList = [
     img: "/images/audio-2.jpg",
     src: "/audio/audio-2.mp3",
     id: 2,
-    index: 1,
   },
   {
     name: "The Cradle of Your Soul dsdasdasdas",
@@ -26,7 +25,6 @@ const playList: PlayList = [
     img: "/images/audio-3.jpg",
     src: "/audio/audio-3.mp3",
     id: 3,
-    index: 2,
   },
   {
     name: "Spirit Blossom",
@@ -34,7 +32,6 @@ const playList: PlayList = [
     img: "/images/audio-4.jpg",
     src: "/audio/audio-4.mp3",
     id: 4,
-    index: 3,
   },
   {
     name: "Everything Feels New",
@@ -42,13 +39,50 @@ const playList: PlayList = [
     img: "/images/audio-5.jpg",
     src: "/audio/audio-5.mp3",
     id: 5,
-    index: 4,
   },
 ];
 
 export const Test = () => {
+  const [progressType, setProgressType] = useState("bar");
+  const [playerPlacement, setPlayerPlacement] = useState("static");
+
   return (
-    <div>
+    <div
+      style={{
+        height: "400px",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+      }}
+    >
+      <div>
+        <button
+          onClick={() =>
+            setProgressType((prev) => (prev === "bar" ? "waveform" : "bar"))
+          }
+        >
+          change progress type
+        </button>
+        <button
+          onClick={() => {
+            switch (playerPlacement) {
+              case "static":
+                setPlayerPlacement("top-left");
+                break;
+              case "top-left":
+                setPlayerPlacement("bottom-left");
+                break;
+              case "bottom-left":
+                setPlayerPlacement("static");
+                break;
+              default:
+                break;
+            }
+          }}
+        >
+          change player placement
+        </button>
+      </div>
       <AudioPlayer
         playList={playList}
         audioInitialState={{
@@ -66,13 +100,12 @@ export const Test = () => {
               volume: "row1-8",
             },
           },
-          // player: "bottom-left",
+          player: playerPlacement,
         }}
-        // activeUI={{
-        //   all: true,
-        //   trackTime: "separation-mode",
-        //   // progress: 'waveform',
-        // }}
+        activeUI={{
+          all: true,
+          progress: progressType,
+        }}
       />
     </div>
   );
