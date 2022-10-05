@@ -52,7 +52,9 @@
   },
   "keywords": [
     "audio",
+    "music",
     "player",
+    "media",
     "react",
     "react-modern-audio-player"
   ]
