@@ -1,7 +1,9 @@
-import { audioPlayerStateContext } from "@/components/AudioPlayer/Context";
+import {
+  audioPlayerStateContext,
+  VolumeSliderPlacement,
+} from "@/components/AudioPlayer/Context";
 import { useNonNullableContext } from "@/hooks/useNonNullableContext";
 import { useState, useEffect } from "react";
-import { VolumeSliderPlacement } from "./Content";
 
 export const useVolumeSliderPlacement = ({
   triggerRef,
