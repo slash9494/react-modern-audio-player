@@ -1,7 +1,8 @@
+import { DropdownContentPlacement } from "@/components/Dropdown";
 import { NumbersToUnionNum } from "@/utils/generateUnionNumType";
 import { ActiveUI } from "./element";
 
-export type VolumeSliderPlacement = "bottom" | "top";
+export type VolumeSliderPlacement = DropdownContentPlacement;
 export type PlayListPlacement = "bottom" | "top";
 export type PlayerPlacement =
   | "bottom"
