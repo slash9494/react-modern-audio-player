@@ -22,7 +22,7 @@ export default defineConfig({
     lib: {
       entry: path.resolve(__dirname, "src/index.ts"),
       name: "react-modern-audio-player",
-      formats: ["es", "cjs"],
+      formats: ["es"],
       fileName: (format) =>
         format === "es" ? `index.es.js` : `index.${format}`,
     },
