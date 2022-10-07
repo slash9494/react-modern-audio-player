@@ -15,6 +15,8 @@ import { Audio } from "../Audio";
 import { Interface } from "../Interface";
 import { usePropsStateEffect } from "./usePropsStateEffect";
 
+// TODO : feature - add custom component props
+
 export interface AudioPlayerProps {
   playList: PlayList;
   audioInitialState?: AudioInitialState;

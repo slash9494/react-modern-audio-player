@@ -46,7 +46,7 @@ export const usePlayList = ({
       onEntered: () => setIsOpen(true),
     },
     sortableItemEventProps: {
-      draggable: activeUI.playList !== "unSortable" || activeUI.all,
+      draggable: activeUI.playList !== "unSortable" ?? activeUI.all,
       dragStartIdx,
       onDragStart: (index) => setDragStartIdx(index),
       onDrop: (e, newPlayList) =>
