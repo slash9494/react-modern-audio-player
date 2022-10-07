@@ -26,6 +26,7 @@ export const WaveSurferAudio: FC = () => {
       responsive: true,
       waveColor: `${colorsRef.current.waveColor}`,
       cursorColor: "var(--rm-audio-player-waveform-cursor)",
+      backend: "MediaElementWebAudio",
     });
     audioPlayerDispatch({
       type: "SET_ELEMENT_REFS",
