@@ -8,6 +8,8 @@ import {
 } from "../Context";
 
 // TODO : useImperativeHandle to standardize the interface on the dispatch
+// TODO : feature - draggable time movement
+// TODO : fix - when the wavesurfer is reloaded, the time is reset
 
 export const useWaveSurfer = () => {
   const audioPlayerDispatch = useNonNullableContext(audioPlayerDispatchContext);
