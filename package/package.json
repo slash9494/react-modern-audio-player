@@ -1,6 +1,6 @@
 {
   "name": "react-modern-audio-player",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "author": {
     "name": "LYH",
     "email": "slash9494@naver.com",
@@ -8,7 +8,7 @@
   },
   "homepage": "https://github.com/slash9494/react-modern-audio-player/",
   "module": "dist/index.es.js",
-  "main": "dist/index.cjs",
+  "main": "dist/index.es.js",
   "esnext": "dist/index.es.js",
   "typings": "dist/types/index.d.ts",
   "files": [
