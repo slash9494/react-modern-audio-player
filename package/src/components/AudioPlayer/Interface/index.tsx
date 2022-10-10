@@ -7,6 +7,7 @@ import { audioPlayerStateContext } from "@/components/AudioPlayer/Context/StateC
 
 import styled from "styled-components";
 import Grid from "@/components/Grid";
+import { useGridTemplate } from "@/hooks/useGridTemplate";
 
 const InterfaceContainer = styled.div`
   .interface-grid {
@@ -24,7 +25,7 @@ const InterfaceContainer = styled.div`
 export const Interface: FC = () => {
   const { interfacePlacement, activeUI, playListPlacement } =
     useNonNullableContext(audioPlayerStateContext);
-  const { gridAreas, gridColumns } = generateGridTemplateValues(
+  const [gridAreas, gridColumns] = useGridTemplate(
     activeUI,
     interfacePlacement?.templateArea
   );
