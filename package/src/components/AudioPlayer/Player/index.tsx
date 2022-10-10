@@ -15,7 +15,8 @@ import { Audio } from "../Audio";
 import { Interface } from "../Interface";
 import { usePropsStateEffect } from "./usePropsStateEffect";
 
-// TODO : feature - add custom component props
+// TODO : feature - add custom component
+// TODO : feature - add Equalizer component
 
 export interface AudioPlayerProps {
   playList: PlayList;
