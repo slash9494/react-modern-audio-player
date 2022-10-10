@@ -15,8 +15,8 @@ export const useGridTemplate = (
 
   if (!curTemplateAreaValues) {
     const { gridAreas, gridColumns } = generateGridTemplateValues(
-      activeUI,
-      templateArea
+      curActiveUI,
+      curTemplateArea
     );
     setCurTemplateAreaValues({ gridAreas, gridColumns });
     return [gridAreas, gridColumns] as const;
