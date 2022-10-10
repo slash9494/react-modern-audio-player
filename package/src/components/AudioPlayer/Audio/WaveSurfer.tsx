@@ -13,6 +13,7 @@ export const WaveSurferAudio: FC = () => {
     progressColor: "--rm-audio-player-waveform-bar",
     waveColor: "--rm-audio-player-waveform-background",
   });
+
   /** init waveSurfer */
   useEffect(() => {
     if (elementRefs?.waveformInst || !colorsRef.current) return;
@@ -26,7 +27,7 @@ export const WaveSurferAudio: FC = () => {
       responsive: true,
       waveColor: `${colorsRef.current.waveColor}`,
       cursorColor: "var(--rm-audio-player-waveform-cursor)",
-      backend: "MediaElementWebAudio",
+      backend: "WebAudio",
     });
     audioPlayerDispatch({
       type: "SET_ELEMENT_REFS",
