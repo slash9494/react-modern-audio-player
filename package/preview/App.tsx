@@ -1,57 +1,48 @@
 import { AudioPlayerWithProvider } from "@/components/AudioPlayer";
-import { PlayList } from "@/components/AudioPlayer/Context";
-import audio1 from "./assets/audio/audio-1.mp3";
-import audio1Img from "./assets/images/audio-1.jpg";
-import audio2 from "./assets/audio/audio-2.mp3";
-import audio2Img from "./assets/images/audio-2.jpg";
-import audio3 from "./assets/audio/audio-3.mp3";
-import audio3Img from "./assets/images/audio-3.jpg";
-import audio4 from "./assets/audio/audio-4.mp3";
-import audio4Img from "./assets/images/audio-4.jpg";
-import audio5 from "./assets/audio/audio-5.mp3";
-import audio5Img from "./assets/images/audio-5.jpg";
+import { PlayerPlacement, PlayList } from "@/components/AudioPlayer/Context";
 import PlayerLogo from "./assets/images/noname.png";
-
-// TODO : test
+import { useState } from "react";
 const playList: PlayList = [
   {
     name: "React Modern Audio Player-1",
     writer: "LYH",
     img: `${PlayerLogo}`,
-    src: `${audio1}`,
+    src: "https://cdn.pixabay.com/audio/2022/08/23/audio_d16737dc28.mp3",
     id: 1,
   },
   {
-    name: "React Modern Audio Player-2",
+    name: "React Modern Audio Player-1",
     writer: "LYH",
     img: `${PlayerLogo}`,
-    src: `${audio2}`,
+    src: "https://cdn.pixabay.com/audio/2022/08/04/audio_2dde668d05.mp3",
     id: 2,
   },
   {
-    name: "React Modern Audio Player-3",
+    name: "React Modern Audio Player-1",
     writer: "LYH",
     img: `${PlayerLogo}`,
-    src: `${audio3}`,
+    src: "https://cdn.pixabay.com/audio/2022/08/03/audio_54ca0ffa52.mp3",
     id: 3,
   },
   {
-    name: "React Modern Audio Player-4",
+    name: "React Modern Audio Player-1",
     writer: "LYH",
     img: `${PlayerLogo}`,
-    src: `${audio4}`,
+    src: "https://cdn.pixabay.com/audio/2022/07/25/audio_3266b47d61.mp3",
     id: 4,
   },
   {
-    name: "React Modern Audio Player-5",
+    name: "React Modern Audio Player-1",
     writer: "LYH",
     img: `${PlayerLogo}`,
-    src: `${audio5}`,
+    src: "https://cdn.pixabay.com/audio/2022/08/02/audio_884fe92c21.mp3",
     id: 5,
   },
 ];
 
 function App() {
+  const [progressType, setProgressType] = useState("waveform");
+  const [playerPlacement, setPlayerPlacement] = useState("static");
   return (
     <div
       style={{
@@ -70,11 +61,57 @@ function App() {
         }}
       >
         React modern audio player
+        <button
+          onClick={() =>
+            setProgressType((prev) => (prev === "bar" ? "waveform" : "bar"))
+          }
+        >
+          button
+        </button>
+        <button
+          onClick={() => {
+            switch (playerPlacement) {
+              case "static":
+                setPlayerPlacement("top-left");
+                break;
+              case "top-left":
+                setPlayerPlacement("bottom-left");
+                break;
+              case "bottom-left":
+                setPlayerPlacement("static");
+                break;
+              default:
+                break;
+            }
+          }}
+        >
+          change player placement
+        </button>
       </h1>
       <div>
         <AudioPlayerWithProvider
           playList={playList}
-          activeUI={{ all: true, progress: "waveform" }}
+          audioInitialState={{
+            muted: true,
+            volume: 0.2,
+            curPlayId: 1,
+          }}
+          placement={{
+            interface: {
+              templateArea: {
+                trackTimeDuration: "row1-5",
+                progress: "row1-4",
+                playButton: "row1-6",
+                repeatType: "row1-7",
+                volume: "row1-8",
+              },
+            },
+            player: playerPlacement as PlayerPlacement,
+          }}
+          activeUI={{
+            all: true,
+            progress: progressType as "bar" | "waveform",
+          }}
         />
       </div>
     </div>

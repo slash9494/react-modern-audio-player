@@ -46,7 +46,6 @@ export const useWaveSurfer = () => {
     []
   );
 
-  /** load file */
   const [reloadValidation, setReloadValidation] = useState({
     curAudioData: playList[curIdx],
     curInterfacePlacement: interfacePlacement,
@@ -65,6 +64,7 @@ export const useWaveSurfer = () => {
     });
   }
 
+  /** load file */
   useEffect(() => {
     if (!elementRefs?.waveformInst || !reloadValidation.curAudioData) return;
 
