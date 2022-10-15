@@ -14,8 +14,6 @@ import {
   VolumeSliderPlacement,
 } from "./placement";
 
-// TODO : add dark mode setting
-
 export interface AudioPlayerStateContext {
   playList: PlayList;
   curPlayId: number;
