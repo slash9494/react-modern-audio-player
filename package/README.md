@@ -84,6 +84,7 @@ interface AudioPlayerProps {
     interface?: InterfacePlacement;
     volumeSlider?: VolumeSliderPlacement;
   };
+  rootContainerProps?: RootContainerProps
 }
 ```
 
@@ -95,6 +96,7 @@ Prop | Type | Default
 `customIcons` | [CustomIcons](#customicons) | undefined 
 `coverImgsCss` | [CoverImgsCss](#coverimgscss) | undefined 
 `placement` | [Placement](#placement) | playListPlacement : "bottom" </br>interfacePlacement :[DefaultInterfacePlacement](#default-interface-placement)
+`rootContainerProps` | [RootContainerProps](#rootcontainerprops) | theme: spectrum-theme-default<br/>width: 100% <br/>position: 'static'<br/>UNSAFE_className: rm-audio-player-provider
 
 ## PlayList
 
@@ -111,7 +113,7 @@ type AudioData = {
 };
 ```
 
-## audioInitialState
+## AudioInitialState
 
 ```tsx
 type AudioInitialState = Omit<
@@ -127,7 +129,7 @@ type AudioInitialState = Omit<
 };
 ```
 
-## activeUI
+## ActiveUI
 
 ```tsx
 type ActiveUI = {
@@ -147,7 +149,7 @@ type ProgressUI = "waveform" | "bar" | false;
 type PlayListUI = "sortable" | "unSortable" | false;
 ```
 
-## customIcons
+## CustomIcons
 
 ```tsx
 type CustomIcons = {
@@ -166,7 +168,7 @@ type CustomIcons = {
 };
 ```
 
-## coverImgsCss
+## CoverImgsCss
 
 ```tsx
 interface CoverImgsCss {
@@ -175,7 +177,7 @@ interface CoverImgsCss {
 }
 ```
 
-## placement
+## Placement
 
 ```tsx
 type PlayerPlacement =
@@ -228,6 +230,12 @@ const defaultInterfacePlacement = {
   },
 };
 ```
+
+## RootContainerProps
+> it is same with spectrum provider props
+> </br>
+> https://react-spectrum.adobe.com/react-spectrum/Provider.html#themes
+
 
 # Override Style
 
