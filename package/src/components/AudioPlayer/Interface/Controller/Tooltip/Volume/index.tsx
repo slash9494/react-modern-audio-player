@@ -8,10 +8,12 @@ import { useVolumeSliderPlacement } from "./useVolume";
 
 // TODO : apply event callback props
 
+// TODO : fix ignoring volume drag when clicking on volume slider
+
 export const Volume: FC = () => {
   const triggerRef = useRef<HTMLButtonElement>(null);
   const {
-    activeUI: { volumeSlider: volumeSliderEl, all: allEl },
+    activeUI: { volumeSlider: volumeSliderEl },
     volumeSliderPlacement: contextVolumePlacement,
   } = useNonNullableContext(audioPlayerStateContext);
   const volumeSliderPlacement = useVolumeSliderPlacement({
@@ -23,7 +25,7 @@ export const Volume: FC = () => {
     <Dropdown
       placement={contextVolumePlacement || volumeSliderPlacement}
       triggerType="hover"
-      disabled={!(volumeSliderEl ?? allEl)}
+      disabled={!(volumeSliderEl ?? true)}
     >
       <Dropdown.Trigger>
         <VolumeTriggerBtn ref={triggerRef} />
