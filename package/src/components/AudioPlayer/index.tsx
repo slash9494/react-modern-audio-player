@@ -7,9 +7,12 @@ import { FC } from "react";
 import { GlobalStyle } from "../../styles/GlobalStyle";
 import { AudioPlayer, AudioPlayerProps } from "./Player";
 
-export const AudioPlayerWithProvider: FC<
-  AudioPlayerProps & SpectrumProviderProps
-> = ({ rootContainerProps, ...audioPlayProps }) => {
+export type RMAudioPlayerProps = AudioPlayerProps & SpectrumProviderProps;
+
+export const AudioPlayerWithProvider: FC<RMAudioPlayerProps> = ({
+  rootContainerProps,
+  ...audioPlayProps
+}) => {
   return (
     <AudioPlayerProvider {...audioPlayProps}>
       <SpectrumProvider rootContainerProps={rootContainerProps}>
