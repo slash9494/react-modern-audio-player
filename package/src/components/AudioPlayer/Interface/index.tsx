@@ -1,7 +1,6 @@
 import { FC } from "react";
 import { Controller } from "./Controller";
 import { Information } from "./Information";
-import { generateGridTemplateValues } from "../../../utils/generateGridTemplateValues";
 import { useNonNullableContext } from "@/hooks/useNonNullableContext";
 import { audioPlayerStateContext } from "@/components/AudioPlayer/Context/StateContext";
 
