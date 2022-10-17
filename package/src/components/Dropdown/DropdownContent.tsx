@@ -46,7 +46,7 @@ export const DropdownContent: FC<PropsWithChildren<DropdownContentProps>> = ({
         height: dropdownRef.current.offsetHeight,
       });
     }
-  }, [dropdownRef.current]);
+  }, [dropdownRef]);
 
   const Content = useMemo(
     () =>
