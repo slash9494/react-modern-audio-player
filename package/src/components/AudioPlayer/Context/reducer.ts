@@ -1,6 +1,15 @@
+import { getRandomNumber } from "@/utils/getRandomNumber";
 import { resetAudioValues } from "@/utils/resetAudioValues";
 import { AudioContextAction } from "./dispatchContext";
 import { AudioPlayerStateContext } from "./StateContext";
+
+const getRandomIdx = (curIdx: number, minNumber: number, maxNumber: number) => {
+  let nextIdx = getRandomNumber(minNumber, maxNumber);
+  while (nextIdx === curIdx) {
+    nextIdx = getRandomNumber(minNumber, maxNumber);
+  }
+  return nextIdx;
+};
 
 export const audioPlayerReducer = (
   state: AudioPlayerStateContext,
@@ -18,17 +27,15 @@ export const audioPlayerReducer = (
         };
       }
       if (state.curAudioState.repeatType === "SHUFFLE") {
-        let nextIdx = 0;
-        const getShuffledPlayIdx = () => {
-          nextIdx = Math.round(Math.random() * (state.playList.length - 1));
-        };
-        while (nextIdx === state.curIdx) {
-          getShuffledPlayIdx();
-        }
+        const randomIdx = getRandomIdx(
+          state.curIdx,
+          0,
+          state.playList.length - 1
+        );
         return {
           ...state,
-          curPlayId: state.playList[nextIdx].id,
-          curIdx: nextIdx,
+          curPlayId: state.playList[randomIdx].id,
+          curIdx: randomIdx,
         };
       }
       const infiniteLoopNextIdx = (state.curIdx + 1) % state.playList.length;
@@ -50,13 +57,15 @@ export const audioPlayerReducer = (
         return state;
       }
       if (state.curAudioState.repeatType === "SHUFFLE") {
-        const shuffledPlayIdx = Math.round(
-          Math.random() * (state.playList.length - 1)
+        const randomIdx = getRandomIdx(
+          state.curIdx,
+          0,
+          state.playList.length - 1
         );
         return {
           ...state,
-          curPlayId: state.playList[shuffledPlayIdx].id,
-          curIdx: shuffledPlayIdx,
+          curPlayId: state.playList[randomIdx].id,
+          curIdx: randomIdx,
         };
       }
       const infiniteLoopPrevIdx =
