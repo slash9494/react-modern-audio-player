@@ -16,6 +16,8 @@ export interface DropdownProps
   disabled?: boolean;
 }
 
+// TODO : fix dropdown open state when change player placement or first render
+
 const Dropdown: FC<PropsWithChildren<DropdownProps>> = ({
   triggerType = "click",
   outboundClickActive = true,
@@ -43,20 +45,20 @@ const Dropdown: FC<PropsWithChildren<DropdownProps>> = ({
   }, [isOpenProp]);
 
   return (
-    <DropdownContainer
-      className="dropdown-container"
-      ref={dropdownRef}
-      {...dropdownEventProps}
+    <dropdownContext.Provider
+      value={{ dropdownRef, placement, isOpen, setIsOpen, onOpenChange }}
     >
-      <dropdownContext.Provider
-        value={{ dropdownRef, placement, isOpen, setIsOpen, onOpenChange }}
+      <DropdownContainer
+        className="dropdown-container"
+        ref={dropdownRef}
+        {...dropdownEventProps}
       >
         <>
           {trigger}
           {!disabled && content}
         </>
-      </dropdownContext.Provider>
-    </DropdownContainer>
+      </DropdownContainer>
+    </dropdownContext.Provider>
   );
 };
 

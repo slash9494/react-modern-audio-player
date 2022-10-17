@@ -8,8 +8,6 @@ import { useVolumeSliderPlacement } from "./useVolume";
 
 // TODO : apply event callback props
 
-// TODO : fix ignoring volume drag when clicking on volume slider
-
 export const Volume: FC = () => {
   const triggerRef = useRef<HTMLButtonElement>(null);
   const {
