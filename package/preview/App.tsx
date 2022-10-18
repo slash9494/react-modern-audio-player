@@ -1,7 +1,6 @@
-import { AudioPlayerWithProvider } from "@/components/AudioPlayer";
-import { PlayerPlacement, PlayList } from "@/components/AudioPlayer/Context";
 import PlayerLogo from "./assets/images/noname.png";
 import { useState } from "react";
+import { AudioPlayerWithProvider, PlayerPlacement, PlayList } from "../src";
 const playList: PlayList = [
   {
     name: "React Modern Audio Player-1",
@@ -99,18 +98,26 @@ function App() {
           placement={{
             interface: {
               templateArea: {
-                trackTimeDuration: "row1-5",
-                progress: "row1-4",
-                playButton: "row1-6",
-                repeatType: "row1-7",
-                volume: "row1-8",
+                playList: "row1-3",
+                progress: "row2-2",
+                playButton: "row3-2",
+                repeatType: "row3-3",
+                volume: "row3-1",
+                trackTimeCurrent: "row2-1",
+                trackTimeDuration: "row2-3",
               },
             },
             player: playerPlacement as PlayerPlacement,
           }}
           activeUI={{
-            all: true,
+            // all: true,
             progress: progressType as "bar" | "waveform",
+            playButton: true,
+            repeatType: true,
+            volume: true,
+            playList: "sortable",
+            prevNnext: true,
+            trackTime: true,
           }}
         />
       </div>

@@ -1,22 +1,33 @@
-import React from 'react';
-import { ComponentStory, ComponentMeta } from '@storybook/react';
+import React from "react";
+import { ComponentStory, ComponentMeta } from "@storybook/react";
+import { Test } from "./Test";
 
-
-import {Test} from './Test'
-// More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-  title: 'Example/Test',
+  title: "Example/Test",
   component: Test,
-  // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
   argTypes: {
-    backgroundColor: { control: 'color' },
+    playerPlacement: {
+      options: [
+        "bottom",
+        "top",
+        "bottom-left",
+        "bottom-right",
+        "top-left",
+        "top-right",
+      ],
+      control: { type: "select" },
+    },
+    mode: {
+      options: ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"],
+      control: { type: "select" },
+    },
+    progressType: {
+      options: ["bar", "waveform"],
+      control: { type: "select" },
+    },
   },
 } as ComponentMeta<typeof Test>;
 
-// More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args
-const Template: ComponentStory<typeof Test> = (args) => <Test  />;
+const Template: ComponentStory<typeof Test> = (args) => <Test {...args} />;
 
 export const PlayerTest = Template.bind({});
-// More on args: https://storybook.js.org/docs/react/writing-stories/args
-
-
