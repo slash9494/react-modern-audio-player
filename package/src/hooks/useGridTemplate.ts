@@ -9,13 +9,6 @@ export const useGridTemplate = (
   activeUI: ActiveUI,
   templateArea: InterfacePlacement["templateArea"] | undefined
 ) => {
-  const [curActiveUI, setCurActiveUI] = useState(activeUI);
-  const [curTemplateArea, setCurTemplateArea] = useState(templateArea);
-  const [curTemplateAreaValues, setCurTemplateAreaValues] = useState<{
-    gridAreas: string[];
-    gridColumns: string[];
-  }>();
-
   const generateGridTemplateValues = useCallback(
     (activeUi: ActiveUI, placement?: InterfacePlacement["templateArea"]) => {
       const activeUIArr = activeUi.all
@@ -35,6 +28,7 @@ export const useGridTemplate = (
         : Object.entries(activeUi)
             .filter(([, value]) => value)
             .map(([key]) => key);
+
       const renameTrackTime = () => {
         if (activeUIArr.find((key) => key === "trackTime")) {
           activeUIArr.splice(activeUIArr.indexOf("trackTime"), 1);
@@ -48,6 +42,9 @@ export const useGridTemplate = (
         ...defaultInterfacePlacement.templateArea,
         ...placement,
       };
+
+      let maxRow = 1;
+      const colsCntRecord: Record<number, number> = {};
       const placementArr = Object.entries(newInterfacePlacement)
         .map(([key, value]) => {
           const [row, col] = value.split("-");
@@ -57,48 +54,95 @@ export const useGridTemplate = (
             col: Number(col),
           };
         })
-        .filter(({ key }) => activeUIArr.includes(key))
+        .filter(({ key, row }) => {
+          if (activeUIArr.includes(key)) {
+            maxRow = Math.max(maxRow, row);
+            colsCntRecord[row] = colsCntRecord[row]
+              ? colsCntRecord[row] + 1
+              : 1;
+            return true;
+          }
+          return false;
+        })
         .sort((a, b) => a.col - b.col);
 
-      let maxRow = 1;
-      const getMaxRow = () => {
-        for (let i = 0; i < placementArr.length; i++) {
-          maxRow = Math.max(maxRow, placementArr[i].row);
-        }
-      };
-      getMaxRow();
+      const maxCol = Math.max(...Object.values(colsCntRecord));
 
+      let progressColIdx: number | undefined;
       const gridAreas = new Array(maxRow).fill("").map((_, rowIdx) => {
         let cols = "";
-        for (let i = 0; i < placementArr.length; i++) {
-          cols += ` row${rowIdx + 1}-${placementArr[i].col}`;
-          if (i === 0) {
-            cols = cols.trim();
+        let isWithProgress = false;
+
+        const curRowPlacementArr = placementArr.filter(({ key, row }) => {
+          if (row === rowIdx + 1) {
+            if (key === "progress") {
+              isWithProgress = true;
+            }
+            return true;
+          }
+          return false;
+        });
+
+        if (isWithProgress) {
+          const progressCnt = maxCol - (curRowPlacementArr.length - 1);
+
+          for (let i = 0; i < maxCol - (progressCnt - 1); i++) {
+            if (curRowPlacementArr[i]?.key === "progress") {
+              cols += ` row${rowIdx + 1}-${curRowPlacementArr[i].col} `.repeat(
+                progressCnt
+              );
+              progressColIdx = Math.ceil(progressCnt / 2) + i - 1;
+            } else {
+              cols += ` row${rowIdx + 1}-${
+                curRowPlacementArr[i] ? curRowPlacementArr[i].col : i + 1
+              }`;
+            }
+          }
+        } else {
+          let extraColCnt = maxCol - curRowPlacementArr.length;
+          let curRowIdx = 0;
+          for (let i = 0; i < maxCol; i++) {
+            if (!extraColCnt && curRowPlacementArr[curRowIdx]?.col > i + 1) {
+              curRowIdx++;
+              cols += ` row${rowIdx + 1}-${
+                curRowPlacementArr[curRowIdx]?.col
+                  ? curRowPlacementArr[curRowIdx].col
+                  : i + 1
+              }`;
+            } else {
+              extraColCnt--;
+              cols += ` row${rowIdx + 1}-${i + 1}`;
+            }
           }
         }
-        return cols;
-      });
-      const gridColumns = new Array(maxRow).fill("").map((_, rowIdx) => {
-        const maxWidth = window ? window.innerWidth - 100 : 1500;
 
+        return cols.trimStart();
+      });
+
+      const maxWidth = window ? window.innerWidth - 100 : 1500;
+      const gridColumns = new Array(maxRow).fill("").map((_, rowIdx) => {
         let cols = "";
-        for (let i = 0; i < placementArr.length; i++) {
-          if (i === 0) {
-            cols = cols.trim();
-          }
-          if (rowIdx === 0 && placementArr[i].key === "progress") {
+        for (let i = 0; i < maxCol; i++) {
+          if (progressColIdx === i && rowIdx === 0) {
             cols += ` 1fr`;
             continue;
           }
           cols += ` fit-content(${maxWidth}px)`;
         }
-        return cols;
+        return cols.trimStart();
       });
 
       return { gridAreas, gridColumns };
     },
     []
   );
+
+  const [curActiveUI, setCurActiveUI] = useState(activeUI);
+  const [curTemplateArea, setCurTemplateArea] = useState(templateArea);
+  const [curTemplateAreaValues, setCurTemplateAreaValues] = useState<{
+    gridAreas: string[];
+    gridColumns: string[];
+  }>();
 
   if (!curTemplateAreaValues) {
     const { gridAreas, gridColumns } = generateGridTemplateValues(
