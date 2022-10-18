@@ -39,6 +39,12 @@ const playList: PlayList = [
   },
 ];
 
+const initialState = {
+  muted: true,
+  volume: 0.2,
+  curPlayId: 1,
+};
+
 function App() {
   const [progressType, setProgressType] = useState("waveform");
   const [playerPlacement, setPlayerPlacement] = useState("static");
@@ -90,11 +96,7 @@ function App() {
       <div>
         <AudioPlayerWithProvider
           playList={playList}
-          audioInitialState={{
-            muted: true,
-            volume: 0.2,
-            curPlayId: 1,
-          }}
+          audioInitialState={initialState}
           placement={{
             interface: {
               templateArea: {
