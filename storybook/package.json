@@ -12,7 +12,7 @@
     "@types/react-dom": "17.0.10",
     "react": "17.0.2",
     "react-dom": "17.0.2",
-    "react-modern-audio-player": "^0.0.1",
+    "react-modern-audio-player": "^1.2.4",
     "react-scripts": "5.0.1",
     "typescript": "^4.7.4",
     "web-vitals": "^2.1.4"
