@@ -4,8 +4,6 @@ import { PlayList } from "../../../package/dist/types/components/AudioPlayer/Con
 import { playerMode } from "./playerMode.ts";
 // import AudioPlayer, { PlayList } from "react-modern-audio-player";
 
-// TODO : fix safari bug
-
 const initialState = {
   volume: 0.2,
   curPlayId: 3,
