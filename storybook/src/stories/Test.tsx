@@ -6,6 +6,11 @@ import { playerMode } from "./playerMode.ts";
 
 // TODO : fix safari bug
 
+const initialState = {
+  volume: 0.2,
+  curPlayId: 3,
+};
+
 export const Test: FC<{ mode: string }> = ({ mode }) => {
   const curPlayerMode = playerMode[+mode];
 
@@ -19,13 +24,7 @@ export const Test: FC<{ mode: string }> = ({ mode }) => {
       }}
     >
       <div>
-        <AudioPlayer
-          {...curPlayerMode}
-          audioInitialState={{
-            volume: 0.2,
-            curPlayId: 3,
-          }}
-        />
+        <AudioPlayer {...curPlayerMode} audioInitialState={initialState} />
       </div>
     </div>
   );
