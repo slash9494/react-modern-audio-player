@@ -19,11 +19,19 @@ export const useBarProgress = (): HTMLAttributes<HTMLDivElement> => {
     },
     [elementRefs?.audioEl]
   );
+
+  const setSelectStartActive = useCallback(
+    (state: boolean) => (document.onselectstart = () => state),
+    []
+  );
+
   return {
     onMouseDown: () => setTimeChangeActive(true),
     onMouseUp: () => setTimeChangeActive(false),
     onMouseLeave: () => setTimeChangeActive(false),
     onMouseMove: isTimeChangeActive ? onMoveAudioTime : undefined,
     onClick: onMoveAudioTime,
+    onMouseOver: () => setSelectStartActive(false),
+    onMouseOut: () => isTimeChangeActive && setSelectStartActive(true),
   };
 };

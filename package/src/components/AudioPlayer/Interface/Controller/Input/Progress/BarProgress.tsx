@@ -54,11 +54,6 @@ const BarProgressWrapper = styled.div`
     transform-origin: 0 0;
     transform: scaleX(0);
   }
-  &:hover {
-    .rm-player-progress-handle {
-      opacity: 1;
-    }
-  }
   .rm-player-progress-handle {
     position: absolute;
     left: -4px;
@@ -68,5 +63,10 @@ const BarProgressWrapper = styled.div`
     width: 8px;
     opacity: 0;
     transition: opacity 0.2s ease-in-out;
+  }
+  &:hover {
+    .rm-player-progress-handle {
+      opacity: 1;
+    }
   }
 `;
