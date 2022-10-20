@@ -1,6 +1,12 @@
 import PlayerLogo from "./assets/images/noname.png";
 import { useState } from "react";
-import { AudioPlayerWithProvider, PlayerPlacement, PlayList } from "../src";
+import {
+  ActiveUI,
+  AudioPlayerWithProvider,
+  InterfacePlacement,
+  PlayerPlacement,
+  PlayList,
+} from "../src";
 const playList: PlayList = [
   {
     name: "React Modern Audio Player-1",
@@ -46,8 +52,35 @@ const initialState = {
 };
 
 function App() {
-  const [progressType, setProgressType] = useState("waveform");
+  const [progressType, setProgressType] = useState("bar");
   const [playerPlacement, setPlayerPlacement] = useState("static");
+
+  const placement = {
+    interface: {
+      templateArea: {
+        playList: "row1-3",
+        progress: "row2-2",
+        playButton: "row3-2",
+        repeatType: "row3-3",
+        volume: "row3-1",
+        trackTimeCurrent: "row2-1",
+        trackTimeDuration: "row2-3",
+      },
+    } as InterfacePlacement,
+    player: playerPlacement as PlayerPlacement,
+  };
+
+  const activeUI: ActiveUI = {
+    // all: true,
+    progress: progressType as "bar" | "waveform",
+    playButton: true,
+    repeatType: true,
+    volume: true,
+    playList: "sortable",
+    prevNnext: true,
+    trackTime: true,
+  };
+
   return (
     <div
       style={{
@@ -71,7 +104,7 @@ function App() {
             setProgressType((prev) => (prev === "bar" ? "waveform" : "bar"))
           }
         >
-          button
+          progress type
         </button>
         <button
           onClick={() => {
@@ -97,30 +130,8 @@ function App() {
         <AudioPlayerWithProvider
           playList={playList}
           audioInitialState={initialState}
-          placement={{
-            interface: {
-              templateArea: {
-                playList: "row1-3",
-                progress: "row2-2",
-                playButton: "row3-2",
-                repeatType: "row3-3",
-                volume: "row3-1",
-                trackTimeCurrent: "row2-1",
-                trackTimeDuration: "row2-3",
-              },
-            },
-            player: playerPlacement as PlayerPlacement,
-          }}
-          activeUI={{
-            // all: true,
-            progress: progressType as "bar" | "waveform",
-            playButton: true,
-            repeatType: true,
-            volume: true,
-            playList: "sortable",
-            prevNnext: true,
-            trackTime: true,
-          }}
+          placement={placement}
+          activeUI={activeUI}
         />
       </div>
     </div>

@@ -6,7 +6,7 @@ export const useBarProgress = (): HTMLAttributes<HTMLDivElement> => {
   const { elementRefs } = useNonNullableContext(audioPlayerStateContext);
   const [isTimeChangeActive, setTimeChangeActive] = useState(false);
 
-  const onMoveAudioTime = useCallback(
+  const moveAudioTime = useCallback(
     (e: MouseEvent<HTMLDivElement>) => {
       if (!elementRefs?.audioEl) return;
       const { clientX } = e;
@@ -29,8 +29,8 @@ export const useBarProgress = (): HTMLAttributes<HTMLDivElement> => {
     onMouseDown: () => setTimeChangeActive(true),
     onMouseUp: () => setTimeChangeActive(false),
     onMouseLeave: () => setTimeChangeActive(false),
-    onMouseMove: isTimeChangeActive ? onMoveAudioTime : undefined,
-    onClick: onMoveAudioTime,
+    onMouseMove: isTimeChangeActive ? moveAudioTime : undefined,
+    onClick: moveAudioTime,
     onMouseOver: () => setSelectStartActive(false),
     onMouseOut: () => isTimeChangeActive && setSelectStartActive(true),
   };

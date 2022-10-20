@@ -1,39 +1,53 @@
-import {
-  audioPlayerDispatchContext,
-  audioPlayerStateContext,
-} from "@/components/AudioPlayer/Context";
+import { audioPlayerStateContext } from "@/components/AudioPlayer/Context";
 import { useNonNullableContext } from "@/hooks/useNonNullableContext";
-import { FC, useLayoutEffect } from "react";
-import styled from "styled-components";
+import { FC, useEffect, useRef } from "react";
+import styled, { css } from "styled-components";
+import { useBarProgress } from "./useBarProgress";
 
 const WaveformWrapper = styled.div`
-  display: flex;
-  width: 100%;
-  #rm-waveform {
+  ${({ isActive }: { isActive: boolean }) => css`
+    display: flex;
     width: 100%;
-    wave {
-      cursor: pointer !important;
+    #rm-waveform {
+      width: 100%;
+      wave {
+        cursor: pointer !important;
+      }
+
+      ${
+        !isActive &&
+        css`
+          height: 0;
+          opacity: 0;
+          pointer-events: none;
+        `
+      }} 
     }
-  }
+  `}
 `;
 
 export const WaveformProgress: FC<{ isActive: boolean }> = ({ isActive }) => {
-  const audioPlayerDispatch = useNonNullableContext(audioPlayerDispatchContext);
+  const waveformRef = useRef<HTMLDivElement>(null);
   const { elementRefs } = useNonNullableContext(audioPlayerStateContext);
+  const eventProps = useBarProgress();
 
-  useLayoutEffect(() => {
-    if (!isActive && elementRefs?.waveformInst) {
-      elementRefs.waveformInst.destroy();
-      audioPlayerDispatch({
-        type: "SET_ELEMENT_REFS",
-        elementRefs: { waveformInst: undefined },
-      });
-    }
-  }, [audioPlayerDispatch, elementRefs?.waveformInst, isActive]);
+  useEffect(() => {
+    if (!waveformRef.current || !elementRefs?.waveformInst) return;
 
-  return isActive ? (
-    <WaveformWrapper className="waveform-wrapper">
-      <div id="rm-waveform" />
+    const redrawForm = () => {
+      elementRefs.waveformInst?.drawBuffer();
+    };
+    const resizeObserver = new ResizeObserver(redrawForm);
+    resizeObserver.observe(waveformRef.current);
+
+    return () => {
+      resizeObserver.disconnect();
+    };
+  }, [elementRefs?.waveformInst, waveformRef]);
+
+  return (
+    <WaveformWrapper className="waveform-wrapper" isActive={isActive}>
+      <div id="rm-waveform" ref={waveformRef} {...eventProps} />
     </WaveformWrapper>
-  ) : null;
+  );
 };
