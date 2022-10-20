@@ -161,13 +161,6 @@ export const audioPlayerReducer = (
     case "SET_ACTIVE_UI":
       return {
         ...state,
-        curAudioState: {
-          ...state.curAudioState,
-          isPlaying:
-            state.activeUI.progress !== action.activeUI.progress
-              ? false
-              : state.curAudioState.isPlaying,
-        },
         activeUI: { ...action.activeUI },
       };
     case "SET_ELEMENT_REFS":
