@@ -14,13 +14,11 @@ export const resetAudioValues = (
     trackCurTimeEl,
     trackDurationEl,
     audioEl,
-    waveformInst,
   } = elementRefs;
   if (restart) {
     if (audioEl) {
       audioEl.currentTime = 0;
     }
-    waveformInst?.seekTo(0);
   }
   if (progressHandleEl && progressValueEl) {
     progressValueEl.style.transform = `scaleX(0)`;
