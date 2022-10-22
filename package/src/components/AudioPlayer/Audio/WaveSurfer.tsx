@@ -2,7 +2,7 @@ import { useNonNullableContext } from "@/hooks/useNonNullableContext";
 import { useVariableColor } from "@/hooks/useVariableColor";
 import { audioPlayerDispatchContext } from "@/components/AudioPlayer/Context/dispatchContext";
 import { audioPlayerStateContext } from "@/components/AudioPlayer/Context/StateContext";
-import { FC, useCallback, useEffect } from "react";
+import { FC, useCallback, useEffect, useState } from "react";
 import WaveSurfer from "wavesurfer.js";
 
 // TODO : feature - draggable time movement
@@ -51,21 +51,19 @@ export const WaveSurferAudio: FC = () => {
   ]);
 
   const onReady = useCallback(() => {
-    console.log("waveform ready", curAudioState.isPlaying);
     if (curAudioState.isPlaying) elementRefs?.audioEl?.play();
   }, [curAudioState.isPlaying, elementRefs?.audioEl]);
   useEffect(() => {
     if (!elementRefs?.audioEl || !elementRefs?.waveformInst) return;
-
-    elementRefs?.audioEl.pause();
-    elementRefs.waveformInst?.load(elementRefs?.audioEl);
-    console.log("load waveform");
-    elementRefs.waveformInst?.on("waveform-ready", onReady);
+    elementRefs.audioEl.pause();
+    elementRefs.waveformInst.on("waveform-ready", onReady);
+    elementRefs.waveformInst.load(elementRefs?.audioEl);
+    elementRefs.audioEl.volume = curAudioState.volume;
 
     return () => {
-      elementRefs.waveformInst?.un("waveform-ready", onReady);
+      elementRefs?.waveformInst?.un("waveform-ready", onReady);
     };
-  }, [curPlayId, elementRefs?.audioEl, elementRefs?.waveformInst, onReady]);
+  }, [curPlayId, elementRefs?.audioEl, elementRefs?.waveformInst]);
 
   /** delete empty wave surfer */
   useEffect(
