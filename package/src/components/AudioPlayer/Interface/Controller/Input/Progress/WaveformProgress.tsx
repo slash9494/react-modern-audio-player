@@ -28,7 +28,9 @@ const WaveformWrapper = styled.div`
 
 export const WaveformProgress: FC<{ isActive: boolean }> = ({ isActive }) => {
   const waveformRef = useRef<HTMLDivElement>(null);
-  const { elementRefs } = useNonNullableContext(audioPlayerStateContext);
+  const { elementRefs, curAudioState } = useNonNullableContext(
+    audioPlayerStateContext
+  );
   const eventProps = useBarProgress();
 
   useEffect(() => {
@@ -44,6 +46,20 @@ export const WaveformProgress: FC<{ isActive: boolean }> = ({ isActive }) => {
       resizeObserver.disconnect();
     };
   }, [elementRefs?.waveformInst, waveformRef]);
+
+  useEffect(() => {
+    if (
+      !isActive ||
+      !elementRefs?.waveformInst ||
+      !elementRefs?.audioEl ||
+      curAudioState.isPlaying
+    )
+      return;
+
+    elementRefs.waveformInst.seekTo(
+      elementRefs.audioEl.currentTime / elementRefs.audioEl.duration
+    );
+  }, [isActive]);
 
   return (
     <WaveformWrapper className="waveform-wrapper" isActive={isActive}>
