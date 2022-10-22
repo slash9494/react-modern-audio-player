@@ -1,5 +1,7 @@
+import { audioPlayerStateContext } from "@/components/AudioPlayer/Context";
+import { useNonNullableContext } from "@/hooks/useNonNullableContext";
 import { useRefsDispatch } from "@/hooks/useRefsDispatch";
-import { FC, useRef } from "react";
+import { FC, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { useBarProgress } from "./useBarProgress";
 
@@ -17,6 +19,30 @@ export const BarProgress: FC<{ isActive: boolean }> = ({ isActive }) => {
     },
     [isActive]
   );
+
+  const { elementRefs, curAudioState } = useNonNullableContext(
+    audioPlayerStateContext
+  );
+  useEffect(() => {
+    if (
+      !progressBarRef.current ||
+      !progressValueRef.current ||
+      !progressHandleRef.current ||
+      !elementRefs?.audioEl ||
+      curAudioState.isPlaying
+    )
+      return;
+
+    const progressBarWidth = progressBarRef.current.clientWidth;
+    const progressHandlePosition =
+      (elementRefs.audioEl.currentTime / elementRefs.audioEl.duration) *
+      progressBarWidth;
+
+    progressValueRef.current.style.transform = `scaleX(${
+      elementRefs.audioEl.currentTime / elementRefs.audioEl.duration
+    })`;
+    progressHandleRef.current.style.transform = `translateX(${progressHandlePosition}px)`;
+  }, [isActive]);
 
   const eventProps = useBarProgress();
 

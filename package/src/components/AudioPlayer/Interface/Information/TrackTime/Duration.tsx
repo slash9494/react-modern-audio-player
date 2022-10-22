@@ -3,9 +3,13 @@ import styled from "styled-components";
 import { TrackTimeContainer } from "./Styles";
 import { TrackTimeChildrenProps } from "./Types";
 import { useRefsDispatch } from "@/hooks/useRefsDispatch";
+import { useNonNullableContext } from "@/hooks/useNonNullableContext";
+import { audioPlayerStateContext } from "@/components/AudioPlayer/Context";
+import { getTimeWithPadStart } from "@/utils/getTime";
 
 export const Duration: FC<TrackTimeChildrenProps> = ({ position }) => {
   const trackDurationRef = useRef<HTMLSpanElement>(null);
+  const { elementRefs } = useNonNullableContext(audioPlayerStateContext);
 
   useRefsDispatch(
     {
@@ -21,7 +25,9 @@ export const Duration: FC<TrackTimeChildrenProps> = ({ position }) => {
       childrenClassName="track-duration"
     >
       <span ref={trackDurationRef} className="track-duration">
-        00:00
+        {elementRefs?.audioEl?.duration
+          ? getTimeWithPadStart(elementRefs.audioEl.duration)
+          : "00:00"}
       </span>
     </TrackTimeDurationContainer>
   );
