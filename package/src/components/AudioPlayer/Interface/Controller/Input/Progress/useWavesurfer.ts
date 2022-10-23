@@ -2,29 +2,24 @@ import { useNonNullableContext } from "@/hooks/useNonNullableContext";
 import { useVariableColor } from "@/hooks/useVariableColor";
 import { audioPlayerDispatchContext } from "@/components/AudioPlayer/Context/dispatchContext";
 import { audioPlayerStateContext } from "@/components/AudioPlayer/Context/StateContext";
-import { FC, useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect } from "react";
 import WaveSurfer from "wavesurfer.js";
 
-// TODO : feature - draggable time movement
+const waveformColors = {
+  progressColor: "--rm-audio-player-waveform-bar",
+  waveColor: "--rm-audio-player-waveform-background",
+};
 
-export const WaveSurferAudio: FC = () => {
+export const useWaveSurfer = (waveformRef: React.RefObject<HTMLElement>) => {
   const audioPlayerDispatch = useNonNullableContext(audioPlayerDispatchContext);
   const { elementRefs, curPlayId, curAudioState } = useNonNullableContext(
     audioPlayerStateContext
   );
-  const colorsRef = useVariableColor({
-    progressColor: "--rm-audio-player-waveform-bar",
-    waveColor: "--rm-audio-player-waveform-background",
-  });
+  const colorsRef = useVariableColor(waveformColors);
 
   /** init waveSurfer */
   useEffect(() => {
-    if (
-      !elementRefs?.audioEl ||
-      elementRefs?.waveformInst ||
-      !colorsRef.current
-    )
-      return;
+    if (elementRefs?.waveformInst || !colorsRef.current) return;
 
     const waveSurfer = WaveSurfer.create({
       barWidth: 1,
@@ -43,13 +38,9 @@ export const WaveSurferAudio: FC = () => {
       type: "SET_ELEMENT_REFS",
       elementRefs: { waveformInst: waveSurfer },
     });
-  }, [
-    elementRefs?.audioEl,
-    elementRefs?.waveformInst,
-    audioPlayerDispatch,
-    colorsRef,
-  ]);
+  }, [elementRefs?.waveformInst, audioPlayerDispatch, colorsRef]);
 
+  /** load audio */
   const onReady = useCallback(() => {
     if (curAudioState.isPlaying) elementRefs?.audioEl?.play();
   }, [curAudioState.isPlaying, elementRefs?.audioEl]);
@@ -64,6 +55,21 @@ export const WaveSurferAudio: FC = () => {
       elementRefs?.waveformInst?.un("waveform-ready", onReady);
     };
   }, [curPlayId, elementRefs?.audioEl, elementRefs?.waveformInst]);
+
+  // set waveform responsively
+  useEffect(() => {
+    if (!waveformRef.current || !elementRefs?.waveformInst) return;
+
+    const redrawWaveform = () => {
+      elementRefs.waveformInst?.drawBuffer();
+    };
+    const resizeObserver = new ResizeObserver(redrawWaveform);
+    resizeObserver.observe(waveformRef.current);
+
+    return () => {
+      resizeObserver.disconnect();
+    };
+  }, [elementRefs?.waveformInst, waveformRef]);
 
   /** delete empty wave surfer */
   useEffect(
@@ -80,6 +86,4 @@ export const WaveSurferAudio: FC = () => {
     },
     []
   );
-
-  return null;
 };

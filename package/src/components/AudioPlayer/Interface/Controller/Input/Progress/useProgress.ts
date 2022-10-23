@@ -2,7 +2,7 @@ import { audioPlayerStateContext } from "@/components/AudioPlayer/Context";
 import { useNonNullableContext } from "@/hooks/useNonNullableContext";
 import { HTMLAttributes, useCallback, useState, MouseEvent } from "react";
 
-export const useBarProgress = (): HTMLAttributes<HTMLDivElement> => {
+export const useProgress = (): HTMLAttributes<HTMLDivElement> => {
   const { elementRefs } = useNonNullableContext(audioPlayerStateContext);
   const [isTimeChangeActive, setTimeChangeActive] = useState(false);
 
