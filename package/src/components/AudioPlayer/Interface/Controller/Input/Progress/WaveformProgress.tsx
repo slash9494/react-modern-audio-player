@@ -2,7 +2,8 @@ import { audioPlayerStateContext } from "@/components/AudioPlayer/Context";
 import { useNonNullableContext } from "@/hooks/useNonNullableContext";
 import { FC, useEffect, useRef } from "react";
 import styled, { css } from "styled-components";
-import { useBarProgress } from "./useBarProgress";
+import { useProgress } from "./useProgress";
+import { useWaveSurfer } from "./useWavesurfer";
 
 const WaveformWrapper = styled.div`
   ${({ isActive }: { isActive: boolean }) => css`
@@ -14,14 +15,12 @@ const WaveformWrapper = styled.div`
         cursor: pointer !important;
       }
 
-      ${
-        !isActive &&
-        css`
-          height: 0;
-          opacity: 0;
-          pointer-events: none;
-        `
-      }} 
+      ${!isActive &&
+      css`
+        height: 0;
+        opacity: 0;
+        pointer-events: none;
+      `}
     }
   `}
 `;
@@ -31,22 +30,10 @@ export const WaveformProgress: FC<{ isActive: boolean }> = ({ isActive }) => {
   const { elementRefs, curAudioState } = useNonNullableContext(
     audioPlayerStateContext
   );
-  const eventProps = useBarProgress();
 
-  useEffect(() => {
-    if (!waveformRef.current || !elementRefs?.waveformInst) return;
+  useWaveSurfer(waveformRef);
 
-    const redrawForm = () => {
-      elementRefs.waveformInst?.drawBuffer();
-    };
-    const resizeObserver = new ResizeObserver(redrawForm);
-    resizeObserver.observe(waveformRef.current);
-
-    return () => {
-      resizeObserver.disconnect();
-    };
-  }, [elementRefs?.waveformInst, waveformRef]);
-
+  // apply current time to waveform when progress is active
   useEffect(() => {
     if (
       !isActive ||
@@ -61,6 +48,7 @@ export const WaveformProgress: FC<{ isActive: boolean }> = ({ isActive }) => {
     );
   }, [isActive]);
 
+  const eventProps = useProgress();
   return (
     <WaveformWrapper className="waveform-wrapper" isActive={isActive}>
       <div id="rm-waveform" ref={waveformRef} {...eventProps} />

@@ -3,7 +3,7 @@ import { useNonNullableContext } from "@/hooks/useNonNullableContext";
 import { useRefsDispatch } from "@/hooks/useRefsDispatch";
 import { FC, useEffect, useRef } from "react";
 import styled from "styled-components";
-import { useBarProgress } from "./useBarProgress";
+import { useProgress } from "./useProgress";
 
 export const BarProgress: FC<{ isActive: boolean }> = ({ isActive }) => {
   const progressBarRef = useRef<HTMLDivElement>(null);
@@ -44,7 +44,7 @@ export const BarProgress: FC<{ isActive: boolean }> = ({ isActive }) => {
     progressHandleRef.current.style.transform = `translateX(${progressHandlePosition}px)`;
   }, [isActive]);
 
-  const eventProps = useBarProgress();
+  const eventProps = useProgress();
 
   return isActive ? (
     <BarProgressWrapper className="bar-progress-wrapper" {...eventProps}>

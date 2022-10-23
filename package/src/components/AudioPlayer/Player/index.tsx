@@ -22,6 +22,7 @@ import { usePropsStateEffect } from "./usePropsStateEffect";
 export interface AudioPlayerProps {
   playList: PlayList;
   audioInitialState?: AudioInitialState;
+  audioRef?: React.MutableRefObject<HTMLAudioElement>;
   activeUI?: ActiveUI;
   customIcons?: CustomIcons;
   coverImgsCss?: CoverImgsCss;
@@ -33,12 +34,15 @@ export interface AudioPlayerProps {
   };
 }
 
-export const AudioPlayer: FC<AudioPlayerProps> = (props) => {
-  usePropsStateEffect(props);
+export const AudioPlayer: FC<AudioPlayerProps> = ({
+  audioRef,
+  ...restProps
+}) => {
+  usePropsStateEffect(restProps);
 
   return (
     <View id="rm-audio-player" UNSAFE_className="rm-audio-player-container">
-      <Audio />
+      <Audio audioRef={audioRef} />
       <Interface />
     </View>
   );

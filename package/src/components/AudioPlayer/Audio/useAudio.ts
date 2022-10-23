@@ -7,7 +7,7 @@ import {
   audioPlayerDispatchContext,
 } from "../Context";
 
-export const useBasicAudio = (): HTMLAttributes<HTMLAudioElement> => {
+export const useAudio = (): HTMLAttributes<HTMLAudioElement> => {
   const { curAudioState, elementRefs } = useNonNullableContext(
     audioPlayerStateContext
   );
