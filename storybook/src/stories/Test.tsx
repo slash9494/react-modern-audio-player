@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import AudioPlayer from "../../../package/dist/index.es.js";
 import { PlayList } from "../../../package/dist/types/components/AudioPlayer/Context";
 import { playerMode } from "./playerMode.ts";
@@ -11,6 +11,10 @@ const initialState = {
 
 export const Test: FC<{ mode: string }> = ({ mode }) => {
   const curPlayerMode = playerMode[+mode];
+
+  useEffect(() => {
+    console.log("mode", mode);
+  }, []);
 
   return (
     <div
