@@ -27,7 +27,9 @@
         {
           "allow": ["warn", "error"]
         }
-      ]
+      ],
+      "no-unused-vars": "off",
+      "@typescript-eslint/no-unused-vars": ["error"]
     },
 
     // for new JSX transform from react17 
