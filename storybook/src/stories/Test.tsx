@@ -13,7 +13,7 @@ export const Test: FC<{ mode: string }> = ({ mode }) => {
   const curPlayerMode = playerMode[+mode];
 
   useEffect(() => {
-    console.log("mode", mode);
+    console.log("test", mode);
   }, []);
 
   return (

@@ -14,7 +14,9 @@
   "scripts": {
     "build": "cd package && yarn build",
     "release": "changeset publish",
-    "version-packages": "changeset version"
+    "version-packages": "changeset version",
+    "prepare": "husky install",
+    "lint": "eslint --fix ."
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.30.5",
@@ -33,5 +35,8 @@
     "@changesets/cli": "^2.24.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
+  },
+  "lint-staged": {
+    "*.{js,css,md,mdx,jsx,tsx,ts}": ["prettier --list-different","eslint"]
   }
 }

@@ -21,7 +21,13 @@
     ],
     "rules": {
       "react-hooks/rules-of-hooks": "error",
-      "react-hooks/exhaustive-deps": "warn"
+      "react-hooks/exhaustive-deps": "warn",
+      "no-console":[
+        "error",
+        {
+          "allow": ["warn", "error"]
+        }
+      ]
     },
 
     // for new JSX transform from react17 
