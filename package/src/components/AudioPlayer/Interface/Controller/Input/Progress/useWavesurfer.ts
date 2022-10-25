@@ -2,7 +2,7 @@ import { useNonNullableContext } from "@/hooks/useNonNullableContext";
 import { useVariableColor } from "@/hooks/useVariableColor";
 import { audioPlayerDispatchContext } from "@/components/AudioPlayer/Context/dispatchContext";
 import { audioPlayerStateContext } from "@/components/AudioPlayer/Context/StateContext";
-import { useCallback, useEffect } from "react";
+import { useEffect } from "react";
 import WaveSurfer from "wavesurfer.js";
 
 const waveformColors = {
@@ -40,20 +40,15 @@ export const useWaveSurfer = (waveformRef: React.RefObject<HTMLElement>) => {
     });
   }, [elementRefs?.waveformInst, audioPlayerDispatch, colorsRef]);
 
+  // TODO : preserve audio state when loading new audio
   /** load audio */
-  const onReady = useCallback(() => {
-    if (curAudioState.isPlaying) elementRefs?.audioEl?.play();
-  }, [curAudioState.isPlaying, elementRefs?.audioEl]);
   useEffect(() => {
     if (!elementRefs?.audioEl || !elementRefs?.waveformInst) return;
     elementRefs.audioEl.pause();
-    elementRefs.waveformInst.on("waveform-ready", onReady);
     elementRefs.waveformInst.load(elementRefs?.audioEl);
     elementRefs.audioEl.volume = curAudioState.volume;
 
-    return () => {
-      elementRefs?.waveformInst?.un("waveform-ready", onReady);
-    };
+    if (curAudioState.isPlaying) elementRefs?.audioEl?.play();
   }, [curPlayId, elementRefs?.audioEl, elementRefs?.waveformInst]);
 
   // set waveform responsively

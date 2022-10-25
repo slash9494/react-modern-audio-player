@@ -19,7 +19,7 @@ const playList: PlayList = [
     name: "React Modern Audio Player-1",
     writer: "LYH",
     img: `${PlayerLogo}`,
-    src: "https://cdn.pixabay.com/audio/2022/08/04/audio_2dde668d05.mp3",
+    src: "https://cdn.pixabay.com/audio/2022/01/21/audio_c44fddb424.mp3",
     id: 2,
   },
   {

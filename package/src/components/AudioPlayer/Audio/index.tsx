@@ -7,6 +7,8 @@ import {
 import React, { FC, useEffect, useRef } from "react";
 import { useAudio } from "./useAudio";
 
+// TODO : optimize large audio files
+
 export const Audio: FC<{
   audioRef?: React.MutableRefObject<HTMLAudioElement>;
 }> = ({ audioRef: propsAudioRef }) => {
