@@ -75,6 +75,7 @@ function Player (){
 interface AudioPlayerProps {
   playList: PlayList;
   audioInitialState?: AudioInitialState;
+  audioRef?: React.MutableRefObject<HTMLAudioElement>;
   activeUI?: ActiveUI;
   customIcons?: CustomIcons;
   coverImgsCss?: CoverImgsCss;
