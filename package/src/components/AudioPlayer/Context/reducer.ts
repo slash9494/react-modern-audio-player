@@ -17,6 +17,8 @@ export const audioPlayerReducer = (
 ): AudioPlayerStateContext => {
   switch (action.type) {
     case "NEXT_AUDIO": {
+      resetAudioValues(state.elementRefs, undefined, true);
+
       if (
         state.curAudioState.repeatType === "NONE" &&
         state.curIdx + 1 === state.playList.length
