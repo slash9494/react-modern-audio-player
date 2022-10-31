@@ -22,7 +22,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "storybook": "start-storybook -p 6006 -s public",
+    "sb": "start-storybook -p 6006 -s public",
     "build-storybook": "build-storybook -s public"
   },
   "eslintConfig": {

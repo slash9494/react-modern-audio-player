@@ -16,8 +16,6 @@ export interface DropdownProps
   disabled?: boolean;
 }
 
-// TODO : fix dropdown open state when change player placement or first render
-
 const Dropdown: FC<PropsWithChildren<DropdownProps>> = ({
   triggerType = "click",
   outboundClickActive = true,
