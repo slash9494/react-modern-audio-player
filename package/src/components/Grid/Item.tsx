@@ -1,6 +1,5 @@
-import { View } from "@react-spectrum/view";
+import { View, ViewProps } from "@react-spectrum/view";
 import { forwardRef } from "react";
-import { ViewProps } from "@react-types/view";
 import { DOMRefValue } from "@react-types/shared";
 
 export interface GridItemProps extends Omit<ViewProps, "children"> {

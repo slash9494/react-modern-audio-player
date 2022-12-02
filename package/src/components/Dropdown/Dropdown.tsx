@@ -1,5 +1,10 @@
-import React, { PropsWithChildren, useRef } from "react";
-import { FC, useLayoutEffect, useState } from "react";
+import React, {
+  PropsWithChildren,
+  useRef,
+  FC,
+  useLayoutEffect,
+  useState,
+} from "react";
 import styled from "styled-components";
 import { DropdownContext, dropdownContext } from "./DropdownContext";
 import { DropdownTrigger } from "./DropdownTrigger";
