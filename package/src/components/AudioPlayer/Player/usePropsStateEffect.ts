@@ -10,7 +10,7 @@ export const usePropsStateEffect = ({
   audioInitialState,
   playList,
   customIcons,
-}: AudioPlayerProps) => {
+}: Omit<AudioPlayerProps, "children">) => {
   const [isMounted, setIsMounted] = useState(false);
   const audioPlayerDispatch = useNonNullableContext(audioPlayerDispatchContext);
   useLayoutEffect(() => {

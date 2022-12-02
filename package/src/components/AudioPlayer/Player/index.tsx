@@ -20,6 +20,7 @@ import { usePropsStateEffect } from "./usePropsStateEffect";
 // TODO : feature - add dynamic spectrum form
 
 export interface AudioPlayerProps {
+  children?: React.ReactNode;
   playList: PlayList;
   audioInitialState?: AudioInitialState;
   audioRef?: React.MutableRefObject<HTMLAudioElement>;
@@ -36,6 +37,7 @@ export interface AudioPlayerProps {
 
 export const AudioPlayer: FC<AudioPlayerProps> = ({
   audioRef,
+  children,
   ...restProps
 }) => {
   usePropsStateEffect(restProps);
@@ -43,7 +45,7 @@ export const AudioPlayer: FC<AudioPlayerProps> = ({
   return (
     <View id="rm-audio-player" UNSAFE_className="rm-audio-player-container">
       <Audio audioRef={audioRef} />
-      <Interface />
+      <Interface>{children}</Interface>
     </View>
   );
 };
