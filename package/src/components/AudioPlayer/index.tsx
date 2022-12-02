@@ -5,11 +5,12 @@ import {
 } from "@/components/Provider";
 import { FC } from "react";
 import { GlobalStyle } from "../../styles/GlobalStyle";
+import { GridItem } from "../Grid/Item";
 import { AudioPlayer, AudioPlayerProps } from "./Player";
 
 export type RMAudioPlayerProps = AudioPlayerProps & SpectrumProviderProps;
 
-export const AudioPlayerWithProvider: FC<RMAudioPlayerProps> = ({
+const AudioPlayerWithProviders: FC<RMAudioPlayerProps> = ({
   rootContainerProps,
   ...audioPlayProps
 }) => {
@@ -22,3 +23,9 @@ export const AudioPlayerWithProvider: FC<RMAudioPlayerProps> = ({
     </AudioPlayerProvider>
   );
 };
+
+type AudioPlayerComponent = typeof AudioPlayerWithProviders & {
+  customComponent: typeof GridItem;
+};
+
+export default AudioPlayerWithProviders as AudioPlayerComponent;
