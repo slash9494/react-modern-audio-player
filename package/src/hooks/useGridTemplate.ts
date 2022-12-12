@@ -3,37 +3,44 @@ import {
   defaultInterfacePlacement,
   InterfacePlacement,
 } from "@/components/AudioPlayer/Context";
-import { useCallback, useState } from "react";
+import React, { useCallback, useState } from "react";
+
+// TODO : combine with custom grid area
 
 export const useGridTemplate = (
   activeUI: ActiveUI,
-  templateArea: InterfacePlacement["templateArea"] | undefined
+  templateArea: InterfacePlacement["templateArea"] | undefined,
+  CustomComponentsArea?: any
 ) => {
   const generateGridTemplateValues = useCallback(
     (activeUi: ActiveUI, placement?: InterfacePlacement["templateArea"]) => {
-      const activeUIArr = activeUi.all
-        ? Object.keys(defaultInterfacePlacement.templateArea).filter((key) => {
-            if (
-              (key === "trackTimeCurrent" || key === "trackTimeDuration") &&
-              activeUi.trackTime === false
-            ) {
-              return false;
-            }
+      const activeUIAllKeys = Object.keys(
+        defaultInterfacePlacement.templateArea
+      ).filter((key) => {
+        if (
+          (key === "trackTimeCurrent" || key === "trackTimeDuration") &&
+          activeUi.trackTime === false
+        ) {
+          return false;
+        }
 
-            if (activeUi[key as keyof ActiveUI] !== undefined) {
-              return activeUi[key as keyof ActiveUI];
-            }
-            return true;
-          })
+        if (activeUi[key as keyof ActiveUI] !== undefined) {
+          return activeUi[key as keyof ActiveUI];
+        }
+        return true;
+      });
+
+      const activeUIKeysArr = activeUi.all
+        ? activeUIAllKeys
         : Object.entries(activeUi)
             .filter(([, value]) => value)
             .map(([key]) => key);
 
       const renameTrackTime = () => {
-        if (activeUIArr.find((key) => key === "trackTime")) {
-          activeUIArr.splice(activeUIArr.indexOf("trackTime"), 1);
-          activeUIArr.push("trackTimeCurrent");
-          activeUIArr.push("trackTimeDuration");
+        if (activeUIKeysArr.find((key) => key === "trackTime")) {
+          activeUIKeysArr.splice(activeUIKeysArr.indexOf("trackTime"), 1);
+          activeUIKeysArr.push("trackTimeCurrent");
+          activeUIKeysArr.push("trackTimeDuration");
         }
       };
       renameTrackTime();
@@ -55,7 +62,7 @@ export const useGridTemplate = (
           };
         })
         .filter(({ key, row }) => {
-          if (activeUIArr.includes(key)) {
+          if (activeUIKeysArr.includes(key)) {
             maxRow = Math.max(maxRow, row);
             colsCntRecord[row] = colsCntRecord[row]
               ? colsCntRecord[row] + 1

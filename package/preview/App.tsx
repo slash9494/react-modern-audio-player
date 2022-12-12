@@ -1,8 +1,7 @@
 import PlayerLogo from "./assets/images/noname.png";
 import { useState } from "react";
-import {
+import AudioPlayerWithProviders, {
   ActiveUI,
-  AudioPlayerWithProvider,
   InterfacePlacement,
   PlayerPlacement,
   PlayList,
@@ -60,9 +59,9 @@ function App() {
       templateArea: {
         playList: "row1-3",
         progress: "row2-2",
-        playButton: "row3-2",
-        repeatType: "row3-3",
-        volume: "row3-1",
+        playButton: "row1-1",
+        repeatType: "row1-2",
+        volume: "row1-3",
         trackTimeCurrent: "row2-1",
         trackTimeDuration: "row2-3",
       },
@@ -72,13 +71,18 @@ function App() {
 
   const activeUI: ActiveUI = {
     // all: true,
-    progress: progressType as "bar" | "waveform",
+    // progress: progressType as "bar" | "waveform",
     playButton: true,
     repeatType: true,
     volume: true,
-    playList: "sortable",
-    prevNnext: true,
-    trackTime: true,
+    // playList: "sortable",
+    // prevNnext: true,
+    // trackTime: true,
+  };
+
+  const CustomComponent = ({ audioPlayerState }) => {
+    console.log("audioPlayerState", audioPlayerState);
+    return <div>test</div>;
   };
 
   return (
@@ -127,12 +131,19 @@ function App() {
         </button>
       </h1>
       <div>
-        <AudioPlayerWithProvider
+        <AudioPlayerWithProviders
           playList={playList}
           audioInitialState={initialState}
           placement={placement}
           activeUI={activeUI}
-        />
+        >
+          <AudioPlayerWithProviders.CustomComponent gridArea={"row1-2"} visible>
+            <CustomComponent />
+          </AudioPlayerWithProviders.CustomComponent>
+          <AudioPlayerWithProviders.CustomComponent gridArea={"row1-1"} visible>
+            <div>test-2</div>
+          </AudioPlayerWithProviders.CustomComponent>
+        </AudioPlayerWithProviders>
       </div>
     </div>
   );
