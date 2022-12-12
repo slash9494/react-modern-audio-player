@@ -21,14 +21,22 @@ export type InterfacePlacementKey =
   | "trackTimeCurrent"
   | "trackTimeDuration";
 
-export type InterfaceGridTemplateArea = Partial<
-  Record<
-    InterfacePlacementKey,
-    `row${NumbersToUnionNum<
-      typeof interfacePlacementMaxLength
-    >}-${NumbersToUnionNum<typeof interfacePlacementMaxLength>}`
-  >
->;
+export type InterfaceGridTemplateArea<newMaxLength extends number = 0> =
+  newMaxLength extends 0
+    ? Partial<
+        Record<
+          InterfacePlacementKey,
+          `row${NumbersToUnionNum<
+            typeof interfacePlacementMaxLength
+          >}-${NumbersToUnionNum<typeof interfacePlacementMaxLength>}`
+        >
+      >
+    : Partial<
+        Record<
+          InterfacePlacementKey,
+          `row${NumbersToUnionNum<newMaxLength>}-${NumbersToUnionNum<newMaxLength>}`
+        >
+      >;
 export type InterfaceGridItemArea = Partial<
   Record<InterfacePlacementKey, string>
 >;
