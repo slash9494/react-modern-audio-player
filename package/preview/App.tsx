@@ -57,32 +57,39 @@ function App() {
   const placement = {
     interface: {
       templateArea: {
-        playList: "row1-3",
-        progress: "row2-2",
-        playButton: "row1-1",
-        repeatType: "row1-2",
-        volume: "row1-3",
-        trackTimeCurrent: "row2-1",
-        trackTimeDuration: "row2-3",
+        // playList: "row1-3",
+        // progress: "row2-1",
+        // playButton: "row1-1",
+        // repeatType: "row2-10",
+        // volume: "row1-3",
+        // trackTimeCurrent: "row2-1",
+        // trackTimeDuration: "row2-3",
       },
+      // customComponentsArea: {
+      //   test1: "row1-10",
+      //   test2: "row1-6",
+      // },
     } as InterfacePlacement,
     player: playerPlacement as PlayerPlacement,
   };
 
   const activeUI: ActiveUI = {
-    // all: true,
-    // progress: progressType as "bar" | "waveform",
-    playButton: true,
-    repeatType: true,
-    volume: true,
+    all: true,
+    progress: progressType as "bar" | "waveform",
+    // playButton: true,
+    // repeatType: true,
+    // volume: true,
     // playList: "sortable",
     // prevNnext: true,
     // trackTime: true,
   };
 
-  const CustomComponent = ({ audioPlayerState }) => {
-    console.log("audioPlayerState", audioPlayerState);
-    return <div>test</div>;
+  const CustomComponent = () => {
+    return (
+      <>
+        <div>test</div>
+      </>
+    );
   };
 
   return (
@@ -137,11 +144,13 @@ function App() {
           placement={placement}
           activeUI={activeUI}
         >
-          <AudioPlayerWithProviders.CustomComponent gridArea={"row1-2"} visible>
+          <AudioPlayerWithProviders.CustomComponent id="test1">
             <CustomComponent />
           </AudioPlayerWithProviders.CustomComponent>
-          <AudioPlayerWithProviders.CustomComponent gridArea={"row1-1"} visible>
-            <div>test-2</div>
+          <AudioPlayerWithProviders.CustomComponent id="test2">
+            <>
+              <div>test-2</div>
+            </>
           </AudioPlayerWithProviders.CustomComponent>
         </AudioPlayerWithProviders>
       </div>

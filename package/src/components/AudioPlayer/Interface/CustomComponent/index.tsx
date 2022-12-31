@@ -6,15 +6,25 @@ import { audioPlayerStateContext } from "../../Context";
 
 export type CustomComponentProps = {
   children?: React.ReactNode;
+  id: string;
 } & GridItemProps;
 
 export const CustomComponent: FC<CustomComponentProps> = ({
   children,
+  id,
   ...gridItemProps
 }) => {
   const audioPlayerState = useNonNullableContext(audioPlayerStateContext);
+
+  const placement = audioPlayerState.interfacePlacement;
+  const gridArea = placement?.customComponentsArea?.[id];
+
   return (
-    <Grid.Item UNSAFE_className="custom_component" {...gridItemProps}>
+    <Grid.Item
+      UNSAFE_className="custom_component"
+      gridArea={gridArea}
+      {...gridItemProps}
+    >
       {React.cloneElement(children as React.ReactElement, { audioPlayerState })}
     </Grid.Item>
   );

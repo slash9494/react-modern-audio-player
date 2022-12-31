@@ -14,39 +14,44 @@ export type PlayerPlacement =
   | "static";
 
 //TODO : declare dynamic length type depending on the number of activeUI;
-export const interfacePlacementMaxLength = 10; // plus 1 for deleted number 0;
+export const defaultInterfacePlacementMaxLength = 10; // plus 1 for deleted number 0;
 
 export type InterfacePlacementKey =
   | Exclude<keyof ActiveUI, "all" | "prevNnext" | "trackTime" | "volumeSlider">
   | "trackTimeCurrent"
   | "trackTimeDuration";
 
-export type InterfaceGridTemplateArea<newMaxLength extends number = 0> =
-  newMaxLength extends 0
-    ? Partial<
-        Record<
-          InterfacePlacementKey,
-          `row${NumbersToUnionNum<
-            typeof interfacePlacementMaxLength
-          >}-${NumbersToUnionNum<typeof interfacePlacementMaxLength>}`
-        >
-      >
-    : Partial<
-        Record<
-          InterfacePlacementKey,
-          `row${NumbersToUnionNum<newMaxLength>}-${NumbersToUnionNum<newMaxLength>}`
-        >
-      >;
+export type InterfaceGridTemplateArea<TMaxLength extends number> = Partial<
+  Record<
+    InterfacePlacementKey,
+    `row${NumbersToUnionNum<TMaxLength>}-${NumbersToUnionNum<TMaxLength>}`
+  >
+>;
+
+export type InterfaceGridCustomComponentsArea<TMaxLength extends number> =
+  Partial<
+    Record<
+      string,
+      `row${NumbersToUnionNum<TMaxLength>}-${NumbersToUnionNum<TMaxLength>}`
+    >
+  >;
+
 export type InterfaceGridItemArea = Partial<
   Record<InterfacePlacementKey, string>
 >;
-export type InterfacePlacement = {
-  templateArea?: InterfaceGridTemplateArea;
+
+export type InterfacePlacement<
+  TMaxLength extends number = typeof defaultInterfacePlacementMaxLength
+> = {
+  templateArea?: InterfaceGridTemplateArea<TMaxLength>;
+  customComponentsArea?: InterfaceGridCustomComponentsArea<TMaxLength>;
   itemCustomArea?: InterfaceGridItemArea;
 };
 
 export const defaultInterfacePlacement: {
-  templateArea: Required<InterfaceGridTemplateArea>;
+  templateArea: Required<
+    InterfaceGridTemplateArea<typeof defaultInterfacePlacementMaxLength>
+  >;
 } = {
   templateArea: {
     artwork: "row1-1",

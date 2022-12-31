@@ -3,17 +3,19 @@ import {
   defaultInterfacePlacement,
   InterfacePlacement,
 } from "@/components/AudioPlayer/Context";
-import React, { useCallback, useState } from "react";
-
-// TODO : combine with custom grid area
+import { useCallback, useState } from "react";
 
 export const useGridTemplate = (
   activeUI: ActiveUI,
   templateArea: InterfacePlacement["templateArea"] | undefined,
-  CustomComponentsArea?: any
+  customComponentsArea?: InterfacePlacement["customComponentsArea"]
 ) => {
   const generateGridTemplateValues = useCallback(
-    (activeUi: ActiveUI, placement?: InterfacePlacement["templateArea"]) => {
+    (
+      activeUi: ActiveUI,
+      templatePlacement?: InterfacePlacement["templateArea"],
+      customComponentsPlacement?: InterfacePlacement["customComponentsArea"]
+    ) => {
       const activeUIAllKeys = Object.keys(
         defaultInterfacePlacement.templateArea
       ).filter((key) => {
@@ -45,31 +47,34 @@ export const useGridTemplate = (
       };
       renameTrackTime();
 
-      const newInterfacePlacement = {
+      const totalTemplatePlacement = {
         ...defaultInterfacePlacement.templateArea,
-        ...placement,
+        ...templatePlacement,
       };
+      const activeTemplatePlacementArr = Object.entries(
+        totalTemplatePlacement
+      ).filter(([key]) => activeUIKeysArr.includes(key));
 
       let maxRow = 1;
       const colsCntRecord: Record<number, number> = {};
-      const placementArr = Object.entries(newInterfacePlacement)
+
+      const totalPlacementArr = [
+        ...activeTemplatePlacementArr,
+        ...Object.entries(customComponentsPlacement || {}),
+      ]
         .map(([key, value]) => {
-          const [row, col] = value.split("-");
+          const [rowWithText, col] = value!.split("-");
+          const row = rowWithText.split("row")[1];
+
+          maxRow = Math.max(maxRow, +row);
+          colsCntRecord[+row] = colsCntRecord[+row]
+            ? colsCntRecord[+row] + 1
+            : 1;
           return {
             key,
             row: Number(row.split("row")[1]),
             col: Number(col),
           };
-        })
-        .filter(({ key, row }) => {
-          if (activeUIKeysArr.includes(key)) {
-            maxRow = Math.max(maxRow, row);
-            colsCntRecord[row] = colsCntRecord[row]
-              ? colsCntRecord[row] + 1
-              : 1;
-            return true;
-          }
-          return false;
         })
         .sort((a, b) => a.col - b.col);
 
@@ -80,7 +85,7 @@ export const useGridTemplate = (
         let cols = "";
         let isWithProgress = false;
 
-        const curRowPlacementArr = placementArr.filter(({ key, row }) => {
+        const curRowPlacementArr = totalPlacementArr.filter(({ key, row }) => {
           if (row === rowIdx + 1) {
             if (key === "progress") {
               isWithProgress = true;
@@ -134,6 +139,7 @@ export const useGridTemplate = (
             cols += ` 1fr`;
             continue;
           }
+
           cols += ` fit-content(${maxWidth}px)`;
         }
         return cols.trimStart();
@@ -145,32 +151,41 @@ export const useGridTemplate = (
   );
 
   const [curActiveUI, setCurActiveUI] = useState(activeUI);
-  const [curTemplateArea, setCurTemplateArea] = useState(templateArea);
-  const [curTemplateAreaValues, setCurTemplateAreaValues] = useState<{
+  const [curPlacementArea, setCurPlacementArea] = useState({
+    templateArea,
+    customComponentsArea,
+  });
+  const [curPlacementAreaValues, setCurPlacementAreaValues] = useState<{
     gridAreas: string[];
     gridColumns: string[];
   }>();
 
-  if (!curTemplateAreaValues) {
+  if (!curPlacementAreaValues) {
     const { gridAreas, gridColumns } = generateGridTemplateValues(
       curActiveUI,
-      curTemplateArea
+      curPlacementArea.templateArea,
+      curPlacementArea.customComponentsArea
     );
-    setCurTemplateAreaValues({ gridAreas, gridColumns });
+    setCurPlacementAreaValues({ gridAreas, gridColumns });
     return [gridAreas, gridColumns] as const;
   }
 
-  if (curActiveUI !== activeUI || curTemplateArea !== templateArea) {
+  if (
+    curActiveUI !== activeUI ||
+    curPlacementArea.templateArea !== templateArea ||
+    curPlacementArea.customComponentsArea !== customComponentsArea
+  ) {
     setCurActiveUI(activeUI);
-    setCurTemplateArea(templateArea);
+    setCurPlacementArea({ templateArea, customComponentsArea });
 
     const { gridAreas, gridColumns } = generateGridTemplateValues(
       activeUI,
-      templateArea
+      templateArea,
+      customComponentsArea
     );
-    setCurTemplateAreaValues({ gridAreas, gridColumns });
+    setCurPlacementAreaValues({ gridAreas, gridColumns });
   }
 
-  const { gridAreas, gridColumns } = curTemplateAreaValues;
+  const { gridAreas, gridColumns } = curPlacementAreaValues;
   return [gridAreas, gridColumns] as const;
 };

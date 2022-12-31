@@ -3,17 +3,19 @@ import {
   SpectrumProvider,
   SpectrumProviderProps,
 } from "@/components/Provider";
-import { FC } from "react";
 import { GlobalStyle } from "../../styles/GlobalStyle";
+import { defaultInterfacePlacementMaxLength } from "./Context";
 import { CustomComponent } from "./Interface/CustomComponent";
 import { AudioPlayer, AudioPlayerProps } from "./Player";
 
-export type RMAudioPlayerProps = AudioPlayerProps & SpectrumProviderProps;
+export type RMAudioPlayerProps<
+  TInterfacePlacementLength extends number = typeof defaultInterfacePlacementMaxLength
+> = AudioPlayerProps<TInterfacePlacementLength> & SpectrumProviderProps;
 
-const AudioPlayerWithProviders: FC<RMAudioPlayerProps> = ({
+const AudioPlayerWithProviders = <TInterfacePlacementLength extends number>({
   rootContainerProps,
   ...audioPlayProps
-}) => {
+}: RMAudioPlayerProps<TInterfacePlacementLength>) => {
   return (
     <AudioPlayerProvider {...audioPlayProps}>
       <SpectrumProvider rootContainerProps={rootContainerProps}>

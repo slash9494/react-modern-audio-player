@@ -2,7 +2,6 @@ import React, { FC } from "react";
 import styled from "styled-components";
 import { Controller } from "./Controller";
 import { Information } from "./Information";
-import { CustomComponent, CustomComponentProps } from "./CustomComponent";
 
 import { audioPlayerStateContext } from "@/components/AudioPlayer/Context/StateContext";
 import Grid from "@/components/Grid";
@@ -18,24 +17,14 @@ export const Interface: FC<InterfaceProps> = ({ children }) => {
   const { interfacePlacement, activeUI, playListPlacement } =
     useNonNullableContext(audioPlayerStateContext);
 
-  const CustomComponents = React.Children.toArray(children).filter(
-    (child) => child !== null
-  );
+  const CustomComponents = React.Children.toArray(children);
 
-  const CustomComponentsArea = CustomComponents.map((child) => {
-    const {
-      props: { gridArea },
-    } = child as React.ReactElement<CustomComponentProps>;
-
-    return gridArea;
-  });
   const [gridAreas, gridColumns] = useGridTemplate(
     activeUI,
     interfacePlacement?.templateArea,
-    CustomComponentsArea
+    interfacePlacement?.customComponentsArea
   );
 
-  console.log("CustomComponentsArea", CustomComponentsArea);
   return (
     <InterfaceContainer className="interface-container">
       {playListPlacement === "top" && <div className="sortable-play-list" />}

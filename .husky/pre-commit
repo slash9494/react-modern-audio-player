@@ -1,8 +1,7 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
-# FIXME : temporary fix for husky 4.3.0
-# npx lint-staged
+npx lint-staged
 
 
 
