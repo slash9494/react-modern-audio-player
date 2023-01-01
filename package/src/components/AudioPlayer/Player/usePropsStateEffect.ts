@@ -1,16 +1,21 @@
 import { useLayoutEffect, useEffect, useState } from "react";
 import { useNonNullableContext } from "@/hooks/useNonNullableContext";
 import { AudioPlayerProps } from ".";
-import { audioPlayerDispatchContext } from "../Context";
+import {
+  audioPlayerDispatchContext,
+  defaultInterfacePlacementMaxLength,
+} from "../Context";
 
-export const usePropsStateEffect = ({
+export const usePropsStateEffect = <
+  TInterfacePlacementLength extends number = typeof defaultInterfacePlacementMaxLength
+>({
   placement = {},
   activeUI,
   coverImgsCss,
   audioInitialState,
   playList,
   customIcons,
-}: Omit<AudioPlayerProps, "children">) => {
+}: Omit<AudioPlayerProps<TInterfacePlacementLength>, "children">) => {
   const [isMounted, setIsMounted] = useState(false);
   const audioPlayerDispatch = useNonNullableContext(audioPlayerDispatchContext);
   useLayoutEffect(() => {
@@ -20,7 +25,7 @@ export const usePropsStateEffect = ({
       playList: playListPlacement,
       interface: interfacePlacement,
       volumeSlider: volumeSliderPlacement,
-    } = placement;
+    } = placement as any; // TODO: fix this any type;
     audioPlayerDispatch({
       type: "SET_PLACEMENTS",
       playerPlacement,

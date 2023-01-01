@@ -11,9 +11,12 @@ import {
   InterfacePlacement,
   CoverImgsCss,
   VolumeSliderPlacement,
+  defaultInterfacePlacementMaxLength,
 } from "./StateContext";
 
-export type AudioContextAction =
+export type AudioContextAction<
+  TInterfacePlacementLength extends number = typeof defaultInterfacePlacementMaxLength
+> =
   | { type: "NEXT_AUDIO" }
   | { type: "PREV_AUDIO" }
   | { type: "UPDATE_PLAY_LIST"; playList: PlayList }
@@ -31,7 +34,7 @@ export type AudioContextAction =
       type: "SET_PLACEMENTS";
       playerPlacement?: PlayerPlacement;
       playListPlacement?: PlayListPlacement;
-      interfacePlacement?: InterfacePlacement;
+      interfacePlacement?: InterfacePlacement<TInterfacePlacementLength>;
       volumeSliderPlacement?: VolumeSliderPlacement;
     };
 export type AudioPlayerDispatchContext = Dispatch<AudioContextAction>;
