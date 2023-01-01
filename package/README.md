@@ -288,6 +288,10 @@ const defaultInterfacePlacement = {
 ```
 # Custom Component
 > you can apply custom component to `AudioPlayer` by `CustomComponent`
+> </br>
+> you can also set `viewProps` to `CustomComponent` 
+> </br>
+> (https://react-spectrum.adobe.com/react-spectrum/View.html#props)
 
 ``` tsx
 const activeUI: ActiveUI = {
