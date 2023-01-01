@@ -66,9 +66,11 @@ export const defaultInterfacePlacement: {
   },
 };
 
-export interface Placements {
+export interface Placements<
+  TInterfacePlacementLength extends number = typeof defaultInterfacePlacementMaxLength
+> {
   playListPlacement: PlayListPlacement;
-  interfacePlacement: InterfacePlacement;
+  interfacePlacement: InterfacePlacement<TInterfacePlacementLength>;
   volumeSliderPlacement: VolumeSliderPlacement | undefined;
   playerPlacement: PlayerPlacement | undefined;
 }
