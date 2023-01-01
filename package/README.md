@@ -194,15 +194,21 @@ type PlayListPlacement = "bottom" | "top";
 
 type InterfacePlacement = {
   templateArea?: InterfaceGridTemplateArea;
+  customComponentsArea?: InterfaceGridCustomComponentsArea<TMaxLength>;
   itemCustomArea?: InterfaceGridItemArea;
 };
 
-type InterfaceGridTemplateArea = Record<InterfacePlacementKey,InterfacePlacementValue>
 type InterfacePlacementKey =
   | Exclude<keyof ActiveUI, "all" | "prevNnext" | "trackTime">
   | "trackTimeCurrent"
   | "trackTimeDuration";
-type InterfacePlacementValue = "row1-1" | "row1-2" | "row1-3" | "row1-4" | ... more ... | "row9-9";
+  
+type InterfacePlacementValue = "row1-1" | "row1-2" | "row1-3" | "row1-4" | ... more ... | "row9-9"
+/** if you apply custom components, values must be "row1-1" ~ any more */
+
+type InterfaceGridTemplateArea = Record<InterfacePlacementKey,InterfacePlacementValue>;
+
+type InterfaceGridCustomComponentsArea = Record<componentId,InterfacePlacementValue>;
 
 type InterfaceGridItemArea = Partial<Record<InterfacePlacementKey, string>>;
 	/** example
@@ -279,6 +285,57 @@ const defaultInterfacePlacement = {
 
 // ...spectrum theme palette and so on... //
 ```
+# Custom Component
+> you can apply custom component to `AudioPlayer` by `CustomComponent`
+
+``` tsx
+const activeUI: ActiveUI = {
+  all: true,
+};
+
+const placement = {
+  interface: {
+    customComponentsArea: {
+      playerCustomComponent: "row1-10",
+    },
+  } as InterfacePlacement<11>,
+  /**
+   * you should set generic value of `InterfacePlacement` as interfaces max length for auto-complete aria type such as "row-1-10"
+   * generic value must plus 1 than interfaces length because of 0 index
+  */
+};
+
+/** you can get audioPlayerState by props */
+const CustomComponent = ({
+  audioPlayerState,
+}: {
+  audioPlayerState?: AudioPlayerStateContext;
+}) => {
+  const audioEl = audioPlayerState?.elementRefs?.audioEl;
+  const handOverTime = () => {
+    if (audioEl) {
+      audioEl.currentTime += 30;
+    }
+  };
+  return (
+    <>
+      <button onClick={handOverTime}>+30</button>
+    </>
+  );
+};
+
+<AudioPlayer
+  playList={playList}
+  placement={placement}
+  activeUI={activeUI}
+>
+  <AudioPlayer.CustomComponent id="playerCustomComponent">
+    <CustomComponent />
+  </AudioPlayer.CustomComponent>
+</AudioPlayer>
+```
+
+
 
 # ****Example****
 ```tsx

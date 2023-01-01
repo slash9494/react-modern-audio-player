@@ -2,6 +2,7 @@ import PlayerLogo from "./assets/images/noname.png";
 import { useState } from "react";
 import AudioPlayerWithProviders, {
   ActiveUI,
+  AudioPlayerStateContext,
   InterfacePlacement,
   PlayerPlacement,
   PlayList,
@@ -65,11 +66,10 @@ function App() {
         // trackTimeCurrent: "row2-1",
         // trackTimeDuration: "row2-3",
       },
-      // customComponentsArea: {
-      //   test1: "row1-10",
-      //   test2: "row1-6",
-      // },
-    } as InterfacePlacement,
+      customComponentsArea: {
+        test1: "row1-10",
+      },
+    } as InterfacePlacement<11>,
     player: playerPlacement as PlayerPlacement,
   };
 
@@ -84,10 +84,20 @@ function App() {
     // trackTime: true,
   };
 
-  const CustomComponent = () => {
+  const CustomComponent = ({
+    audioPlayerState,
+  }: {
+    audioPlayerState?: AudioPlayerStateContext;
+  }) => {
+    const audioEl = audioPlayerState?.elementRefs?.audioEl;
+    const handOverTime = () => {
+      if (audioEl) {
+        audioEl.currentTime += 30;
+      }
+    };
     return (
       <>
-        <div>test</div>
+        <button onClick={handOverTime}>+30</button>
       </>
     );
   };
@@ -146,11 +156,6 @@ function App() {
         >
           <AudioPlayerWithProviders.CustomComponent id="test1">
             <CustomComponent />
-          </AudioPlayerWithProviders.CustomComponent>
-          <AudioPlayerWithProviders.CustomComponent id="test2">
-            <>
-              <div>test-2</div>
-            </>
           </AudioPlayerWithProviders.CustomComponent>
         </AudioPlayerWithProviders>
       </div>
