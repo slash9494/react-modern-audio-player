@@ -1,8 +1,8 @@
 import PlayerLogo from "./assets/images/noname.png";
 import { useState } from "react";
-import {
+import AudioPlayerWithProviders, {
   ActiveUI,
-  AudioPlayerWithProvider,
+  AudioPlayerStateContext,
   InterfacePlacement,
   PlayerPlacement,
   PlayList,
@@ -58,27 +58,48 @@ function App() {
   const placement = {
     interface: {
       templateArea: {
-        playList: "row1-3",
-        progress: "row2-2",
-        playButton: "row3-2",
-        repeatType: "row3-3",
-        volume: "row3-1",
-        trackTimeCurrent: "row2-1",
-        trackTimeDuration: "row2-3",
+        // playList: "row1-3",
+        // progress: "row2-1",
+        // playButton: "row1-1",
+        // repeatType: "row2-10",
+        // volume: "row1-3",
+        // trackTimeCurrent: "row2-1",
+        // trackTimeDuration: "row2-3",
       },
-    } as InterfacePlacement,
+      customComponentsArea: {
+        test1: "row1-10",
+      },
+    } as InterfacePlacement<11>,
     player: playerPlacement as PlayerPlacement,
   };
 
   const activeUI: ActiveUI = {
-    // all: true,
+    all: true,
     progress: progressType as "bar" | "waveform",
-    playButton: true,
-    repeatType: true,
-    volume: true,
-    playList: "sortable",
-    prevNnext: true,
-    trackTime: true,
+    // playButton: true,
+    // repeatType: true,
+    // volume: true,
+    // playList: "sortable",
+    // prevNnext: true,
+    // trackTime: true,
+  };
+
+  const CustomComponent = ({
+    audioPlayerState,
+  }: {
+    audioPlayerState?: AudioPlayerStateContext;
+  }) => {
+    const audioEl = audioPlayerState?.elementRefs?.audioEl;
+    const handOverTime = () => {
+      if (audioEl) {
+        audioEl.currentTime += 30;
+      }
+    };
+    return (
+      <>
+        <button onClick={handOverTime}>+30</button>
+      </>
+    );
   };
 
   return (
@@ -127,12 +148,16 @@ function App() {
         </button>
       </h1>
       <div>
-        <AudioPlayerWithProvider
+        <AudioPlayerWithProviders
           playList={playList}
           audioInitialState={initialState}
           placement={placement}
           activeUI={activeUI}
-        />
+        >
+          <AudioPlayerWithProviders.CustomComponent id="test1">
+            <CustomComponent />
+          </AudioPlayerWithProviders.CustomComponent>
+        </AudioPlayerWithProviders>
       </div>
     </div>
   );

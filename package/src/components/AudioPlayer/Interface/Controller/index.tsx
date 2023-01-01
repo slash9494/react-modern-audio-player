@@ -16,10 +16,6 @@ export const Controller: FC = () => {
     audioPlayerStateContext
   );
 
-  const volumeComponentKey = document
-    .querySelector(".rm-audio-player-provider")
-    ?.getBoundingClientRect().top;
-
   return (
     <>
       <Grid.Item
@@ -73,7 +69,7 @@ export const Controller: FC = () => {
         }
         visible={Boolean(activeUI.volume ?? activeUI.all)}
       >
-        <Volume key={volumeComponentKey} />
+        <Volume />
       </Grid.Item>
       <Grid.Item
         gridArea={

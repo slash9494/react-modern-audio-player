@@ -1,5 +1,4 @@
 import { View } from "@react-spectrum/view";
-import { FC } from "react";
 import {
   ActiveUI,
   PlayListPlacement,
@@ -10,16 +9,17 @@ import {
   InterfacePlacement,
   CoverImgsCss,
   VolumeSliderPlacement,
+  defaultInterfacePlacementMaxLength,
 } from "@/components/AudioPlayer/Context";
 import { Audio } from "../Audio";
 import { Interface } from "../Interface";
 import { usePropsStateEffect } from "./usePropsStateEffect";
 
-// TODO : feature - add custom component
 // TODO : feature - add Equalizer component
 // TODO : feature - add dynamic spectrum form
 
-export interface AudioPlayerProps {
+export interface AudioPlayerProps<TInterfacePlacementLength extends number> {
+  children?: React.ReactNode;
   playList: PlayList;
   audioInitialState?: AudioInitialState;
   audioRef?: React.MutableRefObject<HTMLAudioElement>;
@@ -29,21 +29,24 @@ export interface AudioPlayerProps {
   placement?: {
     player?: PlayerPlacement;
     playList?: PlayListPlacement;
-    interface?: InterfacePlacement;
+    interface?: InterfacePlacement<TInterfacePlacementLength>;
     volumeSlider?: VolumeSliderPlacement;
   };
 }
 
-export const AudioPlayer: FC<AudioPlayerProps> = ({
+export const AudioPlayer = <
+  TInterfacePlacementLength extends number = typeof defaultInterfacePlacementMaxLength
+>({
   audioRef,
+  children,
   ...restProps
-}) => {
+}: AudioPlayerProps<TInterfacePlacementLength>) => {
   usePropsStateEffect(restProps);
 
   return (
     <View id="rm-audio-player" UNSAFE_className="rm-audio-player-container">
       <Audio audioRef={audioRef} />
-      <Interface />
+      <Interface>{children}</Interface>
     </View>
   );
 };
