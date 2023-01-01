@@ -1,5 +1,10 @@
-import React, { PropsWithChildren, useRef } from "react";
-import { FC, useLayoutEffect, useState } from "react";
+import React, {
+  PropsWithChildren,
+  useRef,
+  FC,
+  useLayoutEffect,
+  useState,
+} from "react";
 import styled from "styled-components";
 import { DropdownContext, dropdownContext } from "./DropdownContext";
 import { DropdownTrigger } from "./DropdownTrigger";
@@ -15,8 +20,6 @@ export interface DropdownProps
   placement?: DropdownContext["placement"];
   disabled?: boolean;
 }
-
-// TODO : fix dropdown open state when change player placement or first render
 
 const Dropdown: FC<PropsWithChildren<DropdownProps>> = ({
   triggerType = "click",

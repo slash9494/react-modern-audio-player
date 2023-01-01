@@ -12,6 +12,7 @@ import { TrackTime } from "./TrackTime";
 export const Information: FC = () => {
   const { interfacePlacement, playList, curIdx, activeUI } =
     useNonNullableContext(audioPlayerStateContext);
+
   const isTrackInfoActive =
     Boolean(
       playList[curIdx]?.customTrackInfo ??
