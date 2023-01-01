@@ -15,7 +15,6 @@ import { Audio } from "../Audio";
 import { Interface } from "../Interface";
 import { usePropsStateEffect } from "./usePropsStateEffect";
 
-// TODO : feature - add custom component
 // TODO : feature - add Equalizer component
 // TODO : feature - add dynamic spectrum form
 

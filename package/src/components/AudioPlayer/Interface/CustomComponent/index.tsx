@@ -4,6 +4,8 @@ import { useNonNullableContext } from "@/hooks/useNonNullableContext";
 import React, { FC } from "react";
 import { audioPlayerStateContext } from "../../Context";
 
+// TODO : apply collection component
+
 export type CustomComponentProps = {
   children?: React.ReactNode;
   id: string;

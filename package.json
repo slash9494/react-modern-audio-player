@@ -37,7 +37,7 @@
     "react-dom": "^18.2.0"
   },
   "lint-staged": {
-    "*.{js,css,md,mdx,jsx,tsx,ts}": [
+    "*.{js,css,mdx,jsx,tsx,ts}": [
       "prettier --list-different",
       "eslint"
     ]
