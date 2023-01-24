@@ -63,17 +63,15 @@ export const useGridTemplate = (
         ...Object.entries(customComponentsPlacement || {}),
       ]
         .map(([key, value]) => {
-          const [rowWithText, col] = value!.split("-");
-          const row = rowWithText.split("row")[1];
+          const [rowWithText, colStrNum] = value!.split("-");
+          const row = +rowWithText.split("row")[1];
 
-          maxRow = Math.max(maxRow, +row);
-          colsCntRecord[+row] = colsCntRecord[+row]
-            ? colsCntRecord[+row] + 1
-            : 1;
+          maxRow = Math.max(maxRow, row);
+          colsCntRecord[row] = colsCntRecord[row] ? colsCntRecord[row] + 1 : 1;
           return {
             key,
-            row: Number(row.split("row")[1]),
-            col: Number(col),
+            row,
+            col: +colStrNum,
           };
         })
         .sort((a, b) => a.col - b.col);
@@ -111,20 +109,10 @@ export const useGridTemplate = (
             }
           }
         } else {
-          let extraColCnt = maxCol - curRowPlacementArr.length;
-          let curRowIdx = 0;
           for (let i = 0; i < maxCol; i++) {
-            if (!extraColCnt && curRowPlacementArr[curRowIdx]?.col > i + 1) {
-              curRowIdx++;
-              cols += ` row${rowIdx + 1}-${
-                curRowPlacementArr[curRowIdx]?.col
-                  ? curRowPlacementArr[curRowIdx].col
-                  : i + 1
-              }`;
-            } else {
-              extraColCnt--;
-              cols += ` row${rowIdx + 1}-${i + 1}`;
-            }
+            cols += ` row${rowIdx + 1}-${
+              curRowPlacementArr[i] ? curRowPlacementArr[i].col : i + 1
+            }`;
           }
         }
 
