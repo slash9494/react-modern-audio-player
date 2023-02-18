@@ -56,7 +56,6 @@ export const CssTransition: FC<PropsWithChildren<CssTransitionProps>> = ({
   const [classNames, setClassNames] = useState("");
   const [renderable, setRenderable] = useState(false);
 
-  // TODO : use isomorphic effect
   useLayoutEffect(() => {
     const statusClassName = visible ? "enter" : "leave";
     const time = visible ? enterTime : leaveTime;

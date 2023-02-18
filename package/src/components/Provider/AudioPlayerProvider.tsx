@@ -5,7 +5,6 @@ import {
   CurAudioState,
   defaultInterfacePlacement,
   defaultInterfacePlacementMaxLength,
-  InterfacePlacement,
   Placements,
 } from "@/components/AudioPlayer/Context";
 import { PropsWithChildren, useReducer } from "react";
@@ -36,16 +35,14 @@ export const AudioPlayerProvider = <
     playButton: true,
   };
 
-  const placement: Placements<TInterfacePlacementLength> = {
+  const placement: Placements<TInterfacePlacementLength | 10> = {
     playerPlacement: placementProp?.player,
     playListPlacement: placementProp?.playList || "bottom",
-    interfacePlacement:
-      placementProp?.interface ||
-      ({
-        templateArea: {
-          playButton: defaultInterfacePlacement.templateArea["playButton"],
-        },
-      } as InterfacePlacement<TInterfacePlacementLength>),
+    interfacePlacement: placementProp?.interface || {
+      templateArea: {
+        playButton: defaultInterfacePlacement.templateArea["playButton"],
+      },
+    },
     volumeSliderPlacement: placementProp?.volumeSlider,
   };
 
@@ -61,7 +58,7 @@ export const AudioPlayerProvider = <
         : 0,
       curAudioState,
       activeUI,
-      ...(placement as any), // TODO : fix this any type
+      ...(placement as Placements<10>),
       ...otherProps,
     }
   );

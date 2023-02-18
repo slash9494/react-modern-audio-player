@@ -10,6 +10,8 @@ const waveformColors = {
   waveColor: "--rm-audio-player-waveform-background",
 };
 
+// TODO : dynamic drawing form from large files
+
 export const useWaveSurfer = (waveformRef: React.RefObject<HTMLElement>) => {
   const audioPlayerDispatch = useNonNullableContext(audioPlayerDispatchContext);
   const { elementRefs, curPlayId, curAudioState } = useNonNullableContext(

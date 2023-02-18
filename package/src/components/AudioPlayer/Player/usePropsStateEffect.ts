@@ -3,12 +3,13 @@ import { useNonNullableContext } from "@/hooks/useNonNullableContext";
 import { AudioPlayerProps } from ".";
 import {
   audioPlayerDispatchContext,
-  defaultInterfacePlacementMaxLength,
+  InterfacePlacement,
+  PlayerPlacement,
+  PlayListPlacement,
+  VolumeSliderPlacement,
 } from "../Context";
 
-export const usePropsStateEffect = <
-  TInterfacePlacementLength extends number = typeof defaultInterfacePlacementMaxLength
->({
+export const usePropsStateEffect = <TInterfacePlacementLength extends number>({
   placement = {},
   activeUI,
   coverImgsCss,
@@ -25,7 +26,12 @@ export const usePropsStateEffect = <
       playList: playListPlacement,
       interface: interfacePlacement,
       volumeSlider: volumeSliderPlacement,
-    } = placement as any; // TODO: fix this any type;
+    } = placement as {
+      player?: PlayerPlacement;
+      playList?: PlayListPlacement;
+      interface?: InterfacePlacement;
+      volumeSlider?: VolumeSliderPlacement;
+    };
     audioPlayerDispatch({
       type: "SET_PLACEMENTS",
       playerPlacement,
