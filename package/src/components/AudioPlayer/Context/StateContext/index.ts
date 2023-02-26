@@ -1,5 +1,5 @@
 import { createContext } from "react";
-import { CurAudioState } from "./audio";
+import { AudioState } from "./audio";
 import {
   ActiveUI,
   CoverImgsCss,
@@ -18,7 +18,7 @@ export interface AudioPlayerStateContext {
   playList: PlayList;
   curPlayId: number;
   curIdx: number;
-  curAudioState: CurAudioState;
+  curAudioState: AudioState;
   activeUI: ActiveUI;
   playListPlacement: PlayListPlacement;
   playerPlacement?: PlayerPlacement;
@@ -28,6 +28,10 @@ export interface AudioPlayerStateContext {
   customIcons?: CustomIcons;
   coverImgsCss?: CoverImgsCss;
 }
+
+export type InitialStates = AudioState & {
+  curPlayId: number;
+};
 
 export * from "./audio";
 export * from "./element";

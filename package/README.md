@@ -74,7 +74,7 @@ function Player (){
 ```tsx
 interface AudioPlayerProps {
   playList: PlayList;
-  audioInitialState?: AudioInitialState;
+  audioInitialState?: InitialStates;
   audioRef?: React.MutableRefObject<HTMLAudioElement>;
   activeUI?: ActiveUI;
   customIcons?: CustomIcons;
@@ -92,7 +92,7 @@ interface AudioPlayerProps {
 Prop | Type | Default 
 --- | --- | --- 
 `playList` | [PlayList](#playlist) | [ ] 
-`audioInitialState` | [AudioInitialState](#audioinitialstate) | isPlaying: false </br>repeatType: "ALL" </br>volume: 1 
+`audioInitialState` | [InitialStates](#InitialStates) | isPlaying: false </br>repeatType: "ALL" </br>volume: 1 
 `activeUI` | [ActiveUI](#activeui) | playButton : true
 `customIcons` | [CustomIcons](#customicons) | undefined 
 `coverImgsCss` | [CoverImgsCss](#coverimgscss) | undefined 
@@ -114,10 +114,10 @@ type AudioData = {
 };
 ```
 
-## AudioInitialState
+## InitialStates
 
 ```tsx
-type AudioInitialState = Omit<
+type InitialStates = Omit<
   React.AudioHTMLAttributes<HTMLAudioElement>,
   "autoPlay"
 > & {

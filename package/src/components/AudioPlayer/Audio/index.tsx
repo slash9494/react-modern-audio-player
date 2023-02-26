@@ -26,7 +26,8 @@ export const Audio: FC<{
       if (
         state[0] === "isPlaying" ||
         state[0] === "repeatType" ||
-        state[0] === "curPlayId"
+        state[0] === "curPlayId" ||
+        state[0] === "isLoadedMetaData"
       ) {
         return false;
       }

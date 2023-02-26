@@ -3,12 +3,14 @@ import { useNonNullableContext } from "@/hooks/useNonNullableContext";
 import { HTMLAttributes, useCallback, useState, MouseEvent } from "react";
 
 export const useProgress = (): HTMLAttributes<HTMLDivElement> => {
-  const { elementRefs } = useNonNullableContext(audioPlayerStateContext);
+  const { elementRefs, curAudioState } = useNonNullableContext(
+    audioPlayerStateContext
+  );
   const [isTimeChangeActive, setTimeChangeActive] = useState(false);
 
   const moveAudioTime = useCallback(
     (e: MouseEvent<HTMLDivElement>) => {
-      if (!elementRefs?.audioEl) return;
+      if (!elementRefs?.audioEl || !curAudioState?.isLoadedMetaData) return;
       const { clientX } = e;
       const { clientWidth } = e.currentTarget;
       const boundingRect = e.currentTarget.getBoundingClientRect();
@@ -17,7 +19,7 @@ export const useProgress = (): HTMLAttributes<HTMLDivElement> => {
       const curPositionTime = curPositionPercent * elementRefs.audioEl.duration;
       elementRefs.audioEl.currentTime = curPositionTime;
     },
-    [elementRefs?.audioEl]
+    [curAudioState?.isLoadedMetaData, elementRefs?.audioEl]
   );
 
   const setSelectStartActive = useCallback(

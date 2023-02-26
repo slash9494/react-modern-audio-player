@@ -29,6 +29,7 @@ export const BarProgress: FC<{ isActive: boolean }> = ({ isActive }) => {
       !progressValueRef.current ||
       !progressHandleRef.current ||
       !elementRefs?.audioEl ||
+      !curAudioState.isLoadedMetaData ||
       curAudioState.isPlaying
     )
       return;
@@ -42,7 +43,7 @@ export const BarProgress: FC<{ isActive: boolean }> = ({ isActive }) => {
       elementRefs.audioEl.currentTime / elementRefs.audioEl.duration
     })`;
     progressHandleRef.current.style.transform = `translateX(${progressHandlePosition}px)`;
-  }, [isActive]);
+  }, [isActive, curAudioState.isLoadedMetaData]);
 
   const eventProps = useProgress();
 

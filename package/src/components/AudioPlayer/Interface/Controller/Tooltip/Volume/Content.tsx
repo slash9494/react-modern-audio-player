@@ -11,7 +11,9 @@ export const VolumeSlider: FC<{ placement: VolumeSliderPlacement }> = ({
   placement,
 }) => {
   const contentRef = useRef<HTMLDivElement>(null);
-  const { curAudioState } = useNonNullableContext(audioPlayerStateContext);
+  const { curAudioState, elementRefs } = useNonNullableContext(
+    audioPlayerStateContext
+  );
   const audioPlayerDispatch = useNonNullableContext(audioPlayerDispatchContext);
 
   const onChangeVolume = useCallback(
@@ -34,7 +36,9 @@ export const VolumeSlider: FC<{ placement: VolumeSliderPlacement }> = ({
   return (
     <VolumeSliderContainer
       contentPlacement={placement}
-      volumeValue={curAudioState.volume * 100}
+      volumeValue={
+        (curAudioState.volume || elementRefs?.audioEl?.volume || 0) * 100
+      }
       ref={contentRef}
       className="volume-content-container"
     >

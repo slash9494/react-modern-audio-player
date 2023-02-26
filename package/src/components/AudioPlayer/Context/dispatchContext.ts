@@ -7,11 +7,11 @@ import {
   ActiveUI,
   ElementRefs,
   CustomIcons,
-  AudioInitialState,
   InterfacePlacement,
   CoverImgsCss,
   VolumeSliderPlacement,
   defaultInterfacePlacementMaxLength,
+  AudioState,
 } from "./StateContext";
 
 export type AudioContextAction<
@@ -20,7 +20,8 @@ export type AudioContextAction<
   | { type: "NEXT_AUDIO" }
   | { type: "PREV_AUDIO" }
   | { type: "UPDATE_PLAY_LIST"; playList: PlayList }
-  | { type: "SET_INITIAL_AUDIO_STATE"; audioInitialState: AudioInitialState }
+  | { type: "SET_AUDIO_STATE"; audioState: AudioState }
+  | { type: "SET_INITIAL_STATES"; audioState: AudioState; curPlayId: number }
   | { type: "CHANGE_PLAYING_STATE"; state?: boolean }
   | { type: "SET_CURRENT_AUDIO"; currentIndex: number; currentAudioId: number }
   | { type: "SET_REPEAT_TYPE"; repeatType: RepeatType }

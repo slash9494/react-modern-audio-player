@@ -38,6 +38,10 @@ export const audioPlayerReducer = (
           ...state,
           curPlayId: state.playList[randomIdx].id,
           curIdx: randomIdx,
+          curAudioState: {
+            ...state.curAudioState,
+            isLoadedMetaData: false,
+          },
         };
       }
       const infiniteLoopNextIdx = (state.curIdx + 1) % state.playList.length;
@@ -76,6 +80,10 @@ export const audioPlayerReducer = (
         ...state,
         curPlayId: state.playList[infiniteLoopPrevIdx].id,
         curIdx: infiniteLoopPrevIdx,
+        curAudioState: {
+          ...state.curAudioState,
+          isLoadedMetaData: false,
+        },
       };
     }
     case "UPDATE_PLAY_LIST": {
@@ -107,11 +115,16 @@ export const audioPlayerReducer = (
           volume: action.volume,
         },
       };
-    case "SET_INITIAL_AUDIO_STATE":
+    case "SET_AUDIO_STATE":
       return {
         ...state,
-        curAudioState: { ...state.curAudioState, ...action.audioInitialState },
-        curPlayId: action.audioInitialState.curPlayId,
+        curAudioState: { ...state.curAudioState, ...action.audioState },
+      };
+    case "SET_INITIAL_STATES":
+      return {
+        ...state,
+        curAudioState: { ...state.curAudioState, ...action.audioState },
+        curPlayId: action.curPlayId,
       };
     case "CHANGE_PLAYING_STATE":
       if (action.state !== undefined) {
@@ -135,6 +148,10 @@ export const audioPlayerReducer = (
         ...state,
         curPlayId: action.currentAudioId,
         curIdx: action.currentIndex,
+        curAudioState: {
+          ...state.curAudioState,
+          isLoadedMetaData: false,
+        },
       };
     case "SET_REPEAT_TYPE":
       return {
