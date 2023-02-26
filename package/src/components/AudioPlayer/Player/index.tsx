@@ -5,7 +5,7 @@ import {
   CustomIcons,
   PlayerPlacement,
   PlayList,
-  AudioInitialState,
+  InitialStates,
   InterfacePlacement,
   CoverImgsCss,
   VolumeSliderPlacement,
@@ -21,7 +21,7 @@ import { usePropsStateEffect } from "./usePropsStateEffect";
 export interface AudioPlayerProps<TInterfacePlacementLength extends number> {
   children?: React.ReactNode;
   playList: PlayList;
-  audioInitialState?: AudioInitialState;
+  audioInitialState?: InitialStates;
   audioRef?: React.MutableRefObject<HTMLAudioElement>;
   activeUI?: ActiveUI;
   customIcons?: CustomIcons;

@@ -2,7 +2,7 @@ import {
   audioPlayerDispatchContext,
   audioPlayerReducer,
   audioPlayerStateContext,
-  CurAudioState,
+  AudioState,
   defaultInterfacePlacement,
   defaultInterfacePlacementMaxLength,
   Placements,
@@ -24,7 +24,7 @@ export const AudioPlayerProvider = <
     ...otherProps
   } = props;
 
-  const curAudioState: CurAudioState = {
+  const curAudioState: AudioState = {
     isPlaying: audioInitialState?.isPlaying || false,
     repeatType: audioInitialState?.repeatType || "ALL",
     volume: audioInitialState?.volume || 1,

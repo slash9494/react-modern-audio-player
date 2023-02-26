@@ -15,7 +15,7 @@ const TriggerContainer = styled.div`
   justify-content: center;
 `;
 export const Trigger = forwardRef<HTMLDivElement>((_, ref) => {
-  const { curAudioState, customIcons } = useNonNullableContext(
+  const { curAudioState, customIcons, elementRefs } = useNonNullableContext(
     audioPlayerStateContext
   );
   const audioPlayerDispatch = useNonNullableContext(audioPlayerDispatchContext);
@@ -41,7 +41,9 @@ export const Trigger = forwardRef<HTMLDivElement>((_, ref) => {
       if (value <= 0.5) return "low";
       if (value > 0.5) return "high";
     };
-    switch (volumeState(curAudioState.volume)) {
+    switch (
+      volumeState(curAudioState.volume || elementRefs?.audioEl?.volume || 0)
+    ) {
       case "mute":
         return (
           <Icon
@@ -72,6 +74,7 @@ export const Trigger = forwardRef<HTMLDivElement>((_, ref) => {
     customIcons?.volumeMuted,
     customIcons?.volumeFull,
     customIcons?.volumeHalf,
+    elementRefs?.audioEl?.volume,
   ]);
   return (
     <TriggerContainer

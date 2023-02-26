@@ -7,9 +7,10 @@ export type AudioNativeProps = Omit<
 
 export type RepeatType = "ALL" | "SHUFFLE" | "ONE" | "NONE";
 export type AudioCustomProps = {
-  isPlaying: boolean;
+  isLoadedMetaData?: boolean;
+  isPlaying?: boolean;
   repeatType?: RepeatType;
-  volume: number;
+  volume?: number;
   currentTime?: number;
   duration?: number;
 };
@@ -24,7 +25,4 @@ export type AudioData = {
   customTrackInfo?: string | ReactNode;
 };
 
-export type CurAudioState = AudioNativeProps & AudioCustomProps;
-export type AudioInitialState = Partial<CurAudioState> & {
-  curPlayId: number;
-};
+export type AudioState = AudioNativeProps & AudioCustomProps;

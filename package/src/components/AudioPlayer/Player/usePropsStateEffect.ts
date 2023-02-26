@@ -57,8 +57,9 @@ export const usePropsStateEffect = <TInterfacePlacementLength extends number>({
     if (!isMounted || !audioInitialState) return;
 
     audioPlayerDispatch({
-      type: "SET_INITIAL_AUDIO_STATE",
-      audioInitialState: audioInitialState,
+      type: "SET_INITIAL_STATES",
+      audioState: audioInitialState,
+      curPlayId: audioInitialState.curPlayId,
     });
   }, [audioInitialState, audioPlayerDispatch]);
 

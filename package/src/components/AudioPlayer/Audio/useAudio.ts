@@ -53,8 +53,14 @@ export const useAudio = (): HTMLAttributes<HTMLAudioElement> => {
   const onLoadedMetadata = useCallback(
     (e: SyntheticEvent<HTMLAudioElement, Event>) => {
       if (!elementRefs) return;
+
       const { duration } = e.currentTarget;
       resetAudioValues(elementRefs, duration);
+
+      audioPlayerDispatch({
+        type: "SET_AUDIO_STATE",
+        audioState: { isLoadedMetaData: true },
+      });
     },
     [elementRefs]
   );
@@ -71,7 +77,7 @@ export const useAudio = (): HTMLAttributes<HTMLAudioElement> => {
 
   /** volume */
   useEffect(() => {
-    if (!elementRefs?.audioEl) return;
+    if (!elementRefs?.audioEl || !curAudioState.volume) return;
     elementRefs.audioEl.volume = curAudioState.volume;
   }, [elementRefs?.audioEl, curAudioState.volume]);
 

@@ -8,7 +8,7 @@ import { Icon } from "../Icon";
 import { StyledBtn } from "./StyledBtn";
 
 export const VolumeTriggerBtn = forwardRef<HTMLButtonElement>((_, ref) => {
-  const { curAudioState, customIcons } = useNonNullableContext(
+  const { curAudioState, customIcons, elementRefs } = useNonNullableContext(
     audioPlayerStateContext
   );
   const audioPlayerDispatch = useNonNullableContext(audioPlayerDispatchContext);
@@ -34,7 +34,9 @@ export const VolumeTriggerBtn = forwardRef<HTMLButtonElement>((_, ref) => {
       if (value <= 0.5) return "low";
       if (value > 0.5) return "high";
     };
-    switch (volumeState(curAudioState.volume)) {
+    switch (
+      volumeState(curAudioState.volume || elementRefs?.audioEl?.volume || 0)
+    ) {
       case "mute":
         return (
           <Icon
