@@ -48,7 +48,10 @@ export const useWaveSurfer = (waveformRef: React.RefObject<HTMLElement>) => {
     if (!elementRefs?.audioEl || !elementRefs?.waveformInst) return;
     elementRefs.audioEl.pause();
     elementRefs.waveformInst.load(elementRefs?.audioEl);
-    elementRefs.audioEl.volume = curAudioState.volume;
+
+    if (curAudioState.volume) {
+      elementRefs.audioEl.volume = curAudioState.volume;
+    }
 
     if (curAudioState.isPlaying) elementRefs?.audioEl?.play();
   }, [curPlayId, elementRefs?.audioEl, elementRefs?.waveformInst]);
