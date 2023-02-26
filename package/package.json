@@ -22,7 +22,8 @@
   "scripts": {
     "dev": "vite --host",
     "build": "rm -rf dist && tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "typeCheck": "tsc --project ./tsconfig.json --noEmit"
   },
   "peerDependencies": {
     "react": ">=16.8.0",
