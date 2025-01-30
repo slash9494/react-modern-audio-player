@@ -6,7 +6,10 @@ import { useEffect } from "react";
 import { useNonNullableContext } from ".";
 
 export type ElementRefsRecord = Partial<
-  Record<keyof ElementRefs, React.RefObject<ElementRefs[keyof ElementRefs]>>
+  Record<
+    keyof ElementRefs,
+    React.RefObject<ElementRefs[keyof ElementRefs] | null>
+  >
 >;
 
 export const useRefsDispatch = (

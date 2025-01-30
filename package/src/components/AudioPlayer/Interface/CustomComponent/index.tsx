@@ -27,7 +27,10 @@ export const CustomComponent: FC<CustomComponentProps> = ({
       gridArea={gridArea}
       {...gridItemProps}
     >
-      {React.cloneElement(children as React.ReactElement, { audioPlayerState })}
+      {React.cloneElement(
+        children as React.ReactElement,
+        { audioPlayerState } as never
+      )}
     </Grid.Item>
   );
 };

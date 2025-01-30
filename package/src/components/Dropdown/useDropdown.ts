@@ -14,7 +14,7 @@ export const useDropdown = ({
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
   onOpenChange?: (isOpen: boolean) => void;
 }): HTMLAttributes<HTMLDivElement> => {
-  const timer = useRef<number>();
+  const timer = useRef<number | undefined>(0);
   const lazyChangeVisible = (nextState: boolean) => {
     const clear = () => {
       clearTimeout(timer.current);

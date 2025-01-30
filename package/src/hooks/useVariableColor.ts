@@ -5,7 +5,7 @@ export type VariableColors<T extends string> = Record<T, string>;
 export const useVariableColor = <Keys extends string>(
   variableColors: VariableColors<Keys>
 ) => {
-  const colorsRef = useRef<VariableColors<Keys>>();
+  const colorsRef = useRef<VariableColors<Keys>>(null);
   useLayoutEffect(() => {
     const parsedColors: VariableColors<Keys> = Object.entries(
       variableColors

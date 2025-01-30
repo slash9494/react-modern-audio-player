@@ -12,7 +12,9 @@ const waveformColors = {
 
 // TODO : dynamic drawing form from large files
 
-export const useWaveSurfer = (waveformRef: React.RefObject<HTMLElement>) => {
+export const useWaveSurfer = (
+  waveformRef: React.RefObject<HTMLElement | null>
+) => {
   const audioPlayerDispatch = useNonNullableContext(audioPlayerDispatchContext);
   const { elementRefs, curPlayId, curAudioState } = useNonNullableContext(
     audioPlayerStateContext

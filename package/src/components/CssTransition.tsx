@@ -41,6 +41,7 @@ export interface CssTransitionProps {
   clearTime: number;
   onExited?: () => void;
   onEntered?: () => void;
+  className?: string;
 }
 
 export const CssTransition: FC<PropsWithChildren<CssTransitionProps>> = ({
@@ -95,9 +96,9 @@ export const CssTransition: FC<PropsWithChildren<CssTransitionProps>> = ({
 
   if (!renderable) return null;
 
-  return cloneElement(children as React.ReactElement, {
+  return cloneElement(children as React.ReactElement<{ className: string }>, {
     className: `${
-      (children as React.ReactElement).props.className
+      (children as React.ReactElement<{ className: string }>).props.className
     } ${classNames}`,
   });
 };
