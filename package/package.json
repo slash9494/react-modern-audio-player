@@ -1,6 +1,6 @@
 {
   "name": "react-modern-audio-player",
-  "version": "1.4.0-rc.2",
+  "version": "1.4.0-rc.3",
   "author": {
     "name": "LYH",
     "email": "slash9494@naver.com",
@@ -26,14 +26,14 @@
     "typeCheck": "tsc --project ./tsconfig.json --noEmit"
   },
   "peerDependencies": {
-    "react": ">=16.8.0",
-    "react-dom": ">=16.8.0"
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
   },
   "dependencies": {
-    "@react-spectrum/layout": "^3.3.1",
-    "@react-spectrum/provider": "^3.4.1",
-    "@react-spectrum/theme-default": "^3.3.1",
-    "@react-spectrum/view": "^3.2.1",
+    "@react-spectrum/layout": "^3.6.11",
+    "@react-spectrum/provider": "^3.10.1",
+    "@react-spectrum/theme-default": "^3.5.15",
+    "@react-spectrum/view": "^3.6.15",
     "classnames": "^2.3.1",
     "react-icons": "^4.4.0",
     "styled-components": "^5.3.5",
@@ -41,8 +41,8 @@
   },
   "devDependencies": {
     "@types/node": "^17.0.25",
-    "@types/react": "^18.0.1",
-    "@types/react-dom": "^18.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
     "@types/styled-components": "^5.1.26",
     "@types/wavesurfer.js": "^6.0.3",
     "@vitejs/plugin-react": "^1.0.7",

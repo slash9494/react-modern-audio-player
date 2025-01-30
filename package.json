@@ -1,9 +1,8 @@
 {
   "name": "react-modern-audio-player-root",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "workspaces": [
-    "package",
-    "storybook"
+    "package"
   ],
   "repository": {
     "type": "git",
@@ -33,8 +32,8 @@
   },
   "dependencies": {
     "@changesets/cli": "^2.24.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
   },
   "lint-staged": {
     "*.{js,css,mdx,jsx,tsx,ts}": [
