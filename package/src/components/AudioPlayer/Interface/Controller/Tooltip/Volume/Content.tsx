@@ -58,7 +58,10 @@ export const VolumeSlider: FC<{ placement: VolumeSliderPlacement }> = ({
   );
 };
 
-const VolumeSliderContainer = styled.div`
+const VolumeSliderContainer = styled.div<{
+  contentPlacement?: VolumeSliderPlacement;
+  volumeValue: number;
+}>`
   ${({
     contentPlacement,
     volumeValue,

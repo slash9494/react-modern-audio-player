@@ -85,8 +85,8 @@ interface DropdownContainerProps {
   dropdownSize: DropdownSize;
 }
 
-const DropdownContentContainer = styled.div`
-  ${({ placement, dropdownSize }: DropdownContainerProps) => css`
+const DropdownContentContainer = styled.div<DropdownContainerProps>`
+  ${({ placement, dropdownSize }) => css`
     position: absolute;
     top: ${placement === "bottom" ? `${dropdownSize.height}px` : undefined};
     margin-top: ${placement === "bottom" ? `5px` : undefined};

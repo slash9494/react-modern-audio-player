@@ -2,7 +2,7 @@ import { View, ViewProps } from "@react-spectrum/view";
 import { forwardRef } from "react";
 import { DOMRefValue } from "@react-types/shared";
 
-export interface GridItemProps extends Omit<ViewProps, "children"> {
+export interface GridItemProps extends Omit<ViewProps<5>, "children"> {
   visible?: boolean;
   children: React.ReactNode;
 }

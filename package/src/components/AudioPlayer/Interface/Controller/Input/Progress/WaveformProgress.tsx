@@ -5,8 +5,8 @@ import styled, { css } from "styled-components";
 import { useProgress } from "./useProgress";
 import { useWaveSurfer } from "./useWavesurfer";
 
-const WaveformWrapper = styled.div`
-  ${({ isActive }: { isActive: boolean }) => css`
+const WaveformWrapper = styled.div<{ isActive: boolean }>`
+  ${({ isActive }) => css`
     display: flex;
     width: 100%;
     #rm-waveform {
