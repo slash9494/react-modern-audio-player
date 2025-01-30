@@ -1,6 +1,6 @@
 /// <reference types="react" />
 export interface DropdownContext {
-    dropdownRef: React.RefObject<HTMLDivElement>;
+    dropdownRef: React.RefObject<HTMLDivElement | null>;
     isOpen: boolean;
     placement: "top" | "bottom" | "left" | "right";
     setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;

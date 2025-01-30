@@ -1,1 +1,1 @@
-export declare const useWaveSurfer: (waveformRef: React.RefObject<HTMLElement>) => void;
+export declare const useWaveSurfer: (waveformRef: React.RefObject<HTMLElement | null>) => void;

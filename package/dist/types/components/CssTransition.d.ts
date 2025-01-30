@@ -9,5 +9,6 @@ export interface CssTransitionProps {
     clearTime: number;
     onExited?: () => void;
     onEntered?: () => void;
+    className?: string;
 }
 export declare const CssTransition: FC<PropsWithChildren<CssTransitionProps>>;

@@ -1891,80 +1891,146 @@ var DefaultContext = {
   style: void 0,
   attr: void 0
 };
-var IconContext = $670gB$react.createContext && $670gB$react.createContext(DefaultContext);
-var __assign = globalThis && globalThis.__assign || function() {
-  __assign = Object.assign || function(t) {
-    for (var s, i = 1, n = arguments.length; i < n; i++) {
-      s = arguments[i];
-      for (var p in s)
-        if (Object.prototype.hasOwnProperty.call(s, p))
-          t[p] = s[p];
+var IconContext = $670gB$react.createContext && /* @__PURE__ */ $670gB$react.createContext(DefaultContext);
+var _excluded = ["attr", "size", "title"];
+function _objectWithoutProperties(source, excluded) {
+  if (source == null)
+    return {};
+  var target = _objectWithoutPropertiesLoose(source, excluded);
+  var key, i;
+  if (Object.getOwnPropertySymbols) {
+    var sourceSymbolKeys = Object.getOwnPropertySymbols(source);
+    for (i = 0; i < sourceSymbolKeys.length; i++) {
+      key = sourceSymbolKeys[i];
+      if (excluded.indexOf(key) >= 0)
+        continue;
+      if (!Object.prototype.propertyIsEnumerable.call(source, key))
+        continue;
+      target[key] = source[key];
     }
-    return t;
+  }
+  return target;
+}
+function _objectWithoutPropertiesLoose(source, excluded) {
+  if (source == null)
+    return {};
+  var target = {};
+  for (var key in source) {
+    if (Object.prototype.hasOwnProperty.call(source, key)) {
+      if (excluded.indexOf(key) >= 0)
+        continue;
+      target[key] = source[key];
+    }
+  }
+  return target;
+}
+function _extends() {
+  _extends = Object.assign ? Object.assign.bind() : function(target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
+      for (var key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+          target[key] = source[key];
+        }
+      }
+    }
+    return target;
   };
-  return __assign.apply(this, arguments);
-};
-var __rest = globalThis && globalThis.__rest || function(s, e) {
-  var t = {};
-  for (var p in s)
-    if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
-      t[p] = s[p];
-  if (s != null && typeof Object.getOwnPropertySymbols === "function")
-    for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
-      if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
-        t[p[i]] = s[p[i]];
-    }
+  return _extends.apply(this, arguments);
+}
+function ownKeys(e, r2) {
+  var t = Object.keys(e);
+  if (Object.getOwnPropertySymbols) {
+    var o = Object.getOwnPropertySymbols(e);
+    r2 && (o = o.filter(function(r3) {
+      return Object.getOwnPropertyDescriptor(e, r3).enumerable;
+    })), t.push.apply(t, o);
+  }
   return t;
-};
+}
+function _objectSpread(e) {
+  for (var r2 = 1; r2 < arguments.length; r2++) {
+    var t = null != arguments[r2] ? arguments[r2] : {};
+    r2 % 2 ? ownKeys(Object(t), true).forEach(function(r3) {
+      _defineProperty(e, r3, t[r3]);
+    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function(r3) {
+      Object.defineProperty(e, r3, Object.getOwnPropertyDescriptor(t, r3));
+    });
+  }
+  return e;
+}
+function _defineProperty(obj, key, value) {
+  key = _toPropertyKey(key);
+  if (key in obj) {
+    Object.defineProperty(obj, key, { value, enumerable: true, configurable: true, writable: true });
+  } else {
+    obj[key] = value;
+  }
+  return obj;
+}
+function _toPropertyKey(t) {
+  var i = _toPrimitive(t, "string");
+  return "symbol" == typeof i ? i : i + "";
+}
+function _toPrimitive(t, r2) {
+  if ("object" != typeof t || !t)
+    return t;
+  var e = t[Symbol.toPrimitive];
+  if (void 0 !== e) {
+    var i = e.call(t, r2 || "default");
+    if ("object" != typeof i)
+      return i;
+    throw new TypeError("@@toPrimitive must return a primitive value.");
+  }
+  return ("string" === r2 ? String : Number)(t);
+}
 function Tree2Element(tree) {
-  return tree && tree.map(function(node, i) {
-    return $670gB$react.createElement(node.tag, __assign({
-      key: i
-    }, node.attr), Tree2Element(node.child));
-  });
+  return tree && tree.map((node, i) => /* @__PURE__ */ $670gB$react.createElement(node.tag, _objectSpread({
+    key: i
+  }, node.attr), Tree2Element(node.child)));
 }
 function GenIcon(data) {
-  return function(props) {
-    return $670gB$react.createElement(IconBase, __assign({
-      attr: __assign({}, data.attr)
-    }, props), Tree2Element(data.child));
-  };
+  return (props) => /* @__PURE__ */ $670gB$react.createElement(IconBase, _extends({
+    attr: _objectSpread({}, data.attr)
+  }, props), Tree2Element(data.child));
 }
 function IconBase(props) {
-  var elem = function(conf) {
-    var attr = props.attr, size = props.size, title = props.title, svgProps = __rest(props, ["attr", "size", "title"]);
+  var elem = (conf) => {
+    var {
+      attr,
+      size,
+      title
+    } = props, svgProps = _objectWithoutProperties(props, _excluded);
     var computedSize = size || conf.size || "1em";
     var className;
     if (conf.className)
       className = conf.className;
     if (props.className)
       className = (className ? className + " " : "") + props.className;
-    return $670gB$react.createElement("svg", __assign({
+    return /* @__PURE__ */ $670gB$react.createElement("svg", _extends({
       stroke: "currentColor",
       fill: "currentColor",
       strokeWidth: "0"
     }, conf.attr, attr, svgProps, {
       className,
-      style: __assign(__assign({
+      style: _objectSpread(_objectSpread({
         color: props.color || conf.color
       }, conf.style), props.style),
       height: computedSize,
       width: computedSize,
       xmlns: "http://www.w3.org/2000/svg"
-    }), title && $670gB$react.createElement("title", null, title), props.children);
+    }), title && /* @__PURE__ */ $670gB$react.createElement("title", null, title), props.children);
   };
-  return IconContext !== void 0 ? $670gB$react.createElement(IconContext.Consumer, null, function(conf) {
-    return elem(conf);
-  }) : elem(DefaultContext);
+  return IconContext !== void 0 ? /* @__PURE__ */ $670gB$react.createElement(IconContext.Consumer, null, (conf) => elem(conf)) : elem(DefaultContext);
 }
 function MdPauseCircleFilled(props) {
-  return GenIcon({ "tag": "svg", "attr": { "viewBox": "0 0 24 24" }, "child": [{ "tag": "path", "attr": { "fill": "none", "d": "M0 0h24v24H0z" } }, { "tag": "path", "attr": { "d": "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z" } }] })(props);
+  return GenIcon({ "tag": "svg", "attr": { "viewBox": "0 0 24 24" }, "child": [{ "tag": "path", "attr": { "fill": "none", "d": "M0 0h24v24H0z" }, "child": [] }, { "tag": "path", "attr": { "d": "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z" }, "child": [] }] })(props);
 }
 function MdPlayCircleFilled(props) {
-  return GenIcon({ "tag": "svg", "attr": { "viewBox": "0 0 24 24" }, "child": [{ "tag": "path", "attr": { "fill": "none", "d": "M0 0h24v24H0z" } }, { "tag": "path", "attr": { "d": "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z" } }] })(props);
+  return GenIcon({ "tag": "svg", "attr": { "viewBox": "0 0 24 24" }, "child": [{ "tag": "path", "attr": { "fill": "none", "d": "M0 0h24v24H0z" }, "child": [] }, { "tag": "path", "attr": { "d": "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z" }, "child": [] }] })(props);
 }
 function MdPlaylistPlay(props) {
-  return GenIcon({ "tag": "svg", "attr": { "viewBox": "0 0 24 24" }, "child": [{ "tag": "path", "attr": { "fill": "none", "d": "M0 0h24v24H0z" } }, { "tag": "path", "attr": { "d": "M3 10h11v2H3zM3 6h11v2H3zM3 14h7v2H3zM16 13v8l6-4z" } }] })(props);
+  return GenIcon({ "tag": "svg", "attr": { "viewBox": "0 0 24 24" }, "child": [{ "tag": "path", "attr": { "fill": "none", "d": "M0 0h24v24H0z" }, "child": [] }, { "tag": "path", "attr": { "d": "M3 10h11v2H3zM3 6h11v2H3zM3 14h7v2H3zM16 13v8l6-4z" }, "child": [] }] })(props);
 }
 const Icon = ({
   render,
@@ -2004,10 +2070,10 @@ const PlayBtn = () => {
   });
 };
 function ImPrevious(props) {
-  return GenIcon({ "tag": "svg", "attr": { "version": "1.1", "viewBox": "0 0 16 16" }, "child": [{ "tag": "path", "attr": { "d": "M8 0c-4.418 0-8 3.582-8 8s3.582 8 8 8 8-3.582 8-8-3.582-8-8-8zM8 14.5c-3.59 0-6.5-2.91-6.5-6.5s2.91-6.5 6.5-6.5 6.5 2.91 6.5 6.5-2.91 6.5-6.5 6.5z" } }, { "tag": "path", "attr": { "d": "M7 8l4-3v6z" } }, { "tag": "path", "attr": { "d": "M5 5h2v6h-2v-6z" } }] })(props);
+  return GenIcon({ "tag": "svg", "attr": { "version": "1.1", "viewBox": "0 0 16 16" }, "child": [{ "tag": "path", "attr": { "d": "M8 0c-4.418 0-8 3.582-8 8s3.582 8 8 8 8-3.582 8-8-3.582-8-8-8zM8 14.5c-3.59 0-6.5-2.91-6.5-6.5s2.91-6.5 6.5-6.5 6.5 2.91 6.5 6.5-2.91 6.5-6.5 6.5z" }, "child": [] }, { "tag": "path", "attr": { "d": "M7 8l4-3v6z" }, "child": [] }, { "tag": "path", "attr": { "d": "M5 5h2v6h-2v-6z" }, "child": [] }] })(props);
 }
 function ImNext(props) {
-  return GenIcon({ "tag": "svg", "attr": { "version": "1.1", "viewBox": "0 0 16 16" }, "child": [{ "tag": "path", "attr": { "d": "M8 0c4.418 0 8 3.582 8 8s-3.582 8-8 8-8-3.582-8-8 3.582-8 8-8zM8 14.5c3.59 0 6.5-2.91 6.5-6.5s-2.91-6.5-6.5-6.5-6.5 2.91-6.5 6.5 2.91 6.5 6.5 6.5z" } }, { "tag": "path", "attr": { "d": "M9 8l-4-3v6z" } }, { "tag": "path", "attr": { "d": "M11 5h-2v6h2v-6z" } }] })(props);
+  return GenIcon({ "tag": "svg", "attr": { "version": "1.1", "viewBox": "0 0 16 16" }, "child": [{ "tag": "path", "attr": { "d": "M8 0c4.418 0 8 3.582 8 8s-3.582 8-8 8-8-3.582-8-8 3.582-8 8-8zM8 14.5c3.59 0 6.5-2.91 6.5-6.5s-2.91-6.5-6.5-6.5-6.5 2.91-6.5 6.5 2.91 6.5 6.5 6.5z" }, "child": [] }, { "tag": "path", "attr": { "d": "M9 8l-4-3v6z" }, "child": [] }, { "tag": "path", "attr": { "d": "M11 5h-2v6h2v-6z" }, "child": [] }] })(props);
 }
 const PrevNnextBtn = ({
   type,
@@ -2051,25 +2117,25 @@ const PrevNnextBtn = ({
   }) : null;
 };
 function TbArrowsShuffle(props) {
-  return GenIcon({ "tag": "svg", "attr": { "viewBox": "0 0 24 24", "strokeWidth": "2", "stroke": "currentColor", "fill": "none", "strokeLinecap": "round", "strokeLinejoin": "round" }, "child": [{ "tag": "desc", "attr": {}, "child": [] }, { "tag": "path", "attr": { "stroke": "none", "d": "M0 0h24v24H0z", "fill": "none" } }, { "tag": "path", "attr": { "d": "M18 4l3 3l-3 3" } }, { "tag": "path", "attr": { "d": "M18 20l3 -3l-3 -3" } }, { "tag": "path", "attr": { "d": "M3 7h3a5 5 0 0 1 5 5a5 5 0 0 0 5 5h5" } }, { "tag": "path", "attr": { "d": "M21 7h-5a4.978 4.978 0 0 0 -2.998 .998m-4.002 8.003a4.984 4.984 0 0 1 -3 .999h-3" } }] })(props);
+  return GenIcon({ "tag": "svg", "attr": { "viewBox": "0 0 24 24", "fill": "none", "stroke": "currentColor", "strokeWidth": "2", "strokeLinecap": "round", "strokeLinejoin": "round" }, "child": [{ "tag": "path", "attr": { "d": "M18 4l3 3l-3 3" }, "child": [] }, { "tag": "path", "attr": { "d": "M18 20l3 -3l-3 -3" }, "child": [] }, { "tag": "path", "attr": { "d": "M3 7h3a5 5 0 0 1 5 5a5 5 0 0 0 5 5h5" }, "child": [] }, { "tag": "path", "attr": { "d": "M21 7h-5a4.978 4.978 0 0 0 -3 1m-4 8a4.984 4.984 0 0 1 -3 1h-3" }, "child": [] }] })(props);
 }
 function TbRepeatOff(props) {
-  return GenIcon({ "tag": "svg", "attr": { "viewBox": "0 0 24 24", "strokeWidth": "2", "stroke": "currentColor", "fill": "none", "strokeLinecap": "round", "strokeLinejoin": "round" }, "child": [{ "tag": "desc", "attr": {}, "child": [] }, { "tag": "path", "attr": { "stroke": "none", "d": "M0 0h24v24H0z", "fill": "none" } }, { "tag": "path", "attr": { "d": "M4 12v-3c0 -1.336 .873 -2.468 2.08 -2.856m3.92 -.144h10m-3 -3l3 3l-3 3" } }, { "tag": "path", "attr": { "d": "M20 12v3a3 3 0 0 1 -.133 .886m-1.99 1.984a3 3 0 0 1 -.877 .13h-13m3 3l-3 -3l3 -3" } }, { "tag": "path", "attr": { "d": "M3 3l18 18" } }] })(props);
+  return GenIcon({ "tag": "svg", "attr": { "viewBox": "0 0 24 24", "fill": "none", "stroke": "currentColor", "strokeWidth": "2", "strokeLinecap": "round", "strokeLinejoin": "round" }, "child": [{ "tag": "path", "attr": { "d": "M4 12v-3c0 -1.336 .873 -2.468 2.08 -2.856m3.92 -.144h10m-3 -3l3 3l-3 3" }, "child": [] }, { "tag": "path", "attr": { "d": "M20 12v3a3 3 0 0 1 -.133 .886m-1.99 1.984a3 3 0 0 1 -.877 .13h-13m3 3l-3 -3l3 -3" }, "child": [] }, { "tag": "path", "attr": { "d": "M3 3l18 18" }, "child": [] }] })(props);
 }
 function TbRepeatOnce(props) {
-  return GenIcon({ "tag": "svg", "attr": { "viewBox": "0 0 24 24", "strokeWidth": "2", "stroke": "currentColor", "fill": "none", "strokeLinecap": "round", "strokeLinejoin": "round" }, "child": [{ "tag": "desc", "attr": {}, "child": [] }, { "tag": "path", "attr": { "stroke": "none", "d": "M0 0h24v24H0z", "fill": "none" } }, { "tag": "path", "attr": { "d": "M4 12v-3a3 3 0 0 1 3 -3h13m-3 -3l3 3l-3 3" } }, { "tag": "path", "attr": { "d": "M20 12v3a3 3 0 0 1 -3 3h-13m3 3l-3 -3l3 -3" } }, { "tag": "path", "attr": { "d": "M11 11l1 -1v4" } }] })(props);
+  return GenIcon({ "tag": "svg", "attr": { "viewBox": "0 0 24 24", "fill": "none", "stroke": "currentColor", "strokeWidth": "2", "strokeLinecap": "round", "strokeLinejoin": "round" }, "child": [{ "tag": "path", "attr": { "d": "M4 12v-3a3 3 0 0 1 3 -3h13m-3 -3l3 3l-3 3" }, "child": [] }, { "tag": "path", "attr": { "d": "M20 12v3a3 3 0 0 1 -3 3h-13m3 3l-3 -3l3 -3" }, "child": [] }, { "tag": "path", "attr": { "d": "M11 11l1 -1v4" }, "child": [] }] })(props);
 }
 function TbRepeat(props) {
-  return GenIcon({ "tag": "svg", "attr": { "viewBox": "0 0 24 24", "strokeWidth": "2", "stroke": "currentColor", "fill": "none", "strokeLinecap": "round", "strokeLinejoin": "round" }, "child": [{ "tag": "desc", "attr": {}, "child": [] }, { "tag": "path", "attr": { "stroke": "none", "d": "M0 0h24v24H0z", "fill": "none" } }, { "tag": "path", "attr": { "d": "M4 12v-3a3 3 0 0 1 3 -3h13m-3 -3l3 3l-3 3" } }, { "tag": "path", "attr": { "d": "M20 12v3a3 3 0 0 1 -3 3h-13m3 3l-3 -3l3 -3" } }] })(props);
+  return GenIcon({ "tag": "svg", "attr": { "viewBox": "0 0 24 24", "fill": "none", "stroke": "currentColor", "strokeWidth": "2", "strokeLinecap": "round", "strokeLinejoin": "round" }, "child": [{ "tag": "path", "attr": { "d": "M4 12v-3a3 3 0 0 1 3 -3h13m-3 -3l3 3l-3 3" }, "child": [] }, { "tag": "path", "attr": { "d": "M20 12v3a3 3 0 0 1 -3 3h-13m3 3l-3 -3l3 -3" }, "child": [] }] })(props);
 }
 function TbVolume2(props) {
-  return GenIcon({ "tag": "svg", "attr": { "viewBox": "0 0 24 24", "strokeWidth": "2", "stroke": "currentColor", "fill": "none", "strokeLinecap": "round", "strokeLinejoin": "round" }, "child": [{ "tag": "desc", "attr": {}, "child": [] }, { "tag": "path", "attr": { "stroke": "none", "d": "M0 0h24v24H0z", "fill": "none" } }, { "tag": "path", "attr": { "d": "M15 8a5 5 0 0 1 0 8" } }, { "tag": "path", "attr": { "d": "M6 15h-2a1 1 0 0 1 -1 -1v-4a1 1 0 0 1 1 -1h2l3.5 -4.5a0.8 .8 0 0 1 1.5 .5v14a0.8 .8 0 0 1 -1.5 .5l-3.5 -4.5" } }] })(props);
+  return GenIcon({ "tag": "svg", "attr": { "viewBox": "0 0 24 24", "fill": "none", "stroke": "currentColor", "strokeWidth": "2", "strokeLinecap": "round", "strokeLinejoin": "round" }, "child": [{ "tag": "path", "attr": { "d": "M15 8a5 5 0 0 1 0 8" }, "child": [] }, { "tag": "path", "attr": { "d": "M6 15h-2a1 1 0 0 1 -1 -1v-4a1 1 0 0 1 1 -1h2l3.5 -4.5a.8 .8 0 0 1 1.5 .5v14a.8 .8 0 0 1 -1.5 .5l-3.5 -4.5" }, "child": [] }] })(props);
 }
 function TbVolume3(props) {
-  return GenIcon({ "tag": "svg", "attr": { "viewBox": "0 0 24 24", "strokeWidth": "2", "stroke": "currentColor", "fill": "none", "strokeLinecap": "round", "strokeLinejoin": "round" }, "child": [{ "tag": "desc", "attr": {}, "child": [] }, { "tag": "path", "attr": { "stroke": "none", "d": "M0 0h24v24H0z", "fill": "none" } }, { "tag": "path", "attr": { "d": "M6 15h-2a1 1 0 0 1 -1 -1v-4a1 1 0 0 1 1 -1h2l3.5 -4.5a0.8 .8 0 0 1 1.5 .5v14a0.8 .8 0 0 1 -1.5 .5l-3.5 -4.5" } }, { "tag": "path", "attr": { "d": "M16 10l4 4m0 -4l-4 4" } }] })(props);
+  return GenIcon({ "tag": "svg", "attr": { "viewBox": "0 0 24 24", "fill": "none", "stroke": "currentColor", "strokeWidth": "2", "strokeLinecap": "round", "strokeLinejoin": "round" }, "child": [{ "tag": "path", "attr": { "d": "M6 15h-2a1 1 0 0 1 -1 -1v-4a1 1 0 0 1 1 -1h2l3.5 -4.5a.8 .8 0 0 1 1.5 .5v14a.8 .8 0 0 1 -1.5 .5l-3.5 -4.5" }, "child": [] }, { "tag": "path", "attr": { "d": "M16 10l4 4m0 -4l-4 4" }, "child": [] }] })(props);
 }
 function TbVolume(props) {
-  return GenIcon({ "tag": "svg", "attr": { "viewBox": "0 0 24 24", "strokeWidth": "2", "stroke": "currentColor", "fill": "none", "strokeLinecap": "round", "strokeLinejoin": "round" }, "child": [{ "tag": "desc", "attr": {}, "child": [] }, { "tag": "path", "attr": { "stroke": "none", "d": "M0 0h24v24H0z", "fill": "none" } }, { "tag": "path", "attr": { "d": "M15 8a5 5 0 0 1 0 8" } }, { "tag": "path", "attr": { "d": "M17.7 5a9 9 0 0 1 0 14" } }, { "tag": "path", "attr": { "d": "M6 15h-2a1 1 0 0 1 -1 -1v-4a1 1 0 0 1 1 -1h2l3.5 -4.5a0.8 .8 0 0 1 1.5 .5v14a0.8 .8 0 0 1 -1.5 .5l-3.5 -4.5" } }] })(props);
+  return GenIcon({ "tag": "svg", "attr": { "viewBox": "0 0 24 24", "fill": "none", "stroke": "currentColor", "strokeWidth": "2", "strokeLinecap": "round", "strokeLinejoin": "round" }, "child": [{ "tag": "path", "attr": { "d": "M15 8a5 5 0 0 1 0 8" }, "child": [] }, { "tag": "path", "attr": { "d": "M17.7 5a9 9 0 0 1 0 14" }, "child": [] }, { "tag": "path", "attr": { "d": "M6 15h-2a1 1 0 0 1 -1 -1v-4a1 1 0 0 1 1 -1h2l3.5 -4.5a.8 .8 0 0 1 1.5 .5v14a.8 .8 0 0 1 -1.5 .5l-3.5 -4.5" }, "child": [] }] })(props);
 }
 const RepeatTypeBtn = () => {
   const {
@@ -2906,7 +2972,7 @@ const SortablePlayList = () => {
   });
 };
 const useVariableColor = (variableColors) => {
-  const colorsRef = useRef();
+  const colorsRef = useRef(null);
   useLayoutEffect(() => {
     const parsedColors = Object.entries(
       variableColors
@@ -3096,7 +3162,7 @@ var wavesurfer = { exports: {} };
               descriptor.configurable = true;
               if ("value" in descriptor)
                 descriptor.writable = true;
-              Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor);
+              Object.defineProperty(target, _toPropertyKey2(descriptor.key), descriptor);
             }
           }
           function _createClass(Constructor, protoProps, staticProps) {
@@ -3107,11 +3173,11 @@ var wavesurfer = { exports: {} };
             Object.defineProperty(Constructor, "prototype", { writable: false });
             return Constructor;
           }
-          function _toPropertyKey(arg) {
-            var key = _toPrimitive(arg, "string");
+          function _toPropertyKey2(arg) {
+            var key = _toPrimitive2(arg, "string");
             return _typeof(key) === "symbol" ? key : String(key);
           }
-          function _toPrimitive(input, hint) {
+          function _toPrimitive2(input, hint) {
             if (_typeof(input) !== "object" || input === null)
               return input;
             var prim = input[Symbol.toPrimitive];
@@ -3376,7 +3442,7 @@ var wavesurfer = { exports: {} };
               descriptor.configurable = true;
               if ("value" in descriptor)
                 descriptor.writable = true;
-              Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor);
+              Object.defineProperty(target, _toPropertyKey2(descriptor.key), descriptor);
             }
           }
           function _createClass(Constructor, protoProps, staticProps) {
@@ -3387,11 +3453,11 @@ var wavesurfer = { exports: {} };
             Object.defineProperty(Constructor, "prototype", { writable: false });
             return Constructor;
           }
-          function _toPropertyKey(arg) {
-            var key = _toPrimitive(arg, "string");
+          function _toPropertyKey2(arg) {
+            var key = _toPrimitive2(arg, "string");
             return _typeof(key) === "symbol" ? key : String(key);
           }
-          function _toPrimitive(input, hint) {
+          function _toPrimitive2(input, hint) {
             if (_typeof(input) !== "object" || input === null)
               return input;
             var prim = input[Symbol.toPrimitive];
@@ -3780,7 +3846,7 @@ var wavesurfer = { exports: {} };
               descriptor.configurable = true;
               if ("value" in descriptor)
                 descriptor.writable = true;
-              Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor);
+              Object.defineProperty(target, _toPropertyKey2(descriptor.key), descriptor);
             }
           }
           function _createClass(Constructor, protoProps, staticProps) {
@@ -3791,11 +3857,11 @@ var wavesurfer = { exports: {} };
             Object.defineProperty(Constructor, "prototype", { writable: false });
             return Constructor;
           }
-          function _toPropertyKey(arg) {
-            var key = _toPrimitive(arg, "string");
+          function _toPropertyKey2(arg) {
+            var key = _toPrimitive2(arg, "string");
             return _typeof(key) === "symbol" ? key : String(key);
           }
-          function _toPrimitive(input, hint) {
+          function _toPrimitive2(input, hint) {
             if (_typeof(input) !== "object" || input === null)
               return input;
             var prim = input[Symbol.toPrimitive];
@@ -4237,7 +4303,7 @@ var wavesurfer = { exports: {} };
               descriptor.configurable = true;
               if ("value" in descriptor)
                 descriptor.writable = true;
-              Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor);
+              Object.defineProperty(target, _toPropertyKey2(descriptor.key), descriptor);
             }
           }
           function _createClass(Constructor, protoProps, staticProps) {
@@ -4248,11 +4314,11 @@ var wavesurfer = { exports: {} };
             Object.defineProperty(Constructor, "prototype", { writable: false });
             return Constructor;
           }
-          function _toPropertyKey(arg) {
-            var key = _toPrimitive(arg, "string");
+          function _toPropertyKey2(arg) {
+            var key = _toPrimitive2(arg, "string");
             return _typeof(key) === "symbol" ? key : String(key);
           }
-          function _toPrimitive(input, hint) {
+          function _toPrimitive2(input, hint) {
             if (_typeof(input) !== "object" || input === null)
               return input;
             var prim = input[Symbol.toPrimitive];
@@ -4471,7 +4537,7 @@ var wavesurfer = { exports: {} };
               descriptor.configurable = true;
               if ("value" in descriptor)
                 descriptor.writable = true;
-              Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor);
+              Object.defineProperty(target, _toPropertyKey2(descriptor.key), descriptor);
             }
           }
           function _createClass(Constructor, protoProps, staticProps) {
@@ -4482,11 +4548,11 @@ var wavesurfer = { exports: {} };
             Object.defineProperty(Constructor, "prototype", { writable: false });
             return Constructor;
           }
-          function _toPropertyKey(arg) {
-            var key = _toPrimitive(arg, "string");
+          function _toPropertyKey2(arg) {
+            var key = _toPrimitive2(arg, "string");
             return _typeof(key) === "symbol" ? key : String(key);
           }
-          function _toPrimitive(input, hint) {
+          function _toPrimitive2(input, hint) {
             if (_typeof(input) !== "object" || input === null)
               return input;
             var prim = input[Symbol.toPrimitive];
@@ -4889,7 +4955,7 @@ var wavesurfer = { exports: {} };
               descriptor.configurable = true;
               if ("value" in descriptor)
                 descriptor.writable = true;
-              Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor);
+              Object.defineProperty(target, _toPropertyKey2(descriptor.key), descriptor);
             }
           }
           function _createClass(Constructor, protoProps, staticProps) {
@@ -4900,11 +4966,11 @@ var wavesurfer = { exports: {} };
             Object.defineProperty(Constructor, "prototype", { writable: false });
             return Constructor;
           }
-          function _toPropertyKey(arg) {
-            var key = _toPrimitive(arg, "string");
+          function _toPropertyKey2(arg) {
+            var key = _toPrimitive2(arg, "string");
             return _typeof(key) === "symbol" ? key : String(key);
           }
-          function _toPrimitive(input, hint) {
+          function _toPrimitive2(input, hint) {
             if (_typeof(input) !== "object" || input === null)
               return input;
             var prim = input[Symbol.toPrimitive];
@@ -5046,7 +5112,7 @@ var wavesurfer = { exports: {} };
               descriptor.configurable = true;
               if ("value" in descriptor)
                 descriptor.writable = true;
-              Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor);
+              Object.defineProperty(target, _toPropertyKey2(descriptor.key), descriptor);
             }
           }
           function _createClass(Constructor, protoProps, staticProps) {
@@ -5057,11 +5123,11 @@ var wavesurfer = { exports: {} };
             Object.defineProperty(Constructor, "prototype", { writable: false });
             return Constructor;
           }
-          function _toPropertyKey(arg) {
-            var key = _toPrimitive(arg, "string");
+          function _toPropertyKey2(arg) {
+            var key = _toPrimitive2(arg, "string");
             return _typeof(key) === "symbol" ? key : String(key);
           }
-          function _toPrimitive(input, hint) {
+          function _toPrimitive2(input, hint) {
             if (_typeof(input) !== "object" || input === null)
               return input;
             var prim = input[Symbol.toPrimitive];
@@ -5387,7 +5453,7 @@ var wavesurfer = { exports: {} };
               descriptor.configurable = true;
               if ("value" in descriptor)
                 descriptor.writable = true;
-              Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor);
+              Object.defineProperty(target, _toPropertyKey2(descriptor.key), descriptor);
             }
           }
           function _createClass(Constructor, protoProps, staticProps) {
@@ -5398,11 +5464,11 @@ var wavesurfer = { exports: {} };
             Object.defineProperty(Constructor, "prototype", { writable: false });
             return Constructor;
           }
-          function _toPropertyKey(arg) {
-            var key = _toPrimitive(arg, "string");
+          function _toPropertyKey2(arg) {
+            var key = _toPrimitive2(arg, "string");
             return _typeof(key) === "symbol" ? key : String(key);
           }
-          function _toPrimitive(input, hint) {
+          function _toPrimitive2(input, hint) {
             if (_typeof(input) !== "object" || input === null)
               return input;
             var prim = input[Symbol.toPrimitive];
@@ -5763,8 +5829,8 @@ var wavesurfer = { exports: {} };
             };
             return _getPrototypeOf(o);
           }
-          function _defineProperty(obj, key, value) {
-            key = _toPropertyKey(key);
+          function _defineProperty2(obj, key, value) {
+            key = _toPropertyKey2(key);
             if (key in obj) {
               Object.defineProperty(obj, key, { value, enumerable: true, configurable: true, writable: true });
             } else {
@@ -5792,7 +5858,7 @@ var wavesurfer = { exports: {} };
               descriptor.configurable = true;
               if ("value" in descriptor)
                 descriptor.writable = true;
-              Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor);
+              Object.defineProperty(target, _toPropertyKey2(descriptor.key), descriptor);
             }
           }
           function _createClass(Constructor, protoProps, staticProps) {
@@ -5803,11 +5869,11 @@ var wavesurfer = { exports: {} };
             Object.defineProperty(Constructor, "prototype", { writable: false });
             return Constructor;
           }
-          function _toPropertyKey(arg) {
-            var key = _toPrimitive(arg, "string");
+          function _toPropertyKey2(arg) {
+            var key = _toPrimitive2(arg, "string");
             return _typeof(key) === "symbol" ? key : String(key);
           }
-          function _toPrimitive(input, hint) {
+          function _toPrimitive2(input, hint) {
             if (_typeof(input) !== "object" || input === null)
               return input;
             var prim = input[Symbol.toPrimitive];
@@ -5826,7 +5892,7 @@ var wavesurfer = { exports: {} };
               var _this;
               _classCallCheck(this, WaveSurfer3);
               _this = _super.call(this);
-              _defineProperty(_assertThisInitialized(_this), "defaultParams", {
+              _defineProperty2(_assertThisInitialized(_this), "defaultParams", {
                 audioContext: null,
                 audioScriptProcessor: null,
                 audioRate: 1,
@@ -5883,12 +5949,12 @@ var wavesurfer = { exports: {} };
                 waveColor: "#999",
                 xhr: {}
               });
-              _defineProperty(_assertThisInitialized(_this), "backends", {
+              _defineProperty2(_assertThisInitialized(_this), "backends", {
                 MediaElement: _mediaelement.default,
                 WebAudio: _webaudio.default,
                 MediaElementWebAudio: _mediaelementWebaudio.default
               });
-              _defineProperty(_assertThisInitialized(_this), "util", util);
+              _defineProperty2(_assertThisInitialized(_this), "util", util);
               _this.params = Object.assign({}, _this.defaultParams, params);
               _this.params.splitChannelsOptions = Object.assign({}, _this.defaultParams.splitChannelsOptions, params.splitChannelsOptions);
               _this.container = "string" == typeof params.container ? document.querySelector(_this.params.container) : _this.params.container;
@@ -6715,8 +6781,8 @@ var wavesurfer = { exports: {} };
             return WaveSurfer3;
           }(util.Observer);
           exports2["default"] = WaveSurfer2;
-          _defineProperty(WaveSurfer2, "VERSION", "6.6.4");
-          _defineProperty(WaveSurfer2, "util", util);
+          _defineProperty2(WaveSurfer2, "VERSION", "6.6.4");
+          _defineProperty2(WaveSurfer2, "util", util);
           module2.exports = exports2.default;
         },
         "./src/webaudio.js": (module2, exports2, __webpack_require__2) => {
@@ -6783,7 +6849,7 @@ var wavesurfer = { exports: {} };
               descriptor.configurable = true;
               if ("value" in descriptor)
                 descriptor.writable = true;
-              Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor);
+              Object.defineProperty(target, _toPropertyKey2(descriptor.key), descriptor);
             }
           }
           function _createClass(Constructor, protoProps, staticProps) {
@@ -6858,8 +6924,8 @@ var wavesurfer = { exports: {} };
             };
             return _getPrototypeOf(o);
           }
-          function _defineProperty(obj, key, value) {
-            key = _toPropertyKey(key);
+          function _defineProperty2(obj, key, value) {
+            key = _toPropertyKey2(key);
             if (key in obj) {
               Object.defineProperty(obj, key, { value, enumerable: true, configurable: true, writable: true });
             } else {
@@ -6867,11 +6933,11 @@ var wavesurfer = { exports: {} };
             }
             return obj;
           }
-          function _toPropertyKey(arg) {
-            var key = _toPrimitive(arg, "string");
+          function _toPropertyKey2(arg) {
+            var key = _toPrimitive2(arg, "string");
             return _typeof(key) === "symbol" ? key : String(key);
           }
-          function _toPrimitive(input, hint) {
+          function _toPrimitive2(input, hint) {
             if (_typeof(input) !== "object" || input === null)
               return input;
             var prim = input[Symbol.toPrimitive];
@@ -6890,12 +6956,12 @@ var wavesurfer = { exports: {} };
             _inherits(WebAudio2, _util$Observer);
             var _super = _createSuper(WebAudio2);
             function WebAudio2(params) {
-              var _defineProperty2, _this$states;
+              var _defineProperty22, _this$states;
               var _this;
               _classCallCheck(this, WebAudio2);
               _this = _super.call(this);
-              _defineProperty(_assertThisInitialized(_this), "audioContext", null);
-              _defineProperty(_assertThisInitialized(_this), "stateBehaviors", (_defineProperty2 = {}, _defineProperty(_defineProperty2, PLAYING, {
+              _defineProperty2(_assertThisInitialized(_this), "audioContext", null);
+              _defineProperty2(_assertThisInitialized(_this), "stateBehaviors", (_defineProperty22 = {}, _defineProperty2(_defineProperty22, PLAYING, {
                 init: function init() {
                   this.addOnAudioProcess();
                 },
@@ -6906,7 +6972,7 @@ var wavesurfer = { exports: {} };
                 getCurrentTime: function getCurrentTime() {
                   return this.startPosition + this.getPlayedTime();
                 }
-              }), _defineProperty(_defineProperty2, PAUSED, {
+              }), _defineProperty2(_defineProperty22, PAUSED, {
                 init: function init() {
                 },
                 getPlayedPercents: function getPlayedPercents() {
@@ -6916,7 +6982,7 @@ var wavesurfer = { exports: {} };
                 getCurrentTime: function getCurrentTime() {
                   return this.startPosition;
                 }
-              }), _defineProperty(_defineProperty2, FINISHED, {
+              }), _defineProperty2(_defineProperty22, FINISHED, {
                 init: function init() {
                   this.fireEvent("finish");
                 },
@@ -6926,13 +6992,13 @@ var wavesurfer = { exports: {} };
                 getCurrentTime: function getCurrentTime() {
                   return this.getDuration();
                 }
-              }), _defineProperty2));
+              }), _defineProperty22));
               _this.params = params;
               _this.ac = params.audioContext || (_this.supportsWebAudio() ? _this.getAudioContext() : {});
               _this.lastPlay = _this.ac.currentTime;
               _this.startPosition = 0;
               _this.scheduledPause = null;
-              _this.states = (_this$states = {}, _defineProperty(_this$states, PLAYING, Object.create(_this.stateBehaviors[PLAYING])), _defineProperty(_this$states, PAUSED, Object.create(_this.stateBehaviors[PAUSED])), _defineProperty(_this$states, FINISHED, Object.create(_this.stateBehaviors[FINISHED])), _this$states);
+              _this.states = (_this$states = {}, _defineProperty2(_this$states, PLAYING, Object.create(_this.stateBehaviors[PLAYING])), _defineProperty2(_this$states, PAUSED, Object.create(_this.stateBehaviors[PAUSED])), _defineProperty2(_this$states, FINISHED, Object.create(_this.stateBehaviors[FINISHED])), _this$states);
               _this.buffer = null;
               _this.filters = [];
               _this.gainNode = null;
@@ -7811,7 +7877,7 @@ const useDropdown = ({
   setIsOpen,
   onOpenChange
 }) => {
-  const timer = useRef();
+  const timer = useRef(0);
   const lazyChangeVisible = (nextState) => {
     const clear = () => {
       clearTimeout(timer.current);
