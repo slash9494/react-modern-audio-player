@@ -96,6 +96,8 @@ export const CssTransition: FC<PropsWithChildren<CssTransitionProps>> = ({
 
   if (!renderable) return null;
 
+  if (!children) return null;
+
   return cloneElement(children as React.ReactElement<{ className: string }>, {
     className: `${
       (children as React.ReactElement<{ className: string }>).props.className
