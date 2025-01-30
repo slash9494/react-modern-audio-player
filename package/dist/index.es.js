@@ -2349,6 +2349,8 @@ const CssTransition = ({
   }, [visible, renderable]);
   if (!renderable)
     return null;
+  if (!children)
+    return null;
   return cloneElement(children, {
     className: `${children.props.className} ${classNames2}`
   });
