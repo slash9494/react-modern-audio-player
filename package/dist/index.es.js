@@ -3056,7 +3056,7 @@ const BarProgressWrapper = styled.div`
 `;
 var wavesurfer = { exports: {} };
 /*!
- * wavesurfer.js 6.3.0 (2022-10-03)
+ * wavesurfer.js 6.6.4 (2023-06-10)
  * https://wavesurfer-js.org
  * @license BSD-3-Clause
  */
@@ -3076,6 +3076,14 @@ var wavesurfer = { exports: {} };
           function _interopRequireDefault(obj) {
             return obj && obj.__esModule ? obj : { default: obj };
           }
+          function _typeof(obj) {
+            "@babel/helpers - typeof";
+            return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(obj2) {
+              return typeof obj2;
+            } : function(obj2) {
+              return obj2 && "function" == typeof Symbol && obj2.constructor === Symbol && obj2 !== Symbol.prototype ? "symbol" : typeof obj2;
+            }, _typeof(obj);
+          }
           function _classCallCheck(instance, Constructor) {
             if (!(instance instanceof Constructor)) {
               throw new TypeError("Cannot call a class as a function");
@@ -3088,7 +3096,7 @@ var wavesurfer = { exports: {} };
               descriptor.configurable = true;
               if ("value" in descriptor)
                 descriptor.writable = true;
-              Object.defineProperty(target, descriptor.key, descriptor);
+              Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor);
             }
           }
           function _createClass(Constructor, protoProps, staticProps) {
@@ -3098,6 +3106,22 @@ var wavesurfer = { exports: {} };
               _defineProperties(Constructor, staticProps);
             Object.defineProperty(Constructor, "prototype", { writable: false });
             return Constructor;
+          }
+          function _toPropertyKey(arg) {
+            var key = _toPrimitive(arg, "string");
+            return _typeof(key) === "symbol" ? key : String(key);
+          }
+          function _toPrimitive(input, hint) {
+            if (_typeof(input) !== "object" || input === null)
+              return input;
+            var prim = input[Symbol.toPrimitive];
+            if (prim !== void 0) {
+              var res = prim.call(input, hint || "default");
+              if (_typeof(res) !== "object")
+                return res;
+              throw new TypeError("@@toPrimitive must return a primitive value.");
+            }
+            return (hint === "string" ? String : Number)(input);
           }
           var CanvasEntry = /* @__PURE__ */ function() {
             function CanvasEntry2() {
@@ -3352,7 +3376,7 @@ var wavesurfer = { exports: {} };
               descriptor.configurable = true;
               if ("value" in descriptor)
                 descriptor.writable = true;
-              Object.defineProperty(target, descriptor.key, descriptor);
+              Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor);
             }
           }
           function _createClass(Constructor, protoProps, staticProps) {
@@ -3362,6 +3386,22 @@ var wavesurfer = { exports: {} };
               _defineProperties(Constructor, staticProps);
             Object.defineProperty(Constructor, "prototype", { writable: false });
             return Constructor;
+          }
+          function _toPropertyKey(arg) {
+            var key = _toPrimitive(arg, "string");
+            return _typeof(key) === "symbol" ? key : String(key);
+          }
+          function _toPrimitive(input, hint) {
+            if (_typeof(input) !== "object" || input === null)
+              return input;
+            var prim = input[Symbol.toPrimitive];
+            if (prim !== void 0) {
+              var res = prim.call(input, hint || "default");
+              if (_typeof(res) !== "object")
+                return res;
+              throw new TypeError("@@toPrimitive must return a primitive value.");
+            }
+            return (hint === "string" ? String : Number)(input);
           }
           function _inherits(subClass, superClass) {
             if (typeof superClass !== "function" && superClass !== null) {
@@ -3740,7 +3780,7 @@ var wavesurfer = { exports: {} };
               descriptor.configurable = true;
               if ("value" in descriptor)
                 descriptor.writable = true;
-              Object.defineProperty(target, descriptor.key, descriptor);
+              Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor);
             }
           }
           function _createClass(Constructor, protoProps, staticProps) {
@@ -3750,6 +3790,22 @@ var wavesurfer = { exports: {} };
               _defineProperties(Constructor, staticProps);
             Object.defineProperty(Constructor, "prototype", { writable: false });
             return Constructor;
+          }
+          function _toPropertyKey(arg) {
+            var key = _toPrimitive(arg, "string");
+            return _typeof(key) === "symbol" ? key : String(key);
+          }
+          function _toPrimitive(input, hint) {
+            if (_typeof(input) !== "object" || input === null)
+              return input;
+            var prim = input[Symbol.toPrimitive];
+            if (prim !== void 0) {
+              var res = prim.call(input, hint || "default");
+              if (_typeof(res) !== "object")
+                return res;
+              throw new TypeError("@@toPrimitive must return a primitive value.");
+            }
+            return (hint === "string" ? String : Number)(input);
           }
           function _inherits(subClass, superClass) {
             if (typeof superClass !== "function" && superClass !== null) {
@@ -4181,7 +4237,7 @@ var wavesurfer = { exports: {} };
               descriptor.configurable = true;
               if ("value" in descriptor)
                 descriptor.writable = true;
-              Object.defineProperty(target, descriptor.key, descriptor);
+              Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor);
             }
           }
           function _createClass(Constructor, protoProps, staticProps) {
@@ -4191,6 +4247,22 @@ var wavesurfer = { exports: {} };
               _defineProperties(Constructor, staticProps);
             Object.defineProperty(Constructor, "prototype", { writable: false });
             return Constructor;
+          }
+          function _toPropertyKey(arg) {
+            var key = _toPrimitive(arg, "string");
+            return _typeof(key) === "symbol" ? key : String(key);
+          }
+          function _toPrimitive(input, hint) {
+            if (_typeof(input) !== "object" || input === null)
+              return input;
+            var prim = input[Symbol.toPrimitive];
+            if (prim !== void 0) {
+              var res = prim.call(input, hint || "default");
+              if (_typeof(res) !== "object")
+                return res;
+              throw new TypeError("@@toPrimitive must return a primitive value.");
+            }
+            return (hint === "string" ? String : Number)(input);
           }
           function _get() {
             if (typeof Reflect !== "undefined" && Reflect.get) {
@@ -4399,7 +4471,7 @@ var wavesurfer = { exports: {} };
               descriptor.configurable = true;
               if ("value" in descriptor)
                 descriptor.writable = true;
-              Object.defineProperty(target, descriptor.key, descriptor);
+              Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor);
             }
           }
           function _createClass(Constructor, protoProps, staticProps) {
@@ -4409,6 +4481,22 @@ var wavesurfer = { exports: {} };
               _defineProperties(Constructor, staticProps);
             Object.defineProperty(Constructor, "prototype", { writable: false });
             return Constructor;
+          }
+          function _toPropertyKey(arg) {
+            var key = _toPrimitive(arg, "string");
+            return _typeof(key) === "symbol" ? key : String(key);
+          }
+          function _toPrimitive(input, hint) {
+            if (_typeof(input) !== "object" || input === null)
+              return input;
+            var prim = input[Symbol.toPrimitive];
+            if (prim !== void 0) {
+              var res = prim.call(input, hint || "default");
+              if (_typeof(res) !== "object")
+                return res;
+              throw new TypeError("@@toPrimitive must return a primitive value.");
+            }
+            return (hint === "string" ? String : Number)(input);
           }
           function _get() {
             if (typeof Reflect !== "undefined" && Reflect.get) {
@@ -4541,6 +4629,9 @@ var wavesurfer = { exports: {} };
                 var _this2 = this;
                 this.mediaListeners.error = function() {
                   _this2.fireEvent("error", "Error loading media element");
+                };
+                this.mediaListeners.waiting = function() {
+                  _this2.fireEvent("waiting");
                 };
                 this.mediaListeners.canplay = function() {
                   _this2.fireEvent("canplay");
@@ -4778,6 +4869,14 @@ var wavesurfer = { exports: {} };
             value: true
           });
           exports2["default"] = void 0;
+          function _typeof(obj) {
+            "@babel/helpers - typeof";
+            return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(obj2) {
+              return typeof obj2;
+            } : function(obj2) {
+              return obj2 && "function" == typeof Symbol && obj2.constructor === Symbol && obj2 !== Symbol.prototype ? "symbol" : typeof obj2;
+            }, _typeof(obj);
+          }
           function _classCallCheck(instance, Constructor) {
             if (!(instance instanceof Constructor)) {
               throw new TypeError("Cannot call a class as a function");
@@ -4790,7 +4889,7 @@ var wavesurfer = { exports: {} };
               descriptor.configurable = true;
               if ("value" in descriptor)
                 descriptor.writable = true;
-              Object.defineProperty(target, descriptor.key, descriptor);
+              Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor);
             }
           }
           function _createClass(Constructor, protoProps, staticProps) {
@@ -4800,6 +4899,22 @@ var wavesurfer = { exports: {} };
               _defineProperties(Constructor, staticProps);
             Object.defineProperty(Constructor, "prototype", { writable: false });
             return Constructor;
+          }
+          function _toPropertyKey(arg) {
+            var key = _toPrimitive(arg, "string");
+            return _typeof(key) === "symbol" ? key : String(key);
+          }
+          function _toPrimitive(input, hint) {
+            if (_typeof(input) !== "object" || input === null)
+              return input;
+            var prim = input[Symbol.toPrimitive];
+            if (prim !== void 0) {
+              var res = prim.call(input, hint || "default");
+              if (_typeof(res) !== "object")
+                return res;
+              throw new TypeError("@@toPrimitive must return a primitive value.");
+            }
+            return (hint === "string" ? String : Number)(input);
           }
           var PeakCache = /* @__PURE__ */ function() {
             function PeakCache2() {
@@ -4911,6 +5026,14 @@ var wavesurfer = { exports: {} };
           function _interopRequireDefault(obj) {
             return obj && obj.__esModule ? obj : { default: obj };
           }
+          function _typeof(obj) {
+            "@babel/helpers - typeof";
+            return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(obj2) {
+              return typeof obj2;
+            } : function(obj2) {
+              return obj2 && "function" == typeof Symbol && obj2.constructor === Symbol && obj2 !== Symbol.prototype ? "symbol" : typeof obj2;
+            }, _typeof(obj);
+          }
           function _classCallCheck(instance, Constructor) {
             if (!(instance instanceof Constructor)) {
               throw new TypeError("Cannot call a class as a function");
@@ -4923,7 +5046,7 @@ var wavesurfer = { exports: {} };
               descriptor.configurable = true;
               if ("value" in descriptor)
                 descriptor.writable = true;
-              Object.defineProperty(target, descriptor.key, descriptor);
+              Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor);
             }
           }
           function _createClass(Constructor, protoProps, staticProps) {
@@ -4933,6 +5056,22 @@ var wavesurfer = { exports: {} };
               _defineProperties(Constructor, staticProps);
             Object.defineProperty(Constructor, "prototype", { writable: false });
             return Constructor;
+          }
+          function _toPropertyKey(arg) {
+            var key = _toPrimitive(arg, "string");
+            return _typeof(key) === "symbol" ? key : String(key);
+          }
+          function _toPrimitive(input, hint) {
+            if (_typeof(input) !== "object" || input === null)
+              return input;
+            var prim = input[Symbol.toPrimitive];
+            if (prim !== void 0) {
+              var res = prim.call(input, hint || "default");
+              if (_typeof(res) !== "object")
+                return res;
+              throw new TypeError("@@toPrimitive must return a primitive value.");
+            }
+            return (hint === "string" ? String : Number)(input);
           }
           var ProgressHandler = /* @__PURE__ */ function() {
             function ProgressHandler2(instance, contentLength, response) {
@@ -5228,6 +5367,14 @@ var wavesurfer = { exports: {} };
             value: true
           });
           exports2["default"] = void 0;
+          function _typeof(obj) {
+            "@babel/helpers - typeof";
+            return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(obj2) {
+              return typeof obj2;
+            } : function(obj2) {
+              return obj2 && "function" == typeof Symbol && obj2.constructor === Symbol && obj2 !== Symbol.prototype ? "symbol" : typeof obj2;
+            }, _typeof(obj);
+          }
           function _classCallCheck(instance, Constructor) {
             if (!(instance instanceof Constructor)) {
               throw new TypeError("Cannot call a class as a function");
@@ -5240,7 +5387,7 @@ var wavesurfer = { exports: {} };
               descriptor.configurable = true;
               if ("value" in descriptor)
                 descriptor.writable = true;
-              Object.defineProperty(target, descriptor.key, descriptor);
+              Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor);
             }
           }
           function _createClass(Constructor, protoProps, staticProps) {
@@ -5250,6 +5397,22 @@ var wavesurfer = { exports: {} };
               _defineProperties(Constructor, staticProps);
             Object.defineProperty(Constructor, "prototype", { writable: false });
             return Constructor;
+          }
+          function _toPropertyKey(arg) {
+            var key = _toPrimitive(arg, "string");
+            return _typeof(key) === "symbol" ? key : String(key);
+          }
+          function _toPrimitive(input, hint) {
+            if (_typeof(input) !== "object" || input === null)
+              return input;
+            var prim = input[Symbol.toPrimitive];
+            if (prim !== void 0) {
+              var res = prim.call(input, hint || "default");
+              if (_typeof(res) !== "object")
+                return res;
+              throw new TypeError("@@toPrimitive must return a primitive value.");
+            }
+            return (hint === "string" ? String : Number)(input);
           }
           var Observer = /* @__PURE__ */ function() {
             function Observer2() {
@@ -5450,6 +5613,11 @@ var wavesurfer = { exports: {} };
           });
           exports2["default"] = ignoreSilenceMode;
           function ignoreSilenceMode() {
+            var silentAC = new AudioContext();
+            var silentBS = silentAC.createBufferSource();
+            silentBS.buffer = silentAC.createBuffer(1, 1, 44100);
+            silentBS.connect(silentAC.destination);
+            silentBS.start();
             var audioData = "data:audio/mpeg;base64,//uQxAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAACAAACcQCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA//////////////////////////////////////////////////////////////////8AAABhTEFNRTMuMTAwA8MAAAAAAAAAABQgJAUHQQAB9AAAAnGMHkkIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//sQxAADgnABGiAAQBCqgCRMAAgEAH///////////////7+n/9FTuQsQH//////2NG0jWUGlio5gLQTOtIoeR2WX////X4s9Atb/JRVCbBUpeRUq//////////////////9RUi0f2jn/+xDECgPCjAEQAABN4AAANIAAAAQVTEFNRTMuMTAwVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVQ==";
             var tmp = document.createElement("div");
             tmp.innerHTML = '<audio x-webkit-airplay="deny"></audio>';
@@ -5480,14 +5648,6 @@ var wavesurfer = { exports: {} };
           module2.exports = exports2.default;
         },
         "./src/wavesurfer.js": (module2, exports2, __webpack_require__2) => {
-          function _typeof(obj) {
-            "@babel/helpers - typeof";
-            return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(obj2) {
-              return typeof obj2;
-            } : function(obj2) {
-              return obj2 && "function" == typeof Symbol && obj2.constructor === Symbol && obj2 !== Symbol.prototype ? "symbol" : typeof obj2;
-            }, _typeof(obj);
-          }
           Object.defineProperty(exports2, "__esModule", {
             value: true
           });
@@ -5604,12 +5764,21 @@ var wavesurfer = { exports: {} };
             return _getPrototypeOf(o);
           }
           function _defineProperty(obj, key, value) {
+            key = _toPropertyKey(key);
             if (key in obj) {
               Object.defineProperty(obj, key, { value, enumerable: true, configurable: true, writable: true });
             } else {
               obj[key] = value;
             }
             return obj;
+          }
+          function _typeof(obj) {
+            "@babel/helpers - typeof";
+            return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(obj2) {
+              return typeof obj2;
+            } : function(obj2) {
+              return obj2 && "function" == typeof Symbol && obj2.constructor === Symbol && obj2 !== Symbol.prototype ? "symbol" : typeof obj2;
+            }, _typeof(obj);
           }
           function _classCallCheck(instance, Constructor) {
             if (!(instance instanceof Constructor)) {
@@ -5623,7 +5792,7 @@ var wavesurfer = { exports: {} };
               descriptor.configurable = true;
               if ("value" in descriptor)
                 descriptor.writable = true;
-              Object.defineProperty(target, descriptor.key, descriptor);
+              Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor);
             }
           }
           function _createClass(Constructor, protoProps, staticProps) {
@@ -5633,6 +5802,22 @@ var wavesurfer = { exports: {} };
               _defineProperties(Constructor, staticProps);
             Object.defineProperty(Constructor, "prototype", { writable: false });
             return Constructor;
+          }
+          function _toPropertyKey(arg) {
+            var key = _toPrimitive(arg, "string");
+            return _typeof(key) === "symbol" ? key : String(key);
+          }
+          function _toPrimitive(input, hint) {
+            if (_typeof(input) !== "object" || input === null)
+              return input;
+            var prim = input[Symbol.toPrimitive];
+            if (prim !== void 0) {
+              var res = prim.call(input, hint || "default");
+              if (_typeof(res) !== "object")
+                return res;
+              throw new TypeError("@@toPrimitive must return a primitive value.");
+            }
+            return (hint === "string" ? String : Number)(input);
           }
           var WaveSurfer2 = /* @__PURE__ */ function(_util$Observer) {
             _inherits(WaveSurfer3, _util$Observer);
@@ -5890,6 +6075,9 @@ var wavesurfer = { exports: {} };
                   }
                   _this5.fireEvent("scroll", e);
                 });
+                this.drawer.on("dblclick", function(e, progress) {
+                  _this5.fireEvent("dblclick", e, progress);
+                });
               }
             }, {
               key: "createBackend",
@@ -6053,6 +6241,10 @@ var wavesurfer = { exports: {} };
             }, {
               key: "setVolume",
               value: function setVolume(newVolume) {
+                if (this.isMuted === true) {
+                  this.savedVolume = newVolume;
+                  return;
+                }
                 this.backend.setVolume(newVolume);
                 this.fireEvent("volume", newVolume);
               }
@@ -6523,19 +6715,11 @@ var wavesurfer = { exports: {} };
             return WaveSurfer3;
           }(util.Observer);
           exports2["default"] = WaveSurfer2;
-          _defineProperty(WaveSurfer2, "VERSION", "6.3.0");
+          _defineProperty(WaveSurfer2, "VERSION", "6.6.4");
           _defineProperty(WaveSurfer2, "util", util);
           module2.exports = exports2.default;
         },
         "./src/webaudio.js": (module2, exports2, __webpack_require__2) => {
-          function _typeof(obj) {
-            "@babel/helpers - typeof";
-            return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(obj2) {
-              return typeof obj2;
-            } : function(obj2) {
-              return obj2 && "function" == typeof Symbol && obj2.constructor === Symbol && obj2 !== Symbol.prototype ? "symbol" : typeof obj2;
-            }, _typeof(obj);
-          }
           Object.defineProperty(exports2, "__esModule", {
             value: true
           });
@@ -6579,6 +6763,14 @@ var wavesurfer = { exports: {} };
             }
             return newObj;
           }
+          function _typeof(obj) {
+            "@babel/helpers - typeof";
+            return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(obj2) {
+              return typeof obj2;
+            } : function(obj2) {
+              return obj2 && "function" == typeof Symbol && obj2.constructor === Symbol && obj2 !== Symbol.prototype ? "symbol" : typeof obj2;
+            }, _typeof(obj);
+          }
           function _classCallCheck(instance, Constructor) {
             if (!(instance instanceof Constructor)) {
               throw new TypeError("Cannot call a class as a function");
@@ -6591,7 +6783,7 @@ var wavesurfer = { exports: {} };
               descriptor.configurable = true;
               if ("value" in descriptor)
                 descriptor.writable = true;
-              Object.defineProperty(target, descriptor.key, descriptor);
+              Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor);
             }
           }
           function _createClass(Constructor, protoProps, staticProps) {
@@ -6667,12 +6859,29 @@ var wavesurfer = { exports: {} };
             return _getPrototypeOf(o);
           }
           function _defineProperty(obj, key, value) {
+            key = _toPropertyKey(key);
             if (key in obj) {
               Object.defineProperty(obj, key, { value, enumerable: true, configurable: true, writable: true });
             } else {
               obj[key] = value;
             }
             return obj;
+          }
+          function _toPropertyKey(arg) {
+            var key = _toPrimitive(arg, "string");
+            return _typeof(key) === "symbol" ? key : String(key);
+          }
+          function _toPrimitive(input, hint) {
+            if (_typeof(input) !== "object" || input === null)
+              return input;
+            var prim = input[Symbol.toPrimitive];
+            if (prim !== void 0) {
+              var res = prim.call(input, hint || "default");
+              if (_typeof(res) !== "object")
+                return res;
+              throw new TypeError("@@toPrimitive must return a primitive value.");
+            }
+            return (hint === "string" ? String : Number)(input);
           }
           var PLAYING = "playing";
           var PAUSED = "paused";
@@ -6686,7 +6895,6 @@ var wavesurfer = { exports: {} };
               _classCallCheck(this, WebAudio2);
               _this = _super.call(this);
               _defineProperty(_assertThisInitialized(_this), "audioContext", null);
-              _defineProperty(_assertThisInitialized(_this), "offlineAudioContext", null);
               _defineProperty(_assertThisInitialized(_this), "stateBehaviors", (_defineProperty2 = {}, _defineProperty(_defineProperty2, PLAYING, {
                 init: function init() {
                   this.addOnAudioProcess();
@@ -6700,7 +6908,6 @@ var wavesurfer = { exports: {} };
                 }
               }), _defineProperty(_defineProperty2, PAUSED, {
                 init: function init() {
-                  this.removeOnAudioProcess();
                 },
                 getPlayedPercents: function getPlayedPercents() {
                   var duration = this.getDuration();
@@ -6711,7 +6918,6 @@ var wavesurfer = { exports: {} };
                 }
               }), _defineProperty(_defineProperty2, FINISHED, {
                 init: function init() {
-                  this.removeOnAudioProcess();
                   this.fireEvent("finish");
                 },
                 getPlayedPercents: function getPlayedPercents() {
@@ -6821,35 +7027,26 @@ var wavesurfer = { exports: {} };
               value: function createScriptNode() {
                 if (this.params.audioScriptProcessor) {
                   this.scriptNode = this.params.audioScriptProcessor;
-                } else {
-                  if (this.ac.createScriptProcessor) {
-                    this.scriptNode = this.ac.createScriptProcessor(WebAudio2.scriptBufferSize);
-                  } else {
-                    this.scriptNode = this.ac.createJavaScriptNode(WebAudio2.scriptBufferSize);
-                  }
+                  this.scriptNode.connect(this.ac.destination);
                 }
-                this.scriptNode.connect(this.ac.destination);
               }
             }, {
               key: "addOnAudioProcess",
               value: function addOnAudioProcess() {
                 var _this2 = this;
-                this.scriptNode.onaudioprocess = function() {
+                var loop = function loop2() {
                   var time = _this2.getCurrentTime();
-                  if (time >= _this2.getDuration()) {
+                  if (time >= _this2.getDuration() && _this2.state !== _this2.states[FINISHED]) {
                     _this2.setState(FINISHED);
                     _this2.fireEvent("pause");
-                  } else if (time >= _this2.scheduledPause) {
+                  } else if (time >= _this2.scheduledPause && _this2.state !== _this2.states[PAUSED]) {
                     _this2.pause();
                   } else if (_this2.state === _this2.states[PLAYING]) {
                     _this2.fireEvent("audioprocess", time);
+                    util.frame(loop2)();
                   }
                 };
-              }
-            }, {
-              key: "removeOnAudioProcess",
-              value: function removeOnAudioProcess() {
-                this.scriptNode.onaudioprocess = null;
+                loop();
               }
             }, {
               key: "createAnalyserNode",
@@ -7015,7 +7212,7 @@ var wavesurfer = { exports: {} };
                 this.disconnectFilters();
                 this.disconnectSource();
                 this.gainNode.disconnect();
-                this.scriptNode.disconnect();
+                this.scriptNode && this.scriptNode.disconnect();
                 this.analyser.disconnect();
                 if (this.params.closeAudioContext) {
                   if (typeof this.ac.close === "function" && this.ac.state != "closed") {
@@ -7173,7 +7370,6 @@ var wavesurfer = { exports: {} };
             return WebAudio2;
           }(util.Observer);
           exports2["default"] = WebAudio;
-          _defineProperty(WebAudio, "scriptBufferSize", 256);
           module2.exports = exports2.default;
         },
         "./node_modules/debounce/index.js": (module2) => {
