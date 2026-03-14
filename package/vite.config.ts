@@ -7,7 +7,7 @@ import libCss from "vite-plugin-libcss";
 export default defineConfig({
   plugins: [
     react(),
-    dts({ outputDir: "dist/types", include: "src" }),
+    dts({ outDir: "dist/types", include: "src" }),
     libCss(),
   ],
   resolve: {
@@ -27,7 +27,7 @@ export default defineConfig({
         format === "es" ? `index.es.js` : `index.${format}`,
     },
     rollupOptions: {
-      external: ["react", "react-dom", "styled-components"],
+      external: ["react", "react/jsx-runtime", "react-dom", "styled-components"],
       output: {
         globals: {
           react: "React",
