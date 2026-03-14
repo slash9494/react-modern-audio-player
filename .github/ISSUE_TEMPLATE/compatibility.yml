@@ -1,0 +1,79 @@
+name: Compatibility Issue
+description: Report a compatibility issue with a framework, bundler, or environment
+title: "[COMPAT] "
+labels: ["compatibility", "bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this template for issues related to Next.js, Vite, React version compatibility, TypeScript errors, CSS build errors, etc.
+
+  - type: input
+    id: version
+    attributes:
+      label: Package Version
+      placeholder: e.g. 1.4.0-rc.2
+    validations:
+      required: true
+
+  - type: input
+    id: framework
+    attributes:
+      label: Framework / Tool
+      placeholder: e.g. Next.js 14, Vite 5, Create React App
+    validations:
+      required: true
+
+  - type: input
+    id: react-version
+    attributes:
+      label: React Version
+      placeholder: e.g. 19.0.0
+    validations:
+      required: true
+
+  - type: input
+    id: node-version
+    attributes:
+      label: Node.js Version
+      placeholder: e.g. 20.11.0
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Issue Description
+      description: Describe the compatibility problem.
+    validations:
+      required: true
+
+  - type: textarea
+    id: error
+    attributes:
+      label: Error Output
+      render: shell
+      placeholder: Paste the full error message or stack trace here.
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to Reproduce
+      placeholder: |
+        1. Install react-modern-audio-player in a Next.js 14 project
+        2. Import and render AudioPlayer
+        3. Run next dev
+        4. See error
+    validations:
+      required: true
+
+  - type: textarea
+    id: workaround
+    attributes:
+      label: Workaround (if any)
+      description: Have you found a temporary fix?
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Context
