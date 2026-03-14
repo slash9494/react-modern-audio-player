@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Browse Existing Issues
+    url: https://github.com/slash9494/react-modern-audio-player/issues
+    about: Search existing issues before opening a new one.

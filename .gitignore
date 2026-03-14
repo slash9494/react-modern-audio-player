@@ -19,3 +19,7 @@ yarn-error.log*
 
 *.drawio
 releaseNote.md
+
+.claude
+.cursor
+.docs
