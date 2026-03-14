@@ -1,0 +1,49 @@
+name: Documentation
+description: Report missing, incorrect, or unclear documentation
+title: "[DOCS] "
+labels: ["documentation"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Help us improve the docs! Let us know what's missing or confusing.
+
+  - type: dropdown
+    id: type
+    attributes:
+      label: Documentation Type
+      options:
+        - Missing documentation
+        - Incorrect documentation
+        - Unclear / confusing documentation
+        - Request for example / guide
+    validations:
+      required: true
+
+  - type: input
+    id: location
+    attributes:
+      label: Location
+      description: Where is the documentation issue? (README section, prop name, etc.)
+      placeholder: e.g. README - activeUI prop, placement section
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: What is wrong or missing?
+    validations:
+      required: true
+
+  - type: textarea
+    id: suggestion
+    attributes:
+      label: Suggested Improvement
+      description: What should the documentation say or include?
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Context

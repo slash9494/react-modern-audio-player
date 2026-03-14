@@ -1,0 +1,81 @@
+# CodeRabbit Configuration
+# https://docs.coderabbit.ai/guides/configure-coderabbit
+
+tone_instructions: |
+  Keep reviews concise and clear.
+  Provide both the issue and a suggested fix.
+  Classify by severity: blocker / suggestion / nit.
+
+reviews:
+  profile: "assertive"
+  request_changes_workflow: false
+  high_level_summary: true
+  high_level_summary_placeholder: "@coderabbitai summary"
+  poem: false
+  review_status: true
+  collapse_walkthrough: false
+  auto_review:
+    enabled: true
+    drafts: false
+    base_branches:
+      - main
+      - develop
+
+  path_filters:
+    - "!**/dist/**"
+    - "!**/node_modules/**"
+    - "!**/*.lock"
+    - "!**/storybook-static/**"
+    - "!**/.changeset/**"
+    - "!**/coverage/**"
+
+  path_instructions:
+    - path: "package/src/**/*.tsx"
+      instructions: |
+        Review React components for:
+        - Clearly typed props interfaces
+        - Unnecessary re-render patterns (inline functions, object literals in JSX)
+        - Correct useEffect dependency arrays
+        - Missing accessibility attributes (aria-*, role, tabIndex)
+        - Proper wavesurfer.js instance cleanup on unmount
+
+    - path: "package/src/**/*.ts"
+      instructions: |
+        Review TypeScript files for:
+        - Avoid use of `any` type
+        - Proper use of generics
+        - Prefer explicit types over broad unions
+        - Exported types should be intuitive from a library consumer's perspective
+
+    - path: "package/src/**/Context/**"
+      instructions: |
+        Review Context files for:
+        - Appropriate context splitting based on update frequency
+        - Memoized Provider values (useMemo)
+        - No unnecessary global state
+
+    - path: ".github/workflows/**"
+      instructions: |
+        Review GitHub Actions for:
+        - No hardcoded secrets
+        - Node.js version should be latest LTS (current workflows use Node 16 — upgrade recommended)
+        - Correct cache strategy
+
+    - path: "**/*.md"
+      instructions: |
+        Light review for docs:
+        - Valid links
+        - Code examples match the actual API
+
+  abort_on_close: true
+
+  tools:
+    github-checks:
+      enabled: true
+    ast-grep:
+      essential_rules: true
+      packages:
+        - "tsx"
+
+chat:
+  auto_reply: true
