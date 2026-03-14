@@ -79,7 +79,7 @@ main
 develop
 → normal development
 
-overhaul-v*
+v*/main
 → large scale refactoring or architecture overhaul base branch
 
 v*/feat/*
