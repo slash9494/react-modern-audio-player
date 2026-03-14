@@ -36,9 +36,9 @@ agents/overhaul/
 
 Example mappings:
 
-overhaul-v2  → agents/overhaul/overhaul-v2.md  
-overhaul-v3  → agents/overhaul/overhaul-v3.md  
-overhaul-v4  → agents/overhaul/overhaul-v4.md  
+overhaul-v2 → agents/overhaul/overhaul-v2.md  
+overhaul-v3 → agents/overhaul/overhaul-v3.md  
+overhaul-v4 → agents/overhaul/overhaul-v4.md
 
 If a matching overhaul agent exists, read and follow its instructions.
 
@@ -48,8 +48,8 @@ If a matching overhaul agent exists, read and follow its instructions.
 
 When multiple instruction sources exist, follow this priority:
 
-1. agents/base/*
-2. agents/overhaul/*
+1. agents/base/\*
+2. agents/overhaul/\*
 3. repository documentation
 
 Overhaul agents may extend or override base workflows when necessary.
@@ -90,3 +90,14 @@ refactor/*
 test/*
 ci/*
 docs/*
+
+---
+
+## Localization & Language Policy
+
+- **Primary Language**: All project-related communications and artifacts must be in **English only**.
+- **Prohibited**: Do not use Korean in any of the following tasks:
+  - Git commit messages
+  - Pull Request titles and descriptions
+  - README.md updates or any documentation
+  - Code comments and inline documentation
