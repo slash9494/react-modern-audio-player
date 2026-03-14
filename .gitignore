@@ -25,3 +25,8 @@ releaseNote.md
 .docs
 # Test coverage
 package/coverage/
+
+# Yarn PnP
+.pnp.cjs
+.pnp.loader.mjs
+.yarn/
