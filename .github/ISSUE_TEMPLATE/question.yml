@@ -1,0 +1,37 @@
+name: Question
+description: Ask a usage question about the library
+title: "[QUESTION] "
+labels: ["question"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Before asking, please check the [README](https://github.com/slash9494/react-modern-audio-player#readme) and existing issues — your question may already be answered!
+
+  - type: input
+    id: version
+    attributes:
+      label: Package Version
+      placeholder: e.g. 1.4.0-rc.2
+    validations:
+      required: true
+
+  - type: textarea
+    id: question
+    attributes:
+      label: Question
+      description: What are you trying to do or understand?
+    validations:
+      required: true
+
+  - type: textarea
+    id: tried
+    attributes:
+      label: What I've Tried
+      description: Share any code or approaches you've already attempted.
+      render: tsx
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Context
