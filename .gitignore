@@ -23,3 +23,5 @@ releaseNote.md
 .claude
 .cursor
 .docs
+# Test coverage
+package/coverage/
