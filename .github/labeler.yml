@@ -1,22 +1,22 @@
 ci:
-  - head-branch: ["^v\\d+/ci/", "^ci/"]
+  - head-branch: ["/ci/", "^ci/"]
 
 feature:
-  - head-branch: ["^v\\d+/feat/", "^feat/"]
+  - head-branch: ["/feat/", "^feat/"]
 
 bug:
-  - head-branch: ["^v\\d+/fix/", "^fix/"]
+  - head-branch: ["/fix/", "^fix/"]
 
 documentation:
-  - head-branch: ["^v\\d+/docs/", "^docs/"]
+  - head-branch: ["/docs/", "^docs/"]
   - changed-files:
       - any-glob-to-any-file: ["**/*.md", "docs/**/*"]
 
 refactor:
-  - head-branch: ["^v\\d+/refactor/", "^refactor/"]
+  - head-branch: ["/refactor/", "^refactor/"]
 
 test:
-  - head-branch: ["^v\\d+/test/", "^test/"]
+  - head-branch: ["/test/", "^test/"]
   - changed-files:
       - any-glob-to-any-file:
           - "**/*.test.ts"
@@ -26,10 +26,10 @@ test:
           - "e2e/**/*"
 
 performance:
-  - head-branch: ["^v\\d+/perf/", "^perf/"]
+  - head-branch: ["/perf/", "^perf/"]
 
 chore:
-  - head-branch: ["^v\\d+/chore/", "^chore/"]
+  - head-branch: ["/chore/", "^chore/"]
   - changed-files:
       - any-glob-to-any-file:
           - ".github/**/*"
