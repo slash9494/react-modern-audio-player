@@ -67,12 +67,30 @@ export const RepeatTypeBtn: FC = () => {
   ]);
 
   return (
+    customIcons?.repeatShuffle,
+  ]);
+
+  const repeatLabel = useMemo(() => {
+    switch (curAudioState.repeatType) {
+      case "ALL":     return "Repeat all";
+      case "ONE":     return "Repeat one";
+      case "NONE":    return "Repeat off";
+      case "SHUFFLE": return "Shuffle";
+      default:        return "Repeat";
+    }
+  }, [curAudioState.repeatType]);
+
+  return (
     <StyledBtn
       type="button"
       onClick={changeRepeatType}
       className="repeat-button"
-      aria-label={`Repeat: ${curAudioState.repeatType}`}
+      aria-label={repeatLabel}
     >
+      {RepeatIcon}
+    </StyledBtn>
+  );
+};
       {RepeatIcon}
     </StyledBtn>
   );
