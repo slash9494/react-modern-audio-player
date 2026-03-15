@@ -14,6 +14,7 @@ reviews:
   poem: false
   review_status: true
   collapse_walkthrough: false
+  co_authored_by: falses
   auto_review:
     enabled: true
     drafts: false
