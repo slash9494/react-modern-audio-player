@@ -16,6 +16,16 @@ export default defineConfig({
       "@/hooks": path.resolve(__dirname, "./src/hooks"),
       "@/utils": path.resolve(__dirname, "./src/utils"),
       "@/styles/*": path.resolve(__dirname, "./src/styles/*"),
+      react: path.resolve(__dirname, "../node_modules/react"),
+      "react-dom": path.resolve(__dirname, "../node_modules/react-dom"),
+      "react/jsx-runtime": path.resolve(
+        __dirname,
+        "../node_modules/react/jsx-runtime"
+      ),
+      "react/jsx-dev-runtime": path.resolve(
+        __dirname,
+        "../node_modules/react/jsx-dev-runtime"
+      ),
     },
   },
   build: {
