@@ -1,0 +1,8 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+# Step 1: Full unit test suite
+cd package && yarn test
+
+# Step 2: Type check
+yarn typeCheck
