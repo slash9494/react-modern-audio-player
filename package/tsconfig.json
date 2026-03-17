@@ -4,7 +4,7 @@
     "useDefineForClassFields": true,
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "allowJs": false,
-    "skipLibCheck": true,
+    "skipLibCheck": true, // TODO: remove this after fixing type issues
     "esModuleInterop": false,
     "allowSyntheticDefaultImports": true,
     "strict": true,
@@ -15,12 +15,12 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
-    "paths":{
+    "paths": {
       "@/components/*": ["./src/components/*"],
-      "@/hooks/*":  ["./src/hooks/*"],
+      "@/hooks/*": ["./src/hooks/*"],
       "@/utils/*": ["./src/utils/*"],
-      "@/styles/*": ["./src/styles/*"],
+      "@/styles/*": ["./src/styles/*"]
     }
   },
-  "include": ["**/*.d.ts","src","preview"],
+  "include": ["**/*.d.ts", "src", "preview"]
 }
