@@ -72,6 +72,7 @@ export const VolumeTriggerBtn = forwardRef<HTMLButtonElement>((_, ref) => {
     <StyledBtn
       onClick={changeMuteState}
       className="volume-trigger-container"
+      data-testid="volume-trigger-btn"
       ref={ref}
     >
       {VolumeIcon}

@@ -31,7 +31,7 @@ export const TrackInfo: FC = () => {
       ) : (
         <>
           {curPlayData?.name && (
-            <span className="title">{curPlayData.name}</span>
+            <span className="title" data-testid="track-title">{curPlayData.name}</span>
           )}
           {curPlayData?.writer && (
             <span className="writer">{curPlayData.writer}</span>

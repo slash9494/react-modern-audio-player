@@ -33,7 +33,7 @@ export const PlayBtn: FC = () => {
   }, [curAudioState.isPlaying, customIcons?.pause, customIcons?.play]);
 
   return (
-    <StyledPlayBtn onClick={changePlayState} className="play-button">
+    <StyledPlayBtn onClick={changePlayState} className="play-button" data-testid="play-btn">
       {PlayIcon}
     </StyledPlayBtn>
   );
