@@ -1,0 +1,39 @@
+ci:
+  - head-branch: ["/ci/", "^ci/"]
+
+feature:
+  - head-branch: ["/feat/", "^feat/"]
+
+bug:
+  - head-branch: ["/fix/", "^fix/"]
+
+documentation:
+  - head-branch: ["/docs/", "^docs/"]
+  - changed-files:
+      - any-glob-to-any-file: ["**/*.md", "docs/**/*"]
+
+refactor:
+  - head-branch: ["/refactor/", "^refactor/"]
+
+test:
+  - head-branch: ["/test/", "^test/"]
+  - changed-files:
+      - any-glob-to-any-file:
+          - "**/*.test.ts"
+          - "**/*.test.tsx"
+          - "**/*.spec.ts"
+          - "**/*.spec.tsx"
+          - "e2e/**/*"
+
+performance:
+  - head-branch: ["/perf/", "^perf/"]
+
+chore:
+  - head-branch: ["/chore/", "^chore/"]
+  - changed-files:
+      - any-glob-to-any-file:
+          - ".github/**/*"
+          - "*.config.*"
+          - "*.json"
+          - "*.yaml"
+          - "*.yml"
