@@ -5,7 +5,9 @@ test.describe("Player render & initialization", () => {
     await expect(playerPage.player).toBeVisible();
   });
 
-  test("1-2: play button is visible on initial load", async ({ playerPage }) => {
+  test("1-2: play button is visible on initial load", async ({
+    playerPage,
+  }) => {
     await expect(playerPage.playBtn).toBeVisible();
   });
 

@@ -9,7 +9,9 @@ test.describe("Play / Pause toggle", () => {
     await expect(playBtn).toBeVisible();
 
     // Wait until current time advances past 00:00
-    await expect.poll(() => trackCurrentTime.textContent(), { timeout: 10000 }).not.toBe("00:00");
+    await expect
+      .poll(() => trackCurrentTime.textContent(), { timeout: 10000 })
+      .not.toBe("00:00");
   });
 
   test("2-2: clicking play then pause returns to stopped state", async ({
@@ -19,7 +21,9 @@ test.describe("Play / Pause toggle", () => {
 
     await playBtn.click();
     // Wait until time advances
-    await expect.poll(() => trackCurrentTime.textContent(), { timeout: 10000 }).not.toBe("00:00");
+    await expect
+      .poll(() => trackCurrentTime.textContent(), { timeout: 10000 })
+      .not.toBe("00:00");
     const timeAfterPlay = await trackCurrentTime.textContent();
 
     await playBtn.click();
