@@ -26,6 +26,15 @@ When referencing library APIs, framework behavior, or any external documentation
 - Do not rely on training knowledge for library specifics — it may be outdated
 - Query context7 before implementing anything that depends on a third-party API
 
+This policy applies to **all** of the following situations — not just implementation:
+
+- Verifying whether a specific API, method, or assertion exists in a library
+- Reviewing test code for correctness against the library's actual API
+- Analyzing bugs or defects that involve third-party behavior
+- Confirming that a pattern or usage is valid for the version in use
+
+**Never report a finding about a library API without first confirming it via context7.**
+
 ---
 
 ## Agent Priority Order
