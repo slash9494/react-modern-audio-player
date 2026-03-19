@@ -31,7 +31,7 @@ Examples:
 feat(player): add playlist support  
 fix(volume): correct mute toggle behavior  
 refactor(hooks): simplify useAudio logic  
-test(player): add playback interaction tests  
+test(player): add playback interaction tests
 
 ---
 
@@ -47,7 +47,7 @@ docs
 ci  
 chore  
 perf  
-build  
+build
 
 Definitions:
 
@@ -63,26 +63,25 @@ build → build system changes
 
 ---
 
-## Optional Emoji Prefix
+## Emoji Prefix
 
-Emojis are optional but may be used to improve scannability.
-Use only when it adds clarity — do not use for every commit.
+Always prefix the commit message with the corresponding emoji.
 
-| Type | Emoji |
-| --- | --- |
-| feat | ✨ |
-| fix | 🐛 |
-| refactor | ♻️ |
-| perf | ⚡️ |
-| docs | 📝 |
-| test | 🧪 |
-| ci | 👷 |
-| chore | 🔧 |
-| build | 📦 |
-| release/deploy | 🚀 |
-| breaking change | 💥 |
+| Type            | Emoji |
+| --------------- | ----- |
+| feat            | ✨    |
+| fix             | 🐛    |
+| refactor        | ♻️    |
+| perf            | ⚡️   |
+| docs            | 📝    |
+| test            | 🧪    |
+| ci              | 👷    |
+| chore           | 🔧    |
+| build           | 📦    |
+| release/deploy  | 🚀    |
+| breaking change | 💥    |
 
-Example with emoji:
+Example:
 
 ✨ feat(player): add playlist support
 🐛 fix(volume): correct mute toggle behavior
@@ -101,13 +100,13 @@ The commit title must follow these rules.
 Good examples:
 
 feat(player): add keyboard controls  
-fix(progress): prevent NaN duration bug  
+fix(progress): prevent NaN duration bug
 
 Bad examples:
 
 Added new feature  
 Fix bug  
-Update code  
+Update code
 
 ---
 
@@ -197,7 +196,7 @@ Tests can be committed separately or with features.
 Examples:
 
 test(player): add play/pause interaction tests  
-test(volume): add slider edge case tests  
+test(volume): add slider edge case tests
 
 ---
 
@@ -244,7 +243,7 @@ update
 changes  
 fix stuff  
 misc updates  
-minor changes  
+minor changes
 
 These messages are not allowed.
 
