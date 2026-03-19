@@ -8,7 +8,7 @@ Pull requests are not required for direct development work.
 
 ---
 
-# Core Responsibilities
+## Core Responsibilities
 
 - determine whether a new branch is required
 - generate correct branch names
@@ -18,28 +18,47 @@ Pull requests are not required for direct development work.
 
 ---
 
-# Branch Strategy
+## Branch Strategy
 
 Main branches in this repository:
-
-main
-develop
-overhaul-v*
-
-Definitions:
 
 main
 → stable releases
 
 develop
-→ regular development
+→ normal development
 
-overhaul-v*
-→ major architecture overhaul work
+v*/main
+→ large scale refactoring or architecture overhaul base branch
 
 ---
 
-# Direct Development Rule
+## Branch Naming Conventions
+
+Work branches under a specific overhaul version:
+
+v*/feat/*
+v*/fix/*
+v*/refactor/*
+v*/test/*
+v*/ci/*
+v*/docs/*
+
+Example: v2/ci/github-actions-pipeline
+
+Feature branches outside overhaul should follow:
+
+feat/*
+fix/*
+refactor/*
+test/*
+ci/*
+docs/*
+chore/*
+
+---
+
+## Direct Development Rule
 
 Since this is a personal project, the repository owner may commit directly.
 
@@ -57,7 +76,7 @@ Work directly on the current branch.
 
 ---
 
-# When a Branch IS Required
+## When a Branch IS Required
 
 Create a branch when:
 
@@ -68,7 +87,7 @@ Create a branch when:
 
 ---
 
-# Issue-Based Branch Creation
+## Issue-Based Branch Creation
 
 If the task originates from a GitHub issue,
 the branch name must include the issue number.
@@ -85,47 +104,34 @@ refactor/88-player-hooks
 
 ---
 
-# Branch Prefix Types
+## Branch Prefix Types
 
-Use the following prefixes.
-
-feat
-fix
-refactor
-test
-ci
-docs
-perf
-chore
-
-Definitions:
-
-feat → new feature  
-fix → bug fix  
-refactor → structural improvement  
-test → tests  
-ci → CI/CD configuration  
-docs → documentation  
-perf → performance improvements  
+feat → new feature
+fix → bug fix
+refactor → structural improvement
+test → tests
+ci → CI/CD configuration
+docs → documentation
+perf → performance improvements
 chore → maintenance work
 
 ---
 
-# Branch Creation Base
+## Branch Creation Base
 
 Branches must be created from the current working branch.
 
 Examples:
 
-overhaul-v2
-   └─ feat/123-playlist-support
+v2/main
+   └─ v2/feat/123-playlist-support
 
 develop
    └─ fix/45-progress-bar
 
 ---
 
-# Branch Naming Rules
+## Branch Naming Rules
 
 Branch names must be:
 
@@ -133,19 +139,13 @@ Branch names must be:
 - short and descriptive
 - 2–4 words when possible
 
-Examples:
-
-feat/audio-buffer
-fix/progress-bar
-refactor/player-hooks
-
 Avoid long names such as:
 
 feat/add-new-audio-buffer-logic-for-performance
 
 ---
 
-# Issue Detection Workflow
+## Issue Detection Workflow
 
 When starting work:
 
@@ -159,7 +159,7 @@ When starting work:
 
 ---
 
-# Branch Creation Process
+## Branch Creation Process
 
 When creating a branch:
 
@@ -176,7 +176,7 @@ git checkout -b <branch-name>
 
 ---
 
-# Branch Lifecycle
+## Branch Lifecycle
 
 After completing the work:
 
@@ -192,7 +192,7 @@ Branches can be deleted after merging if no longer needed.
 
 ---
 
-# Forbidden Actions
+## Forbidden Actions
 
 Never:
 
@@ -202,7 +202,7 @@ Never:
 
 ---
 
-# Goal
+## Goal
 
 Maintain a simple and readable branch structure
 that supports issue-based development when needed

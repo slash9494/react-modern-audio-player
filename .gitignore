@@ -17,6 +17,10 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+# Yarn Berry
+.yarn/install.state.gz
+.yarn/install-state.gz
+
 *.drawio
 releaseNote.md
 

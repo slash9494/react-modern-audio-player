@@ -51,15 +51,41 @@ build
 
 Definitions:
 
-feat → new feature  
-fix → bug fix  
-refactor → code structure improvement  
-test → tests added or modified  
-docs → documentation changes  
-ci → CI/CD configuration  
-chore → maintenance work  
-perf → performance improvements  
+feat → new feature
+fix → bug fix
+refactor → code structure improvement
+test → tests added or modified
+docs → documentation changes
+ci → CI/CD configuration
+chore → maintenance work
+perf → performance improvements
 build → build system changes
+
+---
+
+## Optional Emoji Prefix
+
+Emojis are optional but may be used to improve scannability.
+Use only when it adds clarity — do not use for every commit.
+
+| Type | Emoji |
+| --- | --- |
+| feat | ✨ |
+| fix | 🐛 |
+| refactor | ♻️ |
+| perf | ⚡️ |
+| docs | 📝 |
+| test | 🧪 |
+| ci | 👷 |
+| chore | 🔧 |
+| build | 📦 |
+| release/deploy | 🚀 |
+| breaking change | 💥 |
+
+Example with emoji:
+
+✨ feat(player): add playlist support
+🐛 fix(volume): correct mute toggle behavior
 
 ---
 
