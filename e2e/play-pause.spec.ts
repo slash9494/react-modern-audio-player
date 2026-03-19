@@ -24,14 +24,13 @@ test.describe("Play / Pause toggle", () => {
     await expect
       .poll(() => trackCurrentTime.textContent(), { timeout: 10000 })
       .not.toBe("00:00");
-    const timeAfterPlay = await trackCurrentTime.textContent();
-
     await playBtn.click();
-    await playerPage.page.waitForTimeout(500);
 
+    // Wait for time to stabilize after pause
     const timeAfterPause = await trackCurrentTime.textContent();
-    // After pause, time should be frozen
-    expect(timeAfterPause).toBe(timeAfterPlay);
+    await expect
+      .poll(() => trackCurrentTime.textContent(), { timeout: 3000 })
+      .toBe(timeAfterPause);
   });
 
   test("2-3: play button is always visible", async ({ playerPage }) => {

@@ -36,13 +36,18 @@ test.describe("Volume and mute control", () => {
     const input = volumeSlider.locator("input[type='range']");
     await input.fill("0.3");
 
-    const volume = await page.evaluate(() => {
-      const audio = document.getElementById(
-        "rm-audio-player-audio"
-      ) as HTMLAudioElement | null;
-      return audio?.volume ?? -1;
-    });
-    expect(volume).toBeCloseTo(0.3, 1);
+    await expect
+      .poll(
+        () =>
+          page.evaluate(() => {
+            const audio = document.getElementById(
+              "rm-audio-player-audio"
+            ) as HTMLAudioElement | null;
+            return audio?.volume ?? -1;
+          }),
+        { timeout: 3000 }
+      )
+      .toBeCloseTo(0.3, 1);
   });
 
   test("4-4: changing volume while muted unmutes the player", async ({

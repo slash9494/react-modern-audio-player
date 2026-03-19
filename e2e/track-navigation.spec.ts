@@ -46,13 +46,30 @@ test.describe("Track navigation", () => {
       .poll(() => playerPage.trackTitle.textContent(), { timeout: 3000 })
       .toBe("Track 5");
 
+    // Play to confirm audio is active before testing stop behavior
+    await playerPage.playBtn.click();
+    await expect
+      .poll(() => playerPage.trackCurrentTime.textContent(), { timeout: 5000 })
+      .not.toBe("00:00");
+
     // On last track with NONE — next should stop (not wrap)
     await nextBtn.click();
-    await playerPage.page.waitForTimeout(300);
 
     // Still on last track, player stopped
     await expect(playerPage.trackTitle).toHaveText("Track 5");
     await expect(playerPage.trackCurrentTime).toHaveText("00:00");
+    await expect
+      .poll(
+        () =>
+          playerPage.page.evaluate(() => {
+            const audio = document.getElementById(
+              "rm-audio-player-audio"
+            ) as HTMLAudioElement | null;
+            return audio?.paused ?? true;
+          }),
+        { timeout: 3000 }
+      )
+      .toBe(true);
   });
 
   test("3-4 [edge]: repeatType=NONE, prev on first track stays on first track", async ({
@@ -65,7 +82,6 @@ test.describe("Track navigation", () => {
     await repeatBtn.click(); // ONE → NONE
 
     await prevBtn.click();
-    await playerPage.page.waitForTimeout(300);
 
     // Should still be on Track 1
     await expect(trackTitle).toHaveText("Track 1");
