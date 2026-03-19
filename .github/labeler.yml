@@ -37,3 +37,7 @@ chore:
           - "*.json"
           - "*.yaml"
           - "*.yml"
+          - "**/*.config.*"
+          - "**/*.json"
+          - "**/*.yaml"
+          - "**/*.yml"
