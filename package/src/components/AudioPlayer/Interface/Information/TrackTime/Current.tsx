@@ -24,7 +24,11 @@ export const Current: FC<TrackTimeChildrenProps> = ({ position }) => {
       className="track-time-current-container"
       childrenClassName="track-current-time"
     >
-      <span ref={trackCurTimeRef} className="track-current-time">
+      <span
+        ref={trackCurTimeRef}
+        className="track-current-time"
+        data-testid="track-current-time"
+      >
         {elementRefs?.audioEl?.currentTime
           ? getTimeWithPadStart(elementRefs.audioEl.currentTime)
           : "00:00"}

@@ -9,7 +9,7 @@ Manage releases and package publishing.
 Follow Semantic Versioning (semver):
 
 - MAJOR — breaking API changes
-- MINOR — new features, backwards compatible
+- MINOR — new features, backwards-compatible
 - PATCH — bug fixes, no API changes
 
 Example: 1.4.2 → 1.5.0 for a new feature

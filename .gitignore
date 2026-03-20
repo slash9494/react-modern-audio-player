@@ -18,7 +18,6 @@ yarn-debug.log*
 yarn-error.log*
 
 # Yarn Berry
-.yarn/install.state.gz
 .yarn/install-state.gz
 
 *.drawio
@@ -27,3 +26,9 @@ releaseNote.md
 .claude
 .cursor
 .docs
+# Test coverage
+package/coverage/
+
+# Yarn PnP
+.pnp.cjs
+.pnp.loader.mjs
