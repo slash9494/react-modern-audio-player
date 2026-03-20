@@ -19710,6 +19710,8 @@ __metadata:
   dependencies:
     "@changesets/cli": "npm:^2.24.0"
     "@playwright/test": "npm:^1.58.2"
+    "@testing-library/react": "npm:^16.3.2"
+    "@testing-library/user-event": "npm:^14.6.1"
     "@typescript-eslint/eslint-plugin": "npm:^5.30.5"
     "@typescript-eslint/parser": "npm:^5.30.5"
     eslint: "npm:^8.19.0"

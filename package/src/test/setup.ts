@@ -12,3 +12,17 @@ global.ResizeObserver = vi.fn().mockImplementation(() => ({
   unobserve: vi.fn(),
   disconnect: vi.fn(),
 }));
+
+// wavesurfer.js uses Canvas API which is not supported in jsdom
+vi.mock("wavesurfer.js", () => ({
+  default: {
+    create: vi.fn().mockReturnValue({
+      load: vi.fn(),
+      on: vi.fn(),
+      destroy: vi.fn(),
+      setVolume: vi.fn(),
+      pause: vi.fn(),
+      play: vi.fn(),
+    }),
+  },
+}));
