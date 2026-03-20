@@ -5,27 +5,14 @@ import path from "node:path";
 import libCss from "vite-plugin-libcss";
 
 export default defineConfig({
-  plugins: [
-    react(),
-    dts({ outDir: "dist/types", include: "src" }),
-    libCss(),
-  ],
+  plugins: [react(), dts({ outDir: "dist/types", include: "src" }), libCss()],
   resolve: {
+    dedupe: ["react", "react-dom"],
     alias: {
       "@/components": path.resolve(__dirname, "./src/components"),
       "@/hooks": path.resolve(__dirname, "./src/hooks"),
       "@/utils": path.resolve(__dirname, "./src/utils"),
-      "@/styles/*": path.resolve(__dirname, "./src/styles/*"),
-      react: path.resolve(__dirname, "../node_modules/react"),
-      "react-dom": path.resolve(__dirname, "../node_modules/react-dom"),
-      "react/jsx-runtime": path.resolve(
-        __dirname,
-        "../node_modules/react/jsx-runtime"
-      ),
-      "react/jsx-dev-runtime": path.resolve(
-        __dirname,
-        "../node_modules/react/jsx-dev-runtime"
-      ),
+      "@/styles": path.resolve(__dirname, "./src/styles"),
     },
   },
   build: {
@@ -37,13 +24,14 @@ export default defineConfig({
         format === "es" ? `index.es.js` : `index.${format}`,
     },
     rollupOptions: {
-      external: ["react", "react/jsx-runtime", "react-dom", "styled-components"],
+      external: [
+        "react",
+        "react/jsx-runtime",
+        "react/jsx-dev-runtime",
+        "react-dom",
+        "styled-components",
+      ],
       output: {
-        globals: {
-          react: "React",
-          "react-dom": "ReactDOM",
-          "styled-components": "styled",
-        },
         exports: "named",
       },
     },
