@@ -17,7 +17,10 @@ export default defineConfig({
     environment: "jsdom",
     setupFiles: ["./src/test/setup.ts"],
     clearMocks: true,
-    include: ["src/**/*.test.{ts,tsx}", "../test/integration/**/*.test.{ts,tsx}"],
+    include: [
+      "src/**/*.test.{ts,tsx}",
+      "../test/integration/**/*.test.{ts,tsx}",
+    ],
     exclude: ["node_modules", "dist"],
     coverage: {
       provider: "v8",
