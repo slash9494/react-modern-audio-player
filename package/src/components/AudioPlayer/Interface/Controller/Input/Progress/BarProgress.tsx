@@ -48,7 +48,11 @@ export const BarProgress: FC<{ isActive: boolean }> = ({ isActive }) => {
   const eventProps = useProgress();
 
   return isActive ? (
-    <BarProgressWrapper className="bar-progress-wrapper" data-testid="progress-bar" {...eventProps}>
+    <BarProgressWrapper
+      className="bar-progress-wrapper"
+      data-testid="progress-bar"
+      {...eventProps}
+    >
       <div className="rm-player-progress-bar" ref={progressBarRef}>
         <div className="rm-player-progress" ref={progressValueRef}></div>
       </div>
