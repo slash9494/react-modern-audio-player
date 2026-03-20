@@ -56,6 +56,23 @@ When tracing a bug:
 
 ---
 
+## Build Config Analysis
+
+When reviewing build or bundler config files (vite.config.ts, rollup.config.ts, webpack.config.js, etc.), apply these additional checks beyond functional correctness:
+
+**Portability — flag if any of the following exist:**
+- Hardcoded relative paths to `node_modules` (e.g., `../node_modules/react`) — breaks under pnpm strict, Yarn Berry PnP, or any workspace layout change
+- Assumptions about where a package is physically installed — prefer `resolve.dedupe`, `externals`, or bare imports instead
+
+**Dead config — flag if:**
+- Options that only apply to a specific output format are present when that format is not being built (e.g., `globals` without UMD/IIFE)
+- Alias patterns use unsupported syntax (e.g., glob `*` in `resolve.alias`)
+
+**Missing externals — flag if:**
+- A package appears in `resolve.alias` but is absent from `rollupOptions.external`
+
+---
+
 ## Rules
 
 - Do not modify code during analysis

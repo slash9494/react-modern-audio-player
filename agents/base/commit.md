@@ -60,6 +60,8 @@ ci → CI/CD configuration
 chore → maintenance work
 perf → performance improvements
 build → build system changes
+release/deploy → release or deployment related changes
+breaking change → indicates a breaking API change
 
 ---
 

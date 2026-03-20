@@ -26,7 +26,7 @@
 - Next advances to the next track
 - Prev goes to the previous track
 - Next on last track with repeatType NONE → player stops
-- Prev within 1 second of track start → resets to 0, does not go to prev track
+- Prev after 1 second of track playback → resets to 0, does not go to prev track
 - Prev at first track with repeatType NONE → stays on first track
 
 ## 4. Volume and Mute Control

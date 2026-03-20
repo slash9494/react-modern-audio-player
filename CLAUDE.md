@@ -12,6 +12,7 @@ Load base agent files only when the task directly requires them. Do not read all
 | Performing a release or version bump | `agents/base/release.md` |
 | Unsure about the development workflow or task sequence | `agents/base/workflow.md` |
 | Starting a new task or doing branch-related work | `agents/base/branch.md` |
+| Writing, reviewing, or analyzing any test code | `agents/base/testing.md` |
 | Performing overhaul-specific library analysis | `agents/overhaul/library-analysis.md` |
 
 If the branch starts with `v*/`, also load the corresponding agent from `agents/overhaul/`.
@@ -34,6 +35,18 @@ This policy applies to **all** of the following situations — not just implemen
 - Confirming that a pattern or usage is valid for the version in use
 
 **Never report a finding about a library API without first confirming it via context7.**
+
+---
+
+## Duplication Check Policy
+
+Before performing any task — adding instructions, writing tests, creating triggers, modifying configs, or any other change — always check whether equivalent content already exists.
+
+- Search relevant agent files, config files, and documentation before adding anything new
+- If an agent file references another file in its References section, do not add a redundant trigger for the referenced file; load the parent agent and follow its references
+- If content already exists that covers the intent, update or extend it rather than duplicating
+
+This applies to all work, not just documentation.
 
 ---
 
