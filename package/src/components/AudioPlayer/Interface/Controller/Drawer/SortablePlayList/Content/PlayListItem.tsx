@@ -16,10 +16,15 @@ export const PlayListItem = ({ data }: { data: AudioData }) => {
         curPlayed: curPlayId === data.id,
       })}
       data-testid="playlist-item"
+      aria-current={curPlayId === data.id ? "true" : undefined}
     >
       <div className="list-item-contents-wrapper">
         <div className="album-cover-wrapper">
-          <img src={data.img} alt="" style={coverImgsCss?.listThumbnail} />
+          <img
+            src={data.img}
+            alt={data.img ? (typeof data.name === "string" ? data.name : "Album thumbnail") : ""}
+            style={coverImgsCss?.listThumbnail}
+          />
         </div>
         <div className="album-info-wrapper">
           {data.writer && <span className="writer">{data.writer}</span>}

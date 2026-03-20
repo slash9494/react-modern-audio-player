@@ -19,9 +19,19 @@ export const Artwork: FC = () => {
     audioPlayerStateContext
   );
 
+  const track = playList[curIdx];
+  const altText = track?.img
+    ? [
+        typeof track.writer === "string" ? track.writer : undefined,
+        typeof track.name === "string" ? track.name : undefined,
+      ]
+        .filter(Boolean)
+        .join(" - ") || "Album artwork"
+    : "";
+
   return (
     <ArtworkContainer className="artwork-container">
-      <img src={playList[curIdx]?.img} alt={""} style={coverImgsCss?.artwork} />
+      <img src={track?.img} alt={altText} style={coverImgsCss?.artwork} />
     </ArtworkContainer>
   );
 };
