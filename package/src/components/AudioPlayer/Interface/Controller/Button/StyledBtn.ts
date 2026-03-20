@@ -14,6 +14,10 @@ export const StyledBtn = styled.button`
   &:hover {
     transform: scale(1.1);
   }
+  &:focus-visible {
+    outline: 2px solid var(--rm-audio-player-progress-bar);
+    outline-offset: 2px;
+  }
   &:active {
     transform: scale(0.8);
     opacity: 0.5;

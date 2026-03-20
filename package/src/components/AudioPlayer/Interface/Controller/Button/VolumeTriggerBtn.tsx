@@ -70,6 +70,9 @@ export const VolumeTriggerBtn = forwardRef<HTMLButtonElement>((_, ref) => {
   ]);
   return (
     <StyledBtn
+      type="button"
+      aria-label={curAudioState.muted ? "Unmute" : "Mute"}
+      aria-pressed={curAudioState.muted}
       onClick={changeMuteState}
       className="volume-trigger-container"
       data-testid="volume-trigger-btn"
