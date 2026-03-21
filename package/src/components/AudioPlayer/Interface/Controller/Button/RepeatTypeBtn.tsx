@@ -67,7 +67,11 @@ export const RepeatTypeBtn: FC = () => {
   ]);
 
   return (
-    <StyledBtn onClick={changeRepeatType} className="repeat-button">
+    <StyledBtn
+      onClick={changeRepeatType}
+      className="repeat-button"
+      data-testid="repeat-btn"
+    >
       {RepeatIcon}
     </StyledBtn>
   );
