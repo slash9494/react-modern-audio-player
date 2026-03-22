@@ -71,6 +71,7 @@ export const RepeatTypeBtn: FC = () => {
       onClick={changeRepeatType}
       className="repeat-button"
       data-testid="repeat-btn"
+      data-repeattype={curAudioState.repeatType}
     >
       {RepeatIcon}
     </StyledBtn>

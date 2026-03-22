@@ -1,0 +1,148 @@
+name: Security Guard
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, labeled]
+    paths:
+      - "package.json"
+      - "package/package.json"
+      - "playwright.config.ts"
+      - "package/vite.config.ts"
+      - "package/vitest.config.ts"
+      - ".github/workflows/**"
+
+jobs:
+  check-executable-files:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Check for security-reviewed label
+        id: label-check
+        env:
+          LABELS: ${{ toJson(github.event.pull_request.labels.*.name) }}
+        run: |
+          if echo "$LABELS" | grep -q '"security-reviewed"'; then
+            echo "approved=true" >> $GITHUB_OUTPUT
+          else
+            echo "approved=false" >> $GITHUB_OUTPUT
+          fi
+
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+        if: steps.label-check.outputs.approved == 'false'
+        with:
+          fetch-depth: 0
+
+      - name: Detect changes to executable config files
+        id: detect
+        if: steps.label-check.outputs.approved == 'false'
+        run: |
+          CHANGED=$(git diff --name-only origin/${{ github.base_ref }}...HEAD -- \
+            package.json \
+            package/package.json \
+            playwright.config.ts \
+            package/vite.config.ts \
+            package/vitest.config.ts \
+            .github/workflows/)
+
+          if [ -n "$CHANGED" ]; then
+            echo "found=true" >> $GITHUB_OUTPUT
+            printf '%s' "$CHANGED" > /tmp/changed_files.txt
+          fi
+
+      - name: Post or update review checklist comment
+        if: steps.label-check.outputs.approved == 'false' && steps.detect.outputs.found == 'true'
+        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7
+        with:
+          script: |
+            const files = require('fs').readFileSync('/tmp/changed_files.txt', 'utf8').trim();
+            const fileList = files.split('\n').map(f => `- \`${f}\``).join('\n');
+
+            const body = [
+              '## 🔒 Security Review Required',
+              '',
+              'Executable config files were modified. A maintainer must review these changes before merge.',
+              '',
+              '**To unblock:** complete the checklist below, then add the `security-reviewed` label.',
+              '',
+              '### Changed files',
+              fileList,
+              '',
+              '---',
+              '',
+              '### Reviewer Checklist',
+              '',
+              '**`package.json` / `package/package.json`**',
+              '- [ ] No `postinstall`, `preinstall`, or `prepare` scripts were added or modified',
+              '- [ ] No existing lifecycle scripts were changed to include shell commands or network calls',
+              '- [ ] No new dependencies that run install-time scripts',
+              '',
+              '**`playwright.config.ts`**',
+              '- [ ] `globalSetup` and `globalTeardown` were not added or modified',
+              '- [ ] `webServer.command` is unchanged or only points to the local dev server',
+              '- [ ] No `require()` or `import` of unfamiliar modules',
+              '- [ ] No `process.env` exfiltration patterns',
+              '',
+              '**`*.config.ts` (vite, vitest)**',
+              '- [ ] No use of `exec`, `spawn`, `execSync`, or `spawnSync`',
+              '- [ ] No dynamic `import()` of external URLs or unrecognized packages',
+              '- [ ] No network requests at config evaluation time',
+              '',
+              '**`.github/workflows/`**',
+              '- [ ] No steps that read secrets and send them to external services',
+              '- [ ] Permissions are minimal and explicitly declared',
+            ].join('\n');
+
+            const marker = '## 🔒 Security Review Required';
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+
+            const existing = comments.find(c =>
+              c.user.login === 'github-actions[bot]' && c.body.includes(marker)
+            );
+
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existing.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body,
+              });
+            }
+
+      - name: Show diff of changed files
+        if: steps.label-check.outputs.approved == 'false' && steps.detect.outputs.found == 'true'
+        run: |
+          echo "=== Changed executable config files ==="
+          cat /tmp/changed_files.txt
+          echo ""
+          echo "=== Diff ==="
+          git diff origin/${{ github.base_ref }}...HEAD -- \
+            package.json \
+            package/package.json \
+            playwright.config.ts \
+            package/vite.config.ts \
+            package/vitest.config.ts \
+            .github/workflows/
+
+      - name: Block merge until maintainer reviews
+        if: steps.label-check.outputs.approved == 'false' && steps.detect.outputs.found == 'true'
+        run: |
+          echo "::error::Executable config files were modified — a maintainer must review these changes."
+          echo "To unblock: add the 'security-reviewed' label to this PR."
+          exit 1
+
+      - name: Security review approved via label
+        if: steps.label-check.outputs.approved == 'true'
+        run: echo "PR has 'security-reviewed' label — skipping executable config file check."
