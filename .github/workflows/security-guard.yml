@@ -16,7 +16,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      pull-requests: write
     steps:
       - name: Check for security-reviewed label
         id: label-check
@@ -24,9 +23,9 @@ jobs:
           LABELS: ${{ toJson(github.event.pull_request.labels.*.name) }}
         run: |
           if echo "$LABELS" | grep -q '"security-reviewed"'; then
-            echo "approved=true" >> $GITHUB_OUTPUT
+            echo "approved=true" >> "$GITHUB_OUTPUT"
           else
-            echo "approved=false" >> $GITHUB_OUTPUT
+            echo "approved=false" >> "$GITHUB_OUTPUT"
           fi
 
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
@@ -47,79 +46,25 @@ jobs:
             .github/workflows/)
 
           if [ -n "$CHANGED" ]; then
-            echo "found=true" >> $GITHUB_OUTPUT
+            echo "found=true" >> "$GITHUB_OUTPUT"
             printf '%s' "$CHANGED" > /tmp/changed_files.txt
+          else
+            echo "found=false" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Post or update review checklist comment
+      - name: Save PR number
         if: steps.label-check.outputs.approved == 'false' && steps.detect.outputs.found == 'true'
-        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7
+        run: echo "${{ github.event.pull_request.number }}" > /tmp/pr_number.txt
+
+      - name: Upload security review metadata
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        if: steps.label-check.outputs.approved == 'false' && steps.detect.outputs.found == 'true'
         with:
-          script: |
-            const files = require('fs').readFileSync('/tmp/changed_files.txt', 'utf8').trim();
-            const fileList = files.split('\n').map(f => `- \`${f}\``).join('\n');
-
-            const body = [
-              '## 🔒 Security Review Required',
-              '',
-              'Executable config files were modified. A maintainer must review these changes before merge.',
-              '',
-              '**To unblock:** complete the checklist below, then add the `security-reviewed` label.',
-              '',
-              '### Changed files',
-              fileList,
-              '',
-              '---',
-              '',
-              '### Reviewer Checklist',
-              '',
-              '**`package.json` / `package/package.json`**',
-              '- [ ] No `postinstall`, `preinstall`, or `prepare` scripts were added or modified',
-              '- [ ] No existing lifecycle scripts were changed to include shell commands or network calls',
-              '- [ ] No new dependencies that run install-time scripts',
-              '',
-              '**`playwright.config.ts`**',
-              '- [ ] `globalSetup` and `globalTeardown` were not added or modified',
-              '- [ ] `webServer.command` is unchanged or only points to the local dev server',
-              '- [ ] No `require()` or `import` of unfamiliar modules',
-              '- [ ] No `process.env` exfiltration patterns',
-              '',
-              '**`*.config.ts` (vite, vitest)**',
-              '- [ ] No use of `exec`, `spawn`, `execSync`, or `spawnSync`',
-              '- [ ] No dynamic `import()` of external URLs or unrecognized packages',
-              '- [ ] No network requests at config evaluation time',
-              '',
-              '**`.github/workflows/`**',
-              '- [ ] No steps that read secrets and send them to external services',
-              '- [ ] Permissions are minimal and explicitly declared',
-            ].join('\n');
-
-            const marker = '## 🔒 Security Review Required';
-            const { data: comments } = await github.rest.issues.listComments({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-            });
-
-            const existing = comments.find(c =>
-              c.user.login === 'github-actions[bot]' && c.body.includes(marker)
-            );
-
-            if (existing) {
-              await github.rest.issues.updateComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                comment_id: existing.id,
-                body,
-              });
-            } else {
-              await github.rest.issues.createComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: context.issue.number,
-                body,
-              });
-            }
+          name: security-guard-meta
+          path: |
+            /tmp/changed_files.txt
+            /tmp/pr_number.txt
+          retention-days: 1
 
       - name: Show diff of changed files
         if: steps.label-check.outputs.approved == 'false' && steps.detect.outputs.found == 'true'

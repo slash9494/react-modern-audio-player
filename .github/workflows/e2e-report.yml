@@ -1,0 +1,72 @@
+name: E2E Report
+
+on:
+  workflow_run:
+    workflows: ["E2E Tests"]
+    types: [completed]
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    if: github.event.workflow_run.event == 'pull_request'
+    permissions:
+      pull-requests: write
+      actions: read
+    steps:
+      - name: Download PR metadata
+        uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e # v4
+        with:
+          name: e2e-pr-meta
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+        continue-on-error: true
+
+      - name: Post E2E result comment
+        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7
+        with:
+          script: |
+            const fs = require('fs');
+
+            let prNumber;
+            try {
+              prNumber = parseInt(fs.readFileSync('pr_number.txt', 'utf8').trim(), 10);
+            } catch {
+              core.warning('Could not read PR number — skipping comment');
+              return;
+            }
+
+            const conclusion = '${{ github.event.workflow_run.conclusion }}';
+            const icon = conclusion === 'success' ? '✅' : conclusion === 'failure' ? '❌' : '⚠️';
+            const status = conclusion === 'success'
+              ? 'All E2E tests passed.'
+              : conclusion === 'failure'
+              ? 'E2E tests failed. Download the report artifact for details.'
+              : `E2E job concluded with status: ${conclusion}`;
+
+            const body = `### ${icon} E2E Tests — ${conclusion}\n\n${status}`;
+
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber,
+            });
+
+            const existing = comments.find(c =>
+              c.user.login === 'github-actions[bot]' && c.body.includes('E2E Tests')
+            );
+
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existing.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: prNumber,
+                body,
+              });
+            }
