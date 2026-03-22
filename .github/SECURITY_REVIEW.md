@@ -4,11 +4,10 @@ This guide explains the review process for pull requests from external contribut
 
 ## Overview
 
-E2E tests for fork PRs use `pull_request_target`, which runs in the base repository's privileged context (with access to `GITHUB_TOKEN`). To prevent malicious code from running in this context, the following safeguards are in place:
+E2E tests run via the `pull_request` event, which gives fork PRs a read-only token with no access to repository secrets. To prevent malicious code from reaching CI, the following safeguards are in place:
 
 1. **Security Guard workflow** — blocks merge if executable config files are modified
 2. **CODEOWNERS** — requires maintainer approval for sensitive files
-3. **Environment protection** — requires manual approval before E2E tests run on fork PRs
 
 ---
 
@@ -16,8 +15,8 @@ E2E tests for fork PRs use `pull_request_target`, which runs in the base reposit
 
 You will need to follow this guide when:
 
-- The **Security Guard** check has failed on a fork PR (modified executable config files)
-- You are about to **approve the `external` environment** deployment to allow E2E tests to run
+- The **Security Guard** check has failed on a PR (modified executable config files)
+- A checklist comment has appeared on the PR — review it and add the `security-reviewed` label to unblock
 
 ---
 
@@ -36,13 +35,13 @@ You will need to follow this guide when:
 
 ## Reviewer Checklist
 
-Before approving the `external` environment or dismissing the Security Guard failure, verify each item below.
+Before adding the `security-reviewed` label, verify each item below.
 
 ### `package.json` / `package/package.json`
 
 - [ ] No `postinstall`, `preinstall`, or `prepare` scripts were added or modified
 - [ ] No existing lifecycle scripts were changed to include shell commands or network calls
-- [ ] No new dependencies were added that themselves run install-time scripts (check `npm install` output if unsure)
+- [ ] No new dependencies were added that themselves run install-time scripts
 
 ### `playwright.config.ts`
 
@@ -59,7 +58,6 @@ Before approving the `external` environment or dismissing the Security Guard fai
 
 ### `.github/workflows/`
 
-- [ ] No new `pull_request_target` triggers introduced
 - [ ] No steps that read secrets and send them to external services
 - [ ] Permissions are minimal and explicitly declared
 
@@ -69,12 +67,13 @@ Before approving the `external` environment or dismissing the Security Guard fai
 
 The [`security-guard.yml`](workflows/security-guard.yml) workflow runs on every PR that modifies the files listed above. It:
 
-1. Checks out the PR code using the `pull_request` trigger (no secrets — safe for forks)
-2. Diffs the changed files against the base branch
-3. Prints the full diff to the Actions log
-4. Exits with a failure to block merge via required status checks
+1. Checks whether the PR has the `security-reviewed` label — if so, skips the check and passes
+2. Checks out the PR code and diffs against the base branch
+3. Posts a checklist comment on the PR with the changed files and review items
+4. Prints the full diff to the Actions log
+5. Exits with a failure to block merge via required status checks
 
-To unblock the PR after completing this checklist, approve it as a Code Owner. The Security Guard failure is intentional and does not auto-resolve — it serves as a gate requiring explicit human sign-off.
+To unblock: add the `security-reviewed` label — the workflow re-triggers automatically and passes.
 
 ---
 
