@@ -33,7 +33,12 @@ export const PrevNnextBtn: FC<PrevNnextBtnProps> = ({ type, visible }) => {
   }, [customIcons?.next, customIcons?.prev, type]);
 
   return visible ? (
-    <StyledBtn onClick={changeAudio} className="prev-n-next-button" data-testid={`${type}-btn`}>
+    <StyledBtn
+      type="button"
+      onClick={changeAudio}
+      className="prev-n-next-button"
+      aria-label={type === "next" ? "Next track" : "Previous track"}
+    >
       {PrevNnextIcon}
     </StyledBtn>
   ) : null;

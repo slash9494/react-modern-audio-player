@@ -12,7 +12,12 @@ export interface PlayListTriggerBtnProps {
 export const PlayListTriggerBtn: FC<PlayListTriggerBtnProps> = ({ isOpen }) => {
   const { customIcons } = useNonNullableContext(audioPlayerStateContext);
   return (
-    <StyledBtn data-testid="playlist-trigger-btn">
+    <StyledBtn
+      type="button"
+      aria-label={isOpen ? "Close playlist" : "Open playlist"}
+      aria-expanded={isOpen}
+      aria-controls="rm-audio-player-playlist"
+    >
       <Icon
         render={
           <MdPlaylistPlay
