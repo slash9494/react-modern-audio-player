@@ -15,6 +15,8 @@ export const PlayListTriggerBtn: FC<PlayListTriggerBtnProps> = ({ isOpen }) => {
     <StyledBtn
       type="button"
       aria-label={isOpen ? "Close playlist" : "Open playlist"}
+      aria-expanded={isOpen}
+      aria-controls="rm-audio-player-playlist"
     >
       <Icon
         render={
