@@ -1,0 +1,7 @@
+# Executable config files — require maintainer approval before merge
+package.json              @slash9494
+package/package.json      @slash9494
+playwright.config.ts      @slash9494
+package/vite.config.ts    @slash9494
+package/vitest.config.ts  @slash9494
+.github/                  @slash9494

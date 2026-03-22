@@ -16,9 +16,14 @@
     "release": "changeset publish",
     "version-packages": "changeset version",
     "prepare": "husky install",
-    "lint": "eslint --fix ."
+    "lint": "eslint --fix .",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui"
   },
   "devDependencies": {
+    "@playwright/test": "^1.58.2",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.1",
     "@typescript-eslint/eslint-plugin": "^5.30.5",
     "@typescript-eslint/parser": "^5.30.5",
     "eslint": "^8.19.0",

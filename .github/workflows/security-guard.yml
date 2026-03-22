@@ -1,0 +1,67 @@
+name: Security Guard
+
+on:
+  pull_request:
+    paths:
+      - "package.json"
+      - "package/package.json"
+      - "playwright.config.ts"
+      - "package/vite.config.ts"
+      - "package/vitest.config.ts"
+      - ".github/workflows/**"
+
+jobs:
+  check-executable-files:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect changes to executable config files
+        id: detect
+        run: |
+          CHANGED=$(git diff --name-only origin/${{ github.base_ref }}...HEAD -- \
+            package.json \
+            package/package.json \
+            playwright.config.ts \
+            package/vite.config.ts \
+            package/vitest.config.ts \
+            .github/workflows/)
+
+          if [ -n "$CHANGED" ]; then
+            echo "found=true" >> $GITHUB_OUTPUT
+            printf '%s' "$CHANGED" > /tmp/changed_files.txt
+          fi
+
+      - name: Show diff of changed files
+        if: steps.detect.outputs.found == 'true'
+        run: |
+          echo "=== Changed executable config files ==="
+          cat /tmp/changed_files.txt
+          echo ""
+          echo "=== Diff ==="
+          git diff origin/${{ github.base_ref }}...HEAD -- \
+            package.json \
+            package/package.json \
+            playwright.config.ts \
+            package/vite.config.ts \
+            package/vitest.config.ts \
+            .github/workflows/
+
+      - name: Block merge until maintainer reviews
+        if: steps.detect.outputs.found == 'true'
+        run: |
+          echo "::error file=package.json::Executable config files were modified — a maintainer must review these changes before the E2E environment can be approved."
+          echo ""
+          echo "Files requiring review:"
+          cat /tmp/changed_files.txt
+          echo ""
+          echo "Checklist for reviewer:"
+          echo "  [ ] No new postinstall / prepare / preinstall scripts added"
+          echo "  [ ] playwright.config.ts: no globalSetup, globalTeardown, or shell commands added"
+          echo "  [ ] No dynamic code execution (exec, spawn, eval) in config files"
+          echo "  [ ] No unexpected outbound network calls in config files"
+          exit 1
