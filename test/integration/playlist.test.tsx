@@ -40,17 +40,19 @@ describe("Playlist interaction", () => {
       fireEvent.click(screen.getByTestId("playlist-trigger-btn"));
     });
 
+    let track3: HTMLElement | undefined;
     await waitFor(() => {
-      expect(screen.getAllByTestId("playlist-item")).toHaveLength(5);
+      const items = screen.getAllByTestId("playlist-item");
+      expect(items).toHaveLength(5);
+      track3 = items.find((el) => el.textContent?.includes("Track 3"));
     });
 
-    const track3 = screen
-      .getAllByTestId("playlist-item")
-      .find((el) => el.textContent?.includes("Track 3"));
-    expect(track3).toBeDefined();
+    if (!track3) {
+      throw new Error("Track 3 not found in playlist");
+    }
 
     await act(async () => {
-      fireEvent.click(track3!);
+      fireEvent.click(track3);
     });
 
     await waitFor(() => {
