@@ -4,7 +4,7 @@ import AudioPlayerWithProviders, {
   ActiveUI,
 } from "../../../package/src";
 
-const playList: PlayList = [
+const basePlayList: PlayList = [
   { name: "Track 1", writer: "LYH", img: "", src: "track1.mp3", id: 1 },
   { name: "Track 2", writer: "LYH", img: "", src: "track2.mp3", id: 2 },
   { name: "Track 3", writer: "LYH", img: "", src: "track3.mp3", id: 3 },
@@ -12,10 +12,11 @@ const playList: PlayList = [
   { name: "Track 5", writer: "LYH", img: "", src: "track5.mp3", id: 5 },
 ];
 
-const audioInitialState = { muted: true, volume: 0.2, curPlayId: 1 };
-const activeUI: ActiveUI = { all: true, progress: "bar" };
-
 export function renderPlayer() {
+  const playList: PlayList = basePlayList.map((t) => ({ ...t }));
+  const audioInitialState = { muted: true, volume: 0.2, curPlayId: 1 };
+  const activeUI: ActiveUI = { all: true, progress: "bar" };
+
   return render(
     <AudioPlayerWithProviders
       playList={playList}
