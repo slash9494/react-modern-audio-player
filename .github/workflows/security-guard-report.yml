@@ -31,6 +31,7 @@ jobs:
             let prNumber, files;
             try {
               prNumber = parseInt(fs.readFileSync('security-guard-meta/pr_number.txt', 'utf8').trim(), 10);
+              if (isNaN(prNumber)) throw new Error('Invalid PR number');
               files = fs.readFileSync('security-guard-meta/changed_files.txt', 'utf8').trim();
             } catch {
               core.info('No security review metadata found — skipping comment');
