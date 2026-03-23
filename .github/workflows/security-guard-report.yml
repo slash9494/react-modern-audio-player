@@ -1,0 +1,103 @@
+name: Security Guard Report
+
+on:
+  workflow_run:
+    workflows: ["Security Guard"]
+    types: [completed]
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    if: github.event.workflow_run.event == 'pull_request'
+    permissions:
+      pull-requests: write
+      actions: read
+    steps:
+      - name: Download security review metadata
+        uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e # v4
+        with:
+          name: security-guard-meta
+          path: security-guard-meta
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+        continue-on-error: true
+
+      - name: Post or update review checklist comment
+        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7
+        with:
+          script: |
+            const fs = require('fs');
+
+            let prNumber, files;
+            try {
+              prNumber = parseInt(fs.readFileSync('security-guard-meta/pr_number.txt', 'utf8').trim(), 10);
+              files = fs.readFileSync('security-guard-meta/changed_files.txt', 'utf8').trim();
+            } catch {
+              core.info('No security review metadata found — skipping comment');
+              return;
+            }
+
+            const fileList = files.split('\n').map(f => `- \`${f}\``).join('\n');
+
+            const body = [
+              '## 🔒 Security Review Required',
+              '',
+              'Executable config files were modified. A maintainer must review these changes before merge.',
+              '',
+              '**To unblock:** complete the checklist below, then add the `security-reviewed` label.',
+              '',
+              '### Changed files',
+              fileList,
+              '',
+              '---',
+              '',
+              '### Reviewer Checklist',
+              '',
+              '**`package.json` / `package/package.json`**',
+              '- [ ] No `postinstall`, `preinstall`, or `prepare` scripts were added or modified',
+              '- [ ] No existing lifecycle scripts were changed to include shell commands or network calls',
+              '- [ ] No new dependencies that run install-time scripts',
+              '',
+              '**`playwright.config.ts`**',
+              '- [ ] `globalSetup` and `globalTeardown` were not added or modified',
+              '- [ ] `webServer.command` is unchanged or only points to the local dev server',
+              '- [ ] No `require()` or `import` of unfamiliar modules',
+              '- [ ] No `process.env` exfiltration patterns',
+              '',
+              '**`*.config.ts` (vite, vitest)**',
+              '- [ ] No use of `exec`, `spawn`, `execSync`, or `spawnSync`',
+              '- [ ] No dynamic `import()` of external URLs or unrecognized packages',
+              '- [ ] No network requests at config evaluation time',
+              '',
+              '**`.github/workflows/`**',
+              '- [ ] No steps that read secrets and send them to external services',
+              '- [ ] Permissions are minimal and explicitly declared',
+            ].join('\n');
+
+            const marker = '## 🔒 Security Review Required';
+            const comments = await github.paginate(github.rest.issues.listComments, {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber,
+              per_page: 100,
+            });
+
+            const existing = comments.find(c =>
+              c.user?.login === 'github-actions[bot]' && c.body?.includes(marker)
+            );
+
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existing.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: prNumber,
+                body,
+              });
+            }

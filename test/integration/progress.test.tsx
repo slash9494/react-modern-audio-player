@@ -1,12 +1,8 @@
-import { describe, it, expect, beforeEach, vi } from "vitest";
+import { describe, it, expect } from "vitest";
 import { screen, fireEvent, act } from "@testing-library/react";
 import { renderPlayer } from "./fixtures/render";
 
-beforeEach(() => {
-  vi.spyOn(HTMLMediaElement.prototype, "play").mockResolvedValue(undefined);
-  vi.spyOn(HTMLMediaElement.prototype, "pause").mockImplementation(() => {});
-  vi.spyOn(HTMLMediaElement.prototype, "load").mockImplementation(() => {});
-});
+// play/pause/load are already mocked globally in src/test/setup.ts
 
 describe("Progress Bar Integration", () => {
   it("7-1: progress bar is visible", () => {
@@ -17,10 +13,7 @@ describe("Progress Bar Integration", () => {
   it("7-2: clicking progress bar sets audio currentTime", async () => {
     renderPlayer();
 
-    const audio =
-      (document.getElementById("rm-audio-player-audio") as HTMLAudioElement) ??
-      (document.querySelector("audio") as HTMLAudioElement);
-
+    const audio = document.querySelector("audio") as HTMLAudioElement;
     expect(audio).not.toBeNull();
 
     Object.defineProperty(audio, "duration", {
@@ -36,7 +29,16 @@ describe("Progress Bar Integration", () => {
 
     Object.defineProperty(progressBar, "getBoundingClientRect", {
       configurable: true,
-      value: () => ({ x: 0, y: 0, width: 200, height: 18, left: 0, top: 0, right: 200, bottom: 18 }),
+      value: () => ({
+        x: 0,
+        y: 0,
+        width: 200,
+        height: 18,
+        left: 0,
+        top: 0,
+        right: 200,
+        bottom: 18,
+      }),
     });
 
     Object.defineProperty(progressBar, "clientWidth", {
