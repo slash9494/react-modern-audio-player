@@ -31,6 +31,7 @@ jobs:
             let prNumber;
             try {
               prNumber = parseInt(fs.readFileSync('e2e-pr-meta/pr_number.txt', 'utf8').trim(), 10);
+              if (isNaN(prNumber)) throw new Error('Invalid PR number');
             } catch {
               core.warning('Could not read PR number — skipping comment');
               return;
