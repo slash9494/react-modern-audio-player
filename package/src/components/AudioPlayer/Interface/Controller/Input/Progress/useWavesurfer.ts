@@ -26,26 +26,35 @@ export const useWaveSurfer = (waveformRef: React.RefObject<HTMLElement>) => {
     let isCancelled = false;
 
     const initWaveSurfer = async () => {
-      const { default: WaveSurfer } = await import("wavesurfer.js");
-      if (isCancelled) return;
+      try {
+        const { default: WaveSurfer } = await import("wavesurfer.js");
+        if (isCancelled) return;
 
-      const waveSurfer = WaveSurfer.create({
-        barWidth: 1,
-        cursorWidth: 2,
-        container: "#rm-waveform",
-        height: 80,
-        progressColor: `${colorsRef.current?.progressColor}`,
-        responsive: true,
-        waveColor: `${colorsRef.current?.waveColor}`,
-        cursorColor: "var(--rm-audio-player-waveform-cursor)",
-        backend: "MediaElement",
-        removeMediaElementOnDestroy: false,
-      });
+        const colors = colorsRef.current;
+        if (!colors) return;
 
-      audioPlayerDispatch({
-        type: "SET_ELEMENT_REFS",
-        elementRefs: { waveformInst: waveSurfer },
-      });
+        const waveSurfer = WaveSurfer.create({
+          barWidth: 1,
+          cursorWidth: 2,
+          container: "#rm-waveform",
+          height: 80,
+          progressColor: colors.progressColor,
+          responsive: true,
+          waveColor: colors.waveColor,
+          cursorColor: "var(--rm-audio-player-waveform-cursor)",
+          backend: "MediaElement",
+          removeMediaElementOnDestroy: false,
+        });
+
+        audioPlayerDispatch({
+          type: "SET_ELEMENT_REFS",
+          elementRefs: { waveformInst: waveSurfer },
+        });
+      } catch (error) {
+        if (!isCancelled) {
+          console.error("Failed to initialize WaveSurfer:", error);
+        }
+      }
     };
 
     void initWaveSurfer();
