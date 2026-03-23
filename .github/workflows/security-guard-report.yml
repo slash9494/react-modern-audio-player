@@ -17,6 +17,7 @@ jobs:
         uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e # v4
         with:
           name: security-guard-meta
+          path: security-guard-meta
           run-id: ${{ github.event.workflow_run.id }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
         continue-on-error: true
@@ -29,8 +30,8 @@ jobs:
 
             let prNumber, files;
             try {
-              prNumber = parseInt(fs.readFileSync('pr_number.txt', 'utf8').trim(), 10);
-              files = fs.readFileSync('changed_files.txt', 'utf8').trim();
+              prNumber = parseInt(fs.readFileSync('security-guard-meta/pr_number.txt', 'utf8').trim(), 10);
+              files = fs.readFileSync('security-guard-meta/changed_files.txt', 'utf8').trim();
             } catch {
               core.info('No security review metadata found — skipping comment');
               return;
@@ -74,14 +75,15 @@ jobs:
             ].join('\n');
 
             const marker = '## 🔒 Security Review Required';
-            const { data: comments } = await github.rest.issues.listComments({
+            const comments = await github.paginate(github.rest.issues.listComments, {
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: prNumber,
+              per_page: 100,
             });
 
             const existing = comments.find(c =>
-              c.user.login === 'github-actions[bot]' && c.body.includes(marker)
+              c.user?.login === 'github-actions[bot]' && c.body?.includes(marker)
             );
 
             if (existing) {
