@@ -1,5 +1,12 @@
 import { useNonNullableContext } from "@/hooks/useNonNullableContext";
-import { FC, KeyboardEvent, PropsWithChildren, useEffect, useRef } from "react";
+import {
+  FC,
+  KeyboardEvent,
+  PropsWithChildren,
+  useCallback,
+  useEffect,
+  useRef,
+} from "react";
 import { CssTransition } from "../CssTransition";
 import { drawerContext } from "./DrawerContext";
 
@@ -10,7 +17,7 @@ export type DrawerContentProps = {
 };
 
 const FOCUSABLE_SELECTORS =
-  'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+  'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"]), [role="button"]:not([aria-disabled="true"])';
 
 export const DrawerContent: FC<PropsWithChildren<DrawerContentProps>> = ({
   children,
@@ -18,46 +25,63 @@ export const DrawerContent: FC<PropsWithChildren<DrawerContentProps>> = ({
 }) => {
   const { isOpen, setIsOpen, onOpenChange } =
     useNonNullableContext(drawerContext);
-  const onExited = () => setIsOpen(false);
-  const onEntered = () => setIsOpen(true);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const previousFocusRef = useRef<Element | null>(null);
 
+  const getFocusable = useCallback(
+    () =>
+      containerRef.current?.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTORS),
+    []
+  );
+
+  const focusFirst = useCallback(() => {
+    getFocusable()?.[0]?.focus();
+  }, [getFocusable]);
+
+  const onExited = useCallback(() => setIsOpen(false), [setIsOpen]);
+  const onEntered = useCallback(() => {
+    previousFocusRef.current = document.activeElement;
+    setIsOpen(true);
+    focusFirst();
+  }, [setIsOpen, focusFirst]);
+
   useEffect(() => {
-    if (isOpen) {
+    if (isOpen && !isWithAnimation) {
       previousFocusRef.current = document.activeElement;
-      const focusable = containerRef.current?.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTORS);
-      focusable?.[0]?.focus();
-    } else {
+      focusFirst();
+    } else if (!isOpen) {
       (previousFocusRef.current as HTMLElement | null)?.focus();
     }
-  }, [isOpen]);
+  }, [isOpen, isWithAnimation, focusFirst]);
 
-  const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
-    if (e.key === "Escape") {
-      setIsOpen(false);
-      onOpenChange && onOpenChange(false);
-      return;
-    }
-    if (e.key === "Tab") {
-      const focusable = containerRef.current?.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTORS);
-      if (!focusable || focusable.length === 0) return;
-      const first = focusable[0];
-      const last = focusable[focusable.length - 1];
-      if (e.shiftKey) {
-        if (document.activeElement === first) {
-          e.preventDefault();
-          last.focus();
-        }
-      } else {
-        if (document.activeElement === last) {
-          e.preventDefault();
-          first.focus();
+  const handleKeyDown = useCallback(
+    (e: KeyboardEvent<HTMLDivElement>) => {
+      if (e.key === "Escape") {
+        setIsOpen(false);
+        onOpenChange && onOpenChange(false);
+        return;
+      }
+      if (e.key === "Tab") {
+        const focusable = getFocusable();
+        if (!focusable || focusable.length === 0) return;
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (e.shiftKey) {
+          if (document.activeElement === first) {
+            e.preventDefault();
+            last.focus();
+          }
+        } else {
+          if (document.activeElement === last) {
+            e.preventDefault();
+            first.focus();
+          }
         }
       }
-    }
-  };
+    },
+    [setIsOpen, onOpenChange, getFocusable]
+  );
 
   const Content = (
     <div

@@ -1,6 +1,7 @@
 import { audioPlayerStateContext } from "@/components/AudioPlayer/Context";
 import { useNonNullableContext } from "@/hooks/useNonNullableContext";
-import React, { FC, useEffect, useRef } from "react";
+import { getTimeWithPadStart } from "@/utils/getTime";
+import React, { FC, useCallback, useEffect, useRef } from "react";
 import styled, { css } from "styled-components";
 import { useProgress } from "./useProgress";
 import { useWaveSurfer } from "./useWavesurfer";
@@ -51,43 +52,40 @@ export const WaveformProgress: FC<{ isActive: boolean }> = ({ isActive }) => {
 
   const eventProps = useProgress();
 
-  const formatTime = (s: number) => {
-    const m = Math.floor(s / 60);
-    const sec = Math.floor(s % 60).toString().padStart(2, "0");
-    return `${m}:${sec}`;
-  };
-
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
-    if (!elementRefs?.audioEl || !curAudioState?.isLoadedMetaData) return;
-    const audio = elementRefs.audioEl;
-    let newTime: number | null = null;
-    switch (event.key) {
-      case "ArrowRight":
-      case "ArrowUp":
-        event.preventDefault();
-        newTime = Math.min(audio.currentTime + 5, audio.duration);
-        break;
-      case "ArrowLeft":
-      case "ArrowDown":
-        event.preventDefault();
-        newTime = Math.max(audio.currentTime - 5, 0);
-        break;
-      case "Home":
-        event.preventDefault();
-        newTime = 0;
-        break;
-      case "End":
-        event.preventDefault();
-        newTime = audio.duration;
-        break;
-      default:
-        break;
-    }
-    if (newTime !== null) {
-      audio.currentTime = newTime;
-      elementRefs.waveformInst?.seekTo(newTime / audio.duration);
-    }
-  };
+  const handleKeyDown = useCallback(
+    (event: React.KeyboardEvent<HTMLDivElement>) => {
+      if (!elementRefs?.audioEl || !curAudioState?.isLoadedMetaData) return;
+      const audio = elementRefs.audioEl;
+      let newTime: number | null = null;
+      switch (event.key) {
+        case "ArrowRight":
+        case "ArrowUp":
+          event.preventDefault();
+          newTime = Math.min(audio.currentTime + 5, audio.duration);
+          break;
+        case "ArrowLeft":
+        case "ArrowDown":
+          event.preventDefault();
+          newTime = Math.max(audio.currentTime - 5, 0);
+          break;
+        case "Home":
+          event.preventDefault();
+          newTime = 0;
+          break;
+        case "End":
+          event.preventDefault();
+          newTime = audio.duration;
+          break;
+        default:
+          break;
+      }
+      if (newTime !== null) {
+        audio.currentTime = newTime;
+        elementRefs.waveformInst?.seekTo(newTime / audio.duration);
+      }
+    },
+    [elementRefs, curAudioState?.isLoadedMetaData]
+  );
 
   return (
     <WaveformWrapper className="waveform-wrapper" isActive={isActive}>
@@ -104,7 +102,9 @@ export const WaveformProgress: FC<{ isActive: boolean }> = ({ isActive }) => {
             (elementRefs?.audioEl?.duration || 1)) *
             100
         )}
-        aria-valuetext={`${formatTime(elementRefs?.audioEl?.currentTime ?? 0)} of ${formatTime(elementRefs?.audioEl?.duration ?? 0)}`}
+        aria-valuetext={`${getTimeWithPadStart(
+          elementRefs?.audioEl?.currentTime ?? 0
+        )} of ${getTimeWithPadStart(elementRefs?.audioEl?.duration ?? 0)}`}
         onKeyDown={handleKeyDown}
         {...eventProps}
       />

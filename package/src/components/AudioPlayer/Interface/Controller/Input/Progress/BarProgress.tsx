@@ -1,6 +1,7 @@
 import { audioPlayerStateContext } from "@/components/AudioPlayer/Context";
 import { useNonNullableContext } from "@/hooks/useNonNullableContext";
 import { useRefsDispatch } from "@/hooks/useRefsDispatch";
+import { getTimeWithPadStart } from "@/utils/getTime";
 import React, { FC, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { useProgress } from "./useProgress";
@@ -47,12 +48,6 @@ export const BarProgress: FC<{ isActive: boolean }> = ({ isActive }) => {
 
   const eventProps = useProgress();
 
-  const formatTime = (s: number) => {
-    const m = Math.floor(s / 60);
-    const sec = Math.floor(s % 60).toString().padStart(2, "0");
-    return `${m}:${sec}`;
-  };
-
   const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
     if (!elementRefs?.audioEl || !curAudioState?.isLoadedMetaData) return;
     const audio = elementRefs.audioEl;
@@ -94,7 +89,9 @@ export const BarProgress: FC<{ isActive: boolean }> = ({ isActive }) => {
           (elementRefs?.audioEl?.duration || 1)) *
           100
       )}
-      aria-valuetext={`${formatTime(elementRefs?.audioEl?.currentTime ?? 0)} of ${formatTime(elementRefs?.audioEl?.duration ?? 0)}`}
+      aria-valuetext={`${getTimeWithPadStart(
+        elementRefs?.audioEl?.currentTime ?? 0
+      )} of ${getTimeWithPadStart(elementRefs?.audioEl?.duration ?? 0)}`}
       onKeyDown={handleKeyDown}
       {...eventProps}
     >
