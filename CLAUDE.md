@@ -33,8 +33,10 @@ This policy applies to **all** of the following situations — not just implemen
 - Reviewing test code for correctness against the library's actual API
 - Analyzing bugs or defects that involve third-party behavior
 - Confirming that a pattern or usage is valid for the version in use
+- Reviewing mock/spy/cleanup behavior of testing frameworks (e.g. vitest, @testing-library/react)
+- Reviewing CI/CD action behavior or GitHub Actions runner behavior
 
-**Never report a finding about a library API without first confirming it via context7.**
+**Never report a finding about a library API, framework behavior, or tool behavior without first confirming it via context7.**
 
 ---
 

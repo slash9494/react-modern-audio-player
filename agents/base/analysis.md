@@ -73,6 +73,24 @@ When reviewing build or bundler config files (vite.config.ts, rollup.config.ts, 
 
 ---
 
+## CI Workflow Analysis
+
+When reading any `.github/workflows/*.yml` file — even if the goal is only to fix a specific error — always check the following:
+
+| Item | Check |
+|---|---|
+| `timeout-minutes` | Set at job level? Missing = 6h default, wastes runner time |
+| `permissions` | Least-privilege? `contents: read` at minimum |
+| `cache` | Dependency cache configured (`actions/setup-node cache`)? |
+| `concurrency` | Cancel in-progress runs on PR push? |
+| `env` isolation | Secrets accessed safely via `${{ secrets.* }}`? |
+| Trigger scope | `pull_request_target` used? (security risk with untrusted code) |
+| Runner pinning | Actions pinned to SHA, not floating tag? |
+
+Flag any missing items as **latent defects** even when not related to the reported error.
+
+---
+
 ## Rules
 
 - Do not modify code during analysis
