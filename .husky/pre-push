@@ -1,0 +1,11 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+# Step 1: Full unit test suite
+cd package && yarn test:unit
+
+# Step 2: Core integration tests (repeat-type, playlist)
+yarn test:integration:core
+
+# Step 3: Type check
+yarn typeCheck

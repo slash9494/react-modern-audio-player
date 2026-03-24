@@ -1,0 +1,93 @@
+name: Security Guard
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, labeled]
+    paths:
+      - "package.json"
+      - "package/package.json"
+      - "playwright.config.ts"
+      - "package/vite.config.ts"
+      - "package/vitest.config.ts"
+      - ".github/workflows/**"
+
+jobs:
+  check-executable-files:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Check for security-reviewed label
+        id: label-check
+        env:
+          LABELS: ${{ toJson(github.event.pull_request.labels.*.name) }}
+        run: |
+          if echo "$LABELS" | grep -q '"security-reviewed"'; then
+            echo "approved=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "approved=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+        if: steps.label-check.outputs.approved == 'false'
+        with:
+          fetch-depth: 0
+
+      - name: Detect changes to executable config files
+        id: detect
+        if: steps.label-check.outputs.approved == 'false'
+        run: |
+          CHANGED=$(git diff --name-only origin/${{ github.base_ref }}...HEAD -- \
+            package.json \
+            package/package.json \
+            playwright.config.ts \
+            package/vite.config.ts \
+            package/vitest.config.ts \
+            .github/workflows/)
+
+          if [ -n "$CHANGED" ]; then
+            echo "found=true" >> "$GITHUB_OUTPUT"
+            printf '%s' "$CHANGED" > /tmp/changed_files.txt
+          else
+            echo "found=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Save PR number
+        if: steps.label-check.outputs.approved == 'false' && steps.detect.outputs.found == 'true'
+        run: echo "${{ github.event.pull_request.number }}" > /tmp/pr_number.txt
+
+      - name: Upload security review metadata
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        if: steps.label-check.outputs.approved == 'false' && steps.detect.outputs.found == 'true'
+        with:
+          name: security-guard-meta
+          path: |
+            /tmp/changed_files.txt
+            /tmp/pr_number.txt
+          retention-days: 1
+
+      - name: Show diff of changed files
+        if: steps.label-check.outputs.approved == 'false' && steps.detect.outputs.found == 'true'
+        run: |
+          echo "=== Changed executable config files ==="
+          cat /tmp/changed_files.txt
+          echo ""
+          echo "=== Diff ==="
+          git diff origin/${{ github.base_ref }}...HEAD -- \
+            package.json \
+            package/package.json \
+            playwright.config.ts \
+            package/vite.config.ts \
+            package/vitest.config.ts \
+            .github/workflows/
+
+      - name: Block merge until maintainer reviews
+        if: steps.label-check.outputs.approved == 'false' && steps.detect.outputs.found == 'true'
+        run: |
+          echo "::error::Executable config files were modified — a maintainer must review these changes."
+          echo "To unblock: add the 'security-reviewed' label to this PR."
+          exit 1
+
+      - name: Security review approved via label
+        if: steps.label-check.outputs.approved == 'true'
+        run: echo "PR has 'security-reviewed' label — skipping executable config file check."

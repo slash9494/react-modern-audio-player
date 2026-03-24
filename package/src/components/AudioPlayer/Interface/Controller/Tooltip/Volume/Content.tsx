@@ -41,6 +41,7 @@ export const VolumeSlider: FC<{ placement: VolumeSliderPlacement }> = ({
       }
       ref={contentRef}
       className="volume-content-container"
+      data-testid="volume-slider"
     >
       <div className="volume-panel-wrapper">
         <input

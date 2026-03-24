@@ -15,6 +15,7 @@ export const PlayListItem = ({ data }: { data: AudioData }) => {
       className={classNames("list-item-container", {
         curPlayed: curPlayId === data.id,
       })}
+      data-testid="playlist-item"
     >
       <div className="list-item-contents-wrapper">
         <div className="album-cover-wrapper">
