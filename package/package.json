@@ -64,7 +64,8 @@
     "vite": "^5.4.0",
     "vite-plugin-dts": "^4.3.0",
     "vite-plugin-libcss": "^1.0.5",
-    "vitest": "^2.1.0"
+    "vitest": "^2.1.0",
+    "vitest-axe": "^0.1.0"
   },
   "keywords": [
     "audio",

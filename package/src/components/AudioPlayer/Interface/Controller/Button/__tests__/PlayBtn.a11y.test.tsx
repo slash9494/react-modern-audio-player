@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
-import React from "react";
+import { axe } from "vitest-axe";
 import { PlayBtn } from "../PlayBtn";
 import { audioPlayerStateContext } from "@/components/AudioPlayer/Context/StateContext";
 import { audioPlayerDispatchContext } from "@/components/AudioPlayer/Context/dispatchContext";
@@ -47,5 +47,10 @@ describe("PlayBtn accessibility", () => {
       "type",
       "button"
     );
+  });
+
+  it("has no axe violations", async () => {
+    const { container } = renderPlayBtn(false);
+    expect(await axe(container)).toHaveNoViolations();
   });
 });

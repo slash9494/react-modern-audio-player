@@ -1,5 +1,9 @@
 import "@testing-library/jest-dom";
-import { vi } from "vitest";
+import "vitest-axe/extend-expect";
+import * as axeMatchers from "vitest-axe/matchers";
+import { expect, vi } from "vitest";
+
+expect.extend(axeMatchers);
 
 // HTMLMediaElement is not supported in jsdom — mock play/pause/load
 window.HTMLMediaElement.prototype.play = vi.fn().mockResolvedValue(undefined);

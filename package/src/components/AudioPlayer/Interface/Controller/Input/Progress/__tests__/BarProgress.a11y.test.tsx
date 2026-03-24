@@ -1,7 +1,6 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
-import userEvent from "@testing-library/user-event";
-import React from "react";
+import { axe } from "vitest-axe";
 import { BarProgress } from "../BarProgress";
 import { audioPlayerStateContext } from "@/components/AudioPlayer/Context/StateContext";
 import { audioPlayerDispatchContext } from "@/components/AudioPlayer/Context/dispatchContext";
@@ -12,6 +11,10 @@ Object.defineProperty(mockAudioEl, "duration", { value: 180, writable: true });
 Object.defineProperty(mockAudioEl, "currentTime", {
   value: 0,
   writable: true,
+});
+
+beforeEach(() => {
+  mockAudioEl.currentTime = 0;
 });
 
 const makeState = () => ({
@@ -69,27 +72,40 @@ describe("BarProgress accessibility", () => {
     expect(slider).toHaveAttribute("aria-valuemax", "100");
   });
 
-  it("ArrowRight seeks forward 5 seconds", async () => {
+  it("ArrowRight seeks forward 5 seconds", () => {
     renderBar();
     mockAudioEl.currentTime = 10;
     const slider = screen.getByRole("slider");
-    await userEvent.type(slider, "{ArrowRight}");
+    fireEvent.keyDown(slider, { key: "ArrowRight" });
     expect(mockAudioEl.currentTime).toBe(15);
   });
 
-  it("ArrowLeft seeks backward 5 seconds", async () => {
+  it("ArrowLeft seeks backward 5 seconds", () => {
     renderBar();
     mockAudioEl.currentTime = 20;
     const slider = screen.getByRole("slider");
-    await userEvent.type(slider, "{ArrowLeft}");
+    fireEvent.keyDown(slider, { key: "ArrowLeft" });
     expect(mockAudioEl.currentTime).toBe(15);
   });
 
-  it("Home seeks to 0", async () => {
+  it("Home seeks to 0", () => {
     renderBar();
     mockAudioEl.currentTime = 60;
     const slider = screen.getByRole("slider");
-    await userEvent.type(slider, "{Home}");
+    fireEvent.keyDown(slider, { key: "Home" });
     expect(mockAudioEl.currentTime).toBe(0);
+  });
+
+  it("End seeks to duration", () => {
+    renderBar();
+    mockAudioEl.currentTime = 60;
+    const slider = screen.getByRole("slider");
+    fireEvent.keyDown(slider, { key: "End" });
+    expect(mockAudioEl.currentTime).toBe(180);
+  });
+
+  it("has no axe violations", async () => {
+    const { container } = renderBar();
+    expect(await axe(container)).toHaveNoViolations();
   });
 });

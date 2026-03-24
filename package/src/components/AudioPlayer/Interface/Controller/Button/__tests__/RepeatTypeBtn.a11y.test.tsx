@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
-import React from "react";
+import { axe } from "vitest-axe";
 import { RepeatTypeBtn } from "../RepeatTypeBtn";
 import { audioPlayerStateContext } from "@/components/AudioPlayer/Context/StateContext";
 import { audioPlayerDispatchContext } from "@/components/AudioPlayer/Context/dispatchContext";
@@ -50,5 +50,10 @@ describe("RepeatTypeBtn accessibility", () => {
     expect(
       screen.getByRole("button", { name: "Repeat: All tracks" })
     ).toHaveAttribute("type", "button");
+  });
+
+  it("has no axe violations", async () => {
+    const { container } = renderRepeatBtn("ALL");
+    expect(await axe(container)).toHaveNoViolations();
   });
 });

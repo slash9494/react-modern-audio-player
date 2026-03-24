@@ -1,7 +1,8 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
+import { axe } from "vitest-axe";
 import userEvent from "@testing-library/user-event";
-import React, { useState } from "react";
+import { useState } from "react";
 import { DrawerContent } from "../DrawerContent";
 import { drawerContext } from "../DrawerContext";
 
@@ -44,17 +45,36 @@ describe("DrawerContent accessibility", () => {
 
   it('has id="playlist-drawer"', () => {
     render(<DrawerWrapper initialOpen={true} />);
-    expect(screen.getByRole("dialog")).toHaveAttribute(
-      "id",
-      "playlist-drawer"
-    );
+    expect(screen.getByRole("dialog")).toHaveAttribute("id", "playlist-drawer");
   });
 
-  it("Escape key closes the drawer", async () => {
+  it("Escape key closes the drawer", () => {
     const onOpenChange = vi.fn();
     render(<DrawerWrapper initialOpen={true} onOpenChange={onOpenChange} />);
     const dialog = screen.getByRole("dialog");
-    await userEvent.type(dialog, "{Escape}");
+    fireEvent.keyDown(dialog, { key: "Escape" });
     expect(onOpenChange).toHaveBeenCalledWith(false);
+  });
+
+  it("Tab wraps from last to first focusable element", async () => {
+    render(<DrawerWrapper initialOpen={true} />);
+    const buttons = screen.getAllByRole("button");
+    const last = buttons[buttons.length - 1];
+    last.focus();
+    await userEvent.tab();
+    expect(document.activeElement).toBe(buttons[0]);
+  });
+
+  it("Shift+Tab wraps from first to last focusable element", async () => {
+    render(<DrawerWrapper initialOpen={true} />);
+    const buttons = screen.getAllByRole("button");
+    buttons[0].focus();
+    await userEvent.tab({ shift: true });
+    expect(document.activeElement).toBe(buttons[buttons.length - 1]);
+  });
+
+  it("has no axe violations", async () => {
+    const { container } = render(<DrawerWrapper initialOpen={true} />);
+    expect(await axe(container)).toHaveNoViolations();
   });
 });
