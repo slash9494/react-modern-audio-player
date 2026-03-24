@@ -7,7 +7,7 @@ Load base agent files only when the task directly requires them. Do not read all
 | Trigger condition | File to load |
 |---|---|
 | Analyzing code, understanding structure, debugging | `agents/base/analysis.md` |
-| Writing or reviewing a git commit message | `agents/base/commit.md` |
+| Writing or reviewing a git commit message | `agents/base/commit.md` (**REQUIRED**: Read this file before creating any commit — no exceptions) |
 | Creating or reviewing a pull request | `agents/base/pr.md` |
 | Performing a release or version bump | `agents/base/release.md` |
 | Unsure about the development workflow or task sequence | `agents/base/workflow.md` |

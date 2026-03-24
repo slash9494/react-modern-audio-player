@@ -17,6 +17,11 @@ export default defineConfig({
     environment: "jsdom",
     setupFiles: ["./src/test/setup.ts"],
     clearMocks: true,
+    server: {
+      deps: {
+        inline: [/@react-spectrum\//],
+      },
+    },
     include: [
       "src/**/*.test.{ts,tsx}",
       "../test/integration/**/*.test.{ts,tsx}",

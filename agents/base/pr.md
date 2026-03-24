@@ -17,6 +17,26 @@ For small direct changes (docs, minor fixes), a PR may be skipped per branch.md 
 
 ---
 
+## Base Branch Selection
+
+Always target the branch the work originated from:
+
+| Current branch pattern | Target base branch |
+|---|---|
+| `v*/feat/*`, `v*/fix/*`, `v*/test/*`, `v*/ci/*`, etc. | `v*/main` (matching version) |
+| `feat/*`, `fix/*`, `refactor/*`, `test/*`, `ci/*`, etc. | `develop` |
+| hotfix or stable release work | `main` |
+
+Examples:
+
+- `v2/test/pipeline` → base: `v2/main`
+- `feat/123-playlist` → base: `develop`
+- `hotfix/critical-bug` → base: `main`
+
+Never open a PR targeting `main` unless it is a production release or hotfix.
+
+---
+
 ## PR Title Format
 
 Use the same Conventional Commit format as commit messages.
