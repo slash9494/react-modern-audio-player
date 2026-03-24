@@ -9,13 +9,17 @@ jobs:
   report:
     runs-on: ubuntu-latest
     if: github.event.workflow_run.event == 'pull_request'
+    timeout-minutes: 10
+    concurrency:
+      group: "${{ github.workflow }}-${{ github.event.workflow_run.head_branch }}"
+      cancel-in-progress: false
     permissions:
       pull-requests: write
       issues: write
       actions: read
     steps:
       - name: Download security review metadata
-        uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e # v4
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v4
         with:
           name: security-guard-meta
           path: security-guard-meta
@@ -24,7 +28,7 @@ jobs:
         continue-on-error: true
 
       - name: Post or update review checklist comment
-        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7
+        uses: actions/github-script@450193c5abd4cdb17ba9f3ffcfe8f635c4bb6c2a # v7
         with:
           script: |
             const fs = require('fs');
@@ -32,7 +36,9 @@ jobs:
             let prNumber, files;
             try {
               prNumber = parseInt(fs.readFileSync('security-guard-meta/pr_number.txt', 'utf8').trim(), 10);
+              if (isNaN(prNumber)) throw new Error('Invalid PR number');
               files = fs.readFileSync('security-guard-meta/changed_files.txt', 'utf8').trim();
+              if (!files) throw new Error('Empty changed_files.txt');
             } catch {
               core.info('No security review metadata found — skipping comment');
               return;
