@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { screen, fireEvent, act } from "@testing-library/react";
+import { screen, fireEvent } from "@testing-library/react";
 import { renderPlayer } from "./fixtures/render";
 
 // play/pause/load are already mocked globally in src/test/setup.ts
@@ -11,9 +11,9 @@ describe("Progress Bar Integration", () => {
   });
 
   it("7-2: clicking progress bar sets audio currentTime", async () => {
-    renderPlayer();
+    const { container } = renderPlayer();
 
-    const audio = document.querySelector("audio") as HTMLAudioElement;
+    const audio = container.querySelector("audio") as HTMLAudioElement;
     expect(audio).not.toBeNull();
 
     Object.defineProperty(audio, "duration", {
@@ -21,9 +21,7 @@ describe("Progress Bar Integration", () => {
       get: () => 100,
     });
 
-    await act(async () => {
-      fireEvent(audio, new Event("loadedmetadata"));
-    });
+    fireEvent(audio, new Event("loadedmetadata"));
 
     const progressBar = screen.getByTestId("progress-bar");
 
@@ -46,9 +44,7 @@ describe("Progress Bar Integration", () => {
       get: () => 200,
     });
 
-    await act(async () => {
-      fireEvent.click(progressBar, { clientX: 100 });
-    });
+    fireEvent.click(progressBar, { clientX: 100 });
 
     expect(audio.currentTime).toBeGreaterThan(0);
   });

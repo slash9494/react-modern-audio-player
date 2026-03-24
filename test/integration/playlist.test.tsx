@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import { screen, fireEvent, waitFor, act } from "@testing-library/react";
+import { screen, fireEvent, waitFor } from "@testing-library/react";
 import { renderPlayer } from "./fixtures/render";
 
 describe("Playlist interaction", () => {
@@ -23,9 +23,7 @@ describe("Playlist interaction", () => {
   it("6-2: clicking playlist trigger shows all 5 tracks", async () => {
     renderPlayer();
 
-    await act(async () => {
-      fireEvent.click(screen.getByTestId("playlist-trigger-btn"));
-    });
+    fireEvent.click(screen.getByTestId("playlist-trigger-btn"));
 
     await waitFor(() => {
       const items = screen.getAllByTestId("playlist-item");
@@ -36,9 +34,7 @@ describe("Playlist interaction", () => {
   it("6-3: clicking a playlist item switches to that track", async () => {
     renderPlayer();
 
-    await act(async () => {
-      fireEvent.click(screen.getByTestId("playlist-trigger-btn"));
-    });
+    fireEvent.click(screen.getByTestId("playlist-trigger-btn"));
 
     let track3: HTMLElement | undefined;
     await waitFor(() => {
@@ -51,9 +47,7 @@ describe("Playlist interaction", () => {
       throw new Error("Track 3 not found in playlist");
     }
 
-    await act(async () => {
-      fireEvent.click(track3);
-    });
+    fireEvent.click(track3);
 
     await waitFor(() => {
       expect(screen.getByTestId("track-title")).toHaveTextContent("Track 3");
