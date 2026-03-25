@@ -1,5 +1,4 @@
 import { getRandomNumber } from "@/utils/getRandomNumber";
-import { resetAudioValues } from "@/utils/resetAudioValues";
 import { AudioContextAction } from "./dispatchContext";
 import { AudioPlayerStateContext } from "./StateContext";
 
@@ -17,14 +16,13 @@ export const audioPlayerReducer = (
 ): AudioPlayerStateContext => {
   switch (action.type) {
     case "NEXT_AUDIO": {
-      resetAudioValues(state.elementRefs, undefined, true);
-
       if (
         state.curAudioState.repeatType === "NONE" &&
         state.curIdx + 1 === state.playList.length
       ) {
         return {
           ...state,
+          audioResetKey: state.audioResetKey + 1,
           curAudioState: { ...state.curAudioState, isPlaying: false },
         };
       }
@@ -36,6 +34,7 @@ export const audioPlayerReducer = (
         );
         return {
           ...state,
+          audioResetKey: state.audioResetKey + 1,
           curPlayId: state.playList[randomIdx].id,
           curIdx: randomIdx,
           curAudioState: {
@@ -47,6 +46,7 @@ export const audioPlayerReducer = (
       const infiniteLoopNextIdx = (state.curIdx + 1) % state.playList.length;
       return {
         ...state,
+        audioResetKey: state.audioResetKey + 1,
         curIdx: infiniteLoopNextIdx,
         curPlayId: state.playList[infiniteLoopNextIdx].id,
       };
@@ -59,8 +59,7 @@ export const audioPlayerReducer = (
           state.elementRefs?.waveformInst.getCurrentTime() > 1) ||
         (state.curAudioState.repeatType === "NONE" && state.curIdx === 0)
       ) {
-        resetAudioValues(state.elementRefs, undefined, true);
-        return state;
+        return { ...state, audioResetKey: state.audioResetKey + 1 };
       }
       if (state.curAudioState.repeatType === "SHUFFLE") {
         const randomIdx = getRandomIdx(

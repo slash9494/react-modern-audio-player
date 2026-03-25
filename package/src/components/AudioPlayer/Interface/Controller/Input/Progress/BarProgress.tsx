@@ -1,49 +1,17 @@
 import { audioPlayerStateContext } from "@/components/AudioPlayer/Context";
 import { useNonNullableContext } from "@/hooks/useNonNullableContext";
-import { useRefsDispatch } from "@/hooks/useRefsDispatch";
-import { FC, useEffect, useRef } from "react";
+import { FC, useRef } from "react";
 import styled from "styled-components";
 import { useProgress } from "./useProgress";
 
 export const BarProgress: FC<{ isActive: boolean }> = ({ isActive }) => {
   const progressBarRef = useRef<HTMLDivElement>(null);
-  const progressValueRef = useRef<HTMLDivElement>(null);
-  const progressHandleRef = useRef<HTMLDivElement>(null);
-  useRefsDispatch(
-    {
-      refs: {
-        progressBarEl: progressBarRef,
-        progressValueEl: progressValueRef,
-        progressHandleEl: progressHandleRef,
-      },
-    },
-    [isActive]
-  );
 
-  const { elementRefs, curAudioState } = useNonNullableContext(
-    audioPlayerStateContext
-  );
-  useEffect(() => {
-    if (
-      !progressBarRef.current ||
-      !progressValueRef.current ||
-      !progressHandleRef.current ||
-      !elementRefs?.audioEl ||
-      !curAudioState.isLoadedMetaData ||
-      curAudioState.isPlaying
-    )
-      return;
+  const { curAudioState } = useNonNullableContext(audioPlayerStateContext);
 
-    const progressBarWidth = progressBarRef.current.clientWidth;
-    const progressHandlePosition =
-      (elementRefs.audioEl.currentTime / elementRefs.audioEl.duration) *
-      progressBarWidth;
-
-    progressValueRef.current.style.transform = `scaleX(${
-      elementRefs.audioEl.currentTime / elementRefs.audioEl.duration
-    })`;
-    progressHandleRef.current.style.transform = `translateX(${progressHandlePosition}px)`;
-  }, [isActive, curAudioState.isLoadedMetaData]);
+  const ratio =
+    (curAudioState.currentTime ?? 0) / (curAudioState.duration || 1);
+  const barWidth = progressBarRef.current?.clientWidth ?? 0;
 
   const eventProps = useProgress();
 
@@ -54,9 +22,15 @@ export const BarProgress: FC<{ isActive: boolean }> = ({ isActive }) => {
       {...eventProps}
     >
       <div className="rm-player-progress-bar" ref={progressBarRef}>
-        <div className="rm-player-progress" ref={progressValueRef}></div>
+        <div
+          className="rm-player-progress"
+          style={{ transform: `scaleX(${ratio})` }}
+        />
       </div>
-      <div className="rm-player-progress-handle" ref={progressHandleRef} />
+      <div
+        className="rm-player-progress-handle"
+        style={{ transform: `translateX(${ratio * barWidth}px)` }}
+      />
     </BarProgressWrapper>
   ) : null;
 };

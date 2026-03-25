@@ -1,6 +1,4 @@
 import { useNonNullableContext } from "@/hooks/useNonNullableContext";
-import { getTimeWithPadStart } from "@/utils/getTime";
-import { resetAudioValues } from "@/utils/resetAudioValues";
 import { HTMLAttributes, SyntheticEvent, useCallback, useEffect } from "react";
 import {
   audioPlayerStateContext,
@@ -8,39 +6,23 @@ import {
 } from "../Context";
 
 export const useAudio = (): HTMLAttributes<HTMLAudioElement> => {
-  const { curAudioState, elementRefs } = useNonNullableContext(
+  const { curAudioState, elementRefs, audioResetKey } = useNonNullableContext(
     audioPlayerStateContext
   );
   const audioPlayerDispatch = useNonNullableContext(audioPlayerDispatchContext);
 
-  // TODO : refactor dependency by exporting
   const onTimeUpdate = useCallback(
     (event: SyntheticEvent<HTMLAudioElement>) => {
-      if (event.currentTarget.readyState === 0 || !elementRefs) return;
+      if (event.currentTarget.readyState === 0) return;
       const currentTime = event.currentTarget.currentTime;
-      const duration = event.currentTarget.duration;
-
-      const {
-        trackCurTimeEl,
-        progressBarEl,
-        progressValueEl,
-        progressHandleEl,
-      } = elementRefs;
-      if (trackCurTimeEl) {
-        trackCurTimeEl.innerText = getTimeWithPadStart(currentTime);
-      }
-
-      if (progressBarEl && progressValueEl && progressHandleEl) {
-        const progressBarWidth = progressBarEl.clientWidth;
-        const progressHandlePosition =
-          (currentTime / duration) * progressBarWidth;
-
-        progressValueEl.style.transform = `scaleX(${currentTime / duration})`;
-        progressHandleEl.style.transform = `translateX(${progressHandlePosition}px)`;
-      }
+      audioPlayerDispatch({
+        type: "SET_AUDIO_STATE",
+        audioState: { currentTime },
+      });
     },
-    [elementRefs]
+    [audioPlayerDispatch]
   );
+
   const onEnded = useCallback(() => {
     if (!elementRefs?.audioEl) return;
     if (curAudioState.repeatType === "ONE") {
@@ -50,28 +32,35 @@ export const useAudio = (): HTMLAttributes<HTMLAudioElement> => {
     }
     audioPlayerDispatch({ type: "NEXT_AUDIO" });
   }, [audioPlayerDispatch, curAudioState.repeatType, elementRefs?.audioEl]);
+
   const onLoadedMetadata = useCallback(
     (e: SyntheticEvent<HTMLAudioElement, Event>) => {
-      if (!elementRefs) return;
-
       const { duration } = e.currentTarget;
-      resetAudioValues(elementRefs, duration);
-
       audioPlayerDispatch({
         type: "SET_AUDIO_STATE",
-        audioState: { isLoadedMetaData: true },
+        audioState: { isLoadedMetaData: true, duration },
       });
     },
-    [elementRefs]
+    [audioPlayerDispatch]
   );
+
+  /** audio reset — triggered by NEXT_AUDIO / PREV_AUDIO via audioResetKey */
+  useEffect(() => {
+    if (!elementRefs?.audioEl) return;
+    elementRefs.audioEl.currentTime = 0;
+    audioPlayerDispatch({
+      type: "SET_AUDIO_STATE",
+      audioState: { currentTime: 0 },
+    });
+  }, [audioResetKey]);
 
   /** play */
   useEffect(() => {
     if (!elementRefs?.audioEl) return;
     if (curAudioState.isPlaying) {
-      elementRefs?.audioEl.play();
+      elementRefs.audioEl.play();
     } else {
-      elementRefs?.audioEl.pause();
+      elementRefs.audioEl.pause();
     }
   }, [elementRefs?.audioEl, curAudioState.isPlaying, audioPlayerDispatch]);
 

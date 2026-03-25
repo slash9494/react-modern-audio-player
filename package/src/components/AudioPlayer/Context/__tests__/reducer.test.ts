@@ -19,6 +19,7 @@ const makeBaseState = (): AudioPlayerStateContext => ({
   },
   activeUI: {},
   playListPlacement: "bottom",
+  audioResetKey: 0,
   elementRefs: {
     audioEl: document.createElement("audio"),
   },
