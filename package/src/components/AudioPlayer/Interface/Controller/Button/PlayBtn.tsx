@@ -1,4 +1,4 @@
-import { FC, memo, useMemo } from "react";
+import { FC, memo } from "react";
 import styled from "styled-components";
 import { useNonNullableContext } from "@/hooks/useNonNullableContext";
 import { audioPlayerDispatchContext } from "@/components/AudioPlayer/Context/dispatchContext";
@@ -19,18 +19,6 @@ export const PlayBtn: FC = memo(function PlayBtn() {
 
   const changePlayState = () =>
     audioPlayerDispatch({ type: "CHANGE_PLAYING_STATE" });
-  const PlayIcon = useMemo(() => {
-    if (curAudioState.isPlaying)
-      return (
-        <Icon
-          render={<MdPauseCircleFilled />}
-          customIcon={customIcons?.pause}
-        />
-      );
-    return (
-      <Icon render={<MdPlayCircleFilled />} customIcon={customIcons?.play} />
-    );
-  }, [curAudioState.isPlaying, customIcons?.pause, customIcons?.play]);
 
   return (
     <StyledPlayBtn
@@ -38,7 +26,14 @@ export const PlayBtn: FC = memo(function PlayBtn() {
       className="play-button"
       data-testid="play-btn"
     >
-      {PlayIcon}
+      {curAudioState.isPlaying ? (
+        <Icon
+          render={<MdPauseCircleFilled />}
+          customIcon={customIcons?.pause}
+        />
+      ) : (
+        <Icon render={<MdPlayCircleFilled />} customIcon={customIcons?.play} />
+      )}
     </StyledPlayBtn>
   );
 });
