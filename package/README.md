@@ -106,8 +106,8 @@ type PlayList = Array<AudioData>;
 type AudioData = {
   src: string;
   id: number;
-  name?: string | ReactNode;
-  writer?: string | ReactNode;
+  name?: string;
+  writer?: string;
   img?: string;
   description?: string | ReactNode;
   customTrackInfo?: string | ReactNode;

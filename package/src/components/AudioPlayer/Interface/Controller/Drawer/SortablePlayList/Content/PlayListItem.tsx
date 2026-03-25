@@ -23,9 +23,7 @@ export const PlayListItem = ({ data }: { data: AudioData }) => {
           {data.img && (
             <img
               src={data.img}
-              alt={
-                typeof data.name === "string" ? data.name : "Album thumbnail"
-              }
+              alt={data.name || "Album thumbnail"}
               style={coverImgsCss?.listThumbnail}
             />
           )}
