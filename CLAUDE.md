@@ -79,6 +79,46 @@ REPEAT
 
 ---
 
+## CHANGELOG Maintenance Policy
+
+Whenever a breaking change is introduced, always record it in `package/CHANGELOG.md` under the target version's `### Breaking Changes` section.
+
+A breaking change includes any of the following:
+
+- Public API type narrowing or removal (props, method signatures, exported types)
+- Renamed or removed exports
+- Behavior changes that require consumer code updates
+
+Format:
+
+```markdown
+## vX.Y.Z (Unreleased)
+
+### Breaking Changes
+
+- **`TypeName.field` change summary**: `old type` → `new type`
+  - Migration: describe what consumers should do instead
+```
+
+If the target version section does not exist yet, create it above the previous version.
+
+---
+
+## README Maintenance Policy
+
+Whenever code or documentation is modified, always review `package/README.md` for related content and update it if needed.
+
+This applies to:
+
+- Public API changes (props, types, method signatures)
+- New or removed features
+- Changed default behaviors or configuration options
+- Any type changes that affect how users consume the library
+
+If a change has no user-facing impact, no README update is required — but always explicitly verify this before skipping.
+
+---
+
 ## Localization & Language Policy
 
 - **Primary Language**: All project-related communications and artifacts must be in **English only**.
