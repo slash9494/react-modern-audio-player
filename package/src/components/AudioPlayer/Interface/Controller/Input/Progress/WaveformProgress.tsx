@@ -48,7 +48,13 @@ export const WaveformProgress: FC<{ isActive: boolean }> = ({ isActive }) => {
     elementRefs.waveformInst.seekTo(
       elementRefs.audioEl.currentTime / elementRefs.audioEl.duration
     );
-  }, [isActive, curAudioState.isLoadedMetaData]);
+  }, [
+    isActive,
+    curAudioState.isLoadedMetaData,
+    elementRefs?.waveformInst,
+    elementRefs?.audioEl,
+    curAudioState.isPlaying,
+  ]);
 
   const eventProps = useProgress();
 
@@ -84,7 +90,11 @@ export const WaveformProgress: FC<{ isActive: boolean }> = ({ isActive }) => {
         elementRefs.waveformInst?.seekTo(newTime / audio.duration);
       }
     },
-    [elementRefs, curAudioState?.isLoadedMetaData]
+    [
+      elementRefs?.audioEl,
+      elementRefs?.waveformInst,
+      curAudioState?.isLoadedMetaData,
+    ]
   );
 
   return (
