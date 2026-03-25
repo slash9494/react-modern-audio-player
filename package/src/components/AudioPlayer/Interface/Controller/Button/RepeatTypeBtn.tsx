@@ -79,11 +79,7 @@ export const RepeatTypeBtn: FC = () => {
   return (
     <StyledBtn
       type="button"
-      aria-label={
-        curAudioState.repeatType
-          ? repeatAriaLabels[curAudioState.repeatType]
-          : undefined
-      }
+      aria-label={repeatAriaLabels[curAudioState.repeatType]}
       onClick={changeRepeatType}
       className="repeat-button"
       data-testid="repeat-btn"
