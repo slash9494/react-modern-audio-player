@@ -39,12 +39,10 @@ export const DrawerContent: FC<PropsWithChildren<DrawerContentProps>> = ({
     getFocusable()?.[0]?.focus();
   }, [getFocusable]);
 
-  const onExited = useCallback(() => setIsOpen(false), [setIsOpen]);
   const onEntered = useCallback(() => {
     previousFocusRef.current = document.activeElement;
-    setIsOpen(true);
     focusFirst();
-  }, [setIsOpen, focusFirst]);
+  }, [focusFirst]);
 
   useEffect(() => {
     if (isOpen && !isWithAnimation) {
@@ -104,7 +102,6 @@ export const DrawerContent: FC<PropsWithChildren<DrawerContentProps>> = ({
       enterTime={20}
       leaveTime={60}
       clearTime={300}
-      onExited={onExited}
       onEntered={onEntered}
     >
       {Content}
