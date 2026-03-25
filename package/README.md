@@ -286,14 +286,46 @@ const defaultInterfacePlacement = {
 
 // ...spectrum theme palette and so on... //
 ```
+# Context Hooks
+
+Components inside `AudioPlayer` can subscribe to only the state slice they need, avoiding unnecessary re-renders.
+
+```tsx
+import {
+  usePlaybackContext,  // curAudioState: { isPlaying, repeatType, volume, muted, isLoadedMetaData }
+  useTrackContext,     // playList, curIdx, curPlayId
+  useUIContext,        // activeUI, interfacePlacement, playListPlacement, playerPlacement, volumeSliderPlacement
+  useResourceContext,  // elementRefs, customIcons, coverImgsCss
+} from 'react-modern-audio-player';
+
+const MyComponent = () => {
+  const { curAudioState } = usePlaybackContext();
+  return <span>{curAudioState.isPlaying ? 'Playing' : 'Paused'}</span>;
+};
+```
+
+Hook | Returns
+--- | ---
+`usePlaybackContext` | `{ curAudioState: AudioState }`
+`useTrackContext` | `{ playList, curIdx, curPlayId }`
+`useUIContext` | `{ activeUI, interfacePlacement, playListPlacement, playerPlacement, volumeSliderPlacement }`
+`useResourceContext` | `{ elementRefs, customIcons, coverImgsCss }`
+
 # Custom Component
 > you can apply custom component to `AudioPlayer` by `CustomComponent`
 > </br>
-> you can also set `viewProps` to `CustomComponent` 
+> you can also set `viewProps` to `CustomComponent`
 > </br>
 > (https://react-spectrum.adobe.com/react-spectrum/View.html#props)
 
 ``` tsx
+import {
+  PlaybackContext,
+  TrackContext,
+  UIContext,
+  ResourceContext,
+} from 'react-modern-audio-player';
+
 const activeUI: ActiveUI = {
   all: true,
 };
@@ -310,11 +342,13 @@ const placement = {
   */
 };
 
+type AudioPlayerState = PlaybackContext & TrackContext & UIContext & ResourceContext;
+
 /** you can get audioPlayerState by props */
 const CustomComponent = ({
   audioPlayerState,
 }: {
-  audioPlayerState?: AudioPlayerStateContext;
+  audioPlayerState?: AudioPlayerState;
 }) => {
   const audioEl = audioPlayerState?.elementRefs?.audioEl;
   const handOverTime = () => {
