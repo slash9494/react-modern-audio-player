@@ -1,4 +1,3 @@
-import { createContext } from "react";
 import { AudioState } from "./audio";
 import {
   ActiveUI,
@@ -36,5 +35,3 @@ export type InitialStates = AudioState & {
 export * from "./audio";
 export * from "./element";
 export * from "./placement";
-export const audioPlayerStateContext =
-  createContext<AudioPlayerStateContext | null>(null);
