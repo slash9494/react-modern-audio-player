@@ -1,6 +1,7 @@
 import { useNonNullableContext } from "@/hooks/useNonNullableContext";
 import { audioPlayerDispatchContext } from "@/components/AudioPlayer/Context/dispatchContext";
-import { audioPlayerStateContext } from "@/components/AudioPlayer/Context/StateContext";
+import { usePlaybackContext } from "@/hooks/context/usePlaybackContext";
+import { useResourceContext } from "@/hooks/context/useResourceContext";
 import { forwardRef, useCallback, useMemo } from "react";
 import { IconBaseProps } from "react-icons/lib";
 import { TbVolume3, TbVolume2, TbVolume } from "react-icons/tb";
@@ -8,9 +9,8 @@ import { Icon } from "../Icon";
 import { StyledBtn } from "./StyledBtn";
 
 export const VolumeTriggerBtn = forwardRef<HTMLButtonElement>((_, ref) => {
-  const { curAudioState, customIcons, elementRefs } = useNonNullableContext(
-    audioPlayerStateContext
-  );
+  const { curAudioState } = usePlaybackContext();
+  const { customIcons, elementRefs } = useResourceContext();
   const audioPlayerDispatch = useNonNullableContext(audioPlayerDispatchContext);
   const changeMuteState = useCallback(
     () =>

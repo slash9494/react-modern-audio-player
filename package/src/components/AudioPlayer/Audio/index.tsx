@@ -1,9 +1,8 @@
 import { useNonNullableContext } from "@/hooks/useNonNullableContext";
 import { audioPlayerDispatchContext } from "@/components/AudioPlayer/Context/dispatchContext";
-import {
-  audioPlayerStateContext,
-  AudioNativeProps,
-} from "@/components/AudioPlayer/Context/StateContext";
+import { AudioNativeProps } from "@/components/AudioPlayer/Context/StateContext";
+import { usePlaybackContext } from "@/hooks/context/usePlaybackContext";
+import { useTrackContext } from "@/hooks/context/useTrackContext";
 import React, { FC, useEffect, useRef } from "react";
 import { useAudio } from "./useAudio";
 
@@ -13,9 +12,8 @@ export const Audio: FC<{
   audioRef?: React.MutableRefObject<HTMLAudioElement>;
 }> = ({ audioRef: propsAudioRef }) => {
   const audioRef = useRef<HTMLAudioElement>(null);
-  const { curAudioState, curPlayId, playList } = useNonNullableContext(
-    audioPlayerStateContext
-  );
+  const { curAudioState } = usePlaybackContext();
+  const { curPlayId, playList } = useTrackContext();
   const audioPlayerDispatch = useNonNullableContext(audioPlayerDispatchContext);
 
   const curPlayedAudioData = playList.find(

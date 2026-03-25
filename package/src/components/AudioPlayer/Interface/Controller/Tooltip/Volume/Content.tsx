@@ -1,9 +1,8 @@
 import { useNonNullableContext } from "@/hooks/useNonNullableContext";
 import { audioPlayerDispatchContext } from "@/components/AudioPlayer/Context/dispatchContext";
-import {
-  audioPlayerStateContext,
-  VolumeSliderPlacement,
-} from "@/components/AudioPlayer/Context/StateContext";
+import { VolumeSliderPlacement } from "@/components/AudioPlayer/Context/StateContext";
+import { usePlaybackContext } from "@/hooks/context/usePlaybackContext";
+import { useResourceContext } from "@/hooks/context/useResourceContext";
 import { ChangeEvent, FC, useCallback, useRef } from "react";
 import styled, { css } from "styled-components";
 
@@ -11,9 +10,8 @@ export const VolumeSlider: FC<{ placement: VolumeSliderPlacement }> = ({
   placement,
 }) => {
   const contentRef = useRef<HTMLDivElement>(null);
-  const { curAudioState, elementRefs } = useNonNullableContext(
-    audioPlayerStateContext
-  );
+  const { curAudioState } = usePlaybackContext();
+  const { elementRefs } = useResourceContext();
   const audioPlayerDispatch = useNonNullableContext(audioPlayerDispatchContext);
 
   const onChangeVolume = useCallback(

@@ -3,13 +3,12 @@ import styled from "styled-components";
 import { TrackTimeContainer } from "./Styles";
 import { TrackTimeChildrenProps } from "./Types";
 import { useRefsDispatch } from "@/hooks/useRefsDispatch";
-import { useNonNullableContext } from "@/hooks/useNonNullableContext";
-import { audioPlayerStateContext } from "@/components/AudioPlayer/Context";
+import { useResourceContext } from "@/hooks/context/useResourceContext";
 import { getTimeWithPadStart } from "@/utils/getTime";
 
 export const Duration: FC<TrackTimeChildrenProps> = ({ position }) => {
   const trackDurationRef = useRef<HTMLSpanElement>(null);
-  const { elementRefs } = useNonNullableContext(audioPlayerStateContext);
+  const { elementRefs } = useResourceContext();
 
   useRefsDispatch(
     {

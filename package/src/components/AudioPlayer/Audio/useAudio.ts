@@ -2,15 +2,13 @@ import { useNonNullableContext } from "@/hooks/useNonNullableContext";
 import { getTimeWithPadStart } from "@/utils/getTime";
 import { resetAudioValues } from "@/utils/resetAudioValues";
 import { HTMLAttributes, SyntheticEvent, useCallback, useEffect } from "react";
-import {
-  audioPlayerStateContext,
-  audioPlayerDispatchContext,
-} from "../Context";
+import { audioPlayerDispatchContext } from "../Context";
+import { usePlaybackContext } from "@/hooks/context/usePlaybackContext";
+import { useResourceContext } from "@/hooks/context/useResourceContext";
 
 export const useAudio = (): HTMLAttributes<HTMLAudioElement> => {
-  const { curAudioState, elementRefs } = useNonNullableContext(
-    audioPlayerStateContext
-  );
+  const { curAudioState } = usePlaybackContext();
+  const { elementRefs } = useResourceContext();
   const audioPlayerDispatch = useNonNullableContext(audioPlayerDispatchContext);
 
   // TODO : refactor dependency by exporting

@@ -1,6 +1,7 @@
+import { memo } from "react";
 import { useNonNullableContext } from "@/hooks/useNonNullableContext";
 import { audioPlayerDispatchContext } from "@/components/AudioPlayer/Context/dispatchContext";
-import { audioPlayerStateContext } from "@/components/AudioPlayer/Context/StateContext";
+import { useResourceContext } from "@/hooks/context/useResourceContext";
 import { FC, useMemo } from "react";
 import { StyledBtn } from "./StyledBtn";
 import { ImPrevious, ImNext } from "react-icons/im";
@@ -11,8 +12,11 @@ interface PrevNnextBtnProps {
   visible: boolean;
 }
 
-export const PrevNnextBtn: FC<PrevNnextBtnProps> = ({ type, visible }) => {
-  const { customIcons } = useNonNullableContext(audioPlayerStateContext);
+export const PrevNnextBtn: FC<PrevNnextBtnProps> = memo(function PrevNnextBtn({
+  type,
+  visible,
+}) {
+  const { customIcons } = useResourceContext();
   const audioPlayerDispatch = useNonNullableContext(audioPlayerDispatchContext);
   const changeAudio = () => {
     if (type === "next") {
@@ -41,4 +45,4 @@ export const PrevNnextBtn: FC<PrevNnextBtnProps> = ({ type, visible }) => {
       {PrevNnextIcon}
     </StyledBtn>
   ) : null;
-};
+});

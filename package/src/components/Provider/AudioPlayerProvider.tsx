@@ -1,12 +1,15 @@
 import {
   audioPlayerDispatchContext,
   audioPlayerReducer,
-  audioPlayerStateContext,
   AudioState,
   defaultInterfacePlacement,
   defaultInterfacePlacementMaxLength,
   Placements,
 } from "@/components/AudioPlayer/Context";
+import { playbackContext } from "@/components/AudioPlayer/Context/PlaybackContext";
+import { trackContext } from "@/components/AudioPlayer/Context/TrackContext";
+import { uiContext } from "@/components/AudioPlayer/Context/UIContext";
+import { resourceContext } from "@/components/AudioPlayer/Context/ResourceContext";
 import { PropsWithChildren, useReducer } from "react";
 import { AudioPlayerProps } from "../AudioPlayer/Player";
 
@@ -46,28 +49,51 @@ export const AudioPlayerProvider = <
     volumeSliderPlacement: placementProp?.volumeSlider,
   };
 
-  const [audioContextState, dispatchAudioContextState] = useReducer(
-    audioPlayerReducer,
-    {
-      playList,
-      curPlayId: audioInitialState?.curPlayId || 1,
-      curIdx: audioInitialState?.curPlayId
-        ? playList.findIndex(
-            (audioData) => audioData.id === audioInitialState?.curPlayId
-          )
-        : 0,
-      curAudioState,
-      activeUI,
-      ...(placement as Placements<10>),
-      ...otherProps,
-    }
-  );
+  const [state, dispatch] = useReducer(audioPlayerReducer, {
+    playList,
+    curPlayId: audioInitialState?.curPlayId || 1,
+    curIdx: audioInitialState?.curPlayId
+      ? playList.findIndex(
+          (audioData) => audioData.id === audioInitialState?.curPlayId
+        )
+      : 0,
+    curAudioState,
+    activeUI,
+    ...(placement as Placements<10>),
+    ...otherProps,
+  });
 
   return (
-    <audioPlayerStateContext.Provider value={audioContextState}>
-      <audioPlayerDispatchContext.Provider value={dispatchAudioContextState}>
-        {children}
-      </audioPlayerDispatchContext.Provider>
-    </audioPlayerStateContext.Provider>
+    <playbackContext.Provider value={{ curAudioState: state.curAudioState }}>
+      <trackContext.Provider
+        value={{
+          playList: state.playList,
+          curPlayId: state.curPlayId,
+          curIdx: state.curIdx,
+        }}
+      >
+        <uiContext.Provider
+          value={{
+            activeUI: state.activeUI,
+            playListPlacement: state.playListPlacement,
+            playerPlacement: state.playerPlacement,
+            interfacePlacement: state.interfacePlacement,
+            volumeSliderPlacement: state.volumeSliderPlacement,
+          }}
+        >
+          <resourceContext.Provider
+            value={{
+              elementRefs: state.elementRefs,
+              customIcons: state.customIcons,
+              coverImgsCss: state.coverImgsCss,
+            }}
+          >
+            <audioPlayerDispatchContext.Provider value={dispatch}>
+              {children}
+            </audioPlayerDispatchContext.Provider>
+          </resourceContext.Provider>
+        </uiContext.Provider>
+      </trackContext.Provider>
+    </playbackContext.Provider>
   );
 };

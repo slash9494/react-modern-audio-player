@@ -1,9 +1,6 @@
 import { FC } from "react";
-import { useNonNullableContext } from "@/hooks/useNonNullableContext";
-import {
-  audioPlayerStateContext,
-  defaultInterfacePlacement,
-} from "@/components/AudioPlayer/Context/StateContext";
+import { defaultInterfacePlacement } from "@/components/AudioPlayer/Context/StateContext";
+import { useUIContext } from "@/hooks/context/useUIContext";
 import { PlayBtn, PrevNnextBtn, RepeatTypeBtn } from "./Button";
 import { SortablePlayList } from "./Drawer";
 import { Progress } from "./Input";
@@ -12,9 +9,7 @@ import Grid from "@/components/Grid";
 import { Volume } from "./Tooltip";
 
 export const Controller: FC = () => {
-  const { interfacePlacement, activeUI } = useNonNullableContext(
-    audioPlayerStateContext
-  );
+  const { interfacePlacement, activeUI } = useUIContext();
 
   return (
     <>

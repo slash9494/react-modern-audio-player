@@ -1,7 +1,6 @@
-import { audioPlayerStateContext } from "@/components/AudioPlayer/Context";
 import { CssTransition } from "@/components/CssTransition";
 import SortableList from "@/components/SortableList";
-import { useNonNullableContext } from "@/hooks/useNonNullableContext";
+import { useTrackContext } from "@/hooks/context/useTrackContext";
 import { FC } from "react";
 import ReactDOM from "react-dom";
 import styled from "styled-components";
@@ -14,7 +13,7 @@ export interface SortablePlayListProps {
 }
 
 export const PlayList: FC<SortablePlayListProps> = ({ isOpen, setIsOpen }) => {
-  const { playList } = useNonNullableContext(audioPlayerStateContext);
+  const { playList } = useTrackContext();
   const { cssTransitionEventProps, sortableItemEventProps } = usePlayList({
     setIsOpen,
   });

@@ -1,5 +1,4 @@
-import { useNonNullableContext } from "@/hooks/useNonNullableContext";
-import { audioPlayerStateContext } from "@/components/AudioPlayer/Context/StateContext";
+import { useUIContext } from "@/hooks/context/useUIContext";
 import { FC } from "react";
 import styled from "styled-components";
 import { BarProgress } from "./BarProgress";
@@ -10,7 +9,7 @@ const ProgressContainer = styled.div`
 `;
 
 export const Progress: FC = () => {
-  const { activeUI } = useNonNullableContext(audioPlayerStateContext);
+  const { activeUI } = useUIContext();
 
   return (
     <ProgressContainer className="progress-container">

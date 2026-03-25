@@ -1,7 +1,8 @@
-import { FC, useCallback, useMemo } from "react";
+import { FC, memo, useCallback, useMemo } from "react";
 import { useNonNullableContext } from "@/hooks/useNonNullableContext";
 import { audioPlayerDispatchContext } from "@/components/AudioPlayer/Context/dispatchContext";
-import { audioPlayerStateContext } from "@/components/AudioPlayer/Context/StateContext";
+import { usePlaybackContext } from "@/hooks/context/usePlaybackContext";
+import { useResourceContext } from "@/hooks/context/useResourceContext";
 import { StyledBtn } from "./StyledBtn";
 import {
   TbRepeatOff,
@@ -11,10 +12,9 @@ import {
 } from "react-icons/tb";
 import { Icon } from "../Icon";
 
-export const RepeatTypeBtn: FC = () => {
-  const { curAudioState, customIcons } = useNonNullableContext(
-    audioPlayerStateContext
-  );
+export const RepeatTypeBtn: FC = memo(function RepeatTypeBtn() {
+  const { curAudioState } = usePlaybackContext();
+  const { customIcons } = useResourceContext();
   const audioPlayerDispatch = useNonNullableContext(audioPlayerDispatchContext);
   const changeRepeatType = useCallback(() => {
     switch (curAudioState.repeatType) {
@@ -76,4 +76,4 @@ export const RepeatTypeBtn: FC = () => {
       {RepeatIcon}
     </StyledBtn>
   );
-};
+});

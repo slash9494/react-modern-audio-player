@@ -1,5 +1,5 @@
-import { audioPlayerStateContext } from "@/components/AudioPlayer/Context";
-import { useNonNullableContext } from "@/hooks/useNonNullableContext";
+import { usePlaybackContext } from "@/hooks/context/usePlaybackContext";
+import { useResourceContext } from "@/hooks/context/useResourceContext";
 import { FC, useEffect, useRef } from "react";
 import styled, { css } from "styled-components";
 import { useProgress } from "./useProgress";
@@ -27,9 +27,8 @@ const WaveformWrapper = styled.div`
 
 export const WaveformProgress: FC<{ isActive: boolean }> = ({ isActive }) => {
   const waveformRef = useRef<HTMLDivElement>(null);
-  const { elementRefs, curAudioState } = useNonNullableContext(
-    audioPlayerStateContext
-  );
+  const { curAudioState } = usePlaybackContext();
+  const { elementRefs } = useResourceContext();
 
   useWaveSurfer(waveformRef);
 

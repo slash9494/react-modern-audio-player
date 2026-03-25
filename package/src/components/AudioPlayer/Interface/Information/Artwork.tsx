@@ -1,6 +1,6 @@
-import { useNonNullableContext } from "@/hooks/useNonNullableContext";
-import { audioPlayerStateContext } from "@/components/AudioPlayer/Context/StateContext";
-import { FC } from "react";
+import { useTrackContext } from "@/hooks/context/useTrackContext";
+import { useResourceContext } from "@/hooks/context/useResourceContext";
+import { FC, memo } from "react";
 import styled from "styled-components";
 
 const ArtworkContainer = styled.div`
@@ -14,14 +14,13 @@ const ArtworkContainer = styled.div`
   }
 `;
 
-export const Artwork: FC = () => {
-  const { playList, curIdx, coverImgsCss } = useNonNullableContext(
-    audioPlayerStateContext
-  );
+export const Artwork: FC = memo(function Artwork() {
+  const { playList, curIdx } = useTrackContext();
+  const { coverImgsCss } = useResourceContext();
 
   return (
     <ArtworkContainer className="artwork-container">
       <img src={playList[curIdx]?.img} alt={""} style={coverImgsCss?.artwork} />
     </ArtworkContainer>
   );
-};
+});

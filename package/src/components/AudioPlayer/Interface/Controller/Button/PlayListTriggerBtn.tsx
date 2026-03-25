@@ -1,5 +1,4 @@
-import { audioPlayerStateContext } from "@/components/AudioPlayer/Context";
-import { useNonNullableContext } from "@/hooks/useNonNullableContext";
+import { useResourceContext } from "@/hooks/context/useResourceContext";
 import { FC } from "react";
 import { MdPlaylistPlay } from "react-icons/md";
 import { Icon } from "../Icon";
@@ -10,7 +9,7 @@ export interface PlayListTriggerBtnProps {
 }
 
 export const PlayListTriggerBtn: FC<PlayListTriggerBtnProps> = ({ isOpen }) => {
-  const { customIcons } = useNonNullableContext(audioPlayerStateContext);
+  const { customIcons } = useResourceContext();
   return (
     <StyledBtn data-testid="playlist-trigger-btn">
       <Icon
