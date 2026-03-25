@@ -10,7 +10,7 @@ import { playbackContext } from "@/components/AudioPlayer/Context/PlaybackContex
 import { trackContext } from "@/components/AudioPlayer/Context/TrackContext";
 import { uiContext } from "@/components/AudioPlayer/Context/UIContext";
 import { resourceContext } from "@/components/AudioPlayer/Context/ResourceContext";
-import { PropsWithChildren, useReducer } from "react";
+import { PropsWithChildren, useMemo, useReducer } from "react";
 import { AudioPlayerProps } from "../AudioPlayer/Player";
 
 export const AudioPlayerProvider = <
@@ -63,31 +63,51 @@ export const AudioPlayerProvider = <
     ...otherProps,
   });
 
+  const playbackValue = useMemo(
+    () => ({ curAudioState: state.curAudioState }),
+    [state.curAudioState]
+  );
+
+  const trackValue = useMemo(
+    () => ({
+      playList: state.playList,
+      curPlayId: state.curPlayId,
+      curIdx: state.curIdx,
+    }),
+    [state.playList, state.curPlayId, state.curIdx]
+  );
+
+  const uiValue = useMemo(
+    () => ({
+      activeUI: state.activeUI,
+      playListPlacement: state.playListPlacement,
+      playerPlacement: state.playerPlacement,
+      interfacePlacement: state.interfacePlacement,
+      volumeSliderPlacement: state.volumeSliderPlacement,
+    }),
+    [
+      state.activeUI,
+      state.playListPlacement,
+      state.playerPlacement,
+      state.interfacePlacement,
+      state.volumeSliderPlacement,
+    ]
+  );
+
+  const resourceValue = useMemo(
+    () => ({
+      elementRefs: state.elementRefs,
+      customIcons: state.customIcons,
+      coverImgsCss: state.coverImgsCss,
+    }),
+    [state.elementRefs, state.customIcons, state.coverImgsCss]
+  );
+
   return (
-    <playbackContext.Provider value={{ curAudioState: state.curAudioState }}>
-      <trackContext.Provider
-        value={{
-          playList: state.playList,
-          curPlayId: state.curPlayId,
-          curIdx: state.curIdx,
-        }}
-      >
-        <uiContext.Provider
-          value={{
-            activeUI: state.activeUI,
-            playListPlacement: state.playListPlacement,
-            playerPlacement: state.playerPlacement,
-            interfacePlacement: state.interfacePlacement,
-            volumeSliderPlacement: state.volumeSliderPlacement,
-          }}
-        >
-          <resourceContext.Provider
-            value={{
-              elementRefs: state.elementRefs,
-              customIcons: state.customIcons,
-              coverImgsCss: state.coverImgsCss,
-            }}
-          >
+    <playbackContext.Provider value={playbackValue}>
+      <trackContext.Provider value={trackValue}>
+        <uiContext.Provider value={uiValue}>
+          <resourceContext.Provider value={resourceValue}>
             <audioPlayerDispatchContext.Provider value={dispatch}>
               {children}
             </audioPlayerDispatchContext.Provider>
