@@ -4,16 +4,16 @@ This repository uses modular agent instructions.
 
 Load base agent files only when the task directly requires them. Do not read all files unconditionally.
 
-| Trigger condition | File to load |
-|---|---|
-| Analyzing code, understanding structure, debugging | `agents/base/analysis.md` |
-| Writing or reviewing a git commit message | `agents/base/commit.md` (**REQUIRED**: Read this file before creating any commit — no exceptions) |
-| Creating or reviewing a pull request | `agents/base/pr.md` |
-| Performing a release or version bump | `agents/base/release.md` |
-| Unsure about the development workflow or task sequence | `agents/base/workflow.md` |
-| Starting a new task or doing branch-related work | `agents/base/branch.md` |
-| Writing, reviewing, or analyzing any test code | `agents/base/testing.md` |
-| Performing overhaul-specific library analysis | `agents/overhaul/library-analysis.md` |
+| Trigger condition                                      | File to load                                                                                      |
+| ------------------------------------------------------ | ------------------------------------------------------------------------------------------------- |
+| Analyzing code, understanding structure, debugging     | `agents/base/analysis.md`                                                                         |
+| Writing or reviewing a git commit message              | `agents/base/commit.md` (**REQUIRED**: Read this file before creating any commit — no exceptions) |
+| Creating or reviewing a pull request                   | `agents/base/pr.md`                                                                               |
+| Performing a release or version bump                   | `agents/base/release.md`                                                                          |
+| Unsure about the development workflow or task sequence | `agents/base/workflow.md`                                                                         |
+| Starting a new task or doing branch-related work       | `agents/base/branch.md`                                                                           |
+| Writing, reviewing, or analyzing any test code         | `agents/base/testing.md`                                                                          |
+| Performing overhaul-specific library analysis          | `agents/overhaul/library-analysis.md`                                                             |
 
 If the branch starts with `v*/`, also load the corresponding agent from `agents/overhaul/`.
 
@@ -97,7 +97,7 @@ Format:
 ### Breaking Changes
 
 - **`TypeName.field` change summary**: `old type` → `new type`
-  - Migration: describe what consumers should do instead
+  - Describe what consumers should do instead
 ```
 
 If the target version section does not exist yet, create it above the previous version.
