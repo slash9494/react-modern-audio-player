@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, act } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
 import { axe } from "vitest-axe";
 import userEvent from "@testing-library/user-event";
@@ -76,5 +76,56 @@ describe("DrawerContent accessibility", () => {
   it("has no axe violations", async () => {
     const { container } = render(<DrawerWrapper initialOpen={true} />);
     expect(await axe(container)).toHaveNoViolations();
+  });
+});
+
+describe("DrawerContent focus management", () => {
+  it("moves focus to first focusable element after enter animation completes", async () => {
+    vi.useFakeTimers();
+
+    render(
+      <drawerContext.Provider
+        value={{ isOpen: true, setIsOpen: vi.fn(), onOpenChange: undefined }}
+      >
+        <DrawerContent isWithAnimation={true}>
+          <button>Item 1</button>
+          <button>Item 2</button>
+        </DrawerContent>
+      </drawerContext.Provider>
+    );
+
+    await act(async () => {
+      vi.advanceTimersByTime(20); // enterTime
+    });
+
+    expect(document.activeElement).toBe(screen.getAllByRole("button")[0]);
+    vi.useRealTimers();
+  });
+
+  it("restores focus to previously focused element when drawer closes", async () => {
+    const ToggleWrapper = () => {
+      const [isOpen, setIsOpen] = useState(false);
+      return (
+        <>
+          <button onClick={() => setIsOpen(true)}>Open</button>
+          <drawerContext.Provider
+            value={{ isOpen, setIsOpen, onOpenChange: undefined }}
+          >
+            <DrawerContent isWithAnimation={false}>
+              <button>Item 1</button>
+            </DrawerContent>
+          </drawerContext.Provider>
+        </>
+      );
+    };
+
+    render(<ToggleWrapper />);
+    const openBtn = screen.getByText("Open");
+
+    await userEvent.click(openBtn);
+    expect(document.activeElement).toBe(screen.getByText("Item 1"));
+
+    fireEvent.keyDown(screen.getByRole("dialog"), { key: "Escape" });
+    expect(document.activeElement).toBe(openBtn);
   });
 });
