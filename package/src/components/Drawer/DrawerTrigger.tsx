@@ -8,8 +8,9 @@ export const DrawerTrigger: FC<PropsWithChildren<unknown>> = ({ children }) => {
     useNonNullableContext(drawerContext);
 
   const toggle = useCallback(() => {
-    setIsOpen(!isOpen);
-    onOpenChange && onOpenChange(!isOpen);
+    const next = !isOpen;
+    setIsOpen(next);
+    onOpenChange?.(next);
   }, [isOpen, setIsOpen, onOpenChange]);
 
   const handleKeyDown = useCallback(
