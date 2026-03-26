@@ -32,7 +32,7 @@ export const Artwork: FC = () => {
         <div
           className="artwork-fallback"
           role="img"
-          aria-label={track?.name || "No artwork available"}
+          aria-label={altText}
           style={coverImgsCss?.artwork}
         >
           {track?.name || "♪"}
