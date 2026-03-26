@@ -73,6 +73,9 @@ export const DrawerContainer = styled.div`
     cursor: pointer;
     position: absolute;
     display: flex;
+    &[aria-expanded="true"] svg {
+      color: var(--rm-audio-player-sortable-list-button-active);
+    }
   }
 
   .drawer-content-wrapper {

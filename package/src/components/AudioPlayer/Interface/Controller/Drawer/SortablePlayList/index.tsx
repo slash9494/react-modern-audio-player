@@ -1,18 +1,16 @@
-import { FC, useState } from "react";
+import { FC } from "react";
 import Drawer from "@/components/Drawer";
 import { PlayList } from "./Content";
 import { PlayListIcon } from "./PlayListIcon";
 
 export const SortablePlayList: FC = () => {
-  const [isOpen, setIsOpen] = useState<boolean>(false);
-
   return (
-    <Drawer onOpenChange={setIsOpen}>
+    <Drawer>
       <Drawer.Trigger aria-label="Playlist" data-testid="playlist-trigger-btn">
-        <PlayListIcon isOpen={isOpen} />
+        <PlayListIcon />
       </Drawer.Trigger>
       <Drawer.Content aria-label="Playlist">
-        <PlayList isOpen={isOpen} setIsOpen={setIsOpen} />
+        <PlayList />
       </Drawer.Content>
     </Drawer>
   );
