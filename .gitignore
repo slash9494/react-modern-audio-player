@@ -34,3 +34,6 @@ test-results/
 # Yarn PnP
 .pnp.cjs
 .pnp.loader.mjs
+
+# Insight cache
+.insights/
