@@ -15,8 +15,10 @@ const DrawerWrapper = ({
 }) => {
   const [isOpen, setIsOpen] = useState(initialOpen);
   return (
-    <drawerContext.Provider value={{ isOpen, setIsOpen, onOpenChange }}>
-      <DrawerContent isWithAnimation={false}>
+    <drawerContext.Provider
+      value={{ isOpen, setIsOpen, onOpenChange, drawerId: "test-drawer" }}
+    >
+      <DrawerContent isWithAnimation={false} aria-label="Playlist">
         <button>Item 1</button>
         <button>Item 2</button>
       </DrawerContent>
@@ -43,9 +45,9 @@ describe("DrawerContent accessibility", () => {
     );
   });
 
-  it('has id="playlist-drawer"', () => {
+  it("has an id attribute", () => {
     render(<DrawerWrapper initialOpen={true} />);
-    expect(screen.getByRole("dialog")).toHaveAttribute("id", "playlist-drawer");
+    expect(screen.getByRole("dialog")).toHaveAttribute("id", "test-drawer");
   });
 
   it("Escape key closes the drawer", () => {
@@ -85,7 +87,12 @@ describe("DrawerContent focus management", () => {
 
     render(
       <drawerContext.Provider
-        value={{ isOpen: true, setIsOpen: vi.fn(), onOpenChange: undefined }}
+        value={{
+          isOpen: true,
+          setIsOpen: vi.fn(),
+          onOpenChange: undefined,
+          drawerId: "test-drawer",
+        }}
       >
         <DrawerContent isWithAnimation={true}>
           <button>Item 1</button>
@@ -109,7 +116,12 @@ describe("DrawerContent focus management", () => {
         <>
           <button onClick={() => setIsOpen(true)}>Open</button>
           <drawerContext.Provider
-            value={{ isOpen, setIsOpen, onOpenChange: undefined }}
+            value={{
+              isOpen,
+              setIsOpen,
+              onOpenChange: undefined,
+              drawerId: "test-drawer",
+            }}
           >
             <DrawerContent isWithAnimation={false}>
               <button>Item 1</button>

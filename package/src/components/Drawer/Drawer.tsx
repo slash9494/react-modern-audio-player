@@ -2,6 +2,7 @@ import React, {
   PropsWithChildren,
   useRef,
   FC,
+  useId,
   useLayoutEffect,
   useState,
 } from "react";
@@ -27,6 +28,7 @@ const Drawer: FC<PropsWithChildren<DrawerProps>> = ({
   const drawerRef = useRef<HTMLDivElement>(null);
   const [trigger, content] = React.Children.toArray(children);
   const [isOpen, setIsOpen] = useState(false);
+  const drawerId = useId();
 
   useClickOutside(drawerRef, () => {
     if (!outboundClickActive) return;
@@ -41,7 +43,9 @@ const Drawer: FC<PropsWithChildren<DrawerProps>> = ({
 
   return (
     <DrawerContainer className="drawer-container" ref={drawerRef}>
-      <drawerContext.Provider value={{ isOpen, setIsOpen, onOpenChange }}>
+      <drawerContext.Provider
+        value={{ isOpen, setIsOpen, onOpenChange, drawerId }}
+      >
         <>
           {placement === "top" && content}
           {trigger}

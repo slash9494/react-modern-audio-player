@@ -13,7 +13,7 @@ export const DrawerTrigger: FC<DrawerTriggerProps> = ({
   "aria-label": ariaLabel,
   "data-testid": testId,
 }) => {
-  const { isOpen, setIsOpen, onOpenChange } =
+  const { isOpen, setIsOpen, onOpenChange, drawerId } =
     useNonNullableContext(drawerContext);
 
   const toggle = useCallback(() => {
@@ -27,7 +27,7 @@ export const DrawerTrigger: FC<DrawerTriggerProps> = ({
       className="drawer-trigger-wrapper"
       type="button"
       aria-expanded={isOpen}
-      aria-controls="playlist-drawer"
+      aria-controls={drawerId}
       aria-label={ariaLabel}
       data-testid={testId}
       onClick={toggle}

@@ -11,7 +11,7 @@ export const SortablePlayList: FC = () => {
       <Drawer.Trigger aria-label="Playlist" data-testid="playlist-trigger-btn">
         <PlayListIcon isOpen={isOpen} />
       </Drawer.Trigger>
-      <Drawer.Content>
+      <Drawer.Content aria-label="Playlist">
         <PlayList isOpen={isOpen} setIsOpen={setIsOpen} />
       </Drawer.Content>
     </Drawer>

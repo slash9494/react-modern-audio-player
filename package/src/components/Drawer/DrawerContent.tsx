@@ -14,6 +14,7 @@ export type DrawerContentPlacement = "top" | "bottom" | "left" | "right";
 
 export type DrawerContentProps = {
   isWithAnimation?: boolean;
+  "aria-label"?: string;
 };
 
 const FOCUSABLE_SELECTORS =
@@ -22,8 +23,9 @@ const FOCUSABLE_SELECTORS =
 export const DrawerContent: FC<PropsWithChildren<DrawerContentProps>> = ({
   children,
   isWithAnimation = true,
+  "aria-label": ariaLabel,
 }) => {
-  const { isOpen, setIsOpen, onOpenChange } =
+  const { isOpen, setIsOpen, onOpenChange, drawerId } =
     useNonNullableContext(drawerContext);
 
   const containerRef = useRef<HTMLDivElement>(null);
@@ -44,11 +46,15 @@ export const DrawerContent: FC<PropsWithChildren<DrawerContentProps>> = ({
     focusFirst();
   }, [focusFirst]);
 
+  const onExited = useCallback(() => {
+    (previousFocusRef.current as HTMLElement | null)?.focus();
+  }, []);
+
   useEffect(() => {
     if (isOpen && !isWithAnimation) {
       previousFocusRef.current = document.activeElement;
       focusFirst();
-    } else if (!isOpen) {
+    } else if (!isOpen && !isWithAnimation) {
       (previousFocusRef.current as HTMLElement | null)?.focus();
     }
   }, [isOpen, isWithAnimation, focusFirst]);
@@ -87,8 +93,8 @@ export const DrawerContent: FC<PropsWithChildren<DrawerContentProps>> = ({
       className="drawer-content-container"
       role="dialog"
       aria-modal="true"
-      aria-label="Playlist"
-      id="playlist-drawer"
+      aria-label={ariaLabel}
+      id={drawerId}
       onKeyDown={handleKeyDown}
     >
       {children}
@@ -103,10 +109,11 @@ export const DrawerContent: FC<PropsWithChildren<DrawerContentProps>> = ({
       leaveTime={60}
       clearTime={300}
       onEntered={onEntered}
+      onExited={onExited}
     >
       {Content}
     </CssTransition>
-  ) : (
+  ) : isOpen ? (
     Content
-  );
+  ) : null;
 };
