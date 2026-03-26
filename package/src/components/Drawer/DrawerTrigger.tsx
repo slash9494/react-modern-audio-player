@@ -1,9 +1,18 @@
 import { useNonNullableContext } from "@/hooks/useNonNullableContext";
-import { FC, KeyboardEvent, PropsWithChildren, useCallback } from "react";
-import styled from "styled-components";
+import { StyledBtn } from "@/ui/StyledBtn";
+import { FC, PropsWithChildren, useCallback } from "react";
 import { drawerContext } from "./DrawerContext";
 
-export const DrawerTrigger: FC<PropsWithChildren<unknown>> = ({ children }) => {
+type DrawerTriggerProps = PropsWithChildren<{
+  "aria-label"?: string;
+  "data-testid"?: string;
+}>;
+
+export const DrawerTrigger: FC<DrawerTriggerProps> = ({
+  children,
+  "aria-label": ariaLabel,
+  "data-testid": testId,
+}) => {
   const { isOpen, setIsOpen, onOpenChange } =
     useNonNullableContext(drawerContext);
 
@@ -13,34 +22,17 @@ export const DrawerTrigger: FC<PropsWithChildren<unknown>> = ({ children }) => {
     onOpenChange?.(next);
   }, [isOpen, setIsOpen, onOpenChange]);
 
-  const handleKeyDown = useCallback(
-    (e: KeyboardEvent<HTMLDivElement>) => {
-      if (e.key === "Enter" || e.key === " ") {
-        e.preventDefault();
-        toggle();
-      }
-    },
-    [toggle]
-  );
-
   return (
-    <TriggerWrapper
+    <StyledBtn
       className="drawer-trigger-wrapper"
-      role="button"
-      tabIndex={0}
+      type="button"
       aria-expanded={isOpen}
       aria-controls="playlist-drawer"
+      aria-label={ariaLabel}
+      data-testid={testId}
       onClick={toggle}
-      onKeyDown={handleKeyDown}
     >
       {children}
-    </TriggerWrapper>
+    </StyledBtn>
   );
 };
-
-const TriggerWrapper = styled.div`
-  &:focus-visible {
-    outline: 2px solid var(--rm-audio-player-progress-bar);
-    outline-offset: 2px;
-  }
-`;
