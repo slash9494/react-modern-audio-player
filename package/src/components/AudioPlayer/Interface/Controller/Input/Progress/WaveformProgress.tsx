@@ -3,6 +3,7 @@ import { useNonNullableContext } from "@/hooks/useNonNullableContext";
 import { getTimeWithPadStart } from "@/utils/getTime";
 import { FC, useCallback, useEffect, useRef } from "react";
 import styled, { css } from "styled-components";
+import { safeRatio } from "@/utils/safeRatio";
 import { useProgress } from "./useProgress";
 import { useProgressKeyDown } from "./useProgressKeyDown";
 import { useWaveSurfer } from "./useWavesurfer";
@@ -46,9 +47,11 @@ export const WaveformProgress: FC<{ isActive: boolean }> = ({ isActive }) => {
     )
       return;
 
-    elementRefs.waveformInst.seekTo(
-      elementRefs.audioEl.currentTime / elementRefs.audioEl.duration
+    const ratio = safeRatio(
+      elementRefs.audioEl.currentTime,
+      elementRefs.audioEl.duration
     );
+    elementRefs.waveformInst.seekTo(ratio);
   }, [
     isActive,
     curAudioState.isLoadedMetaData,
@@ -61,9 +64,8 @@ export const WaveformProgress: FC<{ isActive: boolean }> = ({ isActive }) => {
 
   const onSeek = useCallback(
     (newTime: number, duration: number) => {
-      const ratio = newTime / duration;
-      if (duration > 0 && isFinite(ratio))
-        elementRefs?.waveformInst?.seekTo(ratio);
+      if (!duration) return;
+      elementRefs?.waveformInst?.seekTo(safeRatio(newTime, duration));
     },
     [elementRefs?.waveformInst]
   );

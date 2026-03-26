@@ -2,6 +2,7 @@ import { audioPlayerStateContext } from "@/components/AudioPlayer/Context";
 import { useNonNullableContext } from "@/hooks/useNonNullableContext";
 import { useRefsDispatch } from "@/hooks/useRefsDispatch";
 import { getTimeWithPadStart } from "@/utils/getTime";
+import { safeRatio } from "@/utils/safeRatio";
 import { FC, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { useProgress } from "./useProgress";
@@ -37,14 +38,14 @@ export const BarProgress: FC<{ isActive: boolean }> = ({ isActive }) => {
       return;
 
     const progressBarWidth = progressBarRef.current.clientWidth;
-    const progressHandlePosition =
-      (elementRefs.audioEl.currentTime / elementRefs.audioEl.duration) *
-      progressBarWidth;
-
-    progressValueRef.current.style.transform = `scaleX(${
-      elementRefs.audioEl.currentTime / elementRefs.audioEl.duration
-    })`;
-    progressHandleRef.current.style.transform = `translateX(${progressHandlePosition}px)`;
+    const ratio = safeRatio(
+      elementRefs.audioEl.currentTime,
+      elementRefs.audioEl.duration
+    );
+    progressValueRef.current.style.transform = `scaleX(${ratio})`;
+    progressHandleRef.current.style.transform = `translateX(${
+      ratio * progressBarWidth
+    }px)`;
   }, [isActive, curAudioState.isLoadedMetaData]);
 
   const eventProps = useProgress();
