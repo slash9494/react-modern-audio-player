@@ -1,9 +1,10 @@
 import { audioPlayerStateContext } from "@/components/AudioPlayer/Context";
 import { useNonNullableContext } from "@/hooks/useNonNullableContext";
 import { getTimeWithPadStart } from "@/utils/getTime";
-import React, { FC, useCallback, useEffect, useRef } from "react";
+import { FC, useCallback, useEffect, useRef } from "react";
 import styled, { css } from "styled-components";
 import { useProgress } from "./useProgress";
+import { useProgressKeyDown } from "./useProgressKeyDown";
 import { useWaveSurfer } from "./useWavesurfer";
 
 const WaveformWrapper = styled.div`
@@ -58,44 +59,13 @@ export const WaveformProgress: FC<{ isActive: boolean }> = ({ isActive }) => {
 
   const eventProps = useProgress();
 
-  const handleKeyDown = useCallback(
-    (event: React.KeyboardEvent<HTMLDivElement>) => {
-      if (!elementRefs?.audioEl || !curAudioState?.isLoadedMetaData) return;
-      const audio = elementRefs.audioEl;
-      let newTime: number | null = null;
-      switch (event.key) {
-        case "ArrowRight":
-        case "ArrowUp":
-          event.preventDefault();
-          newTime = Math.min(audio.currentTime + 5, audio.duration);
-          break;
-        case "ArrowLeft":
-        case "ArrowDown":
-          event.preventDefault();
-          newTime = Math.max(audio.currentTime - 5, 0);
-          break;
-        case "Home":
-          event.preventDefault();
-          newTime = 0;
-          break;
-        case "End":
-          event.preventDefault();
-          newTime = audio.duration;
-          break;
-        default:
-          break;
-      }
-      if (newTime !== null) {
-        audio.currentTime = newTime;
-        elementRefs.waveformInst?.seekTo(newTime / audio.duration);
-      }
+  const onSeek = useCallback(
+    (newTime: number, duration: number) => {
+      elementRefs?.waveformInst?.seekTo(newTime / duration);
     },
-    [
-      elementRefs?.audioEl,
-      elementRefs?.waveformInst,
-      curAudioState?.isLoadedMetaData,
-    ]
+    [elementRefs?.waveformInst]
   );
+  const handleKeyDown = useProgressKeyDown(onSeek);
 
   return (
     <WaveformWrapper className="waveform-wrapper" isActive={isActive}>

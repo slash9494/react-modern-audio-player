@@ -2,6 +2,7 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
 import { axe } from "vitest-axe";
 import { BarProgress } from "../BarProgress";
+import type { AudioPlayerStateContext } from "@/components/AudioPlayer/Context/StateContext";
 import { audioPlayerStateContext } from "@/components/AudioPlayer/Context/StateContext";
 import { audioPlayerDispatchContext } from "@/components/AudioPlayer/Context/dispatchContext";
 
@@ -32,17 +33,14 @@ const makeState = () => ({
   playListPlacement: "bottom" as const,
   elementRefs: {
     audioEl: mockAudioEl,
-    progressBarEl: { current: null },
-    progressValueEl: { current: null },
-    progressHandleEl: { current: null },
-    trackCurTimeEl: { current: null },
-    trackDurationEl: { current: null },
   },
 });
 
 const renderBar = () =>
   render(
-    <audioPlayerStateContext.Provider value={makeState() as any}>
+    <audioPlayerStateContext.Provider
+      value={makeState() as AudioPlayerStateContext}
+    >
       <audioPlayerDispatchContext.Provider value={mockDispatch}>
         <BarProgress isActive={true} />
       </audioPlayerDispatchContext.Provider>

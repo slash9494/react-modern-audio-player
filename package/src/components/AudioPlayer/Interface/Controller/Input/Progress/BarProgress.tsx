@@ -2,9 +2,10 @@ import { audioPlayerStateContext } from "@/components/AudioPlayer/Context";
 import { useNonNullableContext } from "@/hooks/useNonNullableContext";
 import { useRefsDispatch } from "@/hooks/useRefsDispatch";
 import { getTimeWithPadStart } from "@/utils/getTime";
-import React, { FC, useEffect, useRef } from "react";
+import { FC, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { useProgress } from "./useProgress";
+import { useProgressKeyDown } from "./useProgressKeyDown";
 
 export const BarProgress: FC<{ isActive: boolean }> = ({ isActive }) => {
   const progressBarRef = useRef<HTMLDivElement>(null);
@@ -47,33 +48,7 @@ export const BarProgress: FC<{ isActive: boolean }> = ({ isActive }) => {
   }, [isActive, curAudioState.isLoadedMetaData]);
 
   const eventProps = useProgress();
-
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
-    if (!elementRefs?.audioEl || !curAudioState?.isLoadedMetaData) return;
-    const audio = elementRefs.audioEl;
-    switch (event.key) {
-      case "ArrowRight":
-      case "ArrowUp":
-        event.preventDefault();
-        audio.currentTime = Math.min(audio.currentTime + 5, audio.duration);
-        break;
-      case "ArrowLeft":
-      case "ArrowDown":
-        event.preventDefault();
-        audio.currentTime = Math.max(audio.currentTime - 5, 0);
-        break;
-      case "Home":
-        event.preventDefault();
-        audio.currentTime = 0;
-        break;
-      case "End":
-        event.preventDefault();
-        audio.currentTime = audio.duration;
-        break;
-      default:
-        break;
-    }
-  };
+  const handleKeyDown = useProgressKeyDown();
 
   return isActive ? (
     <BarProgressWrapper
