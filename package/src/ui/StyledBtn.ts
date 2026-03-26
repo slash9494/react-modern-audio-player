@@ -18,7 +18,7 @@ export const StyledBtn = styled.button`
     transform: scale(1.1);
   }
   &:focus-visible {
-    outline: 2px solid var(--rm-audio-player-progress-bar);
+    outline: 2px solid var(--rm-audio-player-progress-bar, `#0072f5`);
     outline-offset: 2px;
   }
   &:active {
