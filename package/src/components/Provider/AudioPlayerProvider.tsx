@@ -7,6 +7,7 @@ import {
   defaultInterfacePlacementMaxLength,
   Placements,
 } from "@/components/AudioPlayer/Context";
+import { clampVolume } from "@/utils/clampVolume";
 import { PropsWithChildren, useReducer } from "react";
 import { AudioPlayerProps } from "../AudioPlayer/Player";
 
@@ -25,10 +26,13 @@ export const AudioPlayerProvider = <
   } = props;
 
   const curAudioState: AudioState = {
-    isPlaying: audioInitialState?.isPlaying || false,
-    repeatType: audioInitialState?.repeatType || "ALL",
-    volume: audioInitialState?.volume || 1,
-    muted: audioInitialState?.muted,
+    isPlaying: audioInitialState?.isPlaying === true,
+    repeatType: audioInitialState?.repeatType ?? "ALL",
+    volume:
+      typeof audioInitialState?.volume === "number"
+        ? clampVolume(audioInitialState.volume)
+        : 1,
+    muted: audioInitialState?.muted === true,
   };
 
   const activeUI = activeUIProp || {

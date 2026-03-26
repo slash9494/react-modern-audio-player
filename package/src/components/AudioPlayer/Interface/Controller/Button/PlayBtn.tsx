@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { useNonNullableContext } from "@/hooks/useNonNullableContext";
 import { audioPlayerDispatchContext } from "@/components/AudioPlayer/Context/dispatchContext";
 import { audioPlayerStateContext } from "@/components/AudioPlayer/Context/StateContext";
-import { StyledBtn } from "./StyledBtn";
+import { StyledBtn } from "@/ui/StyledBtn";
 import { MdPauseCircleFilled, MdPlayCircleFilled } from "react-icons/md";
 import { Icon } from "../Icon";
 
@@ -34,6 +34,8 @@ export const PlayBtn: FC = () => {
 
   return (
     <StyledPlayBtn
+      type="button"
+      aria-label={curAudioState.isPlaying ? "Pause" : "Play"}
       onClick={changePlayState}
       className="play-button"
       data-testid="play-btn"

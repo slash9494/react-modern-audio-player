@@ -3,11 +3,10 @@ import {
   audioPlayerDispatchContext,
   audioPlayerStateContext,
 } from "@/components/AudioPlayer/Context";
-import { CssTransitionProps } from "@/components/CssTransition";
+import { CssTransitionProps } from "@/ui/CssTransition";
 import { UseSortableListItemProps } from "@/components/SortableList/useSortableListItem";
 import { useNonNullableContext } from "@/hooks/useNonNullableContext";
 import { useCallback, useState } from "react";
-import { SortablePlayListProps } from ".";
 
 interface UsePlayListReturn {
   cssTransitionEventProps: Partial<CssTransitionProps>;
@@ -23,7 +22,7 @@ interface UsePlayListReturn {
 export const usePlayList = ({
   setIsOpen,
 }: {
-  setIsOpen: SortablePlayListProps["setIsOpen"];
+  setIsOpen: (isOpen: boolean) => void;
 }): UsePlayListReturn => {
   const { playList, activeUI } = useNonNullableContext(audioPlayerStateContext);
   const audioPlayerDispatch = useNonNullableContext(audioPlayerDispatchContext);
