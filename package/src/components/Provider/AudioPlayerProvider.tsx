@@ -10,6 +10,7 @@ import { playbackContext } from "@/components/AudioPlayer/Context/PlaybackContex
 import { trackContext } from "@/components/AudioPlayer/Context/TrackContext";
 import { uiContext } from "@/components/AudioPlayer/Context/UIContext";
 import { resourceContext } from "@/components/AudioPlayer/Context/ResourceContext";
+import { clampVolume } from "@/utils/clampVolume";
 import { PropsWithChildren, useMemo, useReducer } from "react";
 import { AudioPlayerProps } from "../AudioPlayer/Player";
 
@@ -28,10 +29,13 @@ export const AudioPlayerProvider = <
   } = props;
 
   const curAudioState: AudioState = {
-    isPlaying: audioInitialState?.isPlaying || false,
-    repeatType: audioInitialState?.repeatType || "ALL",
-    volume: audioInitialState?.volume || 1,
-    muted: audioInitialState?.muted,
+    isPlaying: audioInitialState?.isPlaying === true,
+    repeatType: audioInitialState?.repeatType ?? "ALL",
+    volume:
+      typeof audioInitialState?.volume === "number"
+        ? clampVolume(audioInitialState.volume)
+        : 1,
+    muted: audioInitialState?.muted === true,
   };
 
   const activeUI = activeUIProp || {

@@ -4,7 +4,7 @@ import { useNonNullableContext } from "@/hooks/useNonNullableContext";
 import { audioPlayerDispatchContext } from "@/components/AudioPlayer/Context/dispatchContext";
 import { usePlaybackContext } from "@/hooks/context/usePlaybackContext";
 import { useResourceContext } from "@/hooks/context/useResourceContext";
-import { StyledBtn } from "./StyledBtn";
+import { StyledBtn } from "@/ui/StyledBtn";
 import { MdPauseCircleFilled, MdPlayCircleFilled } from "react-icons/md";
 import { Icon } from "../Icon";
 
@@ -22,6 +22,8 @@ export const PlayBtn: FC = memo(function PlayBtn() {
 
   return (
     <StyledPlayBtn
+      type="button"
+      aria-label={curAudioState.isPlaying ? "Pause" : "Play"}
       onClick={changePlayState}
       className="play-button"
       data-testid="play-btn"

@@ -2,13 +2,12 @@ import {
   AudioData,
   audioPlayerDispatchContext,
 } from "@/components/AudioPlayer/Context";
-import { CssTransitionProps } from "@/components/CssTransition";
+import { CssTransitionProps } from "@/ui/CssTransition";
 import { UseSortableListItemProps } from "@/components/SortableList/useSortableListItem";
 import { useNonNullableContext } from "@/hooks/useNonNullableContext";
 import { useTrackContext } from "@/hooks/context/useTrackContext";
 import { useUIContext } from "@/hooks/context/useUIContext";
 import { useCallback, useState } from "react";
-import { SortablePlayListProps } from ".";
 
 interface UsePlayListReturn {
   cssTransitionEventProps: Partial<CssTransitionProps>;
@@ -24,7 +23,7 @@ interface UsePlayListReturn {
 export const usePlayList = ({
   setIsOpen,
 }: {
-  setIsOpen: SortablePlayListProps["setIsOpen"];
+  setIsOpen: (isOpen: boolean) => void;
 }): UsePlayListReturn => {
   const { playList } = useTrackContext();
   const { activeUI } = useUIContext();

@@ -28,7 +28,7 @@ export interface AudioPlayerStateContext {
   coverImgsCss?: CoverImgsCss;
 }
 
-export type InitialStates = AudioState & {
+export type InitialStates = Partial<AudioState> & {
   curPlayId: number;
 };
 

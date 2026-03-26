@@ -18,10 +18,17 @@ export const PlayListItem = memo(function PlayListItem({
         curPlayed: curPlayId === data.id,
       })}
       data-testid="playlist-item"
+      aria-current={curPlayId === data.id ? "true" : undefined}
     >
       <div className="list-item-contents-wrapper">
         <div className="album-cover-wrapper">
-          <img src={data.img} alt="" style={coverImgsCss?.listThumbnail} />
+          {data.img && (
+            <img
+              src={data.img}
+              alt={data.name || "Album thumbnail"}
+              style={coverImgsCss?.listThumbnail}
+            />
+          )}
         </div>
         <div className="album-info-wrapper">
           {data.writer && <span className="writer">{data.writer}</span>}

@@ -3,7 +3,7 @@ import { useNonNullableContext } from "@/hooks/useNonNullableContext";
 import { audioPlayerDispatchContext } from "@/components/AudioPlayer/Context/dispatchContext";
 import { useResourceContext } from "@/hooks/context/useResourceContext";
 import { FC, useMemo } from "react";
-import { StyledBtn } from "./StyledBtn";
+import { StyledBtn } from "@/ui/StyledBtn";
 import { ImPrevious, ImNext } from "react-icons/im";
 import { Icon } from "../Icon";
 
@@ -38,6 +38,8 @@ export const PrevNnextBtn: FC<PrevNnextBtnProps> = memo(function PrevNnextBtn({
 
   return visible ? (
     <StyledBtn
+      type="button"
+      aria-label={type === "prev" ? "Previous track" : "Next track"}
       onClick={changeAudio}
       className="prev-n-next-button"
       data-testid={`${type}-btn`}

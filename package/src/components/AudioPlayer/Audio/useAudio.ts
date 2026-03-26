@@ -1,6 +1,7 @@
 import { useNonNullableContext } from "@/hooks/useNonNullableContext";
 import { getTimeWithPadStart } from "@/utils/getTime";
 import { resetAudioValues } from "@/utils/resetAudioValues";
+import { safeRatio } from "@/utils/safeRatio";
 import { HTMLAttributes, SyntheticEvent, useCallback, useEffect } from "react";
 import { audioPlayerDispatchContext } from "../Context";
 import { usePlaybackContext } from "@/hooks/context/usePlaybackContext";
@@ -30,11 +31,11 @@ export const useAudio = (): HTMLAttributes<HTMLAudioElement> => {
 
       if (progressBarEl && progressValueEl && progressHandleEl) {
         const progressBarWidth = progressBarEl.clientWidth;
-        const progressHandlePosition =
-          (currentTime / duration) * progressBarWidth;
-
-        progressValueEl.style.transform = `scaleX(${currentTime / duration})`;
-        progressHandleEl.style.transform = `translateX(${progressHandlePosition}px)`;
+        const ratio = safeRatio(currentTime, duration);
+        progressValueEl.style.transform = `scaleX(${ratio})`;
+        progressHandleEl.style.transform = `translateX(${
+          ratio * progressBarWidth
+        }px)`;
       }
     },
     [elementRefs]

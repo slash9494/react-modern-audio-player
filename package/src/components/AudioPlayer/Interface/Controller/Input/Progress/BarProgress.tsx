@@ -1,9 +1,12 @@
 import { usePlaybackContext } from "@/hooks/context/usePlaybackContext";
 import { useResourceContext } from "@/hooks/context/useResourceContext";
 import { useRefsDispatch } from "@/hooks/useRefsDispatch";
+import { getTimeWithPadStart } from "@/utils/getTime";
+import { safeRatio } from "@/utils/safeRatio";
 import { FC, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { useProgress } from "./useProgress";
+import { useProgressKeyDown } from "./useProgressKeyDown";
 
 export const BarProgress: FC<{ isActive: boolean }> = ({ isActive }) => {
   const progressBarRef = useRef<HTMLDivElement>(null);
@@ -34,22 +37,42 @@ export const BarProgress: FC<{ isActive: boolean }> = ({ isActive }) => {
       return;
 
     const progressBarWidth = progressBarRef.current.clientWidth;
-    const progressHandlePosition =
-      (elementRefs.audioEl.currentTime / elementRefs.audioEl.duration) *
-      progressBarWidth;
-
-    progressValueRef.current.style.transform = `scaleX(${
-      elementRefs.audioEl.currentTime / elementRefs.audioEl.duration
-    })`;
-    progressHandleRef.current.style.transform = `translateX(${progressHandlePosition}px)`;
-  }, [isActive, curAudioState.isLoadedMetaData]);
+    const ratio = safeRatio(
+      elementRefs.audioEl.currentTime,
+      elementRefs.audioEl.duration
+    );
+    progressValueRef.current.style.transform = `scaleX(${ratio})`;
+    progressHandleRef.current.style.transform = `translateX(${
+      ratio * progressBarWidth
+    }px)`;
+  }, [
+    isActive,
+    curAudioState.isLoadedMetaData,
+    curAudioState.isPlaying,
+    elementRefs?.audioEl,
+  ]);
 
   const eventProps = useProgress();
+  const handleKeyDown = useProgressKeyDown();
 
   return isActive ? (
     <BarProgressWrapper
       className="bar-progress-wrapper"
       data-testid="progress-bar"
+      role="slider"
+      tabIndex={0}
+      aria-label="Seek"
+      aria-valuemin={0}
+      aria-valuemax={100}
+      aria-valuenow={Math.round(
+        ((elementRefs?.audioEl?.currentTime ?? 0) /
+          (elementRefs?.audioEl?.duration || 1)) *
+          100
+      )}
+      aria-valuetext={`${getTimeWithPadStart(
+        elementRefs?.audioEl?.currentTime ?? 0
+      )} of ${getTimeWithPadStart(elementRefs?.audioEl?.duration ?? 0)}`}
+      onKeyDown={handleKeyDown}
       {...eventProps}
     >
       <div className="rm-player-progress-bar" ref={progressBarRef}>

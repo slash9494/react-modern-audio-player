@@ -4,16 +4,16 @@ This repository uses modular agent instructions.
 
 Load base agent files only when the task directly requires them. Do not read all files unconditionally.
 
-| Trigger condition | File to load |
-|---|---|
-| Analyzing code, understanding structure, debugging | `agents/base/analysis.md` |
-| Writing or reviewing a git commit message | `agents/base/commit.md` (**REQUIRED**: Read this file before creating any commit — no exceptions) |
-| Creating or reviewing a pull request | `agents/base/pr.md` |
-| Performing a release or version bump | `agents/base/release.md` |
-| Unsure about the development workflow or task sequence | `agents/base/workflow.md` |
-| Starting a new task or doing branch-related work | `agents/base/branch.md` |
-| Writing, reviewing, or analyzing any test code | `agents/base/testing.md` |
-| Performing overhaul-specific library analysis | `agents/overhaul/library-analysis.md` |
+| Trigger condition                                      | File to load                                                                                      |
+| ------------------------------------------------------ | ------------------------------------------------------------------------------------------------- |
+| Analyzing code, understanding structure, debugging     | `agents/base/analysis.md`                                                                         |
+| Writing or reviewing a git commit message              | `agents/base/commit.md` (**REQUIRED**: Read this file before creating any commit — no exceptions) |
+| Creating or reviewing a pull request                   | `agents/base/pr.md`                                                                               |
+| Performing a release or version bump                   | `agents/base/release.md`                                                                          |
+| Unsure about the development workflow or task sequence | `agents/base/workflow.md`                                                                         |
+| Starting a new task or doing branch-related work       | `agents/base/branch.md`                                                                           |
+| Writing, reviewing, or analyzing any test code         | `agents/base/testing.md`                                                                          |
+| Performing overhaul-specific library analysis          | `agents/overhaul/library-analysis.md`                                                             |
 
 If the branch starts with `v*/`, also load the corresponding agent from `agents/overhaul/`.
 
@@ -76,6 +76,46 @@ CREATE PR
 REVIEW
 MERGE
 REPEAT
+
+---
+
+## CHANGELOG Maintenance Policy
+
+Whenever a breaking change is introduced, always record it in `package/CHANGELOG.md` under the target version's `### Breaking Changes` section.
+
+A breaking change includes any of the following:
+
+- Public API type narrowing or removal (props, method signatures, exported types)
+- Renamed or removed exports
+- Behavior changes that require consumer code updates
+
+Format:
+
+```markdown
+## vX.Y.Z (Unreleased)
+
+### Breaking Changes
+
+- **`TypeName.field` change summary**: `old type` → `new type`
+  - Describe what consumers should do instead
+```
+
+If the target version section does not exist yet, create it above the previous version.
+
+---
+
+## README Maintenance Policy
+
+Whenever code or documentation is modified, always review `package/README.md` for related content and update it if needed.
+
+This applies to:
+
+- Public API changes (props, types, method signatures)
+- New or removed features
+- Changed default behaviors or configuration options
+- Any type changes that affect how users consume the library
+
+If a change has no user-facing impact, no README update is required — but always explicitly verify this before skipping.
 
 ---
 

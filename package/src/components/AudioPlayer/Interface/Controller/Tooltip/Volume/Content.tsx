@@ -51,6 +51,7 @@ export const VolumeSlider: FC<{ placement: VolumeSliderPlacement }> = ({
           min="0"
           max="1"
           step="0.01"
+          aria-label="Volume"
         />
       </div>
     </VolumeSliderContainer>
@@ -159,12 +160,11 @@ const VolumeSliderContainer = styled.div`
         width: 92px;
         -webkit-appearance: none;
         background-color: var(--rm-audio-player-volume-background);
-        outline-color: transparent;
         transform-origin: 75px 75px;
         transform: rotate(-90deg);
       }
 
-      &:focus {
+      &:focus:not(:focus-visible) {
         outline-color: transparent;
       }
 
