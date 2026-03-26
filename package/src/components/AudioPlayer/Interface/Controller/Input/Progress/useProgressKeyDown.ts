@@ -36,7 +36,7 @@ export const useProgressKeyDown = (
         default:
           break;
       }
-      if (newTime !== null) {
+      if (newTime !== null && isFinite(audio.duration)) {
         audio.currentTime = newTime;
         onSeek?.(newTime, audio.duration);
       }
