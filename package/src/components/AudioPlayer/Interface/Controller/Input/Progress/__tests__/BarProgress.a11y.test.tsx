@@ -16,6 +16,7 @@ Object.defineProperty(mockAudioEl, "currentTime", {
 
 beforeEach(() => {
   mockAudioEl.currentTime = 0;
+  mockDispatch.mockClear();
 });
 
 const makeState = () => ({
