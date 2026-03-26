@@ -61,7 +61,7 @@ export const WaveformProgress: FC<{ isActive: boolean }> = ({ isActive }) => {
 
   const onSeek = useCallback(
     (newTime: number, duration: number) => {
-      elementRefs?.waveformInst?.seekTo(newTime / duration);
+      if (duration > 0) elementRefs?.waveformInst?.seekTo(newTime / duration);
     },
     [elementRefs?.waveformInst]
   );
