@@ -2,7 +2,7 @@ import { useNonNullableContext } from "@/hooks/useNonNullableContext";
 import { audioPlayerDispatchContext } from "@/components/AudioPlayer/Context/dispatchContext";
 import { audioPlayerStateContext } from "@/components/AudioPlayer/Context/StateContext";
 import { FC, useMemo } from "react";
-import { StyledBtn } from "./StyledBtn";
+import { StyledBtn } from "@/ui/StyledBtn";
 import { ImPrevious, ImNext } from "react-icons/im";
 import { Icon } from "../Icon";
 

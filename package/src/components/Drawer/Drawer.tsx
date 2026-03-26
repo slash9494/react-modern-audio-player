@@ -9,7 +9,7 @@ import styled from "styled-components";
 import { DrawerContext, drawerContext } from "./DrawerContext";
 import { DrawerTrigger } from "./DrawerTrigger";
 import { DrawerContent } from "./DrawerContent";
-import { appearanceIn, appearanceOut } from "../CssTransition";
+import { appearanceIn, appearanceOut } from "@/ui/CssTransition";
 import useClickOutside from "@/hooks/useClickOutside";
 
 export interface DrawerProps extends Omit<Partial<DrawerContext>, "setIsOpen"> {

@@ -5,7 +5,7 @@ import {
   audioPlayerStateContext,
   RepeatType,
 } from "@/components/AudioPlayer/Context/StateContext";
-import { StyledBtn } from "./StyledBtn";
+import { StyledBtn } from "@/ui/StyledBtn";
 import {
   TbRepeatOff,
   TbRepeatOnce,

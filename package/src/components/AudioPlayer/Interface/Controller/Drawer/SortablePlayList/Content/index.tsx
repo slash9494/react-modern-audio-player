@@ -1,5 +1,5 @@
 import { audioPlayerStateContext } from "@/components/AudioPlayer/Context";
-import { CssTransition } from "@/components/CssTransition";
+import { CssTransition } from "@/ui/CssTransition";
 import SortableList from "@/components/SortableList";
 import { useNonNullableContext } from "@/hooks/useNonNullableContext";
 import { FC } from "react";

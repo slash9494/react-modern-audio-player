@@ -19,7 +19,8 @@
       "@/components/*": ["./src/components/*"],
       "@/hooks/*": ["./src/hooks/*"],
       "@/utils/*": ["./src/utils/*"],
-      "@/styles/*": ["./src/styles/*"]
+      "@/styles/*": ["./src/styles/*"],
+      "@/ui/*": ["./src/ui/*"]
     }
   },
   "include": ["**/*.d.ts", "src", "preview"]

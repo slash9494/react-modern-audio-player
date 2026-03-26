@@ -3,7 +3,7 @@ import {
   audioPlayerDispatchContext,
   audioPlayerStateContext,
 } from "@/components/AudioPlayer/Context";
-import { CssTransitionProps } from "@/components/CssTransition";
+import { CssTransitionProps } from "@/ui/CssTransition";
 import { UseSortableListItemProps } from "@/components/SortableList/useSortableListItem";
 import { useNonNullableContext } from "@/hooks/useNonNullableContext";
 import { useCallback, useState } from "react";

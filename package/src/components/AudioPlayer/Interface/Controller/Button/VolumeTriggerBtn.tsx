@@ -5,7 +5,7 @@ import { forwardRef, useCallback, useMemo } from "react";
 import { IconBaseProps } from "react-icons/lib";
 import { TbVolume3, TbVolume2, TbVolume } from "react-icons/tb";
 import { Icon } from "../Icon";
-import { StyledBtn } from "./StyledBtn";
+import { StyledBtn } from "@/ui/StyledBtn";
 
 export const VolumeTriggerBtn = forwardRef<HTMLButtonElement>((_, ref) => {
   const { curAudioState, customIcons, elementRefs } = useNonNullableContext(

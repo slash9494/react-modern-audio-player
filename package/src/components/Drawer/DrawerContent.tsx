@@ -7,7 +7,7 @@ import {
   useEffect,
   useRef,
 } from "react";
-import { CssTransition } from "../CssTransition";
+import { CssTransition } from "@/ui/CssTransition";
 import { drawerContext } from "./DrawerContext";
 
 export type DrawerContentPlacement = "top" | "bottom" | "left" | "right";

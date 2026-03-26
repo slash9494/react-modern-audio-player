@@ -1,6 +1,10 @@
 import styled from "styled-components";
 
 export const StyledBtn = styled.button`
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
   display: flex;
   width: 20px;
   height: 100%;
@@ -9,7 +13,6 @@ export const StyledBtn = styled.button`
     height: 100%;
     pointer-events: none;
   }
-
   /** //TODO : animation on off  */
   &:hover {
     transform: scale(1.1);
