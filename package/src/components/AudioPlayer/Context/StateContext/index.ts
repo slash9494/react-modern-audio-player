@@ -30,7 +30,7 @@ export interface AudioPlayerStateContext {
   audioResetKey: number;
 }
 
-export type InitialStates = AudioState & {
+export type InitialStates = Partial<AudioState> & {
   curPlayId: number;
 };
 

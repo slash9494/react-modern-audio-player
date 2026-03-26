@@ -1,35 +1,53 @@
 import { audioPlayerStateContext } from "@/components/AudioPlayer/Context";
 import { useNonNullableContext } from "@/hooks/useNonNullableContext";
+import { getTimeWithPadStart } from "@/utils/getTime";
+import { safeRatio } from "@/utils/safeRatio";
 import { FC, useRef } from "react";
 import styled from "styled-components";
 import { useProgress } from "./useProgress";
+import { useProgressKeyDown } from "./useProgressKeyDown";
 
 export const BarProgress: FC<{ isActive: boolean }> = ({ isActive }) => {
   const progressBarRef = useRef<HTMLDivElement>(null);
 
   const { curAudioState } = useNonNullableContext(audioPlayerStateContext);
 
-  const ratio =
-    (curAudioState.currentTime ?? 0) / (curAudioState.duration || 1);
-  const barWidth = progressBarRef.current?.clientWidth ?? 0;
+  const progressBarWidth = progressBarRef.current?.clientWidth ?? 0;
+  const progressRatio = safeRatio(
+    curAudioState.currentTime ?? 0,
+    curAudioState.duration ?? 0
+  );
 
   const eventProps = useProgress();
+  const handleKeyDown = useProgressKeyDown();
 
   return isActive ? (
     <BarProgressWrapper
       className="bar-progress-wrapper"
       data-testid="progress-bar"
+      role="slider"
+      tabIndex={0}
+      aria-label="Seek"
+      aria-valuemin={0}
+      aria-valuemax={100}
+      aria-valuenow={Math.round(progressRatio * 100)}
+      aria-valuetext={`${getTimeWithPadStart(
+        curAudioState.currentTime ?? 0
+      )} of ${getTimeWithPadStart(curAudioState.duration ?? 0)}`}
+      onKeyDown={handleKeyDown}
       {...eventProps}
     >
       <div className="rm-player-progress-bar" ref={progressBarRef}>
         <div
           className="rm-player-progress"
-          style={{ transform: `scaleX(${ratio})` }}
+          style={{ transform: `scaleX(${progressRatio})` }}
         />
       </div>
       <div
         className="rm-player-progress-handle"
-        style={{ transform: `translateX(${ratio * barWidth}px)` }}
+        style={{
+          transform: `translateX(${progressRatio * progressBarWidth}px)`,
+        }}
       />
     </BarProgressWrapper>
   ) : null;

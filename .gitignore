@@ -24,11 +24,16 @@ yarn-error.log*
 releaseNote.md
 
 .claude
-.cursor
 .docs
+
 # Test coverage
 package/coverage/
+test-results/
+.playwright-mcp/
 
 # Yarn PnP
 .pnp.cjs
 .pnp.loader.mjs
+
+# Insight cache
+.insights/

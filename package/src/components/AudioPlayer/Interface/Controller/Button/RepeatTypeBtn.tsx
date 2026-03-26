@@ -1,8 +1,11 @@
 import { FC, useCallback, useMemo } from "react";
 import { useNonNullableContext } from "@/hooks/useNonNullableContext";
 import { audioPlayerDispatchContext } from "@/components/AudioPlayer/Context/dispatchContext";
-import { audioPlayerStateContext } from "@/components/AudioPlayer/Context/StateContext";
-import { StyledBtn } from "./StyledBtn";
+import {
+  audioPlayerStateContext,
+  RepeatType,
+} from "@/components/AudioPlayer/Context/StateContext";
+import { StyledBtn } from "@/ui/StyledBtn";
 import {
   TbRepeatOff,
   TbRepeatOnce,
@@ -10,6 +13,13 @@ import {
   TbArrowsShuffle,
 } from "react-icons/tb";
 import { Icon } from "../Icon";
+
+const repeatAriaLabels: Record<RepeatType, string> = {
+  ALL: "Repeat: All tracks",
+  ONE: "Repeat: One track",
+  NONE: "Repeat: Off",
+  SHUFFLE: "Shuffle",
+};
 
 export const RepeatTypeBtn: FC = () => {
   const { curAudioState, customIcons } = useNonNullableContext(
@@ -56,7 +66,7 @@ export const RepeatTypeBtn: FC = () => {
           />
         );
       default:
-        null;
+        return null;
     }
   }, [
     curAudioState.repeatType,
@@ -68,6 +78,8 @@ export const RepeatTypeBtn: FC = () => {
 
   return (
     <StyledBtn
+      type="button"
+      aria-label={repeatAriaLabels[curAudioState.repeatType]}
       onClick={changeRepeatType}
       className="repeat-button"
       data-testid="repeat-btn"

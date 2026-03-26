@@ -258,6 +258,38 @@ describe("SET_VOLUME", () => {
     });
     expect(next.curAudioState.volume).toBe(0.5);
   });
+
+  it("clamps volume above 1 to 1", () => {
+    const next = audioPlayerReducer(makeBaseState(), {
+      type: "SET_VOLUME",
+      volume: 2,
+    });
+    expect(next.curAudioState.volume).toBe(1);
+  });
+
+  it("clamps volume below 0 to 0", () => {
+    const next = audioPlayerReducer(makeBaseState(), {
+      type: "SET_VOLUME",
+      volume: -1,
+    });
+    expect(next.curAudioState.volume).toBe(0);
+  });
+
+  it("defaults to 1 for NaN", () => {
+    const next = audioPlayerReducer(makeBaseState(), {
+      type: "SET_VOLUME",
+      volume: NaN,
+    });
+    expect(next.curAudioState.volume).toBe(1);
+  });
+
+  it("defaults to 1 for Infinity", () => {
+    const next = audioPlayerReducer(makeBaseState(), {
+      type: "SET_VOLUME",
+      volume: Infinity,
+    });
+    expect(next.curAudioState.volume).toBe(1);
+  });
 });
 
 describe("SET_MUTED", () => {

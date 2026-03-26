@@ -1,3 +1,4 @@
+import { clampVolume } from "@/utils/clampVolume";
 import { getRandomNumber } from "@/utils/getRandomNumber";
 import { AudioContextAction } from "./dispatchContext";
 import { AudioPlayerStateContext } from "./StateContext";
@@ -111,7 +112,7 @@ export const audioPlayerReducer = (
         ...state,
         curAudioState: {
           ...state.curAudioState,
-          volume: action.volume,
+          volume: clampVolume(action.volume),
         },
       };
     case "SET_AUDIO_STATE":
