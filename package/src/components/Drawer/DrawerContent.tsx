@@ -23,7 +23,7 @@ const FOCUSABLE_SELECTORS =
 export const DrawerContent: FC<PropsWithChildren<DrawerContentProps>> = ({
   children,
   isWithAnimation = true,
-  "aria-label": ariaLabel,
+  "aria-label": ariaLabel = "Dialog",
 }) => {
   const { isOpen, setIsOpen, onOpenChange, drawerId } =
     useNonNullableContext(drawerContext);
