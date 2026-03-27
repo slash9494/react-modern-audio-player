@@ -97,7 +97,7 @@ Prop | Type | Default
 `customIcons` | [CustomIcons](#customicons) | undefined 
 `coverImgsCss` | [CoverImgsCss](#coverimgscss) | undefined 
 `placement` | [Placement](#placement) | playListPlacement : "bottom" </br>interfacePlacement :[DefaultInterfacePlacement](#default-interface-placement)
-`rootContainerProps` | [RootContainerProps](#rootcontainerprops) | theme: spectrum-theme-default<br/>width: 100% <br/>position: 'static'<br/>UNSAFE_className: rm-audio-player-provider
+`rootContainerProps` | [RootContainerProps](#rootcontainerprops) | width: 100%<br/>position: 'static'<br/>className: rm-audio-player-provider
 
 ## PlayList
 
@@ -239,18 +239,16 @@ const defaultInterfacePlacement = {
 ```
 
 ## RootContainerProps
-> it is same with spectrum provider props
-> </br>
-> https://react-spectrum.adobe.com/react-spectrum/Provider.html#themes
+
+`rootContainerProps` accepts any standard `HTMLAttributes<HTMLDivElement>` (e.g. `className`, `style`, `data-*`). The root container always has the class `rm-audio-player-provider` applied automatically.
 
 
 # Override Style
 
 ### Theme mode ( dark-mode )
 
-> it apply dark-mode depending on `system-theme` 
-> </br>
-> you can customize color-theme by `css-variable` of `react-spectrum` `theme-default`
+> Dark mode is driven by `system-theme` (`prefers-color-scheme`).
+> You can override any color by redefining the CSS variables below on `.rm-audio-player-provider`.
 
 
 ## ID & Classnames
@@ -265,26 +263,26 @@ const defaultInterfacePlacement = {
 
 ### color variables
 
-```tsx
---rm-audio-player-interface-container:var(--spectrum-global-color-gray-100);
---rm-audio-player-volume-background: #ccc;
---rm-audio-player-volume-panel-background:#f2f2f2;
---rm-audio-player-volume-panel-border:#ccc;
---rm-audio-player-volume-thumb: #d3d3d3;
---rm-audio-player-volume-fill:rgba(0, 0, 0, 0.5);
---rm-audio-player-volume-track:#ababab;
---rm-audio-player-track-current-time:#0072F5;
---rm-audio-player-track-duration:#8c8c8c;
---rm-audio-player-progress-bar:#0072F5;
---rm-audio-player-progress-bar-background:#D1D1D1;
---rm-audio-player-waveform-cursor:var(--spectrum-global-color-gray-800);
---rm-audio-player-waveform-background:var(--rm-audio-player-progress-bar-background);
---rm-audio-player-waveform-bar:var(--rm-audio-player-progress-bar);
---rm-audio-player-sortable-list:var(--spectrum-global-color-gray-200);
---rm-audio-player-sortable-list-button-active:#0072F5;
---rm-audio-player-selected-list-item-background:var(--spectrum-global-color-gray-500);
-
-// ...spectrum theme palette and so on... //
+```css
+.rm-audio-player-provider {
+  --rm-audio-player-interface-container: #f5f5f5;
+  --rm-audio-player-volume-background: #ccc;
+  --rm-audio-player-volume-panel-background: #f2f2f2;
+  --rm-audio-player-volume-panel-border: #ccc;
+  --rm-audio-player-volume-thumb: #d3d3d3;
+  --rm-audio-player-volume-fill: rgba(0, 0, 0, 0.5);
+  --rm-audio-player-volume-track: #ababab;
+  --rm-audio-player-track-current-time: #0072f5;
+  --rm-audio-player-track-duration: #8c8c8c;
+  --rm-audio-player-progress-bar: #0072f5;
+  --rm-audio-player-progress-bar-background: #d1d1d1;
+  --rm-audio-player-waveform-cursor: #4b4b4b;
+  --rm-audio-player-waveform-background: var(--rm-audio-player-progress-bar-background);
+  --rm-audio-player-waveform-bar: var(--rm-audio-player-progress-bar);
+  --rm-audio-player-sortable-list: #eaeaea;
+  --rm-audio-player-sortable-list-button-active: #0072f5;
+  --rm-audio-player-selected-list-item-background: #b3b3b3;
+}
 ```
 
 # Context Hooks
@@ -315,10 +313,6 @@ Hook | Returns
 # Custom Component
 
 > you can apply custom component to `AudioPlayer` by `CustomComponent`
-> </br>
-> you can also set `viewProps` to `CustomComponent`
-> </br>
-> (https://react-spectrum.adobe.com/react-spectrum/View.html#props)
 
 ``` tsx
 import {
