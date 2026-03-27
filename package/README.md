@@ -286,6 +286,7 @@ const defaultInterfacePlacement = {
 
 // ...spectrum theme palette and so on... //
 ```
+
 # Context Hooks
 
 Components inside `AudioPlayer` can subscribe to only the state slice they need, avoiding unnecessary re-renders.

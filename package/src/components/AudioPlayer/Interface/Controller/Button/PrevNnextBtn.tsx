@@ -1,8 +1,7 @@
-import { memo } from "react";
+import { FC, memo, useMemo } from "react";
 import { useNonNullableContext } from "@/hooks/useNonNullableContext";
 import { audioPlayerDispatchContext } from "@/components/AudioPlayer/Context/dispatchContext";
 import { useResourceContext } from "@/hooks/context/useResourceContext";
-import { FC, useMemo } from "react";
 import { StyledBtn } from "@/ui/StyledBtn";
 import { ImPrevious, ImNext } from "react-icons/im";
 import { Icon } from "../Icon";

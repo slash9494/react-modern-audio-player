@@ -1,4 +1,8 @@
-import { resourceContext } from "@/components/AudioPlayer/Context/ResourceContext";
+import {
+  ResourceContext,
+  resourceContext,
+} from "@/components/AudioPlayer/Context/ResourceContext";
 import { useNonNullableContext } from "../useNonNullableContext";
 
-export const useResourceContext = () => useNonNullableContext(resourceContext);
+export const useResourceContext = (): ResourceContext =>
+  useNonNullableContext(resourceContext);

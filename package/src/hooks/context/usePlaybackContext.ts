@@ -1,4 +1,8 @@
-import { playbackContext } from "@/components/AudioPlayer/Context/PlaybackContext";
+import {
+  PlaybackContext,
+  playbackContext,
+} from "@/components/AudioPlayer/Context/PlaybackContext";
 import { useNonNullableContext } from "../useNonNullableContext";
 
-export const usePlaybackContext = () => useNonNullableContext(playbackContext);
+export const usePlaybackContext = (): PlaybackContext =>
+  useNonNullableContext(playbackContext);

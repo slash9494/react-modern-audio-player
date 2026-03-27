@@ -36,7 +36,8 @@ import {
 } from "react-modern-audio-player";
 
 // Example — component that only needs playback state:
-const { isPlaying, volume } = usePlaybackContext();
+const { curAudioState } = usePlaybackContext();
+// curAudioState.isPlaying, curAudioState.volume, curAudioState.muted, ...
 
 // Example — component that only needs track info:
 const { playList, curIdx } = useTrackContext();

@@ -13,6 +13,7 @@ import { describe, it, expect } from "vitest";
 import { render, act } from "@testing-library/react";
 import { FC, ReactNode } from "react";
 import { AudioPlayerProvider } from "@/components/Provider/AudioPlayerProvider";
+import { InitialStates } from "@/components/AudioPlayer/Context/StateContext";
 import {
   audioPlayerDispatchContext,
   AudioContextAction,
@@ -60,7 +61,7 @@ function renderIsolated(children: ReactNode, curPlayId = 1) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     <AudioPlayerProvider
       playList={basePlayList}
-      audioInitialState={{ curPlayId } as any}
+      audioInitialState={{ curPlayId } as InitialStates}
     >
       <DispatchCapture dispatchRef={dispatchRef} />
       {children}
