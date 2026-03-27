@@ -19,6 +19,7 @@ const makePlaybackValue = (repeatType: RepeatType) => ({
     muted: false,
     volume: 0.5,
   } as AudioState,
+  audioResetKey: 0,
 });
 
 const renderRepeatBtn = (repeatType: RepeatType) =>

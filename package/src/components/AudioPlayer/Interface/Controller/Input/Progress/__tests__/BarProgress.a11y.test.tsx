@@ -28,6 +28,7 @@ const makePlaybackValue = () => ({
     volume: 0.5,
     isLoadedMetaData: true,
   } as AudioState,
+  audioResetKey: 0,
 });
 
 const renderBar = () =>

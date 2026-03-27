@@ -16,6 +16,7 @@ const makePlaybackValue = (isPlaying: boolean) => ({
     muted: false,
     volume: 0.5,
   } as AudioState,
+  audioResetKey: 0,
 });
 
 const renderPlayBtn = (isPlaying: boolean) =>
