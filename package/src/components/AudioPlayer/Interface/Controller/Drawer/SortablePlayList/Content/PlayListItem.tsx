@@ -1,15 +1,17 @@
-import {
-  AudioData,
-  audioPlayerStateContext,
-} from "@/components/AudioPlayer/Context";
-import { useNonNullableContext } from "@/hooks/useNonNullableContext";
+import { memo } from "react";
+import { AudioData } from "@/components/AudioPlayer/Context";
+import { useTrackContext } from "@/hooks/context/useTrackContext";
+import { useResourceContext } from "@/hooks/context/useResourceContext";
 import classNames from "classnames";
 import styled from "styled-components";
 
-export const PlayListItem = ({ data }: { data: AudioData }) => {
-  const { curPlayId, coverImgsCss } = useNonNullableContext(
-    audioPlayerStateContext
-  );
+export const PlayListItem = memo(function PlayListItem({
+  data,
+}: {
+  data: AudioData;
+}) {
+  const { curPlayId } = useTrackContext();
+  const { coverImgsCss } = useResourceContext();
   return (
     <ListItemContainer
       className={classNames("list-item-container", {
@@ -38,7 +40,7 @@ export const PlayListItem = ({ data }: { data: AudioData }) => {
       </div>
     </ListItemContainer>
   );
-};
+});
 
 const ListItemContainer = styled.div`
   width: 100%;

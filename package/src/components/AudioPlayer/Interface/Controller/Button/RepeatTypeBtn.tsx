@@ -1,10 +1,9 @@
-import { FC, useCallback, useMemo } from "react";
+import { FC, memo } from "react";
 import { useNonNullableContext } from "@/hooks/useNonNullableContext";
 import { audioPlayerDispatchContext } from "@/components/AudioPlayer/Context/dispatchContext";
-import {
-  audioPlayerStateContext,
-  RepeatType,
-} from "@/components/AudioPlayer/Context/StateContext";
+import { usePlaybackContext } from "@/hooks/context/usePlaybackContext";
+import { useResourceContext } from "@/hooks/context/useResourceContext";
+import { RepeatType } from "@/components/AudioPlayer/Context/StateContext";
 import { StyledBtn } from "@/ui/StyledBtn";
 import {
   TbRepeatOff,
@@ -21,12 +20,11 @@ const repeatAriaLabels: Record<RepeatType, string> = {
   SHUFFLE: "Shuffle",
 };
 
-export const RepeatTypeBtn: FC = () => {
-  const { curAudioState, customIcons } = useNonNullableContext(
-    audioPlayerStateContext
-  );
+export const RepeatTypeBtn: FC = memo(function RepeatTypeBtn() {
+  const { curAudioState } = usePlaybackContext();
+  const { customIcons } = useResourceContext();
   const audioPlayerDispatch = useNonNullableContext(audioPlayerDispatchContext);
-  const changeRepeatType = useCallback(() => {
+  const changeRepeatType = () => {
     switch (curAudioState.repeatType) {
       case "ALL":
         audioPlayerDispatch({ type: "SET_REPEAT_TYPE", repeatType: "ONE" });
@@ -43,38 +41,7 @@ export const RepeatTypeBtn: FC = () => {
       default:
         break;
     }
-  }, [curAudioState.repeatType, audioPlayerDispatch]);
-  const RepeatIcon = useMemo(() => {
-    switch (curAudioState.repeatType) {
-      case "ALL":
-        return (
-          <Icon render={<TbRepeat />} customIcon={customIcons?.repeatAll} />
-        );
-      case "ONE":
-        return (
-          <Icon render={<TbRepeatOnce />} customIcon={customIcons?.repeatOne} />
-        );
-      case "NONE":
-        return (
-          <Icon render={<TbRepeatOff />} customIcon={customIcons?.repeatNone} />
-        );
-      case "SHUFFLE":
-        return (
-          <Icon
-            render={<TbArrowsShuffle />}
-            customIcon={customIcons?.repeatShuffle}
-          />
-        );
-      default:
-        return null;
-    }
-  }, [
-    curAudioState.repeatType,
-    customIcons?.repeatAll,
-    customIcons?.repeatNone,
-    customIcons?.repeatOne,
-    customIcons?.repeatShuffle,
-  ]);
+  };
 
   return (
     <StyledBtn
@@ -85,7 +52,21 @@ export const RepeatTypeBtn: FC = () => {
       data-testid="repeat-btn"
       data-repeattype={curAudioState.repeatType}
     >
-      {RepeatIcon}
+      {curAudioState.repeatType === "ALL" && (
+        <Icon render={<TbRepeat />} customIcon={customIcons?.repeatAll} />
+      )}
+      {curAudioState.repeatType === "ONE" && (
+        <Icon render={<TbRepeatOnce />} customIcon={customIcons?.repeatOne} />
+      )}
+      {curAudioState.repeatType === "NONE" && (
+        <Icon render={<TbRepeatOff />} customIcon={customIcons?.repeatNone} />
+      )}
+      {curAudioState.repeatType === "SHUFFLE" && (
+        <Icon
+          render={<TbArrowsShuffle />}
+          customIcon={customIcons?.repeatShuffle}
+        />
+      )}
     </StyledBtn>
   );
-};
+});

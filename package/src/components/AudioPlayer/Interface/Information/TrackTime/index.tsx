@@ -1,18 +1,13 @@
-import {
-  audioPlayerStateContext,
-  defaultInterfacePlacement,
-} from "@/components/AudioPlayer/Context";
+import { defaultInterfacePlacement } from "@/components/AudioPlayer/Context";
 import Grid from "@/components/Grid";
-import { useNonNullableContext } from "@/hooks/useNonNullableContext";
+import { useUIContext } from "@/hooks/context/useUIContext";
 import { FC, useCallback } from "react";
 import { Current } from "./Current";
 import { Duration } from "./Duration";
 import { TrackTimePosition } from "./Types";
 
 export const TrackTime: FC = () => {
-  const { interfacePlacement, activeUI } = useNonNullableContext(
-    audioPlayerStateContext
-  );
+  const { interfacePlacement, activeUI } = useUIContext();
 
   const parsePosition = useCallback(
     (str: string) => +str.split(/[^\d]/).join(""),

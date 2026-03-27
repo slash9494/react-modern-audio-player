@@ -2,12 +2,11 @@ import { FC } from "react";
 import styled from "styled-components";
 import { TrackTimeContainer } from "./Styles";
 import { TrackTimeChildrenProps } from "./Types";
-import { useNonNullableContext } from "@/hooks/useNonNullableContext";
-import { audioPlayerStateContext } from "@/components/AudioPlayer/Context";
+import { usePlaybackContext } from "@/hooks/context/usePlaybackContext";
 import { getTimeWithPadStart } from "@/utils/getTime";
 
 export const Duration: FC<TrackTimeChildrenProps> = ({ position }) => {
-  const { curAudioState } = useNonNullableContext(audioPlayerStateContext);
+  const { curAudioState } = usePlaybackContext();
 
   return (
     <TrackTimeDurationContainer

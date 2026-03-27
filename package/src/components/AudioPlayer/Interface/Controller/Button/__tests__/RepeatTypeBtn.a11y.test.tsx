@@ -2,33 +2,35 @@ import { render, screen } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
 import { axe } from "vitest-axe";
 import { RepeatTypeBtn } from "../RepeatTypeBtn";
-import { audioPlayerStateContext } from "@/components/AudioPlayer/Context/StateContext";
+import { playbackContext } from "@/components/AudioPlayer/Context/PlaybackContext";
+import { resourceContext } from "@/components/AudioPlayer/Context/ResourceContext";
 import { audioPlayerDispatchContext } from "@/components/AudioPlayer/Context/dispatchContext";
-import { RepeatType } from "@/components/AudioPlayer/Context/StateContext";
+import {
+  AudioState,
+  RepeatType,
+} from "@/components/AudioPlayer/Context/StateContext";
 
 const mockDispatch = vi.fn();
 
-const makeState = (repeatType: RepeatType) => ({
-  playList: [{ src: "test.mp3", id: 1 }],
-  curPlayId: 1,
-  curIdx: 0,
+const makePlaybackValue = (repeatType: RepeatType) => ({
   curAudioState: {
     isPlaying: false,
     repeatType,
     muted: false,
     volume: 0.5,
-  },
-  activeUI: {},
-  playListPlacement: "bottom" as const,
+  } as AudioState,
+  audioResetKey: 0,
 });
 
 const renderRepeatBtn = (repeatType: RepeatType) =>
   render(
-    <audioPlayerStateContext.Provider value={makeState(repeatType) as any}>
-      <audioPlayerDispatchContext.Provider value={mockDispatch}>
-        <RepeatTypeBtn />
-      </audioPlayerDispatchContext.Provider>
-    </audioPlayerStateContext.Provider>
+    <playbackContext.Provider value={makePlaybackValue(repeatType)}>
+      <resourceContext.Provider value={{}}>
+        <audioPlayerDispatchContext.Provider value={mockDispatch}>
+          <RepeatTypeBtn />
+        </audioPlayerDispatchContext.Provider>
+      </resourceContext.Provider>
+    </playbackContext.Provider>
   );
 
 describe("RepeatTypeBtn accessibility", () => {

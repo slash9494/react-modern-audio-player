@@ -1,12 +1,11 @@
-import { audioPlayerStateContext } from "@/components/AudioPlayer/Context";
-import { useNonNullableContext } from "@/hooks/useNonNullableContext";
+import { usePlaybackContext } from "@/hooks/context/usePlaybackContext";
+import { useResourceContext } from "@/hooks/context/useResourceContext";
 import { safeRatio } from "@/utils/safeRatio";
 import { HTMLAttributes, useCallback, useState, MouseEvent } from "react";
 
 export const useProgress = (): HTMLAttributes<HTMLDivElement> => {
-  const { elementRefs, curAudioState } = useNonNullableContext(
-    audioPlayerStateContext
-  );
+  const { curAudioState } = usePlaybackContext();
+  const { elementRefs } = useResourceContext();
   const [isTimeChangeActive, setTimeChangeActive] = useState(false);
 
   const moveAudioTime = useCallback(

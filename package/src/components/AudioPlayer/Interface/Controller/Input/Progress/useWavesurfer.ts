@@ -1,7 +1,9 @@
 import { useNonNullableContext } from "@/hooks/useNonNullableContext";
 import { useVariableColor } from "@/hooks/useVariableColor";
 import { audioPlayerDispatchContext } from "@/components/AudioPlayer/Context/dispatchContext";
-import { audioPlayerStateContext } from "@/components/AudioPlayer/Context/StateContext";
+import { usePlaybackContext } from "@/hooks/context/usePlaybackContext";
+import { useTrackContext } from "@/hooks/context/useTrackContext";
+import { useResourceContext } from "@/hooks/context/useResourceContext";
 import { useEffect } from "react";
 import WaveSurfer from "wavesurfer.js";
 
@@ -14,9 +16,9 @@ const waveformColors = {
 
 export const useWaveSurfer = (waveformRef: React.RefObject<HTMLElement>) => {
   const audioPlayerDispatch = useNonNullableContext(audioPlayerDispatchContext);
-  const { elementRefs, curPlayId, curAudioState } = useNonNullableContext(
-    audioPlayerStateContext
-  );
+  const { curAudioState } = usePlaybackContext();
+  const { curPlayId } = useTrackContext();
+  const { elementRefs } = useResourceContext();
   const colorsRef = useVariableColor(waveformColors);
 
   /** init waveSurfer */

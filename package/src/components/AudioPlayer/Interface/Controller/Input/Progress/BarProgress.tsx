@@ -1,5 +1,4 @@
-import { audioPlayerStateContext } from "@/components/AudioPlayer/Context";
-import { useNonNullableContext } from "@/hooks/useNonNullableContext";
+import { usePlaybackContext } from "@/hooks/context/usePlaybackContext";
 import { getTimeWithPadStart } from "@/utils/getTime";
 import { safeRatio } from "@/utils/safeRatio";
 import { FC, useLayoutEffect, useRef, useState } from "react";
@@ -11,7 +10,7 @@ export const BarProgress: FC<{ isActive: boolean }> = ({ isActive }) => {
   const progressBarRef = useRef<HTMLDivElement>(null);
   const [barWidth, setBarWidth] = useState(0);
 
-  const { curAudioState } = useNonNullableContext(audioPlayerStateContext);
+  const { curAudioState } = usePlaybackContext();
 
   useLayoutEffect(() => {
     if (!progressBarRef.current) return;

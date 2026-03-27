@@ -2,9 +2,10 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
 import { axe } from "vitest-axe";
 import { BarProgress } from "../BarProgress";
-import type { AudioPlayerStateContext } from "@/components/AudioPlayer/Context/StateContext";
-import { audioPlayerStateContext } from "@/components/AudioPlayer/Context/StateContext";
+import { playbackContext } from "@/components/AudioPlayer/Context/PlaybackContext";
+import { resourceContext } from "@/components/AudioPlayer/Context/ResourceContext";
 import { audioPlayerDispatchContext } from "@/components/AudioPlayer/Context/dispatchContext";
+import { AudioState } from "@/components/AudioPlayer/Context/StateContext";
 
 const mockDispatch = vi.fn();
 const mockAudioEl = document.createElement("audio");
@@ -19,33 +20,28 @@ beforeEach(() => {
   mockDispatch.mockClear();
 });
 
-const makeState = () => ({
-  playList: [{ src: "test.mp3", id: 1 }],
-  curPlayId: 1,
-  curIdx: 0,
+const makePlaybackValue = () => ({
   curAudioState: {
     isPlaying: false,
     repeatType: "ALL" as const,
     muted: false,
     volume: 0.5,
     isLoadedMetaData: true,
-  },
-  activeUI: {},
-  playListPlacement: "bottom" as const,
-  elementRefs: {
-    audioEl: mockAudioEl,
-  },
+  } as AudioState,
+  audioResetKey: 0,
 });
 
 const renderBar = () =>
   render(
-    <audioPlayerStateContext.Provider
-      value={makeState() as AudioPlayerStateContext}
-    >
-      <audioPlayerDispatchContext.Provider value={mockDispatch}>
-        <BarProgress isActive={true} />
-      </audioPlayerDispatchContext.Provider>
-    </audioPlayerStateContext.Provider>
+    <playbackContext.Provider value={makePlaybackValue()}>
+      <resourceContext.Provider
+        value={{ elementRefs: { audioEl: mockAudioEl } }}
+      >
+        <audioPlayerDispatchContext.Provider value={mockDispatch}>
+          <BarProgress isActive={true} />
+        </audioPlayerDispatchContext.Provider>
+      </resourceContext.Provider>
+    </playbackContext.Provider>
   );
 
 describe("BarProgress accessibility", () => {

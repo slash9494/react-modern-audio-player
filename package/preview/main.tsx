@@ -2,7 +2,8 @@ import { createRoot } from "react-dom/client";
 import App from "./App";
 const container = document.getElementById("root");
 const root = createRoot(container as HTMLElement, {
-  onRecoverableError: (error) => console.log("recovering", error),
+  // eslint-disable-next-line no-console
+  onRecoverableError: (error) => console.error("recovering", error),
 });
 
 // TODO: Re-enable StrictMode after fixing the side effect in the PREV_AUDIO reducer.

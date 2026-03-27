@@ -1,11 +1,12 @@
 import {
   AudioData,
   audioPlayerDispatchContext,
-  audioPlayerStateContext,
 } from "@/components/AudioPlayer/Context";
 import { CssTransitionProps } from "@/ui/CssTransition";
 import { UseSortableListItemProps } from "@/components/SortableList/useSortableListItem";
 import { useNonNullableContext } from "@/hooks/useNonNullableContext";
+import { useTrackContext } from "@/hooks/context/useTrackContext";
+import { useUIContext } from "@/hooks/context/useUIContext";
 import { useCallback, useState } from "react";
 
 interface UsePlayListReturn {
@@ -24,7 +25,8 @@ export const usePlayList = ({
 }: {
   setIsOpen: (isOpen: boolean) => void;
 }): UsePlayListReturn => {
-  const { playList, activeUI } = useNonNullableContext(audioPlayerStateContext);
+  const { playList } = useTrackContext();
+  const { activeUI } = useUIContext();
   const audioPlayerDispatch = useNonNullableContext(audioPlayerDispatchContext);
 
   const [dragStartIdx, setDragStartIdx] = useState<number>(0);

@@ -1,13 +1,12 @@
-import { audioPlayerStateContext } from "@/components/AudioPlayer/Context";
-import { useNonNullableContext } from "@/hooks/useNonNullableContext";
+import { usePlaybackContext } from "@/hooks/context/usePlaybackContext";
+import { useResourceContext } from "@/hooks/context/useResourceContext";
 import React, { useCallback } from "react";
 
 export const useProgressKeyDown = (
   onSeek?: (newTime: number, duration: number) => void
 ) => {
-  const { elementRefs, curAudioState } = useNonNullableContext(
-    audioPlayerStateContext
-  );
+  const { curAudioState } = usePlaybackContext();
+  const { elementRefs } = useResourceContext();
 
   return useCallback(
     (event: React.KeyboardEvent<HTMLDivElement>) => {
