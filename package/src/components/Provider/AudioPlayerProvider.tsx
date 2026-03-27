@@ -104,7 +104,17 @@ export const AudioPlayerProvider = <
       customIcons: state.customIcons,
       coverImgsCss: state.coverImgsCss,
     }),
-    [state.elementRefs, state.customIcons, state.coverImgsCss]
+    [
+      state.elementRefs?.audioEl,
+      state.elementRefs?.trackCurTimeEl,
+      state.elementRefs?.trackDurationEl,
+      state.elementRefs?.progressBarEl,
+      state.elementRefs?.progressValueEl,
+      state.elementRefs?.progressHandleEl,
+      state.elementRefs?.waveformInst,
+      state.customIcons,
+      state.coverImgsCss,
+    ]
   );
 
   return (

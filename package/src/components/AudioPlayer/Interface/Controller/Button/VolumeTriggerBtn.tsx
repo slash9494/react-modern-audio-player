@@ -19,7 +19,7 @@ export const VolumeTriggerBtn = memo(
     );
     const changeMuteState = () =>
       audioPlayerDispatch({ type: "SET_MUTED", muted: !curAudioState.muted });
-    const volume = curAudioState.volume || elementRefs?.audioEl?.volume || 0;
+    const volume = curAudioState.volume ?? elementRefs?.audioEl?.volume ?? 0;
     const isLowVolume = volume > 0 && volume <= 0.5;
     const isHighVolume = volume > 0.5;
 
