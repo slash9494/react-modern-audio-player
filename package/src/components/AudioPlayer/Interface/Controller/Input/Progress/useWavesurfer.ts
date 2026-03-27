@@ -5,7 +5,6 @@ import { usePlaybackContext } from "@/hooks/context/usePlaybackContext";
 import { useTrackContext } from "@/hooks/context/useTrackContext";
 import { useResourceContext } from "@/hooks/context/useResourceContext";
 import { useEffect } from "react";
-import WaveSurfer from "wavesurfer.js";
 
 const waveformColors = {
   progressColor: "--rm-audio-player-waveform-bar",
@@ -21,27 +20,36 @@ export const useWaveSurfer = (waveformRef: React.RefObject<HTMLElement>) => {
   const { elementRefs } = useResourceContext();
   const colorsRef = useVariableColor(waveformColors);
 
-  /** init waveSurfer */
+  /** init waveSurfer — lazy loaded on first use */
   useEffect(() => {
     if (elementRefs?.waveformInst || !colorsRef.current) return;
 
-    const waveSurfer = WaveSurfer.create({
-      barWidth: 1,
-      cursorWidth: 2,
-      container: "#rm-waveform",
-      height: 80,
-      progressColor: `${colorsRef.current.progressColor}`,
-      responsive: true,
-      waveColor: `${colorsRef.current.waveColor}`,
-      cursorColor: "var(--rm-audio-player-waveform-cursor)",
-      backend: "MediaElement",
-      removeMediaElementOnDestroy: false,
+    let cancelled = false;
+    import("wavesurfer.js").then(({ default: WaveSurfer }) => {
+      if (cancelled || !colorsRef.current) return;
+
+      const waveSurfer = WaveSurfer.create({
+        barWidth: 1,
+        cursorWidth: 2,
+        container: "#rm-waveform",
+        height: 80,
+        progressColor: `${colorsRef.current.progressColor}`,
+        responsive: true,
+        waveColor: `${colorsRef.current.waveColor}`,
+        cursorColor: "var(--rm-audio-player-waveform-cursor)",
+        backend: "MediaElement",
+        removeMediaElementOnDestroy: false,
+      });
+
+      audioPlayerDispatch({
+        type: "SET_ELEMENT_REFS",
+        elementRefs: { waveformInst: waveSurfer },
+      });
     });
 
-    audioPlayerDispatch({
-      type: "SET_ELEMENT_REFS",
-      elementRefs: { waveformInst: waveSurfer },
-    });
+    return () => {
+      cancelled = true;
+    };
   }, [elementRefs?.waveformInst, audioPlayerDispatch, colorsRef]);
 
   // TODO : preserve audio state when loading new audio

@@ -1,25 +1,39 @@
-import { View, ViewProps } from "@react-spectrum/view";
-import { forwardRef } from "react";
-import { DOMRefValue } from "@react-types/shared";
+import { CSSProperties, forwardRef, ReactNode } from "react";
 
-export interface GridItemProps extends Omit<ViewProps, "children"> {
+export interface GridItemProps {
+  gridArea?: string;
+  width?: CSSProperties["width"];
   visible?: boolean;
-  children: React.ReactNode;
+  UNSAFE_className?: string;
+  justifySelf?: CSSProperties["justifySelf"];
+  padding?: CSSProperties["padding"];
+  children?: ReactNode;
 }
 
-export const GridItem = forwardRef<
-  React.RefAttributes<DOMRefValue<HTMLElement>>,
-  GridItemProps
->(({ children, visible = true, ...viewProps }, ref) => {
-  return (
-    <View
-      justifySelf={"center"}
-      padding={visible ? "0 5px" : undefined}
-      ref={ref as any}
-      {...viewProps}
-    >
-      {visible && children}
-    </View>
-  );
-});
+export const GridItem = forwardRef<HTMLDivElement, GridItemProps>(
+  (
+    {
+      children,
+      visible = true,
+      gridArea,
+      width,
+      justifySelf = "center",
+      padding,
+      UNSAFE_className,
+    },
+    ref
+  ) => {
+    const style: CSSProperties = {
+      gridArea,
+      width,
+      justifySelf,
+      padding: visible ? padding ?? "0 5px" : undefined,
+    };
+    return (
+      <div ref={ref} className={UNSAFE_className} style={style}>
+        {visible && children}
+      </div>
+    );
+  }
+);
 GridItem.displayName = "GridItem";

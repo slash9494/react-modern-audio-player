@@ -1,15 +1,15 @@
-import { FC, PropsWithChildren, useLayoutEffect, useState } from "react";
-import { Provider } from "@react-spectrum/provider";
-import { theme } from "@react-spectrum/theme-default";
+import {
+  CSSProperties,
+  FC,
+  HTMLAttributes,
+  PropsWithChildren,
+  useLayoutEffect,
+  useState,
+} from "react";
 import { useUIContext } from "@/hooks/context/useUIContext";
-import { DOMRefValue } from "@react-types/shared";
-import { ProviderProps } from "@react-types/provider";
 
 export interface SpectrumProviderProps {
-  rootContainerProps?: Omit<
-    ProviderProps & React.RefAttributes<DOMRefValue<HTMLDivElement>>,
-    "children"
-  >;
+  rootContainerProps?: Omit<HTMLAttributes<HTMLDivElement>, "children">;
 }
 
 export const SpectrumProvider: FC<PropsWithChildren<SpectrumProviderProps>> = ({
@@ -47,20 +47,25 @@ export const SpectrumProvider: FC<PropsWithChildren<SpectrumProviderProps>> = ({
     }
   }, [contextPlayerPlacement]);
 
+  const isFixed =
+    contextPlayerPlacement !== "static" && Boolean(contextPlayerPlacement);
+
+  const style: CSSProperties = {
+    width: "100%",
+    position: isFixed ? "fixed" : "static",
+    ...placementState,
+    ...(rootContainerProps?.style ?? {}),
+  };
+
   return (
-    <Provider
-      theme={theme}
-      width={"100%"}
-      position={
-        contextPlayerPlacement === "static" || !contextPlayerPlacement
-          ? "static"
-          : "fixed"
-      }
-      UNSAFE_className="rm-audio-player-provider"
-      {...placementState}
+    <div
       {...rootContainerProps}
+      className={`rm-audio-player-provider${
+        rootContainerProps?.className ? ` ${rootContainerProps.className}` : ""
+      }`}
+      style={style}
     >
       {children}
-    </Provider>
+    </div>
   );
 };

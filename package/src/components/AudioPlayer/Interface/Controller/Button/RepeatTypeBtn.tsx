@@ -10,7 +10,7 @@ import {
   TbRepeatOnce,
   TbRepeat,
   TbArrowsShuffle,
-} from "react-icons/tb";
+} from "@/components/icons";
 import { Icon } from "../Icon";
 
 const repeatAriaLabels: Record<RepeatType, string> = {

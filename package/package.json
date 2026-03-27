@@ -31,23 +31,17 @@
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage"
   },
+  "sideEffects": false,
   "peerDependencies": {
     "react": ">=16.8.0",
-    "react-dom": ">=16.8.0"
+    "react-dom": ">=16.8.0",
+    "styled-components": "^5.3.5"
   },
   "dependencies": {
-    "@react-spectrum/layout": "^3.3.1",
-    "@react-spectrum/provider": "^3.4.1",
-    "@react-spectrum/theme-default": "^3.3.1",
-    "@react-spectrum/view": "^3.2.1",
     "classnames": "^2.3.1",
-    "react-icons": "^4.4.0",
-    "styled-components": "^5.3.5",
     "wavesurfer.js": "^6.2.0"
   },
   "devDependencies": {
-    "@react-types/provider": "3.6.0",
-    "@react-types/shared": "3.15.0",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.1",

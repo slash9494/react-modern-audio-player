@@ -1,4 +1,3 @@
-import { Flex } from "@react-spectrum/layout";
 import { PropsWithChildren } from "react";
 import styled from "styled-components";
 import { ListItem } from "./index";
@@ -20,7 +19,7 @@ export const SortableListItem = <T extends ListItem>(
       className="list-item-root-container"
       {...eventProps}
     >
-      <Flex alignItems={"center"}>{children}</Flex>
+      <div style={{ display: "flex", alignItems: "center" }}>{children}</div>
     </SortableListItemContainer>
   );
 };
