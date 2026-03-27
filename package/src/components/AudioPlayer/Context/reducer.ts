@@ -1,6 +1,5 @@
 import { clampVolume } from "@/utils/clampVolume";
 import { getRandomNumber } from "@/utils/getRandomNumber";
-import { resetAudioValues } from "@/utils/resetAudioValues";
 import { AudioContextAction } from "./dispatchContext";
 import { AudioPlayerStateContext } from "./StateContext";
 
@@ -18,15 +17,18 @@ export const audioPlayerReducer = (
 ): AudioPlayerStateContext => {
   switch (action.type) {
     case "NEXT_AUDIO": {
-      resetAudioValues(state.elementRefs, undefined, true);
-
       if (
         state.curAudioState.repeatType === "NONE" &&
         state.curIdx + 1 === state.playList.length
       ) {
         return {
           ...state,
-          curAudioState: { ...state.curAudioState, isPlaying: false },
+          audioResetKey: state.audioResetKey + 1,
+          curAudioState: {
+            ...state.curAudioState,
+            isPlaying: false,
+            currentTime: 0,
+          },
         };
       }
       if (state.curAudioState.repeatType === "SHUFFLE") {
@@ -37,19 +39,23 @@ export const audioPlayerReducer = (
         );
         return {
           ...state,
+          audioResetKey: state.audioResetKey + 1,
           curPlayId: state.playList[randomIdx].id,
           curIdx: randomIdx,
           curAudioState: {
             ...state.curAudioState,
             isLoadedMetaData: false,
+            currentTime: 0,
           },
         };
       }
       const infiniteLoopNextIdx = (state.curIdx + 1) % state.playList.length;
       return {
         ...state,
+        audioResetKey: state.audioResetKey + 1,
         curIdx: infiniteLoopNextIdx,
         curPlayId: state.playList[infiniteLoopNextIdx].id,
+        curAudioState: { ...state.curAudioState, currentTime: 0 },
       };
     }
     case "PREV_AUDIO": {
@@ -60,8 +66,11 @@ export const audioPlayerReducer = (
           state.elementRefs?.waveformInst.getCurrentTime() > 1) ||
         (state.curAudioState.repeatType === "NONE" && state.curIdx === 0)
       ) {
-        resetAudioValues(state.elementRefs, undefined, true);
-        return state;
+        return {
+          ...state,
+          audioResetKey: state.audioResetKey + 1,
+          curAudioState: { ...state.curAudioState, currentTime: 0 },
+        };
       }
       if (state.curAudioState.repeatType === "SHUFFLE") {
         const randomIdx = getRandomIdx(
@@ -73,6 +82,7 @@ export const audioPlayerReducer = (
           ...state,
           curPlayId: state.playList[randomIdx].id,
           curIdx: randomIdx,
+          curAudioState: { ...state.curAudioState, currentTime: 0 },
         };
       }
       const infiniteLoopPrevIdx =
@@ -84,6 +94,7 @@ export const audioPlayerReducer = (
         curAudioState: {
           ...state.curAudioState,
           isLoadedMetaData: false,
+          currentTime: 0,
         },
       };
     }

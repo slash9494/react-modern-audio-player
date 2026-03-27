@@ -197,9 +197,9 @@ describe("playbackContext isolation", () => {
 });
 
 describe("trackContext isolation", () => {
-  it("NEXT_AUDIO (repeatType ALL, curIdx 0) only re-renders track consumers", () => {
-    // With repeatType "ALL" (default) at curIdx 0, the reducer returns
-    // { ...state, curIdx: 1, curPlayId: 2 } — curAudioState is unchanged.
+  it("NEXT_AUDIO (repeatType ALL, curIdx 0) re-renders track and playback consumers", () => {
+    // NEXT_AUDIO updates curIdx/curPlayId (track) and resets curAudioState.currentTime
+    // to 0 and increments audioResetKey (playback). UI and resource contexts are unaffected.
     const probes = makeProbes();
     const dispatch = renderIsolated(<AllProbes {...probes} />);
     const base = probes.snapshot();
@@ -208,7 +208,7 @@ describe("trackContext isolation", () => {
 
     const after = probes.snapshot();
     expect(after.trackCount - base.trackCount).toBe(1);
-    expect(after.playbackCount - base.playbackCount).toBe(0);
+    expect(after.playbackCount - base.playbackCount).toBe(1);
     expect(after.uiCount - base.uiCount).toBe(0);
     expect(after.resourceCount - base.resourceCount).toBe(0);
   });

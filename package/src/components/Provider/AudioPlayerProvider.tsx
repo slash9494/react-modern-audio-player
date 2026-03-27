@@ -63,13 +63,17 @@ export const AudioPlayerProvider = <
       : 0,
     curAudioState,
     activeUI,
+    audioResetKey: 0,
     ...(placement as Placements<10>),
     ...otherProps,
   });
 
   const playbackValue = useMemo(
-    () => ({ curAudioState: state.curAudioState }),
-    [state.curAudioState]
+    () => ({
+      curAudioState: state.curAudioState,
+      audioResetKey: state.audioResetKey,
+    }),
+    [state.curAudioState, state.audioResetKey]
   );
 
   const trackValue = useMemo(
@@ -106,11 +110,6 @@ export const AudioPlayerProvider = <
     }),
     [
       state.elementRefs?.audioEl,
-      state.elementRefs?.trackCurTimeEl,
-      state.elementRefs?.trackDurationEl,
-      state.elementRefs?.progressBarEl,
-      state.elementRefs?.progressValueEl,
-      state.elementRefs?.progressHandleEl,
       state.elementRefs?.waveformInst,
       state.customIcons,
       state.coverImgsCss,
