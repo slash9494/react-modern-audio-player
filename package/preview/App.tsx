@@ -9,35 +9,35 @@ import AudioPlayerWithProviders, {
 } from "../src";
 const playList: PlayList = [
   {
-    name: "React Modern Audio Player-1",
+    name: "Track 1",
     writer: "LYH",
     img: `${PlayerLogo}`,
     src: "https://cdn.pixabay.com/audio/2022/08/23/audio_d16737dc28.mp3",
     id: 1,
   },
   {
-    name: "React Modern Audio Player-1",
+    name: "Track 2",
     writer: "LYH",
     img: `${PlayerLogo}`,
     src: "https://cdn.pixabay.com/audio/2022/01/21/audio_c44fddb424.mp3",
     id: 2,
   },
   {
-    name: "React Modern Audio Player-1",
+    name: "Track 3",
     writer: "LYH",
     img: `${PlayerLogo}`,
     src: "https://cdn.pixabay.com/audio/2022/08/03/audio_54ca0ffa52.mp3",
     id: 3,
   },
   {
-    name: "React Modern Audio Player-1",
+    name: "Track 4",
     writer: "LYH",
     img: `${PlayerLogo}`,
     src: "https://cdn.pixabay.com/audio/2022/07/25/audio_3266b47d61.mp3",
     id: 4,
   },
   {
-    name: "React Modern Audio Player-1",
+    name: "Track 5",
     writer: "LYH",
     img: `${PlayerLogo}`,
     src: "https://cdn.pixabay.com/audio/2022/08/02/audio_884fe92c21.mp3",

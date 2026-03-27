@@ -1,58 +1,63 @@
-import { audioPlayerStateContext } from "@/components/AudioPlayer/Context";
-import { useNonNullableContext } from "@/hooks/useNonNullableContext";
-import { useRefsDispatch } from "@/hooks/useRefsDispatch";
-import { FC, useEffect, useRef } from "react";
+import { usePlaybackContext } from "@/hooks/context/usePlaybackContext";
+import { getTimeWithPadStart } from "@/utils/getTime";
+import { safeRatio } from "@/utils/safeRatio";
+import { FC, useLayoutEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { useProgress } from "./useProgress";
+import { useProgressKeyDown } from "./useProgressKeyDown";
 
 export const BarProgress: FC<{ isActive: boolean }> = ({ isActive }) => {
   const progressBarRef = useRef<HTMLDivElement>(null);
-  const progressValueRef = useRef<HTMLDivElement>(null);
-  const progressHandleRef = useRef<HTMLDivElement>(null);
-  useRefsDispatch(
-    {
-      refs: {
-        progressBarEl: progressBarRef,
-        progressValueEl: progressValueRef,
-        progressHandleEl: progressHandleRef,
-      },
-    },
-    [isActive]
+  const [barWidth, setBarWidth] = useState(0);
+
+  const { curAudioState } = usePlaybackContext();
+
+  useLayoutEffect(() => {
+    if (!progressBarRef.current) return;
+    const updateWidth = () =>
+      setBarWidth(progressBarRef.current?.clientWidth ?? 0);
+    updateWidth();
+    const observer = new ResizeObserver(updateWidth);
+    observer.observe(progressBarRef.current);
+    return () => observer.disconnect();
+  }, []);
+
+  const progressRatio = safeRatio(
+    curAudioState.currentTime ?? 0,
+    curAudioState.duration ?? 0
   );
-
-  const { elementRefs, curAudioState } = useNonNullableContext(
-    audioPlayerStateContext
-  );
-  useEffect(() => {
-    if (
-      !progressBarRef.current ||
-      !progressValueRef.current ||
-      !progressHandleRef.current ||
-      !elementRefs?.audioEl ||
-      !curAudioState.isLoadedMetaData ||
-      curAudioState.isPlaying
-    )
-      return;
-
-    const progressBarWidth = progressBarRef.current.clientWidth;
-    const progressHandlePosition =
-      (elementRefs.audioEl.currentTime / elementRefs.audioEl.duration) *
-      progressBarWidth;
-
-    progressValueRef.current.style.transform = `scaleX(${
-      elementRefs.audioEl.currentTime / elementRefs.audioEl.duration
-    })`;
-    progressHandleRef.current.style.transform = `translateX(${progressHandlePosition}px)`;
-  }, [isActive, curAudioState.isLoadedMetaData]);
 
   const eventProps = useProgress();
+  const handleKeyDown = useProgressKeyDown();
 
   return isActive ? (
-    <BarProgressWrapper className="bar-progress-wrapper" {...eventProps}>
+    <BarProgressWrapper
+      className="bar-progress-wrapper"
+      data-testid="progress-bar"
+      role="slider"
+      tabIndex={0}
+      aria-label="Seek"
+      aria-valuemin={0}
+      aria-valuemax={100}
+      aria-valuenow={Math.round(progressRatio * 100)}
+      aria-valuetext={`${getTimeWithPadStart(
+        curAudioState.currentTime ?? 0
+      )} of ${getTimeWithPadStart(curAudioState.duration ?? 0)}`}
+      onKeyDown={handleKeyDown}
+      {...eventProps}
+    >
       <div className="rm-player-progress-bar" ref={progressBarRef}>
-        <div className="rm-player-progress" ref={progressValueRef}></div>
+        <div
+          className="rm-player-progress"
+          style={{ transform: `scaleX(${progressRatio})` }}
+        />
       </div>
-      <div className="rm-player-progress-handle" ref={progressHandleRef} />
+      <div
+        className="rm-player-progress-handle"
+        style={{
+          transform: `translateX(${progressRatio * barWidth}px)`,
+        }}
+      />
     </BarProgressWrapper>
   ) : null;
 };

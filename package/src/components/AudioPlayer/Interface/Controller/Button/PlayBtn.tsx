@@ -1,9 +1,10 @@
-import { FC, useMemo } from "react";
+import { FC, memo } from "react";
 import styled from "styled-components";
 import { useNonNullableContext } from "@/hooks/useNonNullableContext";
 import { audioPlayerDispatchContext } from "@/components/AudioPlayer/Context/dispatchContext";
-import { audioPlayerStateContext } from "@/components/AudioPlayer/Context/StateContext";
-import { StyledBtn } from "./StyledBtn";
+import { usePlaybackContext } from "@/hooks/context/usePlaybackContext";
+import { useResourceContext } from "@/hooks/context/useResourceContext";
+import { StyledBtn } from "@/ui/StyledBtn";
 import { MdPauseCircleFilled, MdPlayCircleFilled } from "react-icons/md";
 import { Icon } from "../Icon";
 
@@ -11,30 +12,30 @@ const StyledPlayBtn = styled(StyledBtn)`
   width: 35px;
 `;
 
-export const PlayBtn: FC = () => {
-  const { curAudioState, customIcons } = useNonNullableContext(
-    audioPlayerStateContext
-  );
+export const PlayBtn: FC = memo(function PlayBtn() {
+  const { curAudioState } = usePlaybackContext();
+  const { customIcons } = useResourceContext();
   const audioPlayerDispatch = useNonNullableContext(audioPlayerDispatchContext);
 
   const changePlayState = () =>
     audioPlayerDispatch({ type: "CHANGE_PLAYING_STATE" });
-  const PlayIcon = useMemo(() => {
-    if (curAudioState.isPlaying)
-      return (
+
+  return (
+    <StyledPlayBtn
+      type="button"
+      aria-label={curAudioState.isPlaying ? "Pause" : "Play"}
+      onClick={changePlayState}
+      className="play-button"
+      data-testid="play-btn"
+    >
+      {curAudioState.isPlaying ? (
         <Icon
           render={<MdPauseCircleFilled />}
           customIcon={customIcons?.pause}
         />
-      );
-    return (
-      <Icon render={<MdPlayCircleFilled />} customIcon={customIcons?.play} />
-    );
-  }, [curAudioState.isPlaying, customIcons?.pause, customIcons?.play]);
-
-  return (
-    <StyledPlayBtn onClick={changePlayState} className="play-button">
-      {PlayIcon}
+      ) : (
+        <Icon render={<MdPlayCircleFilled />} customIcon={customIcons?.play} />
+      )}
     </StyledPlayBtn>
   );
-};
+});

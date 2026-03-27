@@ -3,10 +3,9 @@ import styled from "styled-components";
 import { Controller } from "./Controller";
 import { Information } from "./Information";
 
-import { audioPlayerStateContext } from "@/components/AudioPlayer/Context/StateContext";
 import Grid from "@/components/Grid";
 
-import { useNonNullableContext } from "@/hooks/useNonNullableContext";
+import { useUIContext } from "@/hooks/context/useUIContext";
 import { useGridTemplate } from "@/hooks/useGridTemplate";
 
 interface InterfaceProps {
@@ -14,8 +13,7 @@ interface InterfaceProps {
 }
 
 export const Interface: FC<InterfaceProps> = ({ children }) => {
-  const { interfacePlacement, activeUI, playListPlacement } =
-    useNonNullableContext(audioPlayerStateContext);
+  const { interfacePlacement, activeUI, playListPlacement } = useUIContext();
 
   const CustomComponents = React.Children.toArray(children);
 
@@ -26,7 +24,10 @@ export const Interface: FC<InterfaceProps> = ({ children }) => {
   );
 
   return (
-    <InterfaceContainer className="interface-container">
+    <InterfaceContainer
+      className="interface-container"
+      data-testid="audio-player"
+    >
       {playListPlacement === "top" && <div className="sortable-play-list" />}
       <Grid
         alignItems={"center"}

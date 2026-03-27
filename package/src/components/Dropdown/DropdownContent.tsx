@@ -8,7 +8,7 @@ import {
   useState,
 } from "react";
 import styled, { css } from "styled-components";
-import { CssTransition } from "../CssTransition";
+import { CssTransition } from "@/ui/CssTransition";
 import { dropdownContext } from "./DropdownContext";
 import { useDropdown } from "./useDropdown";
 

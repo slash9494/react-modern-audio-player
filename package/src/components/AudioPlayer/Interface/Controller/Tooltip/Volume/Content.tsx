@@ -1,9 +1,8 @@
 import { useNonNullableContext } from "@/hooks/useNonNullableContext";
 import { audioPlayerDispatchContext } from "@/components/AudioPlayer/Context/dispatchContext";
-import {
-  audioPlayerStateContext,
-  VolumeSliderPlacement,
-} from "@/components/AudioPlayer/Context/StateContext";
+import { VolumeSliderPlacement } from "@/components/AudioPlayer/Context/StateContext";
+import { usePlaybackContext } from "@/hooks/context/usePlaybackContext";
+import { useResourceContext } from "@/hooks/context/useResourceContext";
 import { ChangeEvent, FC, useCallback, useRef } from "react";
 import styled, { css } from "styled-components";
 
@@ -11,9 +10,8 @@ export const VolumeSlider: FC<{ placement: VolumeSliderPlacement }> = ({
   placement,
 }) => {
   const contentRef = useRef<HTMLDivElement>(null);
-  const { curAudioState, elementRefs } = useNonNullableContext(
-    audioPlayerStateContext
-  );
+  const { curAudioState } = usePlaybackContext();
+  const { elementRefs } = useResourceContext();
   const audioPlayerDispatch = useNonNullableContext(audioPlayerDispatchContext);
 
   const onChangeVolume = useCallback(
@@ -41,6 +39,7 @@ export const VolumeSlider: FC<{ placement: VolumeSliderPlacement }> = ({
       }
       ref={contentRef}
       className="volume-content-container"
+      data-testid="volume-slider"
     >
       <div className="volume-panel-wrapper">
         <input
@@ -52,6 +51,7 @@ export const VolumeSlider: FC<{ placement: VolumeSliderPlacement }> = ({
           min="0"
           max="1"
           step="0.01"
+          aria-label="Volume"
         />
       </div>
     </VolumeSliderContainer>
@@ -160,12 +160,11 @@ const VolumeSliderContainer = styled.div`
         width: 92px;
         -webkit-appearance: none;
         background-color: var(--rm-audio-player-volume-background);
-        outline-color: transparent;
         transform-origin: 75px 75px;
         transform: rotate(-90deg);
       }
 
-      &:focus {
+      &:focus:not(:focus-visible) {
         outline-color: transparent;
       }
 

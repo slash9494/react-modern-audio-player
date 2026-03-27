@@ -9,7 +9,7 @@ import styled from "styled-components";
 import { DropdownContext, dropdownContext } from "./DropdownContext";
 import { DropdownTrigger } from "./DropdownTrigger";
 import { DropdownContent } from "./DropdownContent";
-import { appearanceIn, appearanceOut } from "../CssTransition";
+import { appearanceIn, appearanceOut } from "@/ui/CssTransition";
 import useClickOutside from "@/hooks/useClickOutside";
 import { useDropdown } from "./useDropdown";
 

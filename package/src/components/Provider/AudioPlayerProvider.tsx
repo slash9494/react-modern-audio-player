@@ -1,13 +1,17 @@
 import {
   audioPlayerDispatchContext,
   audioPlayerReducer,
-  audioPlayerStateContext,
   AudioState,
   defaultInterfacePlacement,
   defaultInterfacePlacementMaxLength,
   Placements,
 } from "@/components/AudioPlayer/Context";
-import { PropsWithChildren, useReducer } from "react";
+import { playbackContext } from "@/components/AudioPlayer/Context/PlaybackContext";
+import { trackContext } from "@/components/AudioPlayer/Context/TrackContext";
+import { uiContext } from "@/components/AudioPlayer/Context/UIContext";
+import { resourceContext } from "@/components/AudioPlayer/Context/ResourceContext";
+import { clampVolume } from "@/utils/clampVolume";
+import { PropsWithChildren, useMemo, useReducer } from "react";
 import { AudioPlayerProps } from "../AudioPlayer/Player";
 
 export const AudioPlayerProvider = <
@@ -25,10 +29,13 @@ export const AudioPlayerProvider = <
   } = props;
 
   const curAudioState: AudioState = {
-    isPlaying: audioInitialState?.isPlaying || false,
-    repeatType: audioInitialState?.repeatType || "ALL",
-    volume: audioInitialState?.volume || 1,
-    muted: audioInitialState?.muted,
+    isPlaying: audioInitialState?.isPlaying === true,
+    repeatType: audioInitialState?.repeatType ?? "ALL",
+    volume:
+      typeof audioInitialState?.volume === "number"
+        ? clampVolume(audioInitialState.volume)
+        : 1,
+    muted: audioInitialState?.muted === true,
   };
 
   const activeUI = activeUIProp || {
@@ -46,28 +53,80 @@ export const AudioPlayerProvider = <
     volumeSliderPlacement: placementProp?.volumeSlider,
   };
 
-  const [audioContextState, dispatchAudioContextState] = useReducer(
-    audioPlayerReducer,
-    {
-      playList,
-      curPlayId: audioInitialState?.curPlayId || 1,
-      curIdx: audioInitialState?.curPlayId
-        ? playList.findIndex(
-            (audioData) => audioData.id === audioInitialState?.curPlayId
-          )
-        : 0,
-      curAudioState,
-      activeUI,
-      ...(placement as Placements<10>),
-      ...otherProps,
-    }
+  const [state, dispatch] = useReducer(audioPlayerReducer, {
+    playList,
+    curPlayId: audioInitialState?.curPlayId || 1,
+    curIdx: audioInitialState?.curPlayId
+      ? playList.findIndex(
+          (audioData) => audioData.id === audioInitialState?.curPlayId
+        )
+      : 0,
+    curAudioState,
+    activeUI,
+    audioResetKey: 0,
+    ...(placement as Placements<10>),
+    ...otherProps,
+  });
+
+  const playbackValue = useMemo(
+    () => ({
+      curAudioState: state.curAudioState,
+      audioResetKey: state.audioResetKey,
+    }),
+    [state.curAudioState, state.audioResetKey]
+  );
+
+  const trackValue = useMemo(
+    () => ({
+      playList: state.playList,
+      curPlayId: state.curPlayId,
+      curIdx: state.curIdx,
+    }),
+    [state.playList, state.curPlayId, state.curIdx]
+  );
+
+  const uiValue = useMemo(
+    () => ({
+      activeUI: state.activeUI,
+      playListPlacement: state.playListPlacement,
+      playerPlacement: state.playerPlacement,
+      interfacePlacement: state.interfacePlacement,
+      volumeSliderPlacement: state.volumeSliderPlacement,
+    }),
+    [
+      state.activeUI,
+      state.playListPlacement,
+      state.playerPlacement,
+      state.interfacePlacement,
+      state.volumeSliderPlacement,
+    ]
+  );
+
+  const resourceValue = useMemo(
+    () => ({
+      elementRefs: state.elementRefs,
+      customIcons: state.customIcons,
+      coverImgsCss: state.coverImgsCss,
+    }),
+    [
+      state.elementRefs?.audioEl,
+      state.elementRefs?.waveformInst,
+      state.customIcons,
+      state.coverImgsCss,
+    ]
   );
 
   return (
-    <audioPlayerStateContext.Provider value={audioContextState}>
-      <audioPlayerDispatchContext.Provider value={dispatchAudioContextState}>
-        {children}
-      </audioPlayerDispatchContext.Provider>
-    </audioPlayerStateContext.Provider>
+    <playbackContext.Provider value={playbackValue}>
+      <trackContext.Provider value={trackValue}>
+        <uiContext.Provider value={uiValue}>
+          <resourceContext.Provider value={resourceValue}>
+            <audioPlayerDispatchContext.Provider value={dispatch}>
+              {children}
+            </audioPlayerDispatchContext.Provider>
+          </resourceContext.Provider>
+        </uiContext.Provider>
+      </trackContext.Provider>
+    </playbackContext.Provider>
   );
 };
