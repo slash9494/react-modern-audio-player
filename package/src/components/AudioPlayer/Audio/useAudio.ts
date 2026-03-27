@@ -48,7 +48,7 @@ export const useAudio = (): HTMLAttributes<HTMLAudioElement> => {
   useEffect(() => {
     if (!elementRefs?.audioEl) return;
     elementRefs.audioEl.currentTime = 0;
-  }, [audioResetKey]);
+  }, [audioResetKey, elementRefs?.audioEl]);
 
   /** play */
   useEffect(() => {
