@@ -62,6 +62,7 @@ export const AudioPlayerProvider = <
         : 0,
       curAudioState,
       activeUI,
+      audioResetKey: 0,
       ...(placement as Placements<10>),
       ...otherProps,
     }
