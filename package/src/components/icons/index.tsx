@@ -27,7 +27,7 @@ const makeMdIcon =
 const makeTbIcon =
   (innerSvg: string): FC<SvgIconProps> =>
   // eslint-disable-next-line react/display-name
-  ({ size = "1em", ...props }) =>
+  ({ size = "1em", color, style, ...props }) =>
     (
       <svg
         stroke="currentColor"
@@ -38,6 +38,8 @@ const makeTbIcon =
         strokeLinejoin="round"
         height={size}
         width={size}
+        color={color}
+        style={color ? { color, ...style } : style}
         xmlns="http://www.w3.org/2000/svg"
         {...props}
         dangerouslySetInnerHTML={{ __html: innerSvg }}
@@ -47,7 +49,7 @@ const makeTbIcon =
 const makeImIcon =
   (paths: string, viewBox = "0 0 16 16"): FC<SvgIconProps> =>
   // eslint-disable-next-line react/display-name
-  ({ size = "1em", ...props }) =>
+  ({ size = "1em", color, style, ...props }) =>
     (
       <svg
         stroke="currentColor"
@@ -56,6 +58,8 @@ const makeImIcon =
         viewBox={viewBox}
         height={size}
         width={size}
+        color={color}
+        style={color ? { color, ...style } : style}
         xmlns="http://www.w3.org/2000/svg"
         {...props}
         dangerouslySetInnerHTML={{ __html: paths }}

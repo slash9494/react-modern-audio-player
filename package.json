@@ -45,9 +45,7 @@
     "loader-utils": "2.0.4"
   },
   "lint-staged": {
-    "*.{js,css,mdx,jsx,tsx,ts}": [
-      "prettier --list-different",
-      "eslint"
-    ]
+    "*.{js,css,mdx,jsx,tsx,ts}": ["prettier --list-different"],
+    "*.{js,jsx,tsx,ts}": ["eslint"]
   }
 }

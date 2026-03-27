@@ -22,20 +22,30 @@ export const useWaveSurfer = (waveformRef: React.RefObject<HTMLElement>) => {
 
   /** init waveSurfer — lazy loaded on first use */
   useEffect(() => {
-    if (elementRefs?.waveformInst || !colorsRef.current) return;
+    if (
+      elementRefs?.waveformInst ||
+      !colorsRef.current?.progressColor ||
+      !colorsRef.current?.waveColor
+    )
+      return;
 
     let cancelled = false;
     import("wavesurfer.js").then(({ default: WaveSurfer }) => {
-      if (cancelled || !colorsRef.current) return;
+      if (
+        cancelled ||
+        !colorsRef.current?.progressColor ||
+        !colorsRef.current?.waveColor
+      )
+        return;
 
       const waveSurfer = WaveSurfer.create({
         barWidth: 1,
         cursorWidth: 2,
         container: "#rm-waveform",
         height: 80,
-        progressColor: `${colorsRef.current.progressColor}`,
+        progressColor: colorsRef.current.progressColor,
         responsive: true,
-        waveColor: `${colorsRef.current.waveColor}`,
+        waveColor: colorsRef.current.waveColor,
         cursorColor: "var(--rm-audio-player-waveform-cursor)",
         backend: "MediaElement",
         removeMediaElementOnDestroy: false,
