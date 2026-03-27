@@ -24,7 +24,11 @@ export const audioPlayerReducer = (
         return {
           ...state,
           audioResetKey: state.audioResetKey + 1,
-          curAudioState: { ...state.curAudioState, isPlaying: false },
+          curAudioState: {
+            ...state.curAudioState,
+            isPlaying: false,
+            currentTime: 0,
+          },
         };
       }
       if (state.curAudioState.repeatType === "SHUFFLE") {
@@ -41,6 +45,7 @@ export const audioPlayerReducer = (
           curAudioState: {
             ...state.curAudioState,
             isLoadedMetaData: false,
+            currentTime: 0,
           },
         };
       }
@@ -50,6 +55,7 @@ export const audioPlayerReducer = (
         audioResetKey: state.audioResetKey + 1,
         curIdx: infiniteLoopNextIdx,
         curPlayId: state.playList[infiniteLoopNextIdx].id,
+        curAudioState: { ...state.curAudioState, currentTime: 0 },
       };
     }
     case "PREV_AUDIO": {
@@ -60,7 +66,11 @@ export const audioPlayerReducer = (
           state.elementRefs?.waveformInst.getCurrentTime() > 1) ||
         (state.curAudioState.repeatType === "NONE" && state.curIdx === 0)
       ) {
-        return { ...state, audioResetKey: state.audioResetKey + 1 };
+        return {
+          ...state,
+          audioResetKey: state.audioResetKey + 1,
+          curAudioState: { ...state.curAudioState, currentTime: 0 },
+        };
       }
       if (state.curAudioState.repeatType === "SHUFFLE") {
         const randomIdx = getRandomIdx(
@@ -72,6 +82,7 @@ export const audioPlayerReducer = (
           ...state,
           curPlayId: state.playList[randomIdx].id,
           curIdx: randomIdx,
+          curAudioState: { ...state.curAudioState, currentTime: 0 },
         };
       }
       const infiniteLoopPrevIdx =
@@ -83,6 +94,7 @@ export const audioPlayerReducer = (
         curAudioState: {
           ...state.curAudioState,
           isLoadedMetaData: false,
+          currentTime: 0,
         },
       };
     }

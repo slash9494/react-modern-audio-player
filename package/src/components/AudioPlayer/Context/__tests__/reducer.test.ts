@@ -34,6 +34,7 @@ describe("NEXT_AUDIO", () => {
     const next = audioPlayerReducer(state, { type: "NEXT_AUDIO" });
     expect(next.curIdx).toBe(1);
     expect(next.curPlayId).toBe(2);
+    expect(next.audioResetKey).toBe(state.audioResetKey + 1);
   });
 
   it("wraps around to first track when at end (repeatType ALL)", () => {
@@ -41,6 +42,7 @@ describe("NEXT_AUDIO", () => {
     const next = audioPlayerReducer(state, { type: "NEXT_AUDIO" });
     expect(next.curIdx).toBe(0);
     expect(next.curPlayId).toBe(1);
+    expect(next.audioResetKey).toBe(state.audioResetKey + 1);
   });
 
   it("stops playing when at last track with repeatType NONE", () => {
@@ -58,6 +60,7 @@ describe("NEXT_AUDIO", () => {
     expect(next.curAudioState.isPlaying).toBe(false);
     expect(next.curIdx).toBe(2);
     expect(next.curPlayId).toBe(3);
+    expect(next.audioResetKey).toBe(state.audioResetKey + 1);
   });
 
   it("picks a different random index when repeatType SHUFFLE", () => {
@@ -77,6 +80,9 @@ describe("NEXT_AUDIO", () => {
     expect(nexts.every((s) => s.curIdx !== 0)).toBe(true);
     expect(
       nexts.every((s) => s.curPlayId === state.playList[s.curIdx].id)
+    ).toBe(true);
+    expect(
+      nexts.every((s) => s.audioResetKey === state.audioResetKey + 1)
     ).toBe(true);
   });
 });
@@ -112,6 +118,7 @@ describe("PREV_AUDIO", () => {
     const next = audioPlayerReducer(state, { type: "PREV_AUDIO" });
     expect(next.curIdx).toBe(1);
     expect(next.curPlayId).toBe(2);
+    expect(next.audioResetKey).toBe(state.audioResetKey + 1);
   });
 
   it("stays on first track when repeatType NONE and curIdx is 0", () => {
@@ -127,6 +134,7 @@ describe("PREV_AUDIO", () => {
     };
     const next = audioPlayerReducer(state, { type: "PREV_AUDIO" });
     expect(next.curIdx).toBe(0);
+    expect(next.audioResetKey).toBe(state.audioResetKey + 1);
   });
 
   it("picks a different random index when repeatType SHUFFLE", () => {

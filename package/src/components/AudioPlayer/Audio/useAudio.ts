@@ -48,17 +48,18 @@ export const useAudio = (): HTMLAttributes<HTMLAudioElement> => {
   useEffect(() => {
     if (!elementRefs?.audioEl) return;
     elementRefs.audioEl.currentTime = 0;
-    audioPlayerDispatch({
-      type: "SET_AUDIO_STATE",
-      audioState: { currentTime: 0 },
-    });
   }, [audioResetKey]);
 
   /** play */
   useEffect(() => {
     if (!elementRefs?.audioEl) return;
     if (curAudioState.isPlaying) {
-      elementRefs.audioEl.play();
+      void elementRefs.audioEl.play().catch(() => {
+        audioPlayerDispatch({
+          type: "SET_AUDIO_STATE",
+          audioState: { isPlaying: false },
+        });
+      });
     } else {
       elementRefs.audioEl.pause();
     }
