@@ -313,6 +313,7 @@ Hook | Returns
 `useResourceContext` | `{ elementRefs, customIcons, coverImgsCss }`
 
 # Custom Component
+
 > you can apply custom component to `AudioPlayer` by `CustomComponent`
 > </br>
 > you can also set `viewProps` to `CustomComponent`

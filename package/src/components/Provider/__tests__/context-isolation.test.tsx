@@ -5,9 +5,8 @@
  * Each test asserts that dispatching an action that mutates one context slice
  * does NOT trigger re-renders in consumers of the other three slices.
  *
- * These tests currently FAIL because AudioPlayerProvider creates context value
- * objects inline on every render (no useMemo). They will pass once each context
- * value is wrapped in useMemo with the appropriate state dependencies.
+ * These tests assert that the context-split refactor correctly prevents
+ * cross-context re-renders when unrelated state slices are mutated.
  */
 import { describe, it, expect } from "vitest";
 import { render, act } from "@testing-library/react";
