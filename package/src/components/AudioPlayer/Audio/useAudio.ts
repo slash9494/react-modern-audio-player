@@ -1,5 +1,11 @@
 import { useNonNullableContext } from "@/hooks/useNonNullableContext";
-import { HTMLAttributes, SyntheticEvent, useCallback, useEffect } from "react";
+import {
+  HTMLAttributes,
+  SyntheticEvent,
+  useCallback,
+  useEffect,
+  useRef,
+} from "react";
 import { audioPlayerDispatchContext } from "../Context";
 import { usePlaybackContext } from "@/hooks/context/usePlaybackContext";
 import { useResourceContext } from "@/hooks/context/useResourceContext";
@@ -42,9 +48,15 @@ export const useAudio = (): HTMLAttributes<HTMLAudioElement> => {
     [audioPlayerDispatch]
   );
 
+  const hasMountedRef = useRef(false);
+
   /** audio reset — triggered by NEXT_AUDIO / PREV_AUDIO via audioResetKey */
   useEffect(() => {
     if (!elementRefs?.audioEl) return;
+    if (!hasMountedRef.current) {
+      hasMountedRef.current = true;
+      return;
+    }
     elementRefs.audioEl.currentTime = 0;
   }, [audioResetKey, elementRefs?.audioEl]);
 
