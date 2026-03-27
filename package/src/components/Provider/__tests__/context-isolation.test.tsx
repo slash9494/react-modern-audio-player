@@ -58,7 +58,6 @@ const DispatchCapture: FC<{ dispatchRef: DispatchRef }> = ({ dispatchRef }) => {
 function renderIsolated(children: ReactNode, curPlayId = 1) {
   const dispatchRef: DispatchRef = { current: null };
   render(
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     <AudioPlayerProvider
       playList={basePlayList}
       audioInitialState={{ curPlayId } as InitialStates}
