@@ -2,7 +2,7 @@ import { useNonNullableContext } from "@/hooks/useNonNullableContext";
 import { audioPlayerDispatchContext } from "@/components/AudioPlayer/Context/dispatchContext";
 import { usePlaybackContext } from "@/hooks/context/usePlaybackContext";
 import { useResourceContext } from "@/hooks/context/useResourceContext";
-import { forwardRef, memo } from "react";
+import { forwardRef, memo, useCallback } from "react";
 import { IconBaseProps } from "react-icons/lib";
 import { TbVolume3, TbVolume2, TbVolume } from "react-icons/tb";
 import { Icon } from "../Icon";
@@ -17,8 +17,11 @@ export const VolumeTriggerBtn = memo(
     const audioPlayerDispatch = useNonNullableContext(
       audioPlayerDispatchContext
     );
-    const changeMuteState = () =>
-      audioPlayerDispatch({ type: "SET_MUTED", muted: !curAudioState.muted });
+    const changeMuteState = useCallback(
+      () =>
+        audioPlayerDispatch({ type: "SET_MUTED", muted: !curAudioState.muted }),
+      [audioPlayerDispatch, curAudioState.muted]
+    );
     const volume = curAudioState.volume ?? elementRefs?.audioEl?.volume ?? 0;
     const isLowVolume = volume > 0 && volume <= 0.5;
     const isHighVolume = volume > 0.5;
