@@ -8,14 +8,13 @@ import {
 } from "react";
 import { useUIContext } from "@/hooks/context/useUIContext";
 
-export interface SpectrumProviderProps {
+export interface AudioPlayerRootProviderProps {
   rootContainerProps?: Omit<HTMLAttributes<HTMLDivElement>, "children">;
 }
 
-export const SpectrumProvider: FC<PropsWithChildren<SpectrumProviderProps>> = ({
-  children,
-  rootContainerProps,
-}) => {
+export const AudioPlayerRootProvider: FC<
+  PropsWithChildren<AudioPlayerRootProviderProps>
+> = ({ children, rootContainerProps }) => {
   const { playerPlacement: contextPlayerPlacement } = useUIContext();
   const [placementState, setPlacementState] = useState<{
     bottom?: number;

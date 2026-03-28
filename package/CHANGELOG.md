@@ -4,7 +4,11 @@
 
 ### Breaking Changes
 
-- **`SpectrumProviderProps.rootContainerProps` type changed**: `ProviderProps` (React Spectrum) → `HTMLAttributes<HTMLDivElement>`
+- **`SpectrumProvider` renamed to `AudioPlayerRootProvider`**: import name changed
+  - Replace `import { SpectrumProvider } from 'react-modern-audio-player'` with `AudioPlayerRootProvider`.
+- **`SpectrumProviderProps` renamed to `AudioPlayerRootProviderProps`**: type import name changed
+  - Replace `SpectrumProviderProps` with `AudioPlayerRootProviderProps`.
+- **`AudioPlayerRootProviderProps.rootContainerProps` type changed**: `ProviderProps` (React Spectrum) → `HTMLAttributes<HTMLDivElement>`
   - If you were passing Spectrum-specific props (e.g. `colorScheme`, `locale`), replace them with standard HTML div attributes.
 
 - **`styled-components` moved to `peerDependencies`**: consumers must install `styled-components ^5.3.5` explicitly if not already present.

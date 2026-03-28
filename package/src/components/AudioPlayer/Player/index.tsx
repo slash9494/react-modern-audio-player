@@ -15,7 +15,6 @@ import { Interface } from "../Interface";
 import { usePropsStateEffect } from "./usePropsStateEffect";
 
 // TODO : feature - add Equalizer component
-// TODO : feature - add dynamic spectrum form
 
 export interface AudioPlayerProps<TInterfacePlacementLength extends number> {
   children?: React.ReactNode;

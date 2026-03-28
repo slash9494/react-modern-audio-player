@@ -1,2 +1,2 @@
-export * from "./SpectrumProvider";
+export * from "./AudioPlayerRootProvider";
 export * from "./AudioPlayerProvider";
