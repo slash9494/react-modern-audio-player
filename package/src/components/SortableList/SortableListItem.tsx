@@ -40,6 +40,9 @@ const SortableListItemContainer = styled.li`
   &.dragover {
     transform: scale(1.02);
     backdrop-filter: blur(20px);
-    box-shadow: 0px 3.58195px 22.3872px -2.68646px rgb(0 0 0 / 20%);
+    box-shadow: 0px 3.58195px 22.3872px -2.68646px rgb(var(
+            --rm-audio-player-shadow,
+            0 0 0
+          ) / 20%);
   }
 `;
