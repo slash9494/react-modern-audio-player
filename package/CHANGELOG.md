@@ -2,6 +2,18 @@
 
 ## v2.0.0 (Unreleased)
 
+### New Features
+
+- **`useAudioPlayer()` public hook**: exposes a stable API to control the player externally
+  - Returns `play`, `pause`, `togglePlay`, `next`, `prev`, `seek`, `setVolume`, `setTrack`
+  - Returns state: `isPlaying`, `volume`, `currentTime`, `duration`, `repeatType`, `muted`, `currentTrack`, `currentIndex`, `playList`
+  - Must be called inside `AudioPlayerProvider` (or `AudioPlayer` which wraps it)
+  - Replaces the previous pattern of accessing `audioPlayerState` via `CustomComponent` props
+
+### Bug Fixes
+
+- **WaveSurfer memory leak on unmount**: `waveformInst.destroy()` was never called due to a stale closure in the cleanup effect (empty deps `[]` captured `elementRefs` as `undefined` at mount time). Fixed by tracking the instance via `useRef` so the cleanup always holds the latest reference.
+
 ### Breaking Changes
 
 - **`ElementRefs.trackCurTimeEl` removed**: `HTMLSpanElement | undefined` → removed

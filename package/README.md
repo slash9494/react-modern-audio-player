@@ -69,6 +69,74 @@ function Player (){
 }
 ```
 
+# useAudioPlayer
+
+Control the player externally using the `useAudioPlayer` hook. Must be called inside `AudioPlayerProvider`.
+
+```tsx
+import AudioPlayer, { useAudioPlayer } from 'react-modern-audio-player';
+
+function PlayerControls() {
+  const {
+    isPlaying,
+    currentTrack,
+    currentTime,
+    duration,
+    togglePlay,
+    next,
+    prev,
+    seek,
+    setVolume,
+    setTrack,
+  } = useAudioPlayer();
+
+  return (
+    <div>
+      <button onClick={togglePlay}>{isPlaying ? 'Pause' : 'Play'}</button>
+      <button onClick={prev}>Prev</button>
+      <button onClick={next}>Next</button>
+      <button onClick={() => seek(30)}>+30s</button>
+      <button onClick={() => setVolume(0.5)}>Volume 50%</button>
+      <button onClick={() => setTrack(1)}>Track 2</button>
+      <p>{currentTrack?.name} — {currentTime.toFixed(0)}s / {duration.toFixed(0)}s</p>
+    </div>
+  );
+}
+
+function App() {
+  const playList = [{ id: 1, src: 'audio.mp3', name: 'Track 1' }];
+  return (
+    <AudioPlayer playList={playList}>
+      <PlayerControls />
+    </AudioPlayer>
+  );
+}
+```
+
+## AudioPlayerControls
+
+| Property | Type | Description |
+|---|---|---|
+| `isPlaying` | `boolean` | Current playback state |
+| `volume` | `number` | Current volume (0–1) |
+| `currentTime` | `number` | Elapsed time in seconds |
+| `duration` | `number` | Track duration in seconds |
+| `repeatType` | `RepeatType` | Current repeat mode |
+| `muted` | `boolean` | Whether audio is muted |
+| `currentTrack` | `AudioData \| null` | Currently playing track |
+| `currentIndex` | `number` | Index in playlist |
+| `playList` | `PlayList` | Full playlist |
+| `play()` | `() => void` | Start playback |
+| `pause()` | `() => void` | Pause playback |
+| `togglePlay()` | `() => void` | Toggle play/pause |
+| `next()` | `() => void` | Skip to next track |
+| `prev()` | `() => void` | Skip to previous track |
+| `seek(time)` | `(time: number) => void` | Seek to time in seconds |
+| `setVolume(vol)` | `(volume: number) => void` | Set volume (0–1, clamped) |
+| `setTrack(index)` | `(index: number) => void` | Jump to playlist index |
+
+---
+
 # Props
 
 ```tsx
@@ -314,19 +382,10 @@ Hook | Returns
 
 # Custom Component
 
-> you can apply custom component to `AudioPlayer` by `CustomComponent`
-> </br>
-> you can also set `viewProps` to `CustomComponent`
-> </br>
-> (https://react-spectrum.adobe.com/react-spectrum/View.html#props)
+You can place a custom component anywhere in the player interface using `AudioPlayer.CustomComponent`. Use `useAudioPlayer` inside it to access player state and controls.
 
-``` tsx
-import {
-  PlaybackContext,
-  TrackContext,
-  UIContext,
-  ResourceContext,
-} from 'react-modern-audio-player';
+```tsx
+import AudioPlayer, { useAudioPlayer, InterfacePlacement } from 'react-modern-audio-player';
 
 const activeUI: ActiveUI = {
   all: true,
@@ -339,28 +398,18 @@ const placement = {
     },
   } as InterfacePlacement<11>,
   /**
-   * you should set generic value of `InterfacePlacement` as interfaces max length for auto-complete aria type such as "row-1-10"
-   * generic value must plus 1 than interfaces length because of 0 index
-  */
+   * set the generic value of InterfacePlacement to the max interface length + 1
+   * for correct "row1-10" autocompletion
+   */
 };
 
-type AudioPlayerState = PlaybackContext & TrackContext & UIContext & ResourceContext;
-
-/** you can get audioPlayerState by props */
-const CustomComponent = ({
-  audioPlayerState,
-}: {
-  audioPlayerState?: AudioPlayerState;
-}) => {
-  const audioEl = audioPlayerState?.elementRefs?.audioEl;
-  const handOverTime = () => {
-    if (audioEl) {
-      audioEl.currentTime += 30;
-    }
-  };
+const CustomComponent = () => {
+  const { currentTime, duration, seek, isPlaying, togglePlay } = useAudioPlayer();
   return (
     <>
-      <button onClick={handOverTime}>+30</button>
+      <button onClick={() => seek(currentTime + 30)}>+30s</button>
+      <button onClick={togglePlay}>{isPlaying ? 'Pause' : 'Play'}</button>
+      <span>{currentTime.toFixed(0)}s / {duration.toFixed(0)}s</span>
     </>
   );
 };

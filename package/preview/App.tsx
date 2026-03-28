@@ -2,10 +2,10 @@ import PlayerLogo from "./assets/images/noname.png";
 import { useState } from "react";
 import AudioPlayerWithProviders, {
   ActiveUI,
-  AudioPlayerStateContext,
   InterfacePlacement,
   PlayerPlacement,
   PlayList,
+  useAudioPlayer,
 } from "../src";
 const playList: PlayList = [
   {
@@ -84,20 +84,16 @@ function App() {
     // trackTime: true,
   };
 
-  const CustomComponent = ({
-    audioPlayerState,
-  }: {
-    audioPlayerState?: AudioPlayerStateContext;
-  }) => {
-    const audioEl = audioPlayerState?.elementRefs?.audioEl;
-    const handOverTime = () => {
-      if (audioEl) {
-        audioEl.currentTime += 30;
-      }
-    };
+  const CustomComponent = () => {
+    const { currentTime, duration, seek, isPlaying, togglePlay } =
+      useAudioPlayer();
     return (
       <>
-        <button onClick={handOverTime}>+30</button>
+        <button onClick={() => seek(currentTime + 30)}>+30s</button>
+        <button onClick={togglePlay}>{isPlaying ? "Pause" : "Play"}</button>
+        <span>
+          {currentTime.toFixed(0)}s / {duration.toFixed(0)}s
+        </span>
       </>
     );
   };
