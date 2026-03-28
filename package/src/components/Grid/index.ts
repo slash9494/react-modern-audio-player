@@ -9,4 +9,5 @@ const Grid = BaseGrid as GridComponent;
 Grid.Item = GridItem;
 
 export type { NativeGridProps };
+export type { NativeGridProps as GridProps };
 export default Grid;

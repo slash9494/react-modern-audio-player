@@ -52,6 +52,8 @@ vi.mock("wavesurfer.js", () => ({
         setVolume: vi.fn(),
         pause: vi.fn(),
         play: vi.fn(),
+        seekTo: vi.fn(),
+        getCurrentTime: vi.fn().mockReturnValue(0),
         drawBuffer: vi.fn(),
         drawer: {
           fireEvent: vi.fn(),

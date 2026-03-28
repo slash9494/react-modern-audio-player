@@ -10,6 +10,8 @@ const makeMdIcon =
   ({ size = "1em", color, style, ...props }) =>
     (
       <svg
+        aria-hidden="true"
+        focusable="false"
         stroke="currentColor"
         fill="currentColor"
         strokeWidth={0}
@@ -30,6 +32,8 @@ const makeTbIcon =
   ({ size = "1em", color, style, ...props }) =>
     (
       <svg
+        aria-hidden="true"
+        focusable="false"
         stroke="currentColor"
         fill="none"
         strokeWidth={2}
@@ -52,6 +56,8 @@ const makeImIcon =
   ({ size = "1em", color, style, ...props }) =>
     (
       <svg
+        aria-hidden="true"
+        focusable="false"
         stroke="currentColor"
         fill="currentColor"
         strokeWidth={0}

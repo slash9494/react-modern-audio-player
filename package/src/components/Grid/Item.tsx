@@ -1,13 +1,12 @@
-import { CSSProperties, forwardRef, ReactNode } from "react";
+import { CSSProperties, HTMLAttributes, forwardRef } from "react";
 
-export interface GridItemProps {
+export interface GridItemProps extends HTMLAttributes<HTMLDivElement> {
   gridArea?: string;
   width?: CSSProperties["width"];
   visible?: boolean;
   UNSAFE_className?: string;
   justifySelf?: CSSProperties["justifySelf"];
   padding?: CSSProperties["padding"];
-  children?: ReactNode;
 }
 
 export const GridItem = forwardRef<HTMLDivElement, GridItemProps>(
@@ -20,18 +19,23 @@ export const GridItem = forwardRef<HTMLDivElement, GridItemProps>(
       justifySelf = "center",
       padding,
       UNSAFE_className,
+      style: styleProp,
+      ...rest
     },
     ref
   ) => {
+    if (!visible) return null;
+
     const style: CSSProperties = {
       gridArea,
       width,
       justifySelf,
-      padding: visible ? padding ?? "0 5px" : undefined,
+      padding: padding ?? "0 5px",
+      ...styleProp,
     };
     return (
-      <div ref={ref} className={UNSAFE_className} style={style}>
-        {visible && children}
+      <div ref={ref} className={UNSAFE_className} style={style} {...rest}>
+        {children}
       </div>
     );
   }

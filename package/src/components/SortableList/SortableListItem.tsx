@@ -19,10 +19,15 @@ export const SortableListItem = <T extends ListItem>(
       className="list-item-root-container"
       {...eventProps}
     >
-      <div style={{ display: "flex", alignItems: "center" }}>{children}</div>
+      <SortableListItemInner>{children}</SortableListItemInner>
     </SortableListItemContainer>
   );
 };
+
+const SortableListItemInner = styled.div`
+  display: flex;
+  align-items: center;
+`;
 
 const SortableListItemContainer = styled.li`
   border-top: 2px solid transparent;

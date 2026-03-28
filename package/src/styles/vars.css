@@ -20,6 +20,7 @@
   --rm-audio-player-sortable-list: #eaeaea;
   --rm-audio-player-sortable-list-button-active: #0072f5;
   --rm-audio-player-selected-list-item-background: #b3b3b3;
+
   color: var(--rm-audio-player-text-color);
 }
 

@@ -22,7 +22,7 @@ const NativeGrid: FC<NativeGridProps> = ({
   const style: CSSProperties = {
     display: "grid",
     gridTemplateAreas: areas?.map((row) => `"${row}"`).join(" "),
-    gridTemplateColumns: columns?.[0],
+    gridTemplateColumns: columns?.join(" "),
     alignItems,
     justifyContent,
     minHeight,

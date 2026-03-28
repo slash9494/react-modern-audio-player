@@ -5,10 +5,13 @@
 ### Breaking Changes
 
 - **`SpectrumProvider` renamed to `AudioPlayerRootProvider`**: import name changed
-  - Replace `import { SpectrumProvider } from 'react-modern-audio-player'` with `AudioPlayerRootProvider`.
+  - Before: `import { SpectrumProvider } from "react-modern-audio-player"`
+  - After: `import { AudioPlayerRootProvider } from "react-modern-audio-player"`
 - **`SpectrumProviderProps` renamed to `AudioPlayerRootProviderProps`**: type import name changed
-  - Replace `SpectrumProviderProps` with `AudioPlayerRootProviderProps`.
+  - Before: `import type { SpectrumProviderProps } from "react-modern-audio-player"`
+  - After: `import type { AudioPlayerRootProviderProps } from "react-modern-audio-player"`
 - **`AudioPlayerRootProviderProps.rootContainerProps` type changed**: `ProviderProps` (React Spectrum) → `HTMLAttributes<HTMLDivElement>`
+
   - If you were passing Spectrum-specific props (e.g. `colorScheme`, `locale`), replace them with standard HTML div attributes.
 
 - **`styled-components` moved to `peerDependencies`**: consumers must install `styled-components ^5.3.5` explicitly if not already present.
@@ -22,14 +25,14 @@
 
 ### Bundle Size Optimization
 
-| Change | Before | After | Saving |
-|--------|--------|-------|--------|
-| `@react-spectrum/*` (4 pkgs) | bundled (~20–30 kB) | removed — native HTML + CSS | ~20–30 kB |
-| `react-icons` (3 icon sets) | bundled (~15–25 kB) | removed — 12 inlined SVGs | ~15–25 kB |
-| `wavesurfer.js` | always bundled (~192 kB raw) | lazy chunk, loaded on demand | ~192 kB from main |
-| `styled-components` | bundled | moved to `peerDependencies` | ~15 kB |
-| `sideEffects` | not set | `false` | better tree-shaking |
-| **Main bundle (gzip)** | **~65 kB+** | **~16 kB** | **~75% reduction** |
+| Change                       | Before                       | After                        | Saving              |
+| ---------------------------- | ---------------------------- | ---------------------------- | ------------------- |
+| `@react-spectrum/*` (4 pkgs) | bundled (~20–30 kB)          | removed — native HTML + CSS  | ~20–30 kB           |
+| `react-icons` (3 icon sets)  | bundled (~15–25 kB)          | removed — 12 inlined SVGs    | ~15–25 kB           |
+| `wavesurfer.js`              | always bundled (~192 kB raw) | lazy chunk, loaded on demand | ~192 kB from main   |
+| `styled-components`          | bundled                      | moved to `peerDependencies`  | ~15 kB              |
+| `sideEffects`                | not set                      | `false`                      | better tree-shaking |
+| **Main bundle (gzip)**       | **~65 kB+**                  | **~16 kB**                   | **~75% reduction**  |
 
 - **`ElementRefs.trackCurTimeEl` removed**: `HTMLSpanElement | undefined` → removed
 

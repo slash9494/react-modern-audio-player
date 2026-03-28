@@ -13,7 +13,6 @@ jobs:
       github.event.review.user.login == 'coderabbitai[bot]' &&
       github.event.review.state == 'commented'
     permissions:
-      pull-requests: write
       issues: write
     steps:
       - name: Upsert review-ready marker comment
@@ -57,7 +56,9 @@ jobs:
               }
             );
 
-            const existing = comments.find(c => c.body?.includes(MARKER));
+            const existing = comments.find(
+              c => c.body?.includes(MARKER) && c.user?.type === 'Bot'
+            );
 
             if (existing) {
               await github.rest.issues.updateComment({

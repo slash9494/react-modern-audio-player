@@ -1,4 +1,5 @@
 import { FC } from "react";
+import styled from "styled-components";
 import { defaultInterfacePlacement } from "@/components/AudioPlayer/Context/StateContext";
 import { useUIContext } from "@/hooks/context/useUIContext";
 import { PlayBtn, PrevNnextBtn, RepeatTypeBtn } from "./Button";
@@ -43,10 +44,7 @@ export const Controller: FC = () => {
         }
         visible={Boolean(activeUI.playButton ?? activeUI.all)}
       >
-        <div
-          className="btn-wrapper"
-          style={{ display: "flex", alignItems: "center", gap: "10px" }}
-        >
+        <BtnWrapper className="btn-wrapper">
           <PrevNnextBtn
             type="prev"
             visible={Boolean(activeUI.prevNnext ?? activeUI.all)}
@@ -56,7 +54,7 @@ export const Controller: FC = () => {
             type="next"
             visible={Boolean(activeUI.prevNnext ?? activeUI.all)}
           />
-        </div>
+        </BtnWrapper>
       </Grid.Item>
       <Grid.Item
         gridArea={
@@ -81,3 +79,9 @@ export const Controller: FC = () => {
     </>
   );
 };
+
+const BtnWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+`;

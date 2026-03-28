@@ -30,32 +30,36 @@ export const useWaveSurfer = (waveformRef: React.RefObject<HTMLElement>) => {
       return;
 
     let cancelled = false;
-    import("wavesurfer.js").then(({ default: WaveSurfer }) => {
-      if (
-        cancelled ||
-        !colorsRef.current?.progressColor ||
-        !colorsRef.current?.waveColor
-      )
-        return;
+    import("wavesurfer.js")
+      .then(({ default: WaveSurfer }) => {
+        if (
+          cancelled ||
+          !colorsRef.current?.progressColor ||
+          !colorsRef.current?.waveColor
+        )
+          return;
 
-      const waveSurfer = WaveSurfer.create({
-        barWidth: 1,
-        cursorWidth: 2,
-        container: "#rm-waveform",
-        height: 80,
-        progressColor: colorsRef.current.progressColor,
-        responsive: true,
-        waveColor: colorsRef.current.waveColor,
-        cursorColor: "var(--rm-audio-player-waveform-cursor)",
-        backend: "MediaElement",
-        removeMediaElementOnDestroy: false,
-      });
+        const waveSurfer = WaveSurfer.create({
+          barWidth: 1,
+          cursorWidth: 2,
+          container: waveformRef.current as HTMLElement,
+          height: 80,
+          progressColor: colorsRef.current.progressColor,
+          responsive: true,
+          waveColor: colorsRef.current.waveColor,
+          cursorColor: "var(--rm-audio-player-waveform-cursor)",
+          backend: "MediaElement",
+          removeMediaElementOnDestroy: false,
+        });
 
-      audioPlayerDispatch({
-        type: "SET_ELEMENT_REFS",
-        elementRefs: { waveformInst: waveSurfer },
+        audioPlayerDispatch({
+          type: "SET_ELEMENT_REFS",
+          elementRefs: { waveformInst: waveSurfer },
+        });
+      })
+      .catch((err) => {
+        console.error("[useWaveSurfer] failed to load wavesurfer.js", err);
       });
-    });
 
     return () => {
       cancelled = true;
@@ -96,9 +100,9 @@ export const useWaveSurfer = (waveformRef: React.RefObject<HTMLElement>) => {
   /** delete empty wave surfer */
   useEffect(
     () => () => {
-      const waveEl = document.getElementsByTagName("wave");
-      if (waveEl.length) {
-        waveEl[0].remove();
+      const waveEl = waveformRef.current?.querySelector("wave");
+      if (waveEl) {
+        waveEl.remove();
         audioPlayerDispatch({
           type: "SET_ELEMENT_REFS",
           elementRefs: { waveformInst: undefined },
@@ -114,9 +118,9 @@ export const useWaveSurfer = (waveformRef: React.RefObject<HTMLElement>) => {
   useEffect(() => {
     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
     const onSchemeChange = () => {
-      const waveEl = document.getElementsByTagName("wave");
-      if (waveEl.length) {
-        waveEl[0].remove();
+      const waveEl = waveformRef.current?.querySelector("wave");
+      if (waveEl) {
+        waveEl.remove();
       }
       elementRefs?.waveformInst?.destroy();
       audioPlayerDispatch({
