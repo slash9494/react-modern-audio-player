@@ -74,16 +74,18 @@ export const useWaveSurfer = (waveformRef: React.RefObject<HTMLElement>) => {
     }
 
     if (curAudioState.isPlaying) elementRefs?.audioEl?.play();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [curPlayId, elementRefs?.audioEl, elementRefs?.waveformInst]);
 
-  // set waveform responsively
+  // set waveform responsively — trigger drawer 'redraw' on container resize
+  // which internally calls drawBuffer() + drawer.progress() to update all layers
   useEffect(() => {
     if (!waveformRef.current || !elementRefs?.waveformInst) return;
 
-    const redrawWaveform = () => {
-      elementRefs.waveformInst?.drawBuffer();
+    const onContainerResize = () => {
+      elementRefs.waveformInst?.drawer?.fireEvent("redraw");
     };
-    const resizeObserver = new ResizeObserver(redrawWaveform);
+    const resizeObserver = new ResizeObserver(onContainerResize);
     resizeObserver.observe(waveformRef.current);
 
     return () => {
@@ -104,6 +106,25 @@ export const useWaveSurfer = (waveformRef: React.RefObject<HTMLElement>) => {
         elementRefs?.waveformInst?.destroy();
       }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
+
+  // Re-initialize WaveSurfer when color scheme changes
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    const onSchemeChange = () => {
+      const waveEl = document.getElementsByTagName("wave");
+      if (waveEl.length) {
+        waveEl[0].remove();
+      }
+      elementRefs?.waveformInst?.destroy();
+      audioPlayerDispatch({
+        type: "SET_ELEMENT_REFS",
+        elementRefs: { waveformInst: undefined },
+      });
+    };
+    mediaQuery.addEventListener("change", onSchemeChange);
+    return () => mediaQuery.removeEventListener("change", onSchemeChange);
+  }, [audioPlayerDispatch, elementRefs?.waveformInst]);
 };
