@@ -4,7 +4,7 @@ import { audioPlayerDispatchContext } from "@/components/AudioPlayer/Context/dis
 import { usePlaybackContext } from "@/hooks/context/usePlaybackContext";
 import { useTrackContext } from "@/hooks/context/useTrackContext";
 import { useResourceContext } from "@/hooks/context/useResourceContext";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import WaveSurfer from "wavesurfer.js";
 
 const waveformColors = {
@@ -20,6 +20,11 @@ export const useWaveSurfer = (waveformRef: React.RefObject<HTMLElement>) => {
   const { curPlayId } = useTrackContext();
   const { elementRefs } = useResourceContext();
   const colorsRef = useVariableColor(waveformColors);
+  const waveformInstRef = useRef<WaveSurfer | undefined>(undefined);
+
+  useEffect(() => {
+    waveformInstRef.current = elementRefs?.waveformInst;
+  }, [elementRefs?.waveformInst]);
 
   /** init waveSurfer */
   useEffect(() => {
@@ -73,17 +78,18 @@ export const useWaveSurfer = (waveformRef: React.RefObject<HTMLElement>) => {
     };
   }, [elementRefs?.waveformInst, waveformRef]);
 
-  /** delete empty wave surfer */
+  /** cleanup waveSurfer on unmount */
   useEffect(
     () => () => {
+      waveformInstRef.current?.destroy();
+      waveformInstRef.current = undefined;
+      audioPlayerDispatch({
+        type: "SET_ELEMENT_REFS",
+        elementRefs: { waveformInst: undefined },
+      });
       const waveEl = document.getElementsByTagName("wave");
       if (waveEl.length) {
         waveEl[0].remove();
-        audioPlayerDispatch({
-          type: "SET_ELEMENT_REFS",
-          elementRefs: { waveformInst: undefined },
-        });
-        elementRefs?.waveformInst?.destroy();
       }
     },
     []
