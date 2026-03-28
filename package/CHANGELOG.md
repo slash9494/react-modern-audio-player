@@ -9,6 +9,13 @@
 
 - **`styled-components` moved to `peerDependencies`**: consumers must install `styled-components ^5.3.5` explicitly if not already present.
 
+### Bug Fixes
+
+- **Theme color switching**: system dark/light theme changes now correctly update progress bar, volume slider, shadow, and waveform colors
+- **Progress bar handle position**: handle no longer drifts when player placement changes (replaced JS-based width tracking with CSS container query units)
+- **Waveform progress rendering**: waveform blue progress layer now redraws correctly on container resize and placement changes
+- **Waveform theme re-initialization**: waveform canvas re-creates with correct colors when system color scheme changes
+
 ### Bundle Size Optimization
 
 | Change | Before | After | Saving |

@@ -247,8 +247,17 @@ const defaultInterfacePlacement = {
 
 ### Theme mode ( dark-mode )
 
-> Dark mode is driven by `system-theme` (`prefers-color-scheme`).
+> Dark mode is driven by `system-theme` (`prefers-color-scheme: dark`).
 > You can override any color by redefining the CSS variables below on `.rm-audio-player-provider`.
+
+```css
+@media (prefers-color-scheme: dark) {
+  .rm-audio-player-provider {
+    --rm-audio-player-interface-container: #1e1e1e;
+    /* override other variables as needed */
+  }
+}
+```
 
 
 ## ID & Classnames
@@ -265,17 +274,19 @@ const defaultInterfacePlacement = {
 
 ```css
 .rm-audio-player-provider {
+  --rm-audio-player-text-color: #2c2c2c;
+  --rm-audio-player-shadow: 0 0 0;
   --rm-audio-player-interface-container: #f5f5f5;
   --rm-audio-player-volume-background: #ccc;
   --rm-audio-player-volume-panel-background: #f2f2f2;
   --rm-audio-player-volume-panel-border: #ccc;
-  --rm-audio-player-volume-thumb: #d3d3d3;
+  --rm-audio-player-volume-thumb: #5c5c5c;
   --rm-audio-player-volume-fill: rgba(0, 0, 0, 0.5);
   --rm-audio-player-volume-track: #ababab;
   --rm-audio-player-track-current-time: #0072f5;
   --rm-audio-player-track-duration: #8c8c8c;
   --rm-audio-player-progress-bar: #0072f5;
-  --rm-audio-player-progress-bar-background: #d1d1d1;
+  --rm-audio-player-progress-bar-background: #393939;
   --rm-audio-player-waveform-cursor: #4b4b4b;
   --rm-audio-player-waveform-background: var(--rm-audio-player-progress-bar-background);
   --rm-audio-player-waveform-bar: var(--rm-audio-player-progress-bar);
