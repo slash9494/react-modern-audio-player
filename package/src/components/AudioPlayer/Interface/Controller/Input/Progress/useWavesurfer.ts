@@ -34,23 +34,33 @@ export const useWaveSurfer = (waveformRef: React.RefObject<HTMLElement>) => {
       .then(({ default: WaveSurfer }) => {
         if (
           cancelled ||
+          !waveformRef.current ||
           !colorsRef.current?.progressColor ||
           !colorsRef.current?.waveColor
         )
           return;
 
-        const waveSurfer = WaveSurfer.create({
-          barWidth: 1,
-          cursorWidth: 2,
-          container: waveformRef.current as HTMLElement,
-          height: 80,
-          progressColor: colorsRef.current.progressColor,
-          responsive: true,
-          waveColor: colorsRef.current.waveColor,
-          cursorColor: "var(--rm-audio-player-waveform-cursor)",
-          backend: "MediaElement",
-          removeMediaElementOnDestroy: false,
-        });
+        let waveSurfer;
+        try {
+          waveSurfer = WaveSurfer.create({
+            barWidth: 1,
+            cursorWidth: 2,
+            container: waveformRef.current as HTMLElement,
+            height: 80,
+            progressColor: colorsRef.current.progressColor,
+            responsive: true,
+            waveColor: colorsRef.current.waveColor,
+            cursorColor: "var(--rm-audio-player-waveform-cursor)",
+            backend: "MediaElement",
+            removeMediaElementOnDestroy: false,
+          });
+        } catch (err) {
+          console.error(
+            "[useWaveSurfer] failed to create WaveSurfer instance",
+            err
+          );
+          return;
+        }
 
         audioPlayerDispatch({
           type: "SET_ELEMENT_REFS",
@@ -103,11 +113,11 @@ export const useWaveSurfer = (waveformRef: React.RefObject<HTMLElement>) => {
       const waveEl = waveformRef.current?.querySelector("wave");
       if (waveEl) {
         waveEl.remove();
+        elementRefs?.waveformInst?.destroy();
         audioPlayerDispatch({
           type: "SET_ELEMENT_REFS",
           elementRefs: { waveformInst: undefined },
         });
-        elementRefs?.waveformInst?.destroy();
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
