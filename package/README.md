@@ -22,7 +22,7 @@
 
 https://codesandbox.io/s/basic-91y82y?file=/src/App.tsx
 
-# \***\*Flexible and Customizable UI\*\***
+# **Flexible and Customizable UI**
 
 ## This can offer waveform by `wavesurfer.js`
 
@@ -37,15 +37,15 @@ https://codesandbox.io/s/basic-91y82y?file=/src/App.tsx
 > <img width="110%" src="https://user-images.githubusercontent.com/70849655/180435493-2c2e08c5-b67b-4ab7-aded-5a0403d42050.png" alt="">
 
 > Particular View
-> </br> ><img width="50%" margin='10px' src="https://user-images.githubusercontent.com/70849655/180435497-0f839cd1-e1fd-400f-a013-82ba441ca79b.png" alt=""> ><img width="20%" margin='10px' src="https://user-images.githubusercontent.com/70849655/180435479-4f056620-f850-4d21-ab23-24efc4300d68.png" alt=""> > </br> ><img width="20%" margin='10px' src="https://user-images.githubusercontent.com/70849655/180435484-3331b7cb-1555-4ffb-a36c-a5343f72c8c3.png" alt=""> > <img width="50%" margin='10px' src="https://user-images.githubusercontent.com/70849655/180435486-2402ba80-7121-410c-9a06-9a737be72ec2.png" alt="">
+> <br/> > <img width="50%" margin='10px' src="https://user-images.githubusercontent.com/70849655/180435497-0f839cd1-e1fd-400f-a013-82ba441ca79b.png" alt=""> > <img width="20%" margin='10px' src="https://user-images.githubusercontent.com/70849655/180435479-4f056620-f850-4d21-ab23-24efc4300d68.png" alt=""> > <br/> > <img width="20%" margin='10px' src="https://user-images.githubusercontent.com/70849655/180435484-3331b7cb-1555-4ffb-a36c-a5343f72c8c3.png" alt=""> > <img width="50%" margin='10px' src="https://user-images.githubusercontent.com/70849655/180435486-2402ba80-7121-410c-9a06-9a737be72ec2.png" alt="">
 
-# \***\*Installation\*\***
+# **Installation**
 
 ```tsx
 npm install --save react-modern-audio-player
 ```
 
-# \***\*Quick Start\*\***
+# **Quick Start**
 
 ```tsx
 import AudioPlayer from "react-modern-audio-player";
@@ -376,7 +376,7 @@ const CustomComponent = ({
 </AudioPlayer>;
 ```
 
-# \***\*Example\*\***
+# **Example**
 
 ```tsx
 function App() {
