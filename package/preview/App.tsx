@@ -3,10 +3,14 @@ import { useState } from "react";
 import AudioPlayerWithProviders, {
   ActiveUI,
   AudioPlayerStateContext,
+  CustomIcons,
   InterfacePlacement,
   PlayerPlacement,
   PlayList,
+  PlayListPlacement,
+  VolumeSliderPlacement,
 } from "../src";
+
 const playList: PlayList = [
   {
     name: "Track 1",
@@ -51,38 +55,67 @@ const initialState = {
   curPlayId: 1,
 };
 
+interface TestConfig {
+  playerPlacement?: PlayerPlacement;
+  progressType?: "bar" | "waveform";
+  activeUI?: Partial<ActiveUI>;
+  interfaceTemplateArea?: InterfacePlacement["templateArea"];
+  volumeSliderPlacement?: VolumeSliderPlacement;
+  playListPlacement?: PlayListPlacement;
+  customIconTestIds?: Partial<Record<keyof CustomIcons, string>>;
+}
+
+function parseTestConfig(): TestConfig {
+  try {
+    const raw = new URLSearchParams(window.location.search).get("config");
+    return raw ? (JSON.parse(atob(raw)) as TestConfig) : {};
+  } catch {
+    return {};
+  }
+}
+
 function App() {
-  const [progressType, setProgressType] = useState("bar");
-  const [playerPlacement, setPlayerPlacement] = useState("static");
+  const testConfig = parseTestConfig();
+
+  const [progressType, setProgressType] = useState<"bar" | "waveform">(
+    testConfig.progressType ?? "bar"
+  );
+  const [playerPlacement, setPlayerPlacement] = useState<string>(
+    testConfig.playerPlacement ?? "static"
+  );
+
+  const playListPlacement: PlayListPlacement =
+    testConfig.playListPlacement ?? "bottom";
 
   const placement = {
     interface: {
-      templateArea: {
-        // playList: "row1-3",
-        // progress: "row2-1",
-        // playButton: "row1-1",
-        // repeatType: "row2-10",
-        // volume: "row1-3",
-        // trackTimeCurrent: "row2-1",
-        // trackTimeDuration: "row2-3",
-      },
+      templateArea: testConfig.interfaceTemplateArea ?? {},
       customComponentsArea: {
         test1: "row1-10",
       },
     } as InterfacePlacement<11>,
     player: playerPlacement as PlayerPlacement,
+    playList: playListPlacement,
+    volumeSlider: testConfig.volumeSliderPlacement,
   };
 
-  const activeUI: ActiveUI = {
+  const activeUI: ActiveUI = testConfig.activeUI ?? {
     all: true,
     progress: progressType as "bar" | "waveform",
-    // playButton: true,
-    // repeatType: true,
-    // volume: true,
-    // playList: "sortable",
-    // prevNnext: true,
-    // trackTime: true,
   };
+
+  const customIcons: CustomIcons | undefined = testConfig.customIconTestIds
+    ? Object.fromEntries(
+        Object.entries(testConfig.customIconTestIds).map(([key, testId]) => [
+          key,
+          <span
+            key={key}
+            data-testid={testId}
+            style={{ display: "inline-block", width: "1em", height: "1em" }}
+          />,
+        ])
+      )
+    : undefined;
 
   const CustomComponent = ({
     audioPlayerState,
@@ -153,6 +186,7 @@ function App() {
           audioInitialState={initialState}
           placement={placement}
           activeUI={activeUI}
+          customIcons={customIcons}
         >
           <AudioPlayerWithProviders.CustomComponent id="test1">
             <CustomComponent />
