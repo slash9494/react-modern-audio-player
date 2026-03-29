@@ -90,7 +90,7 @@ export const useAudioPlayer = (): AudioPlayerControls => {
     volume: curAudioState.volume ?? 1,
     currentTime: curAudioState.currentTime ?? 0,
     duration: curAudioState.duration ?? 0,
-    repeatType: curAudioState.repeatType,
+    repeatType: curAudioState.repeatType ?? "ALL",
     muted: curAudioState.muted ?? false,
     currentTrack: playList[curIdx] ?? null,
     currentIndex: curIdx,
