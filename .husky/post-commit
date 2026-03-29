@@ -1,0 +1,5 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+# Commit insight pipeline — blocking (no &), stdout goes to Claude
+python3 "$HOME/.claude/hooks/commit-insight.py"
