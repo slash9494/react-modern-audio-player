@@ -49,20 +49,26 @@ export const useAudioPlayer = (): AudioPlayerControls => {
   }, [dispatch]);
 
   const next = useCallback(() => {
+    if (playList.length === 0) return;
     dispatch({ type: "NEXT_AUDIO" });
-  }, [dispatch]);
+  }, [dispatch, playList.length]);
 
   const prev = useCallback(() => {
+    if (playList.length === 0) return;
     dispatch({ type: "PREV_AUDIO" });
-  }, [dispatch]);
+  }, [dispatch, playList.length]);
 
   const seek = useCallback(
     (time: number) => {
       if (elementRefs?.audioEl) {
         elementRefs.audioEl.currentTime = time;
+        dispatch({
+          type: "SET_AUDIO_STATE",
+          audioState: { currentTime: time },
+        });
       }
     },
-    [elementRefs?.audioEl]
+    [elementRefs?.audioEl, dispatch]
   );
 
   const setVolume = useCallback(
