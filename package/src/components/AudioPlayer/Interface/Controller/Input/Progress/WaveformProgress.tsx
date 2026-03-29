@@ -14,8 +14,10 @@ const WaveformWrapper = styled.div`
     width: 100%;
     #rm-waveform {
       width: 100%;
+      overflow: hidden;
       wave {
         cursor: pointer !important;
+        overflow-x: hidden !important;
       }
 
       ${!isActive &&
