@@ -5,8 +5,8 @@
 ### Breaking Changes
 
 - **`SpectrumProvider` renamed to `AudioPlayerRootProvider`**: import name changed
-  - Before: `import { SpectrumProvider } from "react-modern-audio-player"`
-  - After: `import { AudioPlayerRootProvider } from "react-modern-audio-player"`
+  - Before: `import { AudioPlayer, SpectrumProvider } from "react-modern-audio-player"`
+  - After: `import { AudioPlayer, AudioPlayerRootProvider } from "react-modern-audio-player"`
 - **`SpectrumProviderProps` renamed to `AudioPlayerRootProviderProps`**: type import name changed
   - Before: `import type { SpectrumProviderProps } from "react-modern-audio-player"`
   - After: `import type { AudioPlayerRootProviderProps } from "react-modern-audio-player"`

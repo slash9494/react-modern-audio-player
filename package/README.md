@@ -87,7 +87,7 @@ interface AudioPlayerProps {
 | Prop                 | Type                                      | Default                                                                                                         |
 | -------------------- | ----------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
 | `playList`           | [PlayList](#playlist)                     | [ ]                                                                                                             |
-| `audioInitialState`  | [InitialStates](#InitialStates)           | isPlaying: false </br>repeatType: "ALL" </br>volume: 1                                                          |
+| `audioInitialState`  | [InitialStates](#initialstates)           | isPlaying: false </br>repeatType: "ALL" </br>volume: 1                                                          |
 | `activeUI`           | [ActiveUI](#activeui)                     | playButton : true                                                                                               |
 | `customIcons`        | [CustomIcons](#customicons)               | undefined                                                                                                       |
 | `coverImgsCss`       | [CoverImgsCss](#coverimgscss)             | undefined                                                                                                       |
