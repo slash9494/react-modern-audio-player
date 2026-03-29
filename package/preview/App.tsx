@@ -51,6 +51,20 @@ const initialState = {
   curPlayId: 1,
 };
 
+const CustomComponent = () => {
+  const { currentTime, duration, seek, isPlaying, togglePlay } =
+    useAudioPlayer();
+  return (
+    <>
+      <button onClick={() => seek(currentTime + 30)}>+30s</button>
+      <button onClick={togglePlay}>{isPlaying ? "Pause" : "Play"}</button>
+      <span>
+        {currentTime.toFixed(0)}s / {duration.toFixed(0)}s
+      </span>
+    </>
+  );
+};
+
 function App() {
   const [progressType, setProgressType] = useState("bar");
   const [playerPlacement, setPlayerPlacement] = useState("static");
@@ -82,20 +96,6 @@ function App() {
     // playList: "sortable",
     // prevNnext: true,
     // trackTime: true,
-  };
-
-  const CustomComponent = () => {
-    const { currentTime, duration, seek, isPlaying, togglePlay } =
-      useAudioPlayer();
-    return (
-      <>
-        <button onClick={() => seek(currentTime + 30)}>+30s</button>
-        <button onClick={togglePlay}>{isPlaying ? "Pause" : "Play"}</button>
-        <span>
-          {currentTime.toFixed(0)}s / {duration.toFixed(0)}s
-        </span>
-      </>
-    );
   };
 
   return (
