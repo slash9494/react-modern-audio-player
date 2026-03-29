@@ -7,7 +7,6 @@ import { useResourceContext } from "./context/useResourceContext";
 import type {
   RepeatType,
   AudioData,
-  PlayList,
 } from "@/components/AudioPlayer/Context/StateContext";
 
 export interface AudioPlayerControls {
@@ -19,7 +18,7 @@ export interface AudioPlayerControls {
   muted: boolean;
   currentTrack: AudioData | null;
   currentIndex: number;
-  playList: PlayList;
+  playList: ReadonlyArray<AudioData>;
   play: () => void;
   pause: () => void;
   togglePlay: () => void;
