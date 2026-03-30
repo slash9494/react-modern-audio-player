@@ -16,28 +16,30 @@ export const AudioPlayerRootProvider: FC<
   PropsWithChildren<AudioPlayerRootProviderProps>
 > = ({ children, rootContainerProps }) => {
   const { playerPlacement: contextPlayerPlacement } = useUIContext();
-  const [placementState, setPlacementState] = useState<{
-    bottom?: number;
-    top?: number;
-    left?: number;
-    right?: number;
-  }>();
+  const [placementState, setPlacementState] =
+    useState<Pick<CSSProperties, "top" | "right" | "bottom" | "left">>();
   useLayoutEffect(() => {
     if (contextPlayerPlacement) {
       const placementValidation = () => {
+        const base = {
+          top: "auto",
+          right: "auto",
+          bottom: "auto",
+          left: "auto",
+        } as const;
         switch (contextPlayerPlacement) {
           case "bottom":
-            return { bottom: 0 };
+            return { ...base, bottom: 0 };
           case "top":
-            return { top: 0 };
+            return { ...base, top: 0 };
           case "bottom-left":
-            return { bottom: 0, left: 0 };
+            return { ...base, bottom: 0, left: 0 };
           case "bottom-right":
-            return { bottom: 0, right: 0 };
+            return { ...base, bottom: 0, right: 0 };
           case "top-left":
-            return { top: 0, left: 0 };
+            return { ...base, top: 0, left: 0 };
           case "top-right":
-            return { top: 0, right: 0 };
+            return { ...base, top: 0, right: 0 };
           default:
             break;
         }

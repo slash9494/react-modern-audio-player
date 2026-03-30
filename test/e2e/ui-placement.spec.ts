@@ -46,7 +46,7 @@ test.describe("PlayerPlacement — position", () => {
 
       for (const prop of allInsets.filter((p) => !(p in insets))) {
         const value = await provider.evaluate(
-          (el, p) => getComputedStyle(el).getPropertyValue(p),
+          (el, p) => (el as HTMLElement).style.getPropertyValue(p),
           prop
         );
         expect(value).toBe("auto");
