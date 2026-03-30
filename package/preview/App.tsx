@@ -55,13 +55,13 @@ const CustomComponent = () => {
   const { currentTime, duration, seek, isPlaying, togglePlay } =
     useAudioPlayer();
   return (
-    <>
+    <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
       <button onClick={() => seek(currentTime + 30)}>+30s</button>
       <button onClick={togglePlay}>{isPlaying ? "Pause" : "Play"}</button>
-      <span>
+      <span style={{ minWidth: "80px", fontVariantNumeric: "tabular-nums" }}>
         {currentTime.toFixed(0)}s / {duration.toFixed(0)}s
       </span>
-    </>
+    </div>
   );
 };
 

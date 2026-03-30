@@ -2,11 +2,11 @@ import { FC } from "react";
 import styled from "styled-components";
 import { TrackTimeContainer } from "./Styles";
 import { TrackTimeChildrenProps } from "./Types";
-import { usePlaybackContext } from "@/hooks/context/usePlaybackContext";
+import { useTimeContext } from "@/hooks/context/useTimeContext";
 import { getTimeWithPadStart } from "@/utils/getTime";
 
 export const Duration: FC<TrackTimeChildrenProps> = ({ position }) => {
-  const { curAudioState } = usePlaybackContext();
+  const { duration } = useTimeContext();
 
   return (
     <TrackTimeDurationContainer
@@ -14,9 +14,7 @@ export const Duration: FC<TrackTimeChildrenProps> = ({ position }) => {
       className="track-time-duration-container"
       childrenClassName="track-duration"
     >
-      <span className="track-duration">
-        {getTimeWithPadStart(curAudioState.duration ?? 0)}
-      </span>
+      <span className="track-duration">{getTimeWithPadStart(duration)}</span>
     </TrackTimeDurationContainer>
   );
 };
