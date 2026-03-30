@@ -35,7 +35,7 @@ export const VolumeSlider: FC<{ placement: VolumeSliderPlacement }> = ({
     <VolumeSliderContainer
       contentPlacement={placement}
       volumeValue={
-        (curAudioState.volume || elementRefs?.audioEl?.volume || 0) * 100
+        (curAudioState.volume ?? elementRefs?.audioEl?.volume ?? 0) * 100
       }
       ref={contentRef}
       className="volume-content-container"
