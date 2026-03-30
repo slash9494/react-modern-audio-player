@@ -34,12 +34,22 @@ test.describe("PlayerPlacement — position", () => {
       );
       expect(position).toBe("fixed");
 
+      const allInsets = ["top", "right", "bottom", "left"] as const;
+
       for (const [prop, expected] of Object.entries(insets)) {
         const value = await provider.evaluate(
           (el, p) => getComputedStyle(el).getPropertyValue(p),
           prop
         );
         expect(value).toBe(expected);
+      }
+
+      for (const prop of allInsets.filter((p) => !(p in insets))) {
+        const value = await provider.evaluate(
+          (el, p) => getComputedStyle(el).getPropertyValue(p),
+          prop
+        );
+        expect(value).toBe("auto");
       }
     });
   }

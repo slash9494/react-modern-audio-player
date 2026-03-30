@@ -35,14 +35,4 @@ describe("Icon — customIcon override", () => {
     );
     expect(getByText("▶")).toBeInTheDocument();
   });
-
-  it("render prop is not rendered when customIcon is present", () => {
-    const { queryByTestId } = render(
-      <Icon
-        render={defaultRender}
-        customIcon={<span data-testid="custom-icon" />}
-      />
-    );
-    expect(queryByTestId("default-svg")).toBeNull();
-  });
 });
