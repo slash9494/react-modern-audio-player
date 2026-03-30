@@ -1,5 +1,5 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
-# Commit insight pipeline — runs on every commit regardless of caller
-python3 "$HOME/.claude/hooks/commit-pipeline-global.py" &
+# Commit insight pipeline — blocking (no &), stdout goes to Claude
+python3 "$HOME/.claude/hooks/commit-insight.py"
