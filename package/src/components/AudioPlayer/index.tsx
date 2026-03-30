@@ -1,7 +1,7 @@
 import {
   AudioPlayerProvider,
-  SpectrumProvider,
-  SpectrumProviderProps,
+  AudioPlayerRootProvider,
+  AudioPlayerRootProviderProps,
 } from "@/components/Provider";
 import { GlobalStyle } from "../../styles/GlobalStyle";
 import { defaultInterfacePlacementMaxLength } from "./Context";
@@ -10,7 +10,7 @@ import { AudioPlayer, AudioPlayerProps } from "./Player";
 
 export type RMAudioPlayerProps<
   TInterfacePlacementLength extends number = typeof defaultInterfacePlacementMaxLength
-> = AudioPlayerProps<TInterfacePlacementLength> & SpectrumProviderProps;
+> = AudioPlayerProps<TInterfacePlacementLength> & AudioPlayerRootProviderProps;
 
 const AudioPlayerWithProviders = <TInterfacePlacementLength extends number>({
   rootContainerProps,
@@ -18,10 +18,10 @@ const AudioPlayerWithProviders = <TInterfacePlacementLength extends number>({
 }: RMAudioPlayerProps<TInterfacePlacementLength>) => {
   return (
     <AudioPlayerProvider {...audioPlayProps}>
-      <SpectrumProvider rootContainerProps={rootContainerProps}>
+      <AudioPlayerRootProvider rootContainerProps={rootContainerProps}>
         <AudioPlayer {...audioPlayProps} />
         <GlobalStyle />
-      </SpectrumProvider>
+      </AudioPlayerRootProvider>
     </AudioPlayerProvider>
   );
 };

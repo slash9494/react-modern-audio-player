@@ -25,6 +25,7 @@ releaseNote.md
 
 .claude
 .docs
+.coderabbit
 
 # Test coverage
 package/coverage/

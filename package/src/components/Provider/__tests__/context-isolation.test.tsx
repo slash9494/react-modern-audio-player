@@ -460,7 +460,7 @@ describe("cross-context actions — intentional multi-slice updates", () => {
    * SET_CURRENT_AUDIO changes curPlayId/curIdx AND sets isLoadedMetaData: false.
    * Both trackContext and playbackContext should re-render.
    */
-  it("SET_CURRENT_AUDIO re-renders track and playback, not ui or resource", () => {
+  it("SET_CURRENT_AUDIO re-renders track, playback, and time, not ui or resource", () => {
     const probes = makeProbes();
     const dispatch = renderIsolated(<AllProbes {...probes} />);
     const base = probes.snapshot();
@@ -476,7 +476,7 @@ describe("cross-context actions — intentional multi-slice updates", () => {
     const after = probes.snapshot();
     expect(after.trackCount - base.trackCount).toBe(1);
     expect(after.playbackCount - base.playbackCount).toBe(1);
-    expect(after.timeCount - base.timeCount).toBe(0);
+    expect(after.timeCount - base.timeCount).toBe(1);
     expect(after.uiCount - base.uiCount).toBe(0);
     expect(after.resourceCount - base.resourceCount).toBe(0);
   });

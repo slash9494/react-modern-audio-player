@@ -158,10 +158,12 @@ export const audioPlayerReducer = (
     case "SET_CURRENT_AUDIO":
       return {
         ...state,
+        audioResetKey: state.audioResetKey + 1,
         curPlayId: action.currentAudioId,
         curIdx: action.currentIndex,
         curAudioState: {
           ...state.curAudioState,
+          currentTime: 0,
           isLoadedMetaData: false,
         },
       };

@@ -3924,17 +3924,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@react-types/provider@npm:3.6.0":
-  version: 3.6.0
-  resolution: "@react-types/provider@npm:3.6.0"
-  dependencies:
-    "@react-types/shared": "npm:^3.17.0"
-  peerDependencies:
-    react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0
-  checksum: 10c0/9d14c40a973bd3968bdb0e5445a4aa454a7326d8764d2e7f5e532db812f64ff410f9bd56a39d1401dd73a6cadf80937a1ffda168462b3d3c92350e0715145bec
-  languageName: node
-  linkType: hard
-
 "@react-types/provider@npm:^3.5.4":
   version: 3.5.4
   resolution: "@react-types/provider@npm:3.5.4"
@@ -3946,21 +3935,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@react-types/shared@npm:3.15.0, @react-types/shared@npm:^3.15.0":
+"@react-types/shared@npm:^3.15.0":
   version: 3.15.0
   resolution: "@react-types/shared@npm:3.15.0"
   peerDependencies:
     react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0
   checksum: 10c0/08eee74168fd0ee69d7c93ce805f0fb99fc468c46a56647c3f1444665cf4d6eff97bec57e2c6759db1dda3992e1c33f7dd72b7f62d989a3567b5afe680d54504
-  languageName: node
-  linkType: hard
-
-"@react-types/shared@npm:^3.17.0":
-  version: 3.33.1
-  resolution: "@react-types/shared@npm:3.33.1"
-  peerDependencies:
-    react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0 || ^19.0.0-rc.1
-  checksum: 10c0/072dbf92de80e3535441fbf4a9075009636221974d0b70bd1078ec1e343ae1373d69d2c02c2fba0963e50f4b134872144ffaf1573daec8477233e408f96e008c
   languageName: node
   linkType: hard
 
@@ -19734,6 +19714,7 @@ __metadata:
     prettier: "npm:^2.7.1"
     react: "npm:^18.2.0"
     react-dom: "npm:^18.2.0"
+    styled-components: "npm:^5.3.5"
     typescript: "npm:^4.7.4"
   languageName: unknown
   linkType: soft
@@ -19761,12 +19742,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "react-modern-audio-player@workspace:package"
   dependencies:
-    "@react-spectrum/layout": "npm:^3.3.1"
-    "@react-spectrum/provider": "npm:^3.4.1"
-    "@react-spectrum/theme-default": "npm:^3.3.1"
-    "@react-spectrum/view": "npm:^3.2.1"
-    "@react-types/provider": "npm:3.6.0"
-    "@react-types/shared": "npm:3.15.0"
     "@testing-library/jest-dom": "npm:^6.9.1"
     "@testing-library/react": "npm:^16.3.2"
     "@testing-library/user-event": "npm:^14.6.1"
@@ -19780,8 +19755,6 @@ __metadata:
     "@vitest/coverage-v8": "npm:^2.1.0"
     classnames: "npm:^2.3.1"
     jsdom: "npm:^28.1.0"
-    react-icons: "npm:^4.4.0"
-    styled-components: "npm:^5.3.5"
     typescript: "npm:^5.4.0"
     vite: "npm:^5.4.0"
     vite-plugin-dts: "npm:^4.3.0"
@@ -19792,6 +19765,7 @@ __metadata:
   peerDependencies:
     react: ">=16.8.0"
     react-dom: ">=16.8.0"
+    styled-components: ^5.3.5
   languageName: unknown
   linkType: soft
 

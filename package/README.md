@@ -19,53 +19,48 @@
 </p>
 
 ## DEMO
+
 https://codesandbox.io/s/basic-91y82y?file=/src/App.tsx
 
-# ****Flexible and Customizable UI****
+# **Flexible and Customizable UI**
+
 ## This can offer waveform by `wavesurfer.js`
+
 <img width="100%" src="https://user-images.githubusercontent.com/70849655/180435472-f043dbb4-54df-43e0-bc5c-67492510e817.png" alt="">
 
 ## This can offer various UI and you can also customize each component position
+
 > Full View
 > <img width="100%" src="https://user-images.githubusercontent.com/70849655/180435489-263fae23-f066-4a37-a524-58918eb40b0c.png" alt="">
 
 > Position Change
 > <img width="110%" src="https://user-images.githubusercontent.com/70849655/180435493-2c2e08c5-b67b-4ab7-aded-5a0403d42050.png" alt="">
 
-
 > Particular View
-> </br>
-><img width="50%" margin='10px' src="https://user-images.githubusercontent.com/70849655/180435497-0f839cd1-e1fd-400f-a013-82ba441ca79b.png" alt="">
-><img width="20%" margin='10px' src="https://user-images.githubusercontent.com/70849655/180435479-4f056620-f850-4d21-ab23-24efc4300d68.png" alt="">
-> </br>
-><img width="20%" margin='10px' src="https://user-images.githubusercontent.com/70849655/180435484-3331b7cb-1555-4ffb-a36c-a5343f72c8c3.png" alt="">
-> <img width="50%" margin='10px' src="https://user-images.githubusercontent.com/70849655/180435486-2402ba80-7121-410c-9a06-9a737be72ec2.png" alt="">
+> <br/> > <img width="50%" margin='10px' src="https://user-images.githubusercontent.com/70849655/180435497-0f839cd1-e1fd-400f-a013-82ba441ca79b.png" alt=""> > <img width="20%" margin='10px' src="https://user-images.githubusercontent.com/70849655/180435479-4f056620-f850-4d21-ab23-24efc4300d68.png" alt=""> > <br/> > <img width="20%" margin='10px' src="https://user-images.githubusercontent.com/70849655/180435484-3331b7cb-1555-4ffb-a36c-a5343f72c8c3.png" alt=""> > <img width="50%" margin='10px' src="https://user-images.githubusercontent.com/70849655/180435486-2402ba80-7121-410c-9a06-9a737be72ec2.png" alt="">
 
-
-# ****Installation****
+# **Installation**
 
 ```tsx
 npm install --save react-modern-audio-player
 ```
 
-# ****Quick Start****
+# **Quick Start**
 
 ```tsx
-import AudioPlayer from 'react-modern-audio-player';
+import AudioPlayer from "react-modern-audio-player";
 
 const playList = [
   {
-    name: 'name',
-    writer: 'writer',
-    img: 'image.jpg',
-    src: 'audio.mp3',
+    name: "name",
+    writer: "writer",
+    img: "image.jpg",
+    src: "audio.mp3",
     id: 1,
   },
-]
-function Player (){
-	return (
-		<AudioPlayer playList={playList} />
-	)
+];
+function Player() {
+  return <AudioPlayer playList={playList} />;
 }
 ```
 
@@ -135,8 +130,6 @@ function App() {
 | `setVolume(vol)` | `(volume: number) => void` | Set volume (0–1, clamped) |
 | `setTrack(index)` | `(index: number) => void` | Jump to playlist index |
 
----
-
 # Props
 
 ```tsx
@@ -153,19 +146,19 @@ interface AudioPlayerProps {
     interface?: InterfacePlacement;
     volumeSlider?: VolumeSliderPlacement;
   };
-  rootContainerProps?: RootContainerProps
+  rootContainerProps?: RootContainerProps;
 }
 ```
 
-Prop | Type | Default 
---- | --- | --- 
-`playList` | [PlayList](#playlist) | [ ] 
-`audioInitialState` | [InitialStates](#InitialStates) | isPlaying: false </br>repeatType: "ALL" </br>volume: 1 
-`activeUI` | [ActiveUI](#activeui) | playButton : true
-`customIcons` | [CustomIcons](#customicons) | undefined 
-`coverImgsCss` | [CoverImgsCss](#coverimgscss) | undefined 
-`placement` | [Placement](#placement) | playListPlacement : "bottom" </br>interfacePlacement :[DefaultInterfacePlacement](#default-interface-placement)
-`rootContainerProps` | [RootContainerProps](#rootcontainerprops) | theme: spectrum-theme-default<br/>width: 100% <br/>position: 'static'<br/>UNSAFE_className: rm-audio-player-provider
+| Prop                 | Type                                      | Default                                                                                                         |
+| -------------------- | ----------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| `playList`           | [PlayList](#playlist)                     | [ ]                                                                                                             |
+| `audioInitialState`  | [InitialStates](#initialstates)           | isPlaying: false </br>repeatType: "ALL" </br>volume: 1                                                          |
+| `activeUI`           | [ActiveUI](#activeui)                     | playButton : true                                                                                               |
+| `customIcons`        | [CustomIcons](#customicons)               | undefined                                                                                                       |
+| `coverImgsCss`       | [CoverImgsCss](#coverimgscss)             | undefined                                                                                                       |
+| `placement`          | [Placement](#placement)                   | playListPlacement : "bottom" </br>interfacePlacement :[DefaultInterfacePlacement](#default-interface-placement) |
+| `rootContainerProps` | [RootContainerProps](#rootcontainerprops) | width: 100%<br/>position: 'static'<br/>className: rm-audio-player-provider                                      |
 
 ## PlayList
 
@@ -189,7 +182,7 @@ type InitialStates = Omit<
   React.AudioHTMLAttributes<HTMLAudioElement>,
   "autoPlay"
 > & {
-	isPlaying?: boolean;
+  isPlaying?: boolean;
   repeatType?: RepeatType;
   volume?: number;
   currentTime?: number;
@@ -271,7 +264,7 @@ type InterfacePlacementKey =
   | Exclude<keyof ActiveUI, "all" | "prevNnext" | "trackTime">
   | "trackTimeCurrent"
   | "trackTimeDuration";
-  
+
 type InterfacePlacementValue = "row1-1" | "row1-2" | "row1-3" | "row1-4" | ... more ... | "row9-9"
 /** if you apply custom components, values must be "row1-1" ~ any more */
 
@@ -290,6 +283,7 @@ type InterfaceGridItemArea = Partial<Record<InterfacePlacementKey, string>>;
 ```
 
 ### Default interface placement
+
 ```tsx
 const defaultInterfacePlacement = {
   templateArea: {
@@ -307,19 +301,24 @@ const defaultInterfacePlacement = {
 ```
 
 ## RootContainerProps
-> it is same with spectrum provider props
-> </br>
-> https://react-spectrum.adobe.com/react-spectrum/Provider.html#themes
 
+`rootContainerProps` accepts any standard `HTMLAttributes<HTMLDivElement>` (e.g. `className`, `style`, `data-*`). The root container always has the class `rm-audio-player-provider` applied automatically.
 
 # Override Style
 
-### Theme mode ( dark-mode )
+## Theme mode ( dark-mode )
 
-> it apply dark-mode depending on `system-theme` 
-> </br>
-> you can customize color-theme by `css-variable` of `react-spectrum` `theme-default`
+> Dark mode is driven by `system-theme` (`prefers-color-scheme: dark`).
+> You can override any color by redefining the CSS variables below on `.rm-audio-player-provider`.
 
+```css
+@media (prefers-color-scheme: dark) {
+  .rm-audio-player-provider {
+    --rm-audio-player-interface-container: #1e1e1e;
+    /* override other variables as needed */
+  }
+}
+```
 
 ## ID & Classnames
 
@@ -333,26 +332,30 @@ const defaultInterfacePlacement = {
 
 ### color variables
 
-```tsx
---rm-audio-player-interface-container:var(--spectrum-global-color-gray-100);
---rm-audio-player-volume-background: #ccc;
---rm-audio-player-volume-panel-background:#f2f2f2;
---rm-audio-player-volume-panel-border:#ccc;
---rm-audio-player-volume-thumb: #d3d3d3;
---rm-audio-player-volume-fill:rgba(0, 0, 0, 0.5);
---rm-audio-player-volume-track:#ababab;
---rm-audio-player-track-current-time:#0072F5;
---rm-audio-player-track-duration:#8c8c8c;
---rm-audio-player-progress-bar:#0072F5;
---rm-audio-player-progress-bar-background:#D1D1D1;
---rm-audio-player-waveform-cursor:var(--spectrum-global-color-gray-800);
---rm-audio-player-waveform-background:var(--rm-audio-player-progress-bar-background);
---rm-audio-player-waveform-bar:var(--rm-audio-player-progress-bar);
---rm-audio-player-sortable-list:var(--spectrum-global-color-gray-200);
---rm-audio-player-sortable-list-button-active:#0072F5;
---rm-audio-player-selected-list-item-background:var(--spectrum-global-color-gray-500);
-
-// ...spectrum theme palette and so on... //
+```css
+.rm-audio-player-provider {
+  --rm-audio-player-text-color: #2c2c2c;
+  --rm-audio-player-shadow: 0 0 0;
+  --rm-audio-player-interface-container: #f5f5f5;
+  --rm-audio-player-volume-background: #ccc;
+  --rm-audio-player-volume-panel-background: #f2f2f2;
+  --rm-audio-player-volume-panel-border: #ccc;
+  --rm-audio-player-volume-thumb: #5c5c5c;
+  --rm-audio-player-volume-fill: rgba(0, 0, 0, 0.5);
+  --rm-audio-player-volume-track: #ababab;
+  --rm-audio-player-track-current-time: #0072f5;
+  --rm-audio-player-track-duration: #8c8c8c;
+  --rm-audio-player-progress-bar: #0072f5;
+  --rm-audio-player-progress-bar-background: #393939;
+  --rm-audio-player-waveform-cursor: #4b4b4b;
+  --rm-audio-player-waveform-background: var(
+    --rm-audio-player-progress-bar-background
+  );
+  --rm-audio-player-waveform-bar: var(--rm-audio-player-progress-bar);
+  --rm-audio-player-sortable-list: #eaeaea;
+  --rm-audio-player-sortable-list-button-active: #0072f5;
+  --rm-audio-player-selected-list-item-background: #b3b3b3;
+}
 ```
 
 # Context Hooks
@@ -361,24 +364,24 @@ Components inside `AudioPlayer` can subscribe to only the state slice they need,
 
 ```tsx
 import {
-  usePlaybackContext,  // curAudioState: { isPlaying, repeatType, volume, muted, isLoadedMetaData }
-  useTrackContext,     // playList, curIdx, curPlayId
-  useUIContext,        // activeUI, interfacePlacement, playListPlacement, playerPlacement, volumeSliderPlacement
-  useResourceContext,  // elementRefs, customIcons, coverImgsCss
-} from 'react-modern-audio-player';
+  usePlaybackContext, // curAudioState: { isPlaying, repeatType, volume, muted, isLoadedMetaData }
+  useTrackContext, // playList, curIdx, curPlayId
+  useUIContext, // activeUI, interfacePlacement, playListPlacement, playerPlacement, volumeSliderPlacement
+  useResourceContext, // elementRefs, customIcons, coverImgsCss
+} from "react-modern-audio-player";
 
 const MyComponent = () => {
   const { curAudioState } = usePlaybackContext();
-  return <span>{curAudioState.isPlaying ? 'Playing' : 'Paused'}</span>;
+  return <span>{curAudioState.isPlaying ? "Playing" : "Paused"}</span>;
 };
 ```
 
-Hook | Returns
---- | ---
-`usePlaybackContext` | `{ curAudioState: AudioState }`
-`useTrackContext` | `{ playList, curIdx, curPlayId }`
-`useUIContext` | `{ activeUI, interfacePlacement, playListPlacement, playerPlacement, volumeSliderPlacement }`
-`useResourceContext` | `{ elementRefs, customIcons, coverImgsCss }`
+| Hook                 | Returns                                                                                       |
+| -------------------- | --------------------------------------------------------------------------------------------- |
+| `usePlaybackContext` | `{ curAudioState: AudioState }`                                                               |
+| `useTrackContext`    | `{ playList, curIdx, curPlayId }`                                                             |
+| `useUIContext`       | `{ activeUI, interfacePlacement, playListPlacement, playerPlacement, volumeSliderPlacement }` |
+| `useResourceContext` | `{ elementRefs, customIcons, coverImgsCss }`                                                  |
 
 # Custom Component
 
@@ -425,9 +428,8 @@ const CustomComponent = () => {
 </AudioPlayer>
 ```
 
+# **Example**
 
-
-# ****Example****
 ```tsx
 function App() {
   return (

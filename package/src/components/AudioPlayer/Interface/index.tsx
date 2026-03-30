@@ -56,6 +56,7 @@ const InterfaceContainer = styled.div`
   }
   .sortable-play-list {
     background: var(--rm-audio-player-sortable-list);
-    box-shadow: -5px 2px 4px 0px rgb(0 0 0 / 4%) inset;
+    box-shadow: -5px 2px 4px 0px rgb(var(--rm-audio-player-shadow, 0 0 0) / 4%)
+      inset;
   }
 `;
