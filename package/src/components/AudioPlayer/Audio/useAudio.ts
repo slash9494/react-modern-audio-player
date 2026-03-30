@@ -77,7 +77,7 @@ export const useAudio = (): HTMLAttributes<HTMLAudioElement> => {
 
   /** volume */
   useEffect(() => {
-    if (!elementRefs?.audioEl || !curAudioState.volume) return;
+    if (!elementRefs?.audioEl || curAudioState.volume == null) return;
     elementRefs.audioEl.volume = curAudioState.volume;
   }, [elementRefs?.audioEl, curAudioState.volume]);
 
