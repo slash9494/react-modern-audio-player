@@ -1,5 +1,15 @@
 import { test as base, expect, Page, Locator } from "@playwright/test";
 
+export interface TestConfig {
+  playerPlacement?: string;
+  progressType?: "bar" | "waveform";
+  activeUI?: Record<string, unknown>;
+  interfaceTemplateArea?: Record<string, string>;
+  volumeSliderPlacement?: string;
+  playListPlacement?: "top" | "bottom";
+  customIconTestIds?: Record<string, string>;
+}
+
 export class PlayerPage {
   readonly page: Page;
 
@@ -35,15 +45,29 @@ export class PlayerPage {
     await this.player.waitFor({ state: "visible" });
   }
 
+  async gotoWithConfig(config: TestConfig) {
+    const encoded = btoa(JSON.stringify(config));
+    await this.page.goto(`/?config=${encoded}`);
+    await this.player.waitFor({ state: "visible" });
+  }
+
   playlistItems() {
     return this.page.getByTestId("playlist-item");
   }
 }
 
-export const test = base.extend<{ playerPage: PlayerPage }>({
+export const test = base.extend<{
+  playerPage: PlayerPage;
+  playerPageLazy: PlayerPage;
+}>({
   playerPage: async ({ page }, use) => {
     const playerPage = new PlayerPage(page);
     await playerPage.goto();
+    await use(playerPage);
+  },
+  // Skips initial goto() — use for tests that call gotoWithConfig() directly
+  playerPageLazy: async ({ page }, use) => {
+    const playerPage = new PlayerPage(page);
     await use(playerPage);
   },
 });

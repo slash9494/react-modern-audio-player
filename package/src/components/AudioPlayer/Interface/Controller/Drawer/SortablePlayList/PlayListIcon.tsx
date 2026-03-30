@@ -1,6 +1,6 @@
 import { useResourceContext } from "@/hooks/context/useResourceContext";
 import { FC } from "react";
-import { MdPlaylistPlay } from "react-icons/md";
+import { MdPlaylistPlay } from "@/components/icons";
 import { Icon } from "../../Icon";
 
 export const PlayListIcon: FC = () => {

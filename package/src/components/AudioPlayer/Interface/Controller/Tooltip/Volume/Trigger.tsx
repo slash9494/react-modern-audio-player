@@ -3,8 +3,12 @@ import { audioPlayerDispatchContext } from "@/components/AudioPlayer/Context/dis
 import { usePlaybackContext } from "@/hooks/context/usePlaybackContext";
 import { useResourceContext } from "@/hooks/context/useResourceContext";
 import { forwardRef, useCallback, useMemo } from "react";
-import { IconBaseProps } from "react-icons/lib";
-import { TbVolume3, TbVolume2, TbVolume } from "react-icons/tb";
+import {
+  SvgIconProps,
+  TbVolume3,
+  TbVolume2,
+  TbVolume,
+} from "@/components/icons";
 import styled from "styled-components";
 import { Icon } from "../../Icon";
 
@@ -26,7 +30,7 @@ export const Trigger = forwardRef<HTMLDivElement>((_, ref) => {
   );
 
   const VolumeIcon = useMemo(() => {
-    const volumeOpt: IconBaseProps = {
+    const volumeOpt: SvgIconProps = {
       size: "100%",
     };
     if (curAudioState.muted)

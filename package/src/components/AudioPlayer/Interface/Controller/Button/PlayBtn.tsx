@@ -5,7 +5,7 @@ import { audioPlayerDispatchContext } from "@/components/AudioPlayer/Context/dis
 import { usePlaybackContext } from "@/hooks/context/usePlaybackContext";
 import { useResourceContext } from "@/hooks/context/useResourceContext";
 import { StyledBtn } from "@/ui/StyledBtn";
-import { MdPauseCircleFilled, MdPlayCircleFilled } from "react-icons/md";
+import { MdPauseCircleFilled, MdPlayCircleFilled } from "@/components/icons";
 import { Icon } from "../Icon";
 
 const StyledPlayBtn = styled(StyledBtn)`

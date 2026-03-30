@@ -3,7 +3,7 @@ import { useNonNullableContext } from "@/hooks/useNonNullableContext";
 import { audioPlayerDispatchContext } from "@/components/AudioPlayer/Context/dispatchContext";
 import { useResourceContext } from "@/hooks/context/useResourceContext";
 import { StyledBtn } from "@/ui/StyledBtn";
-import { ImPrevious, ImNext } from "react-icons/im";
+import { ImPrevious, ImNext } from "@/components/icons";
 import { Icon } from "../Icon";
 
 interface PrevNnextBtnProps {

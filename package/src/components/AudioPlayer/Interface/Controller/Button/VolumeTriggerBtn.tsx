@@ -3,12 +3,16 @@ import { audioPlayerDispatchContext } from "@/components/AudioPlayer/Context/dis
 import { usePlaybackContext } from "@/hooks/context/usePlaybackContext";
 import { useResourceContext } from "@/hooks/context/useResourceContext";
 import { forwardRef, memo, useCallback } from "react";
-import { IconBaseProps } from "react-icons/lib";
-import { TbVolume3, TbVolume2, TbVolume } from "react-icons/tb";
+import {
+  SvgIconProps,
+  TbVolume3,
+  TbVolume2,
+  TbVolume,
+} from "@/components/icons";
 import { Icon } from "../Icon";
 import { StyledBtn } from "@/ui/StyledBtn";
 
-const volumeOpt: IconBaseProps = { size: "100%" };
+const volumeOpt: SvgIconProps = { size: "100%" };
 
 export const VolumeTriggerBtn = memo(
   forwardRef<HTMLButtonElement>((_, ref) => {

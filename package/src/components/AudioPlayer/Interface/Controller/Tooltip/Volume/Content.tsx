@@ -35,7 +35,7 @@ export const VolumeSlider: FC<{ placement: VolumeSliderPlacement }> = ({
     <VolumeSliderContainer
       contentPlacement={placement}
       volumeValue={
-        (curAudioState.volume || elementRefs?.audioEl?.volume || 0) * 100
+        (curAudioState.volume ?? elementRefs?.audioEl?.volume ?? 0) * 100
       }
       ref={contentRef}
       className="volume-content-container"
@@ -102,7 +102,7 @@ const VolumeSliderContainer = styled.div`
       border: 1px solid var(--rm-audio-player-volume-panel-border);
       border-radius: 5px;
       height: 118px;
-      box-shadow: 0 2px 4px rgb(0 0 0 /10%);
+      box-shadow: 0 2px 4px rgb(var(--rm-audio-player-shadow, 0 0 0) / 10%);
       position: absolute;
       bottom: 5px;
 
@@ -115,7 +115,7 @@ const VolumeSliderContainer = styled.div`
           var(--rm-audio-player-volume-panel-border);
         border-style: solid;
         border-width: 5px;
-        box-shadow: -3px 3px 4px rgb(0 0 0 / 10%);
+        box-shadow: -3px 3px 4px rgb(var(--rm-audio-player-shadow, 0 0 0) / 10%);
         position: absolute;
         width: 0;
         height: 0;

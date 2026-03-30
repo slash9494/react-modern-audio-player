@@ -32,6 +32,7 @@ export default defineConfig({
         "react-dom",
         "styled-components",
       ],
+      treeshake: { moduleSideEffects: false },
       output: {
         exports: "named",
       },
