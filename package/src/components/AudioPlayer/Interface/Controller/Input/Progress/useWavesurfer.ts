@@ -107,7 +107,7 @@ export const useWaveSurfer = (waveformRef: React.RefObject<HTMLElement>) => {
     };
   }, [elementRefs?.waveformInst, waveformRef]);
 
-  /** delete empty wave surfer */
+  /** cleanup waveSurfer on unmount */
   useEffect(
     () => () => {
       const waveEl = waveformRef.current?.querySelector("wave");

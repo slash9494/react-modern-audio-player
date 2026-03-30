@@ -2,13 +2,13 @@ import PlayerLogo from "./assets/images/noname.png";
 import { useState } from "react";
 import AudioPlayerWithProviders, {
   ActiveUI,
-  AudioPlayerStateContext,
   CustomIcons,
   InterfacePlacement,
   PlayerPlacement,
   PlayList,
   PlayListPlacement,
   VolumeSliderPlacement,
+  useAudioPlayer,
 } from "../src";
 
 const playList: PlayList = [
@@ -74,6 +74,20 @@ function parseTestConfig(): TestConfig {
   }
 }
 
+const CustomComponent = () => {
+  const { currentTime, duration, seek, isPlaying, togglePlay } =
+    useAudioPlayer();
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+      <button onClick={() => seek(currentTime + 30)}>+30s</button>
+      <button onClick={togglePlay}>{isPlaying ? "Pause" : "Play"}</button>
+      <span style={{ minWidth: "80px", fontVariantNumeric: "tabular-nums" }}>
+        {currentTime.toFixed(0)}s / {duration.toFixed(0)}s
+      </span>
+    </div>
+  );
+};
+
 function App() {
   const testConfig = parseTestConfig();
 
@@ -116,24 +130,6 @@ function App() {
         ])
       )
     : undefined;
-
-  const CustomComponent = ({
-    audioPlayerState,
-  }: {
-    audioPlayerState?: AudioPlayerStateContext;
-  }) => {
-    const audioEl = audioPlayerState?.elementRefs?.audioEl;
-    const handOverTime = () => {
-      if (audioEl) {
-        audioEl.currentTime += 30;
-      }
-    };
-    return (
-      <>
-        <button onClick={handOverTime}>+30</button>
-      </>
-    );
-  };
 
   return (
     <div

@@ -1,4 +1,4 @@
-import { usePlaybackContext } from "@/hooks/context/usePlaybackContext";
+import { useTimeContext } from "@/hooks/context/useTimeContext";
 import { getTimeWithPadStart } from "@/utils/getTime";
 import { safeRatio } from "@/utils/safeRatio";
 import { FC } from "react";
@@ -7,12 +7,9 @@ import { useProgress } from "./useProgress";
 import { useProgressKeyDown } from "./useProgressKeyDown";
 
 export const BarProgress: FC<{ isActive: boolean }> = ({ isActive }) => {
-  const { curAudioState } = usePlaybackContext();
+  const { currentTime, duration } = useTimeContext();
 
-  const progressRatio = safeRatio(
-    curAudioState.currentTime ?? 0,
-    curAudioState.duration ?? 0
-  );
+  const progressRatio = safeRatio(currentTime, duration);
 
   const eventProps = useProgress();
   const handleKeyDown = useProgressKeyDown();
@@ -28,8 +25,8 @@ export const BarProgress: FC<{ isActive: boolean }> = ({ isActive }) => {
       aria-valuemax={100}
       aria-valuenow={Math.round(progressRatio * 100)}
       aria-valuetext={`${getTimeWithPadStart(
-        curAudioState.currentTime ?? 0
-      )} of ${getTimeWithPadStart(curAudioState.duration ?? 0)}`}
+        currentTime
+      )} of ${getTimeWithPadStart(duration)}`}
       onKeyDown={handleKeyDown}
       {...eventProps}
     >

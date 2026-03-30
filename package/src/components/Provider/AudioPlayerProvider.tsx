@@ -7,6 +7,7 @@ import {
   Placements,
 } from "@/components/AudioPlayer/Context";
 import { playbackContext } from "@/components/AudioPlayer/Context/PlaybackContext";
+import { timeContext } from "@/components/AudioPlayer/Context/TimeContext";
 import { trackContext } from "@/components/AudioPlayer/Context/TrackContext";
 import { uiContext } from "@/components/AudioPlayer/Context/UIContext";
 import { resourceContext } from "@/components/AudioPlayer/Context/ResourceContext";
@@ -68,12 +69,27 @@ export const AudioPlayerProvider = <
     ...otherProps,
   });
 
+  const timeValue = useMemo(
+    () => ({
+      currentTime: state.curAudioState.currentTime ?? 0,
+      duration: state.curAudioState.duration ?? 0,
+    }),
+    [state.curAudioState.currentTime, state.curAudioState.duration]
+  );
+
   const playbackValue = useMemo(
     () => ({
       curAudioState: state.curAudioState,
       audioResetKey: state.audioResetKey,
     }),
-    [state.curAudioState, state.audioResetKey]
+    [
+      state.curAudioState.isPlaying,
+      state.curAudioState.isLoadedMetaData,
+      state.curAudioState.volume,
+      state.curAudioState.muted,
+      state.curAudioState.repeatType,
+      state.audioResetKey,
+    ]
   );
 
   const trackValue = useMemo(
@@ -117,16 +133,18 @@ export const AudioPlayerProvider = <
   );
 
   return (
-    <playbackContext.Provider value={playbackValue}>
-      <trackContext.Provider value={trackValue}>
-        <uiContext.Provider value={uiValue}>
-          <resourceContext.Provider value={resourceValue}>
-            <audioPlayerDispatchContext.Provider value={dispatch}>
-              {children}
-            </audioPlayerDispatchContext.Provider>
-          </resourceContext.Provider>
-        </uiContext.Provider>
-      </trackContext.Provider>
-    </playbackContext.Provider>
+    <timeContext.Provider value={timeValue}>
+      <playbackContext.Provider value={playbackValue}>
+        <trackContext.Provider value={trackValue}>
+          <uiContext.Provider value={uiValue}>
+            <resourceContext.Provider value={resourceValue}>
+              <audioPlayerDispatchContext.Provider value={dispatch}>
+                {children}
+              </audioPlayerDispatchContext.Provider>
+            </resourceContext.Provider>
+          </uiContext.Provider>
+        </trackContext.Provider>
+      </playbackContext.Provider>
+    </timeContext.Provider>
   );
 };

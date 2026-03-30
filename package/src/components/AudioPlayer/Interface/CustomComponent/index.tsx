@@ -1,6 +1,7 @@
 import Grid from "@/components/Grid";
 import { GridItemProps } from "@/components/Grid/Item";
 import { usePlaybackContext } from "@/hooks/context/usePlaybackContext";
+import { useTimeContext } from "@/hooks/context/useTimeContext";
 import { useTrackContext } from "@/hooks/context/useTrackContext";
 import { useUIContext } from "@/hooks/context/useUIContext";
 import { useResourceContext } from "@/hooks/context/useResourceContext";
@@ -19,12 +20,19 @@ export const CustomComponent: FC<CustomComponentProps> = ({
   ...gridItemProps
 }) => {
   const playback = usePlaybackContext();
+  const time = useTimeContext();
   const track = useTrackContext();
   const ui = useUIContext();
   const resource = useResourceContext();
 
   // Assemble full state shape for backward-compat with custom component children
-  const audioPlayerState = { ...playback, ...track, ...ui, ...resource };
+  const audioPlayerState = {
+    ...playback,
+    ...time,
+    ...track,
+    ...ui,
+    ...resource,
+  };
 
   const gridArea = ui.interfacePlacement?.customComponentsArea?.[id];
 

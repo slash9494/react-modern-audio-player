@@ -3,6 +3,7 @@ import { describe, it, expect, vi } from "vitest";
 import { axe } from "vitest-axe";
 import { BarProgress } from "../BarProgress";
 import { playbackContext } from "@/components/AudioPlayer/Context/PlaybackContext";
+import { timeContext } from "@/components/AudioPlayer/Context/TimeContext";
 import { resourceContext } from "@/components/AudioPlayer/Context/ResourceContext";
 import { audioPlayerDispatchContext } from "@/components/AudioPlayer/Context/dispatchContext";
 import { AudioState } from "@/components/AudioPlayer/Context/StateContext";
@@ -33,15 +34,17 @@ const makePlaybackValue = () => ({
 
 const renderBar = () =>
   render(
-    <playbackContext.Provider value={makePlaybackValue()}>
-      <resourceContext.Provider
-        value={{ elementRefs: { audioEl: mockAudioEl } }}
-      >
-        <audioPlayerDispatchContext.Provider value={mockDispatch}>
-          <BarProgress isActive={true} />
-        </audioPlayerDispatchContext.Provider>
-      </resourceContext.Provider>
-    </playbackContext.Provider>
+    <timeContext.Provider value={{ currentTime: 0, duration: 180 }}>
+      <playbackContext.Provider value={makePlaybackValue()}>
+        <resourceContext.Provider
+          value={{ elementRefs: { audioEl: mockAudioEl } }}
+        >
+          <audioPlayerDispatchContext.Provider value={mockDispatch}>
+            <BarProgress isActive={true} />
+          </audioPlayerDispatchContext.Provider>
+        </resourceContext.Provider>
+      </playbackContext.Provider>
+    </timeContext.Provider>
   );
 
 describe("BarProgress accessibility", () => {

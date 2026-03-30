@@ -19,6 +19,7 @@ import {
 } from "@/components/AudioPlayer/Context/dispatchContext";
 import { useNonNullableContext } from "@/hooks/useNonNullableContext";
 import { usePlaybackContext } from "@/hooks/context/usePlaybackContext";
+import { useTimeContext } from "@/hooks/context/useTimeContext";
 import { useTrackContext } from "@/hooks/context/useTrackContext";
 import { useUIContext } from "@/hooks/context/useUIContext";
 import { useResourceContext } from "@/hooks/context/useResourceContext";
@@ -77,6 +78,7 @@ function renderIsolated(children: ReactNode, curPlayId = 1) {
 
 function makeProbes() {
   let playbackCount = 0;
+  let timeCount = 0;
   let trackCount = 0;
   let uiCount = 0;
   let resourceCount = 0;
@@ -84,6 +86,11 @@ function makeProbes() {
   const PlaybackProbe: FC = () => {
     usePlaybackContext();
     playbackCount++;
+    return null;
+  };
+  const TimeProbe: FC = () => {
+    useTimeContext();
+    timeCount++;
     return null;
   };
   const TrackProbe: FC = () => {
@@ -105,12 +112,20 @@ function makeProbes() {
   /** Call after mounting to record the baseline render counts. */
   const snapshot = () => ({
     playbackCount,
+    timeCount,
     trackCount,
     uiCount,
     resourceCount,
   });
 
-  return { PlaybackProbe, TrackProbe, UIProbe, ResourceProbe, snapshot };
+  return {
+    PlaybackProbe,
+    TimeProbe,
+    TrackProbe,
+    UIProbe,
+    ResourceProbe,
+    snapshot,
+  };
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -120,6 +135,7 @@ function makeProbes() {
 /** All four probes as a JSX fragment — mount them all for full isolation coverage. */
 function AllProbes({
   PlaybackProbe,
+  TimeProbe,
   TrackProbe,
   UIProbe,
   ResourceProbe,
@@ -127,6 +143,7 @@ function AllProbes({
   return (
     <>
       <PlaybackProbe />
+      <TimeProbe />
       <TrackProbe />
       <UIProbe />
       <ResourceProbe />
@@ -148,6 +165,7 @@ describe("playbackContext isolation", () => {
 
     const after = probes.snapshot();
     expect(after.playbackCount - base.playbackCount).toBe(1);
+    expect(after.timeCount - base.timeCount).toBe(0);
     expect(after.trackCount - base.trackCount).toBe(0);
     expect(after.uiCount - base.uiCount).toBe(0);
     expect(after.resourceCount - base.resourceCount).toBe(0);
@@ -162,6 +180,22 @@ describe("playbackContext isolation", () => {
 
     const after = probes.snapshot();
     expect(after.playbackCount - base.playbackCount).toBe(1);
+    expect(after.timeCount - base.timeCount).toBe(0);
+    expect(after.trackCount - base.trackCount).toBe(0);
+    expect(after.uiCount - base.uiCount).toBe(0);
+    expect(after.resourceCount - base.resourceCount).toBe(0);
+  });
+
+  it("SET_VOLUME only re-renders playback consumers", () => {
+    const probes = makeProbes();
+    const dispatch = renderIsolated(<AllProbes {...probes} />);
+    const base = probes.snapshot();
+
+    act(() => dispatch.current({ type: "SET_VOLUME", volume: 0.5 }));
+
+    const after = probes.snapshot();
+    expect(after.playbackCount - base.playbackCount).toBe(1);
+    expect(after.timeCount - base.timeCount).toBe(0);
     expect(after.trackCount - base.trackCount).toBe(0);
     expect(after.uiCount - base.uiCount).toBe(0);
     expect(after.resourceCount - base.resourceCount).toBe(0);
@@ -176,6 +210,7 @@ describe("playbackContext isolation", () => {
 
     const after = probes.snapshot();
     expect(after.playbackCount - base.playbackCount).toBe(1);
+    expect(after.timeCount - base.timeCount).toBe(0);
     expect(after.trackCount - base.trackCount).toBe(0);
     expect(after.uiCount - base.uiCount).toBe(0);
     expect(after.resourceCount - base.resourceCount).toBe(0);
@@ -190,6 +225,7 @@ describe("playbackContext isolation", () => {
 
     const after = probes.snapshot();
     expect(after.playbackCount - base.playbackCount).toBe(1);
+    expect(after.timeCount - base.timeCount).toBe(0);
     expect(after.trackCount - base.trackCount).toBe(0);
     expect(after.uiCount - base.uiCount).toBe(0);
     expect(after.resourceCount - base.resourceCount).toBe(0);
@@ -197,9 +233,9 @@ describe("playbackContext isolation", () => {
 });
 
 describe("trackContext isolation", () => {
-  it("NEXT_AUDIO (repeatType ALL, curIdx 0) re-renders track and playback consumers", () => {
-    // NEXT_AUDIO updates curIdx/curPlayId (track) and resets curAudioState.currentTime
-    // to 0 and increments audioResetKey (playback). UI and resource contexts are unaffected.
+  it("NEXT_AUDIO (repeatType ALL, curIdx 0) re-renders track, playback, and time consumers", () => {
+    // NEXT_AUDIO updates curIdx/curPlayId (track), resets curAudioState.currentTime
+    // to 0 and increments audioResetKey (playback), and resets time. UI and resource are unaffected.
     const probes = makeProbes();
     const dispatch = renderIsolated(<AllProbes {...probes} />);
     const base = probes.snapshot();
@@ -209,6 +245,7 @@ describe("trackContext isolation", () => {
     const after = probes.snapshot();
     expect(after.trackCount - base.trackCount).toBe(1);
     expect(after.playbackCount - base.playbackCount).toBe(1);
+    expect(after.timeCount - base.timeCount).toBe(1);
     expect(after.uiCount - base.uiCount).toBe(0);
     expect(after.resourceCount - base.resourceCount).toBe(0);
   });
@@ -228,7 +265,72 @@ describe("trackContext isolation", () => {
 
     const after = probes.snapshot();
     expect(after.trackCount - base.trackCount).toBe(1);
+    expect(after.timeCount - base.timeCount).toBe(0);
     expect(after.playbackCount - base.playbackCount).toBe(0);
+    expect(after.uiCount - base.uiCount).toBe(0);
+    expect(after.resourceCount - base.resourceCount).toBe(0);
+  });
+});
+
+describe("timeContext isolation", () => {
+  it("SET_AUDIO_STATE with currentTime only re-renders time consumers, not playback", () => {
+    const probes = makeProbes();
+    const dispatch = renderIsolated(<AllProbes {...probes} />);
+    const base = probes.snapshot();
+
+    act(() =>
+      dispatch.current({
+        type: "SET_AUDIO_STATE",
+        audioState: { currentTime: 42 },
+      })
+    );
+
+    const after = probes.snapshot();
+    expect(after.timeCount - base.timeCount).toBe(1);
+    expect(after.playbackCount - base.playbackCount).toBe(0);
+    expect(after.trackCount - base.trackCount).toBe(0);
+    expect(after.uiCount - base.uiCount).toBe(0);
+    expect(after.resourceCount - base.resourceCount).toBe(0);
+  });
+
+  it("SET_AUDIO_STATE with duration only re-renders time consumers, not playback", () => {
+    const probes = makeProbes();
+    const dispatch = renderIsolated(<AllProbes {...probes} />);
+    const base = probes.snapshot();
+
+    act(() =>
+      dispatch.current({
+        type: "SET_AUDIO_STATE",
+        audioState: { duration: 180 },
+      })
+    );
+
+    const after = probes.snapshot();
+    expect(after.timeCount - base.timeCount).toBe(1);
+    expect(after.playbackCount - base.playbackCount).toBe(0);
+    expect(after.trackCount - base.trackCount).toBe(0);
+    expect(after.uiCount - base.uiCount).toBe(0);
+    expect(after.resourceCount - base.resourceCount).toBe(0);
+  });
+
+  it("rapid currentTime updates do not re-render playback consumers", () => {
+    const probes = makeProbes();
+    const dispatch = renderIsolated(<AllProbes {...probes} />);
+    const base = probes.snapshot();
+
+    act(() => {
+      for (let t = 0; t < 10; t++) {
+        dispatch.current({
+          type: "SET_AUDIO_STATE",
+          audioState: { currentTime: t },
+        });
+      }
+    });
+
+    const after = probes.snapshot();
+    expect(after.timeCount - base.timeCount).toBeGreaterThanOrEqual(1);
+    expect(after.playbackCount - base.playbackCount).toBe(0);
+    expect(after.trackCount - base.trackCount).toBe(0);
     expect(after.uiCount - base.uiCount).toBe(0);
     expect(after.resourceCount - base.resourceCount).toBe(0);
   });
@@ -249,6 +351,7 @@ describe("uiContext isolation", () => {
 
     const after = probes.snapshot();
     expect(after.uiCount - base.uiCount).toBe(1);
+    expect(after.timeCount - base.timeCount).toBe(0);
     expect(after.playbackCount - base.playbackCount).toBe(0);
     expect(after.trackCount - base.trackCount).toBe(0);
     expect(after.resourceCount - base.resourceCount).toBe(0);
@@ -265,6 +368,7 @@ describe("uiContext isolation", () => {
 
     const after = probes.snapshot();
     expect(after.uiCount - base.uiCount).toBe(1);
+    expect(after.timeCount - base.timeCount).toBe(0);
     expect(after.playbackCount - base.playbackCount).toBe(0);
     expect(after.trackCount - base.trackCount).toBe(0);
     expect(after.resourceCount - base.resourceCount).toBe(0);
@@ -286,6 +390,7 @@ describe("resourceContext isolation", () => {
 
     const after = probes.snapshot();
     expect(after.resourceCount - base.resourceCount).toBe(1);
+    expect(after.timeCount - base.timeCount).toBe(0);
     expect(after.playbackCount - base.playbackCount).toBe(0);
     expect(after.trackCount - base.trackCount).toBe(0);
     expect(after.uiCount - base.uiCount).toBe(0);
@@ -300,6 +405,7 @@ describe("resourceContext isolation", () => {
 
     const after = probes.snapshot();
     expect(after.resourceCount - base.resourceCount).toBe(1);
+    expect(after.timeCount - base.timeCount).toBe(0);
     expect(after.playbackCount - base.playbackCount).toBe(0);
     expect(after.trackCount - base.trackCount).toBe(0);
     expect(after.uiCount - base.uiCount).toBe(0);
@@ -319,6 +425,7 @@ describe("resourceContext isolation", () => {
 
     const after = probes.snapshot();
     expect(after.resourceCount - base.resourceCount).toBe(1);
+    expect(after.timeCount - base.timeCount).toBe(0);
     expect(after.playbackCount - base.playbackCount).toBe(0);
     expect(after.trackCount - base.trackCount).toBe(0);
     expect(after.uiCount - base.uiCount).toBe(0);
@@ -334,7 +441,7 @@ describe("cross-context actions — intentional multi-slice updates", () => {
    * Setup: start at curIdx 1 (curPlayId 2). No elementRefs, so the
    * "currentTime > 1 → stay on track" branch in the reducer does not fire.
    */
-  it("PREV_AUDIO re-renders track and playback, not ui or resource", () => {
+  it("PREV_AUDIO re-renders track, playback, and time, not ui or resource", () => {
     const probes = makeProbes();
     const dispatch = renderIsolated(<AllProbes {...probes} />, 2);
     const base = probes.snapshot();
@@ -344,6 +451,7 @@ describe("cross-context actions — intentional multi-slice updates", () => {
     const after = probes.snapshot();
     expect(after.trackCount - base.trackCount).toBe(1);
     expect(after.playbackCount - base.playbackCount).toBe(1);
+    expect(after.timeCount - base.timeCount).toBe(1);
     expect(after.uiCount - base.uiCount).toBe(0);
     expect(after.resourceCount - base.resourceCount).toBe(0);
   });
@@ -352,7 +460,7 @@ describe("cross-context actions — intentional multi-slice updates", () => {
    * SET_CURRENT_AUDIO changes curPlayId/curIdx AND sets isLoadedMetaData: false.
    * Both trackContext and playbackContext should re-render.
    */
-  it("SET_CURRENT_AUDIO re-renders track and playback, not ui or resource", () => {
+  it("SET_CURRENT_AUDIO re-renders track, playback, and time, not ui or resource", () => {
     const probes = makeProbes();
     const dispatch = renderIsolated(<AllProbes {...probes} />);
     const base = probes.snapshot();
@@ -368,6 +476,7 @@ describe("cross-context actions — intentional multi-slice updates", () => {
     const after = probes.snapshot();
     expect(after.trackCount - base.trackCount).toBe(1);
     expect(after.playbackCount - base.playbackCount).toBe(1);
+    expect(after.timeCount - base.timeCount).toBe(1);
     expect(after.uiCount - base.uiCount).toBe(0);
     expect(after.resourceCount - base.resourceCount).toBe(0);
   });
