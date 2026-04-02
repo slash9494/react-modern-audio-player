@@ -20,6 +20,7 @@ const AudioPlayerWithProviders = <TInterfacePlacementLength extends number>({
     <AudioPlayerProvider {...audioPlayProps}>
       <AudioPlayerRootProvider rootContainerProps={rootContainerProps}>
         <AudioPlayer {...audioPlayProps} />
+        {/* @ts-expect-error styled-components v5 GlobalStyle type incompatible with @types/react@18 */}
         <GlobalStyle />
       </AudioPlayerRootProvider>
     </AudioPlayerProvider>
