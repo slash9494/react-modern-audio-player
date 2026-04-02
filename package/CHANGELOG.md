@@ -14,8 +14,25 @@
 
 - **WaveSurfer memory leak on unmount**: `waveformInst.destroy()` was never called due to a stale closure in the cleanup effect (empty deps `[]` captured `elementRefs` as `undefined` at mount time). Fixed by tracking the instance via `useRef` so the cleanup always holds the latest reference.
 
+### SSR / Next.js Compatibility
+
+- **`react` and `react-dom` peerDependencies bumped to `>=18.0.0`**: The library already required React 18 features (`useId`). This formalizes the minimum version. Consumers on React 16/17 should use v1.x.
+- **`useIsomorphicLayoutEffect`**: All `useLayoutEffect` calls that require layout timing replaced with an isomorphic wrapper that falls back to `useEffect` during SSR, eliminating React's server-side warning.
+- **`useLayoutEffect` → `useEffect` downgrade**: 6 call sites across 4 files that did not require layout timing were downgraded to `useEffect` (prop sync, state dispatch patterns).
+- **`'use client'` directive**: Added to the library entry point so Next.js App Router consumers can import directly without a client wrapper file.
+- **SSR-safe `window`/`document` access**: `isBrowser` guard utility added; applied to `useVariableColor` and `useGridTemplate`.
+
+### Accessibility
+
+- **Dropdown `useId` + ARIA attributes**: `Dropdown` now generates a unique `dropdownId` via `useId()` (matching the existing `Drawer` pattern). `DropdownTrigger` gains `aria-expanded` and `aria-controls` attributes. `DropdownContent` receives matching `id`.
+
+### Progress Rendering
+
+- **Conditional rendering**: `WaveformProgress` and `BarProgress` are now conditionally rendered based on `activeUI.progress` instead of rendering both and toggling via CSS. Only the active component is mounted.
+
 ### Breaking Changes
 
+- **`react` and `react-dom` minimum version is now `>=18.0.0`**: Projects using React 16/17 must stay on v1.x.
 - **`SpectrumProvider` renamed to `AudioPlayerRootProvider`**: import name changed
   - Before: `import { AudioPlayer, SpectrumProvider } from "react-modern-audio-player"`
   - After: `import { AudioPlayer, AudioPlayerRootProvider } from "react-modern-audio-player"`

@@ -2,8 +2,8 @@ import React, {
   PropsWithChildren,
   useRef,
   FC,
+  useEffect,
   useId,
-  useLayoutEffect,
   useState,
 } from "react";
 import styled from "styled-components";
@@ -35,7 +35,7 @@ const Drawer: FC<PropsWithChildren<DrawerProps>> = ({
     setIsOpen(false);
     onOpenChange && onOpenChange(false);
   });
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (isOpenProp !== undefined) {
       setIsOpen(isOpenProp);
     }

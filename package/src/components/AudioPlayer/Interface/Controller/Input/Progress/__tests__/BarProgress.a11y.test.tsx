@@ -40,7 +40,7 @@ const renderBar = () =>
           value={{ elementRefs: { audioEl: mockAudioEl } }}
         >
           <audioPlayerDispatchContext.Provider value={mockDispatch}>
-            <BarProgress isActive={true} />
+            <BarProgress />
           </audioPlayerDispatchContext.Provider>
         </resourceContext.Provider>
       </playbackContext.Provider>

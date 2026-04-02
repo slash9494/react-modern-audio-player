@@ -2,7 +2,8 @@ import React, {
   PropsWithChildren,
   useRef,
   FC,
-  useLayoutEffect,
+  useEffect,
+  useId,
   useState,
 } from "react";
 import styled from "styled-components";
@@ -40,8 +41,10 @@ const Dropdown: FC<PropsWithChildren<DropdownProps>> = ({
     clickArea: "root",
   });
 
+  const dropdownId = useId();
+
   useClickOutside(dropdownRef, () => outboundClickActive && setIsOpen(false));
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (isOpenProp !== undefined) {
       setIsOpen(isOpenProp);
     }
@@ -49,7 +52,14 @@ const Dropdown: FC<PropsWithChildren<DropdownProps>> = ({
 
   return (
     <dropdownContext.Provider
-      value={{ dropdownRef, placement, isOpen, setIsOpen, onOpenChange }}
+      value={{
+        dropdownRef,
+        placement,
+        isOpen,
+        setIsOpen,
+        onOpenChange,
+        dropdownId,
+      }}
     >
       <DropdownContainer
         className="dropdown-container"

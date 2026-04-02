@@ -6,7 +6,7 @@ import styled from "styled-components";
 import { useProgress } from "./useProgress";
 import { useProgressKeyDown } from "./useProgressKeyDown";
 
-export const BarProgress: FC<{ isActive: boolean }> = ({ isActive }) => {
+export const BarProgress: FC = () => {
   const { currentTime, duration } = useTimeContext();
 
   const progressRatio = safeRatio(currentTime, duration);
@@ -14,7 +14,7 @@ export const BarProgress: FC<{ isActive: boolean }> = ({ isActive }) => {
   const eventProps = useProgress();
   const handleKeyDown = useProgressKeyDown();
 
-  return isActive ? (
+  return (
     <BarProgressWrapper
       className="bar-progress-wrapper"
       data-testid="progress-bar"
@@ -43,7 +43,7 @@ export const BarProgress: FC<{ isActive: boolean }> = ({ isActive }) => {
         }}
       />
     </BarProgressWrapper>
-  ) : null;
+  );
 };
 
 const BarProgressWrapper = styled.div`

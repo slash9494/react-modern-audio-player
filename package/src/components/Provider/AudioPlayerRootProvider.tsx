@@ -3,7 +3,7 @@ import {
   FC,
   HTMLAttributes,
   PropsWithChildren,
-  useLayoutEffect,
+  useEffect,
   useState,
 } from "react";
 import { useUIContext } from "@/hooks/context/useUIContext";
@@ -18,7 +18,7 @@ export const AudioPlayerRootProvider: FC<
   const { playerPlacement: contextPlayerPlacement } = useUIContext();
   const [placementState, setPlacementState] =
     useState<Pick<CSSProperties, "top" | "right" | "bottom" | "left">>();
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (contextPlayerPlacement) {
       const placementValidation = () => {
         const base = {

@@ -1,4 +1,4 @@
-import { useLayoutEffect, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNonNullableContext } from "@/hooks/useNonNullableContext";
 import { AudioPlayerProps } from ".";
 import {
@@ -19,7 +19,7 @@ export const usePropsStateEffect = <TInterfacePlacementLength extends number>({
 }: Omit<AudioPlayerProps<TInterfacePlacementLength>, "children">) => {
   const [isMounted, setIsMounted] = useState(false);
   const audioPlayerDispatch = useNonNullableContext(audioPlayerDispatchContext);
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (!isMounted) return;
     const {
       player: playerPlacement,
@@ -41,13 +41,13 @@ export const usePropsStateEffect = <TInterfacePlacementLength extends number>({
     });
   }, [audioPlayerDispatch, placement]);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (!isMounted || !activeUI) return;
 
     audioPlayerDispatch({ type: "SET_ACTIVE_UI", activeUI });
   }, [activeUI, audioPlayerDispatch]);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (!isMounted || !coverImgsCss) return;
 
     audioPlayerDispatch({ type: "SET_COVER_IMGS_CSS", coverImgsCss });

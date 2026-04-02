@@ -1,3 +1,5 @@
+"use client";
+
 import AudioPlayerWithProviders from "./components/AudioPlayer";
 import { CustomComponent } from "./components/AudioPlayer/Interface/CustomComponent";
 

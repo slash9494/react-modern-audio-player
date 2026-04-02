@@ -2,35 +2,26 @@ import { usePlaybackContext } from "@/hooks/context/usePlaybackContext";
 import { useResourceContext } from "@/hooks/context/useResourceContext";
 import { getTimeWithPadStart } from "@/utils/getTime";
 import { FC, useCallback, useEffect, useRef } from "react";
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 import { safeRatio } from "@/utils/safeRatio";
 import { useProgress } from "./useProgress";
 import { useProgressKeyDown } from "./useProgressKeyDown";
 import { useWaveSurfer } from "./useWavesurfer";
 
 const WaveformWrapper = styled.div`
-  ${({ isActive }: { isActive: boolean }) => css`
-    display: flex;
+  display: flex;
+  width: 100%;
+  #rm-waveform {
     width: 100%;
-    #rm-waveform {
-      width: 100%;
-      overflow: hidden;
-      wave {
-        cursor: pointer !important;
-        overflow-x: hidden !important;
-      }
-
-      ${!isActive &&
-      css`
-        height: 0;
-        opacity: 0;
-        pointer-events: none;
-      `}
+    overflow: hidden;
+    wave {
+      cursor: pointer !important;
+      overflow-x: hidden !important;
     }
-  `}
+  }
 `;
 
-export const WaveformProgress: FC<{ isActive: boolean }> = ({ isActive }) => {
+export const WaveformProgress: FC = () => {
   const waveformRef = useRef<HTMLDivElement>(null);
   const { curAudioState } = usePlaybackContext();
   const { elementRefs } = useResourceContext();
@@ -40,7 +31,6 @@ export const WaveformProgress: FC<{ isActive: boolean }> = ({ isActive }) => {
   // apply current time to waveform when progress is active
   useEffect(() => {
     if (
-      !isActive ||
       !elementRefs?.waveformInst ||
       !elementRefs?.audioEl ||
       !curAudioState.isLoadedMetaData ||
@@ -54,7 +44,6 @@ export const WaveformProgress: FC<{ isActive: boolean }> = ({ isActive }) => {
     );
     elementRefs.waveformInst.seekTo(ratio);
   }, [
-    isActive,
     curAudioState.isLoadedMetaData,
     elementRefs?.waveformInst,
     elementRefs?.audioEl,
@@ -73,12 +62,12 @@ export const WaveformProgress: FC<{ isActive: boolean }> = ({ isActive }) => {
   const handleKeyDown = useProgressKeyDown(onSeek);
 
   return (
-    <WaveformWrapper className="waveform-wrapper" isActive={isActive}>
+    <WaveformWrapper className="waveform-wrapper">
       <div
         id="rm-waveform"
         ref={waveformRef}
         role="slider"
-        tabIndex={isActive ? 0 : -1}
+        tabIndex={0}
         aria-label="Seek"
         aria-valuemin={0}
         aria-valuemax={100}

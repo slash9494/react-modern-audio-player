@@ -3,6 +3,7 @@ import {
   defaultInterfacePlacement,
   InterfacePlacement,
 } from "@/components/AudioPlayer/Context";
+import { isBrowser } from "@/utils/ssr";
 import { useCallback, useState } from "react";
 
 export const useGridTemplate = (
@@ -119,7 +120,7 @@ export const useGridTemplate = (
         return cols.trimStart();
       });
 
-      const maxWidth = window ? window.innerWidth - 100 : 1500;
+      const maxWidth = isBrowser ? window.innerWidth - 100 : 1500;
       const gridColumns = new Array(maxRow).fill("").map((_, rowIdx) => {
         let cols = "";
         for (let i = 0; i < maxCol; i++) {

@@ -45,6 +45,31 @@ https://codesandbox.io/s/basic-91y82y?file=/src/App.tsx
 npm install --save react-modern-audio-player
 ```
 
+# **Requirements**
+
+- React **18.0.0** or higher
+- react-dom **18.0.0** or higher
+- styled-components **^5.3.5**
+
+# **Next.js / Server Components**
+
+This library includes the `'use client'` directive and can be imported directly in Next.js App Router without additional wrappers.
+
+```tsx
+// app/page.tsx — works directly, no wrapper needed
+import AudioPlayer from "react-modern-audio-player";
+
+const playList = [
+  { name: "track", writer: "artist", img: "cover.jpg", src: "audio.mp3", id: 1 },
+];
+
+export default function Page() {
+  return <AudioPlayer playList={playList} />;
+}
+```
+
+> For React 16/17 projects, use v1.x of this library.
+
 # **Quick Start**
 
 ```tsx
