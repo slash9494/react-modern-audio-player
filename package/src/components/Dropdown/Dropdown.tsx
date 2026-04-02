@@ -4,6 +4,7 @@ import React, {
   FC,
   useEffect,
   useId,
+  useMemo,
   useState,
 } from "react";
 import styled from "styled-components";
@@ -50,17 +51,20 @@ const Dropdown: FC<PropsWithChildren<DropdownProps>> = ({
     }
   }, [isOpenProp]);
 
+  const contextValue = useMemo(
+    () => ({
+      dropdownRef,
+      placement,
+      isOpen,
+      setIsOpen,
+      onOpenChange,
+      dropdownId,
+    }),
+    [dropdownRef, placement, isOpen, setIsOpen, onOpenChange, dropdownId]
+  );
+
   return (
-    <dropdownContext.Provider
-      value={{
-        dropdownRef,
-        placement,
-        isOpen,
-        setIsOpen,
-        onOpenChange,
-        dropdownId,
-      }}
-    >
+    <dropdownContext.Provider value={contextValue}>
       <DropdownContainer
         className="dropdown-container"
         ref={dropdownRef}

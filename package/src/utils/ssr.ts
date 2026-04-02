@@ -4,6 +4,6 @@ import { useEffect, useLayoutEffect } from "react";
 export const isBrowser = typeof window !== "undefined";
 
 /** useLayoutEffect that falls back to useEffect during SSR */
-export const useIsomorphicLayoutEffect = isBrowser
+export const useIsomorphicLayoutEffect: typeof useLayoutEffect = isBrowser
   ? useLayoutEffect
   : useEffect;

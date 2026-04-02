@@ -1,5 +1,5 @@
 import { useRef, useCallback } from "react";
-import { isBrowser, useIsomorphicLayoutEffect } from "@/utils/ssr";
+import { useIsomorphicLayoutEffect } from "@/utils/ssr";
 
 export type VariableColors<T extends string> = Record<T, string>;
 
@@ -24,7 +24,6 @@ export const useVariableColor = <Keys extends string>(
   }, [variableColors]);
 
   useIsomorphicLayoutEffect(() => {
-    if (!isBrowser) return;
     readColors();
     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
     mediaQuery.addEventListener("change", readColors);
