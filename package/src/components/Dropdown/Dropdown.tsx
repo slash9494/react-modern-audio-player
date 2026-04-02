@@ -60,7 +60,7 @@ const Dropdown: FC<PropsWithChildren<DropdownProps>> = ({
       onOpenChange,
       dropdownId,
     }),
-    [dropdownRef, placement, isOpen, setIsOpen, onOpenChange, dropdownId]
+    [placement, isOpen, onOpenChange, dropdownId]
   );
 
   return (
