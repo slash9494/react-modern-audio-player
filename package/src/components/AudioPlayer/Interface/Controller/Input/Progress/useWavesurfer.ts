@@ -37,8 +37,10 @@ export const useWaveSurfer = (waveformRef: React.RefObject<HTMLElement>) => {
           !waveformRef.current ||
           !colorsRef.current?.progressColor ||
           !colorsRef.current?.waveColor
-        )
+        ) {
+          console.error("[useWaveSurfer] missing required dependencies");
           return;
+        }
 
         let waveSurfer;
         try {
