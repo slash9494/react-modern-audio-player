@@ -1,5 +1,6 @@
 import PlayerLogo from "./assets/images/noname.png";
 import { useState } from "react";
+import { Agentation } from "agentation";
 import AudioPlayerWithProviders, {
   ActiveUI,
   CustomIcons,
@@ -81,7 +82,13 @@ const CustomComponent = () => {
     <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
       <button onClick={() => seek(currentTime + 30)}>+30s</button>
       <button onClick={togglePlay}>{isPlaying ? "Pause" : "Play"}</button>
-      <span style={{ minWidth: "80px", fontVariantNumeric: "tabular-nums" }}>
+      <span
+        style={{
+          minWidth: "80px",
+          fontVariantNumeric: "tabular-nums",
+          margin: "0 2px",
+        }}
+      >
         {currentTime.toFixed(0)}s / {duration.toFixed(0)}s
       </span>
     </div>
@@ -188,6 +195,10 @@ function App() {
             <CustomComponent />
           </AudioPlayerWithProviders.CustomComponent>
         </AudioPlayerWithProviders>
+
+        {process.env.NODE_ENV === "development" && (
+          <Agentation endpoint="http://localhost:4747" />
+        )}
       </div>
     </div>
   );
