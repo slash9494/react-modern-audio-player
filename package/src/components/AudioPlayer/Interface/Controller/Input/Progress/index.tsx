@@ -13,11 +13,8 @@ export const Progress: FC = () => {
 
   return (
     <ProgressContainer className="progress-container">
-      {activeUI.progress === "waveform" ? (
-        <WaveformProgress />
-      ) : (
-        <BarProgress />
-      )}
+      {activeUI.progress === "waveform" && <WaveformProgress />}
+      {activeUI.progress === "bar" && <BarProgress />}
     </ProgressContainer>
   );
 };
