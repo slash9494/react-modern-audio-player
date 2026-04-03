@@ -3,7 +3,11 @@ import { SortableListItem } from "./SortableListItem";
 import "./SortableList.css";
 
 const SortableList: FC<PropsWithChildren> = ({ children }) => {
-  return <ul className="sortable-list-container">{children}</ul>;
+  return (
+    <ul className="sortable-list-container" aria-label="Sortable list">
+      {children}
+    </ul>
+  );
 };
 
 type SortableListComponent = typeof SortableList & {

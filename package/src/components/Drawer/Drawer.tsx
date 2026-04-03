@@ -43,7 +43,7 @@ const Drawer: FC<PropsWithChildren<DrawerProps>> = ({
 
   const contextValue = useMemo(
     () => ({ isOpen, setIsOpen, onOpenChange, drawerId }),
-    [isOpen, onOpenChange, drawerId]
+    [isOpen, setIsOpen, onOpenChange, drawerId]
   );
 
   return (

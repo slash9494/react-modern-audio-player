@@ -38,7 +38,8 @@
   transition: opacity 0.2s ease-in-out;
 }
 
-.bar-progress-wrapper:hover .rm-player-progress-handle {
+.bar-progress-wrapper:hover .rm-player-progress-handle,
+.bar-progress-wrapper:focus-visible .rm-player-progress-handle {
   opacity: 1;
 }
 
