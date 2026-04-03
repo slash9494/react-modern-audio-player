@@ -5,6 +5,7 @@ export interface DropdownContext {
   placement: "top" | "bottom" | "left" | "right";
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
   onOpenChange?: (isOpen: boolean) => void;
+  dropdownId: string;
 }
 
 export const dropdownContext = createContext<DropdownContext | null>(null);
