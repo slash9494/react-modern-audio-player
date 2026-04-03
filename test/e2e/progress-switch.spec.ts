@@ -162,21 +162,16 @@ test.describe("Progress mode switching (e2e)", () => {
       .poll(() => trackTitle.textContent(), { timeout: 10000 })
       .not.toBe(firstTrack);
 
-    const secondTrack = await trackTitle.textContent();
-    expect(secondTrack).not.toBe(firstTrack);
-
     // Wait for new track to start playing (WaveSurfer ready → play)
     await expect
       .poll(
-        async () => {
-          const paused = await page.evaluate(
+        async () =>
+          await page.evaluate(
             () => document.querySelector("audio")?.paused ?? true
-          );
-          return !paused;
-        },
+          ),
         { timeout: 10000 }
       )
-      .toBe(true);
+      .toBe(false);
 
     // currentTime should be near 0 (new track just started)
     const currentTime = await page.evaluate(() => {
