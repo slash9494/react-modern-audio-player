@@ -40,14 +40,17 @@ test.describe("Progress mode switching (e2e)", () => {
     const wave = page.locator("#rm-waveform wave").first();
     await expect(wave).toBeVisible({ timeout: 10000 });
 
-    // Check currentTime was NOT reset
-    const currentTimeAfter = await page.evaluate(() => {
-      const audio = document.querySelector("audio");
-      return audio?.currentTime ?? 0;
-    });
-
-    // currentTime should be within 1 second of the value before switch
-    expect(currentTimeAfter).toBeGreaterThanOrEqual(currentTimeBefore - 1);
+    // Wait for onReady callback to restore currentTime (varies by browser)
+    await expect
+      .poll(
+        async () => {
+          return await page.evaluate(
+            () => document.querySelector("audio")?.currentTime ?? 0
+          );
+        },
+        { timeout: 10000 }
+      )
+      .toBeGreaterThanOrEqual(currentTimeBefore - 1);
   });
 
   test("7-7: waveform renders canvas with wave element", async ({
@@ -76,7 +79,8 @@ test.describe("Progress mode switching (e2e)", () => {
     // Get waveform bounding box and click at ~50% position
     const waveform = page.locator("#rm-waveform");
     const box = await waveform.boundingBox();
-    expect(box).not.toBeNull();
+    expect(box).toBeTruthy();
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     await page.mouse.click(box!.x + box!.width * 0.5, box!.y + box!.height / 2);
 
     await expect
@@ -128,15 +132,19 @@ test.describe("Progress mode switching (e2e)", () => {
     playerPageLazy,
   }) => {
     await playerPageLazy.gotoWithConfig({ progressType: "bar" });
-    const { playBtn, trackCurrentTime, nextBtn, trackTitle, page } =
-      playerPageLazy;
+    const { playBtn, nextBtn, trackTitle, page } = playerPageLazy;
 
     // Play and accumulate time
     await playBtn.click();
     await expect
-      .poll(() => trackCurrentTime.textContent(), { timeout: 10000 })
-      .not.toBe("00:00");
-    await page.waitForTimeout(2000);
+      .poll(
+        async () =>
+          await page.evaluate(
+            () => document.querySelector("audio")?.currentTime ?? 0
+          ),
+        { timeout: 10000 }
+      )
+      .toBeGreaterThan(2);
 
     // Switch to waveform while playing
     await page.getByRole("button", { name: "progress type" }).click();
@@ -148,18 +156,27 @@ test.describe("Progress mode switching (e2e)", () => {
 
     // Click next track
     await nextBtn.click();
-    await page.waitForTimeout(1000);
 
-    // Track should have changed
+    // Wait for track to change
+    await expect
+      .poll(() => trackTitle.textContent(), { timeout: 10000 })
+      .not.toBe(firstTrack);
+
     const secondTrack = await trackTitle.textContent();
     expect(secondTrack).not.toBe(firstTrack);
 
-    // Audio should be playing (not stuck)
-    const isPlaying = await page.evaluate(() => {
-      const audio = document.querySelector("audio");
-      return audio ? !audio.paused : false;
-    });
-    expect(isPlaying).toBe(true);
+    // Wait for new track to start playing (WaveSurfer ready → play)
+    await expect
+      .poll(
+        async () => {
+          const paused = await page.evaluate(
+            () => document.querySelector("audio")?.paused ?? true
+          );
+          return !paused;
+        },
+        { timeout: 10000 }
+      )
+      .toBe(true);
 
     // currentTime should be near 0 (new track just started)
     const currentTime = await page.evaluate(() => {
@@ -173,14 +190,19 @@ test.describe("Progress mode switching (e2e)", () => {
     playerPageLazy,
   }) => {
     await playerPageLazy.gotoWithConfig({ progressType: "bar" });
-    const { playBtn, trackCurrentTime, page } = playerPageLazy;
+    const { playBtn, page } = playerPageLazy;
 
     // Play and accumulate time
     await playBtn.click();
     await expect
-      .poll(() => trackCurrentTime.textContent(), { timeout: 10000 })
-      .not.toBe("00:00");
-    await page.waitForTimeout(2000);
+      .poll(
+        async () =>
+          await page.evaluate(
+            () => document.querySelector("audio")?.currentTime ?? 0
+          ),
+        { timeout: 10000 }
+      )
+      .toBeGreaterThan(2);
 
     // Record time before switch
     const timeBefore = await page.evaluate(() => {
@@ -193,8 +215,17 @@ test.describe("Progress mode switching (e2e)", () => {
     const wave = page.locator("#rm-waveform wave").first();
     await expect(wave).toBeVisible({ timeout: 10000 });
 
-    // Wait a moment for playback to resume
-    await page.waitForTimeout(1500);
+    // Wait for playback to resume and advance past saved position
+    await expect
+      .poll(
+        async () => {
+          return await page.evaluate(
+            () => document.querySelector("audio")?.currentTime ?? 0
+          );
+        },
+        { timeout: 15000 }
+      )
+      .toBeGreaterThan(timeBefore);
 
     // Audio should still be playing
     const isPlaying = await page.evaluate(() => {
@@ -202,12 +233,5 @@ test.describe("Progress mode switching (e2e)", () => {
       return audio ? !audio.paused : false;
     });
     expect(isPlaying).toBe(true);
-
-    // Time should have advanced past the saved position
-    const timeAfter = await page.evaluate(() => {
-      const audio = document.querySelector("audio");
-      return audio?.currentTime ?? 0;
-    });
-    expect(timeAfter).toBeGreaterThan(timeBefore);
   });
 });

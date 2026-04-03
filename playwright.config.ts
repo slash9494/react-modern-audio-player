@@ -4,7 +4,7 @@ export default defineConfig({
   testDir: "./test/e2e",
   fullyParallel: false,
   retries: 1,
-  outputDir: "test-results",
+  outputDir: "test-results/artifacts",
   reporter: [["html", { open: "never", outputFolder: "test-results/html" }]],
   use: {
     baseURL: "http://localhost:5173",
