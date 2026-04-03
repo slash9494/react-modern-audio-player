@@ -6,6 +6,7 @@
   display: flex;
   width: 20px;
   height: 100%;
+  transition: transform 0.2s ease-out, opacity 0.2s ease-out;
 }
 
 .styled-btn svg {
@@ -14,7 +15,6 @@
   pointer-events: none;
 }
 
-/** //TODO : animation on off  */
 .styled-btn:hover {
   transform: scale(1.1);
 }
@@ -27,5 +27,4 @@
 .styled-btn:active {
   transform: scale(0.8);
   opacity: 0.5;
-  transition: all 0.2s ease-out;
 }

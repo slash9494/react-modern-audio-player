@@ -4,10 +4,11 @@ import "./StyledBtn.css";
 export const StyledBtn = forwardRef<
   HTMLButtonElement,
   React.ButtonHTMLAttributes<HTMLButtonElement>
->(({ className, ...props }, ref) => {
+>(({ className, type = "button", ...props }, ref) => {
   return (
     <button
       ref={ref}
+      type={type}
       className={`styled-btn${className ? ` ${className}` : ""}`}
       {...props}
     />

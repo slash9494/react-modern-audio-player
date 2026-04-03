@@ -24,7 +24,12 @@ export const Interface: FC<InterfaceProps> = ({ children }) => {
   );
 
   return (
-    <div className="interface-container" data-testid="audio-player">
+    <div
+      className="interface-container"
+      data-testid="audio-player"
+      role="region"
+      aria-label="Audio player"
+    >
       {playListPlacement === "top" && <div className="sortable-play-list" />}
       <Grid
         alignItems={"center"}

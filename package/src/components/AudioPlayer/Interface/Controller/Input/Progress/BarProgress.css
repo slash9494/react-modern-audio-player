@@ -41,3 +41,8 @@
 .bar-progress-wrapper:hover .rm-player-progress-handle {
   opacity: 1;
 }
+
+.bar-progress-wrapper:focus-visible {
+  outline: 2px solid var(--rm-audio-player-progress-bar, #0072f5);
+  outline-offset: 2px;
+}

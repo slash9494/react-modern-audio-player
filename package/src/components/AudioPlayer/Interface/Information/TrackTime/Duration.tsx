@@ -12,7 +12,9 @@ export const Duration: FC<TrackTimeChildrenProps> = ({ position }) => {
       position={position}
       className="track-time-duration-container"
     >
-      <span className="track-duration">{getTimeWithPadStart(duration)}</span>
+      <span className="track-duration" aria-label="Track duration">
+        {getTimeWithPadStart(duration)}
+      </span>
     </TrackTimeContainer>
   );
 };

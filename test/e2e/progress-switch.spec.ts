@@ -14,8 +14,17 @@ test.describe("Progress mode switching (e2e)", () => {
       .poll(() => trackCurrentTime.textContent(), { timeout: 10000 })
       .not.toBe("00:00");
 
-    // Let it play to accumulate time
-    await page.waitForTimeout(3000);
+    // Wait until at least 2 seconds of playback have accumulated
+    await expect
+      .poll(
+        async () => {
+          return await page.evaluate(
+            () => document.querySelector("audio")?.currentTime ?? 0
+          );
+        },
+        { timeout: 10000 }
+      )
+      .toBeGreaterThan(2);
     await playBtn.click();
 
     // Record exact currentTime before switch
@@ -23,7 +32,6 @@ test.describe("Progress mode switching (e2e)", () => {
       const audio = document.querySelector("audio");
       return audio?.currentTime ?? 0;
     });
-    expect(currentTimeBefore).toBeGreaterThan(2);
 
     // Switch to waveform via in-page button (NOT page reload)
     await page.getByRole("button", { name: "progress type" }).click();
@@ -69,12 +77,18 @@ test.describe("Progress mode switching (e2e)", () => {
     const waveform = page.locator("#rm-waveform");
     const box = await waveform.boundingBox();
     expect(box).not.toBeNull();
+    await page.mouse.click(box!.x + box!.width * 0.5, box!.y + box!.height / 2);
 
-    if (box) {
-      await page.mouse.click(box.x + box.width * 0.5, box.y + box.height / 2);
-    }
-
-    await page.waitForTimeout(500);
+    await expect
+      .poll(
+        async () => {
+          return await page.evaluate(
+            () => document.querySelector("audio")?.currentTime ?? 0
+          );
+        },
+        { timeout: 5000 }
+      )
+      .toBeGreaterThan(5);
 
     const currentTimeAfterSeek = await page.evaluate(() => {
       const audio = document.querySelector("audio");
@@ -101,14 +115,13 @@ test.describe("Progress mode switching (e2e)", () => {
     const waveform = page.locator("#rm-waveform");
     await waveform.focus();
     await page.keyboard.press("ArrowRight");
-    await page.waitForTimeout(300);
 
     const timeAfter = await page.evaluate(() => {
       const audio = document.querySelector("audio");
       return audio?.currentTime ?? 0;
     });
 
-    expect(timeAfter).toBeGreaterThan(timeBefore);
+    expect(timeAfter).toBeGreaterThanOrEqual(timeBefore + 1);
   });
 
   test("7-10: waveform switch then next track plays from start", async ({

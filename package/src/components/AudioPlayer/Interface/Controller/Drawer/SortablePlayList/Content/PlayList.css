@@ -25,5 +25,5 @@
   opacity: 0;
   max-height: 0;
   transition-duration: 0.25s;
-  transition-timing-function: 0.2s cubic-bezier(0.66, -0.41, 1, 1);
+  transition-timing-function: cubic-bezier(0.66, -0.41, 1, 1);
 }

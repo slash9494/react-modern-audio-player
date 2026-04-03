@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { render, screen, act } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import AudioPlayerWithProviders, {
   PlayList,
   ActiveUI,
@@ -69,17 +69,17 @@ describe("Progress mode switching — DOM persistence", () => {
     expect(waveform()).toBeNull();
 
     // first activation — mounts
-    act(() => rerenderWith("waveform"));
+    rerenderWith("waveform");
     expect(waveform()).toBeInTheDocument();
     expect(waveform()?.getAttribute("data-active")).toBe("true");
 
     // back to bar — waveform stays mounted but hidden
-    act(() => rerenderWith("bar"));
+    rerenderWith("bar");
     expect(waveform()).toBeInTheDocument();
     expect(waveform()?.getAttribute("data-active")).toBe("false");
 
     // waveform again — still mounted, no re-init
-    act(() => rerenderWith("waveform"));
+    rerenderWith("waveform");
     expect(waveform()).toBeInTheDocument();
     expect(waveform()?.getAttribute("data-active")).toBe("true");
   });

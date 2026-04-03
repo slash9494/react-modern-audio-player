@@ -94,7 +94,7 @@ export const useWaveSurfer = (waveformRef: React.RefObject<HTMLElement>) => {
 
     waveform.load(audioEl);
 
-    if (curAudioState.volume) {
+    if (curAudioState.volume != null) {
       audioEl.volume = curAudioState.volume;
     }
 

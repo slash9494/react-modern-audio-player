@@ -12,7 +12,11 @@ export const Current: FC<TrackTimeChildrenProps> = ({ position }) => {
       position={position}
       className="track-time-current-container"
     >
-      <span className="track-current-time" data-testid="track-current-time">
+      <span
+        className="track-current-time"
+        data-testid="track-current-time"
+        aria-live="off"
+      >
         {getTimeWithPadStart(currentTime)}
       </span>
     </TrackTimeContainer>

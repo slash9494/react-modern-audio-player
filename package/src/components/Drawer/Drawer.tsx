@@ -4,6 +4,7 @@ import React, {
   FC,
   useEffect,
   useId,
+  useMemo,
   useState,
 } from "react";
 import { DrawerContext, drawerContext } from "./DrawerContext";
@@ -40,11 +41,14 @@ const Drawer: FC<PropsWithChildren<DrawerProps>> = ({
     }
   }, [isOpenProp]);
 
+  const contextValue = useMemo(
+    () => ({ isOpen, setIsOpen, onOpenChange, drawerId }),
+    [isOpen, onOpenChange, drawerId]
+  );
+
   return (
     <div className="drawer-container" ref={drawerRef}>
-      <drawerContext.Provider
-        value={{ isOpen, setIsOpen, onOpenChange, drawerId }}
-      >
+      <drawerContext.Provider value={contextValue}>
         <>
           {placement === "top" && content}
           {trigger}

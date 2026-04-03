@@ -89,6 +89,7 @@
   height: 2px;
   width: 92px;
   -webkit-appearance: none;
+  appearance: none;
   background-color: var(--rm-audio-player-volume-background);
   transform-origin: 75px 75px;
   transform: rotate(-90deg);
@@ -100,6 +101,7 @@
 
 .volume-content-container input::-webkit-slider-thumb {
   -webkit-appearance: none;
+  appearance: none;
   width: 16px;
   height: 16px;
   border-radius: 12px;
