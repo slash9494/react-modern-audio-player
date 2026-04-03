@@ -1,0 +1,29 @@
+.play-list-container {
+  transition-property: max-height, opacity;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.play-list-container.playlist-content-enter {
+  opacity: 0;
+  max-height: 0;
+}
+
+.play-list-container.playlist-content-enter-active {
+  opacity: 1;
+  max-height: 20vh;
+  transition-duration: 0.5s;
+  transition-timing-function: cubic-bezier(0, 0, 0, 1.2);
+}
+
+.play-list-container.playlist-content-leave {
+  opacity: 1;
+  max-height: 20vh;
+}
+
+.play-list-container.playlist-content-leave-active {
+  opacity: 0;
+  max-height: 0;
+  transition-duration: 0.25s;
+  transition-timing-function: 0.2s cubic-bezier(0.66, -0.41, 1, 1);
+}

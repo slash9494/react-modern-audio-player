@@ -2,9 +2,9 @@ import { useTimeContext } from "@/hooks/context/useTimeContext";
 import { getTimeWithPadStart } from "@/utils/getTime";
 import { safeRatio } from "@/utils/safeRatio";
 import { FC } from "react";
-import styled from "styled-components";
 import { useProgress } from "./useProgress";
 import { useProgressKeyDown } from "./useProgressKeyDown";
+import "./BarProgress.css";
 
 export const BarProgress: FC = () => {
   const { currentTime, duration } = useTimeContext();
@@ -15,7 +15,7 @@ export const BarProgress: FC = () => {
   const handleKeyDown = useProgressKeyDown();
 
   return (
-    <BarProgressWrapper
+    <div
       className="bar-progress-wrapper"
       data-testid="progress-bar"
       role="slider"
@@ -42,48 +42,6 @@ export const BarProgress: FC = () => {
           transform: `translateX(${progressRatio * 100}cqw)`,
         }}
       />
-    </BarProgressWrapper>
+    </div>
   );
 };
-
-const BarProgressWrapper = styled.div`
-  display: flex;
-  width: 100%;
-  height: 18px;
-  padding: 8px 0;
-  cursor: pointer;
-  position: relative;
-  align-items: center;
-  .rm-player-progress-bar {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    background-color: var(--rm-audio-player-progress-bar-background);
-  }
-  .rm-player-progress {
-    position: absolute;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: var(--rm-audio-player-progress-bar);
-    transform-origin: 0 0;
-    transform: scaleX(0);
-  }
-  container-type: inline-size;
-  .rm-player-progress-handle {
-    position: absolute;
-    left: -4px;
-    background-color: var(--rm-audio-player-progress-bar);
-    border-radius: 100%;
-    height: 8px;
-    width: 8px;
-    opacity: 0;
-    transition: opacity 0.2s ease-in-out;
-  }
-  &:hover {
-    .rm-player-progress-handle {
-      opacity: 1;
-    }
-  }
-`;

@@ -1,0 +1,31 @@
+@import "../../styles/animations.css";
+
+.drawer-container {
+  position: relative;
+  min-width: 20px;
+  min-height: 20px;
+}
+
+.drawer-container .drawer-trigger-wrapper {
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  position: absolute;
+  display: flex;
+}
+
+.drawer-container .drawer-trigger-wrapper[aria-expanded="true"] svg {
+  color: var(--rm-audio-player-sortable-list-button-active);
+}
+
+.drawer-container .drawer-content-wrapper {
+  transform-origin: center top;
+}
+
+.drawer-container .drawer-content-wrapper-enter {
+  animation: appearanceIn 0.25s ease-out normal forwards;
+}
+
+.drawer-container .drawer-content-wrapper-leave {
+  animation: appearanceOut 0.1s ease-in forwards;
+}

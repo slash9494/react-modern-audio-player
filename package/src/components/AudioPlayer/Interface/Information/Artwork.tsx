@@ -1,19 +1,7 @@
 import { useTrackContext } from "@/hooks/context/useTrackContext";
 import { useResourceContext } from "@/hooks/context/useResourceContext";
 import { FC, memo } from "react";
-import styled from "styled-components";
-
-const ArtworkContainer = styled.div`
-  display: flex;
-  align-items: center;
-  width: 100%;
-  height: 100%;
-  img,
-  .artwork-fallback {
-    width: 50px;
-    height: 50px;
-  }
-`;
+import "./Artwork.css";
 
 export const Artwork: FC = memo(function Artwork() {
   const { playList, curIdx } = useTrackContext();
@@ -24,7 +12,7 @@ export const Artwork: FC = memo(function Artwork() {
     [track?.writer, track?.name].filter(Boolean).join(" - ") || "Album artwork";
 
   return (
-    <ArtworkContainer className="artwork-container">
+    <div className="artwork-container">
       {track?.img ? (
         <img src={track.img} alt={altText} style={coverImgsCss?.artwork} />
       ) : (
@@ -37,6 +25,6 @@ export const Artwork: FC = memo(function Artwork() {
           {track?.name || "♪"}
         </div>
       )}
-    </ArtworkContainer>
+    </div>
   );
 });

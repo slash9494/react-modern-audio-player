@@ -1,5 +1,5 @@
 import { FC, memo } from "react";
-import styled from "styled-components";
+import "./PlayBtn.css";
 import { useNonNullableContext } from "@/hooks/useNonNullableContext";
 import { audioPlayerDispatchContext } from "@/components/AudioPlayer/Context/dispatchContext";
 import { usePlaybackContext } from "@/hooks/context/usePlaybackContext";
@@ -7,10 +7,6 @@ import { useResourceContext } from "@/hooks/context/useResourceContext";
 import { StyledBtn } from "@/ui/StyledBtn";
 import { MdPauseCircleFilled, MdPlayCircleFilled } from "@/components/icons";
 import { Icon } from "../Icon";
-
-const StyledPlayBtn = styled(StyledBtn)`
-  width: 35px;
-`;
 
 export const PlayBtn: FC = memo(function PlayBtn() {
   const { curAudioState } = usePlaybackContext();
@@ -21,7 +17,7 @@ export const PlayBtn: FC = memo(function PlayBtn() {
     audioPlayerDispatch({ type: "CHANGE_PLAYING_STATE" });
 
   return (
-    <StyledPlayBtn
+    <StyledBtn
       type="button"
       aria-label={curAudioState.isPlaying ? "Pause" : "Play"}
       onClick={changePlayState}
@@ -36,6 +32,6 @@ export const PlayBtn: FC = memo(function PlayBtn() {
       ) : (
         <Icon render={<MdPlayCircleFilled />} customIcon={customIcons?.play} />
       )}
-    </StyledPlayBtn>
+    </StyledBtn>
   );
 });

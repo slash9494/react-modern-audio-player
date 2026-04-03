@@ -2,8 +2,7 @@ import { memo } from "react";
 import { AudioData } from "@/components/AudioPlayer/Context";
 import { useTrackContext } from "@/hooks/context/useTrackContext";
 import { useResourceContext } from "@/hooks/context/useResourceContext";
-import classNames from "classnames";
-import styled from "styled-components";
+import "./PlayListItem.css";
 
 export const PlayListItem = memo(function PlayListItem({
   data,
@@ -13,10 +12,10 @@ export const PlayListItem = memo(function PlayListItem({
   const { curPlayId } = useTrackContext();
   const { coverImgsCss } = useResourceContext();
   return (
-    <ListItemContainer
-      className={classNames("list-item-container", {
-        curPlayed: curPlayId === data.id,
-      })}
+    <div
+      className={`list-item-container${
+        curPlayId === data.id ? " curPlayed" : ""
+      }`}
       data-testid="playlist-item"
       aria-current={curPlayId === data.id ? "true" : undefined}
     >
@@ -38,43 +37,6 @@ export const PlayListItem = memo(function PlayListItem({
           )}
         </div>
       </div>
-    </ListItemContainer>
+    </div>
   );
 });
-
-const ListItemContainer = styled.div`
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  padding: 10px 20px;
-  &.curPlayed {
-    background: var(--rm-audio-player-selected-list-item-background);
-  }
-  .list-item-contents-wrapper {
-    width: 100%;
-    display: flex;
-    gap: 10px;
-  }
-  .album-cover-wrapper {
-    display: flex;
-    align-items: center;
-    img {
-      width: 35px;
-      height: 35px;
-    }
-  }
-  .album-info-wrapper {
-    display: grid;
-    min-width: 10px;
-    font-size: 13px;
-    margin-right: 1.5rem;
-    padding: 2px 0%;
-    span {
-      align-self: center;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      overflow: hidden;
-    }
-  }
-`;

@@ -7,13 +7,12 @@ import React, {
   useMemo,
   useState,
 } from "react";
-import styled from "styled-components";
 import { DropdownContext, dropdownContext } from "./DropdownContext";
 import { DropdownTrigger } from "./DropdownTrigger";
 import { DropdownContent } from "./DropdownContent";
-import { appearanceIn, appearanceOut } from "@/ui/CssTransition";
 import useClickOutside from "@/hooks/useClickOutside";
 import { useDropdown } from "./useDropdown";
+import "./Dropdown.css";
 
 export interface DropdownProps
   extends Omit<Partial<DropdownContext>, "setIsOpen"> {
@@ -65,7 +64,7 @@ const Dropdown: FC<PropsWithChildren<DropdownProps>> = ({
 
   return (
     <dropdownContext.Provider value={contextValue}>
-      <DropdownContainer
+      <div
         className="dropdown-container"
         ref={dropdownRef}
         {...dropdownEventProps}
@@ -74,7 +73,7 @@ const Dropdown: FC<PropsWithChildren<DropdownProps>> = ({
           {trigger}
           {!disabled && content}
         </>
-      </DropdownContainer>
+      </div>
     </dropdownContext.Provider>
   );
 };
@@ -85,31 +84,3 @@ type DropdownComponent = typeof Dropdown & {
 };
 
 export default Dropdown as DropdownComponent;
-
-export const DropdownContainer = styled.div`
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 20px;
-  min-height: 20px;
-  .dropdown-trigger-wrapper {
-    width: 100%;
-    height: 100%;
-    cursor: pointer;
-    position: absolute;
-    display: flex;
-  }
-
-  .dropdown-content-wrapper {
-    transform-origin: center top;
-  }
-
-  .dropdown-content-wrapper-enter {
-    animation: ${appearanceIn} 0.25s ease-out normal forwards;
-  }
-
-  .dropdown-content-wrapper-leave {
-    animation: ${appearanceOut} 0.1s ease-in forwards;
-  }
-`;

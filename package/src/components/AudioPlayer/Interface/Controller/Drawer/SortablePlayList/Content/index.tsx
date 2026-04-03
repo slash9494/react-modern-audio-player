@@ -5,9 +5,9 @@ import { useNonNullableContext } from "@/hooks/useNonNullableContext";
 import { useTrackContext } from "@/hooks/context/useTrackContext";
 import { FC } from "react";
 import ReactDOM from "react-dom";
-import styled from "styled-components";
 import { PlayListItem } from "./PlayListItem";
 import { usePlayList } from "./usePlayList";
+import "./PlayList.css";
 
 export const PlayList: FC = () => {
   const { playList } = useTrackContext();
@@ -31,7 +31,7 @@ export const PlayList: FC = () => {
         clearTime={300}
         {...cssTransitionEventProps}
       >
-        <PlayListContainer className="play-list-container">
+        <div className="play-list-container">
           <SortableList>
             {/** //TODO : change props event to context  */}
             {playList.map((data, index) => (
@@ -47,7 +47,7 @@ export const PlayList: FC = () => {
               </SortableList.Item>
             ))}
           </SortableList>
-        </PlayListContainer>
+        </div>
       </CssTransition>,
       document.querySelector(".sortable-play-list") as HTMLDivElement
     )
@@ -55,30 +55,3 @@ export const PlayList: FC = () => {
     <></>
   );
 };
-
-const PlayListContainer = styled.div`
-  transition-property: max-height, opacity;
-  overflow-x: hidden;
-  overflow-y: auto;
-
-  &.playlist-content-enter {
-    opacity: 0;
-    max-height: 0;
-  }
-  &.playlist-content-enter-active {
-    opacity: 1;
-    max-height: 20vh;
-    transition-duration: 0.5s;
-    transition-timing-function: cubic-bezier(0, 0, 0, 1.2);
-  }
-  &.playlist-content-leave {
-    opacity: 1;
-    max-height: 20vh;
-  }
-  &.playlist-content-leave-active {
-    opacity: 0;
-    max-height: 0;
-    transition-duration: 0.25s;
-    transition-timing-function: 0.2s cubic-bezier(0.66, -0.41, 1, 1);
-  }
-`;

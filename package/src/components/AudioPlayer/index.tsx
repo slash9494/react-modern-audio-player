@@ -3,7 +3,8 @@ import {
   AudioPlayerRootProvider,
   AudioPlayerRootProviderProps,
 } from "@/components/Provider";
-import { GlobalStyle } from "../../styles/GlobalStyle";
+import "@/styles/vars.css";
+import "@/styles/GlobalStyle.css";
 import { defaultInterfacePlacementMaxLength } from "./Context";
 import { CustomComponent } from "./Interface/CustomComponent";
 import { AudioPlayer, AudioPlayerProps } from "./Player";
@@ -20,8 +21,6 @@ const AudioPlayerWithProviders = <TInterfacePlacementLength extends number>({
     <AudioPlayerProvider {...audioPlayProps}>
       <AudioPlayerRootProvider rootContainerProps={rootContainerProps}>
         <AudioPlayer {...audioPlayProps} />
-        {/* @ts-expect-error styled-components v5 GlobalStyle type incompatible with @types/react@18 */}
-        <GlobalStyle />
       </AudioPlayerRootProvider>
     </AudioPlayerProvider>
   );

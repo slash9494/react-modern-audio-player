@@ -1,0 +1,42 @@
+.list-item-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  padding: 10px 20px;
+}
+
+.list-item-container.curPlayed {
+  background: var(--rm-audio-player-selected-list-item-background);
+}
+
+.list-item-container .list-item-contents-wrapper {
+  width: 100%;
+  display: flex;
+  gap: 10px;
+}
+
+.list-item-container .album-cover-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.list-item-container .album-cover-wrapper img {
+  width: 35px;
+  height: 35px;
+}
+
+.list-item-container .album-info-wrapper {
+  display: grid;
+  min-width: 10px;
+  font-size: 13px;
+  margin-right: 1.5rem;
+  padding: 2px 0%;
+}
+
+.list-item-container .album-info-wrapper span {
+  align-self: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}

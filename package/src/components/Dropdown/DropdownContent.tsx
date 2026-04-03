@@ -7,10 +7,10 @@ import {
   useMemo,
   useState,
 } from "react";
-import styled, { css } from "styled-components";
 import { CssTransition } from "@/ui/CssTransition";
 import { dropdownContext } from "./DropdownContext";
 import { useDropdown } from "./useDropdown";
+import { useDropdownPlacementStyle } from "./useDropdownPlacementStyle";
 
 export type DropdownContentPlacement = "top" | "bottom" | "left" | "right";
 
@@ -48,20 +48,28 @@ export const DropdownContent: FC<PropsWithChildren<DropdownContentProps>> = ({
     }
   }, [dropdownRef]);
 
+  const placementStyle = useDropdownPlacementStyle(placement, dropdownSize);
+
   const Content = useMemo(
     () =>
       dropdownSize ? (
-        <DropdownContentContainer
+        <div
           {...dropdownContentProps}
           id={dropdownId}
-          dropdownSize={dropdownSize}
-          placement={placement}
+          style={placementStyle}
           onClick={onClick}
         >
           {children}
-        </DropdownContentContainer>
+        </div>
       ) : null,
-    [children, dropdownContentProps, dropdownSize, placement, onClick]
+    [
+      children,
+      dropdownContentProps,
+      dropdownSize,
+      placementStyle,
+      dropdownId,
+      onClick,
+    ]
   );
 
   return isWithAnimation ? (
@@ -80,20 +88,3 @@ export const DropdownContent: FC<PropsWithChildren<DropdownContentProps>> = ({
     Content
   ) : null;
 };
-
-interface DropdownContainerProps {
-  placement: DropdownContentPlacement;
-  dropdownSize: DropdownSize;
-}
-
-const DropdownContentContainer = styled.div`
-  ${({ placement, dropdownSize }: DropdownContainerProps) => css`
-    position: absolute;
-    top: ${placement === "bottom" ? `${dropdownSize.height}px` : undefined};
-    margin-top: ${placement === "bottom" ? `5px` : undefined};
-    bottom: ${placement === "top" ? `${dropdownSize.height}px` : undefined};
-    margin-bottom: ${placement === "top" ? `5px` : undefined};
-    left: ${placement === "right" ? `${dropdownSize.width}px` : undefined};
-    right: ${placement === "left" ? `${dropdownSize.width}px` : undefined};
-  `}
-`;

@@ -1,5 +1,4 @@
 import React, { FC } from "react";
-import styled from "styled-components";
 import { Controller } from "./Controller";
 import { Information } from "./Information";
 
@@ -7,6 +6,7 @@ import Grid from "@/components/Grid";
 
 import { useUIContext } from "@/hooks/context/useUIContext";
 import { useGridTemplate } from "@/hooks/useGridTemplate";
+import "./Interface.css";
 
 interface InterfaceProps {
   children: React.ReactNode;
@@ -24,10 +24,7 @@ export const Interface: FC<InterfaceProps> = ({ children }) => {
   );
 
   return (
-    <InterfaceContainer
-      className="interface-container"
-      data-testid="audio-player"
-    >
+    <div className="interface-container" data-testid="audio-player">
       {playListPlacement === "top" && <div className="sortable-play-list" />}
       <Grid
         alignItems={"center"}
@@ -43,20 +40,6 @@ export const Interface: FC<InterfaceProps> = ({ children }) => {
         {CustomComponents}
       </Grid>
       {playListPlacement === "bottom" && <div className="sortable-play-list" />}
-    </InterfaceContainer>
+    </div>
   );
 };
-
-const InterfaceContainer = styled.div`
-  .interface-grid {
-    background: var(--rm-audio-player-interface-container);
-  }
-  .interface-grid {
-    padding: 0.5rem 10px;
-  }
-  .sortable-play-list {
-    background: var(--rm-audio-player-sortable-list);
-    box-shadow: -5px 2px 4px 0px rgb(var(--rm-audio-player-shadow, 0 0 0) / 4%)
-      inset;
-  }
-`;

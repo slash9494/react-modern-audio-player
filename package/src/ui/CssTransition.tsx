@@ -1,32 +1,6 @@
 import React, { cloneElement, FC, PropsWithChildren, useState } from "react";
 import { useIsomorphicLayoutEffect } from "@/utils/ssr";
-import { keyframes } from "styled-components";
-
-export const appearanceIn = keyframes({
-  "0%": {
-    opacity: 0,
-    transform: "scale(0.95)",
-  },
-  "60%": {
-    opacity: 0.75,
-    transform: "scale(1.05)",
-  },
-  "100%": {
-    opacity: 1,
-    transform: "scale(1)",
-  },
-});
-
-export const appearanceOut = keyframes({
-  "0%": {
-    opacity: 1,
-    transform: "scale(1)",
-  },
-  "100%": {
-    opacity: 0,
-    transform: "scale(0.5)",
-  },
-});
+import "@/styles/animations.css";
 
 export interface CssTransitionProps {
   visible: boolean;
