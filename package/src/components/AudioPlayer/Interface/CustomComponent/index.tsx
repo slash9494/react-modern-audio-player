@@ -38,7 +38,7 @@ export const CustomComponent: FC<CustomComponentProps> = ({
 
   return (
     <Grid.Item
-      UNSAFE_className="custom_component"
+      UNSAFE_className="rmap-custom-component"
       gridArea={gridArea}
       {...gridItemProps}
     >

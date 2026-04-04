@@ -11,16 +11,15 @@ export const PlayListItem = memo(function PlayListItem({
 }) {
   const { curPlayId } = useTrackContext();
   const { coverImgsCss } = useResourceContext();
+  const isCurrentId = curPlayId === data.id;
   return (
     <div
-      className={`list-item-container${
-        curPlayId === data.id ? " curPlayed" : ""
-      }`}
+      className={`rmap-playlist-item${isCurrentId ? " cur-played" : ""}`}
       data-testid="playlist-item"
-      aria-current={curPlayId === data.id ? "true" : undefined}
+      aria-current={isCurrentId ? "true" : undefined}
     >
-      <div className="list-item-contents-wrapper">
-        <div className="album-cover-wrapper">
+      <div className="rmap-playlist-item-contents">
+        <div className="rmap-playlist-album-cover">
           {data.img && (
             <img
               src={data.img}
@@ -29,11 +28,15 @@ export const PlayListItem = memo(function PlayListItem({
             />
           )}
         </div>
-        <div className="album-info-wrapper">
-          {data.writer && <span className="writer">{data.writer}</span>}
-          {data.name && <span className="title">{data.name}</span>}
+        <div className="rmap-playlist-album-info">
+          {data.writer && (
+            <span className="rmap-playlist-writer">{data.writer}</span>
+          )}
+          {data.name && (
+            <span className="rmap-playlist-title">{data.name}</span>
+          )}
           {data.description && (
-            <div className="description">{data.description}</div>
+            <div className="rmap-playlist-description">{data.description}</div>
           )}
         </div>
       </div>

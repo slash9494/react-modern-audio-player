@@ -58,7 +58,7 @@ describe("WaveformProgress deferred initialization", () => {
 
   it("waveform wrapper is not in DOM when starting in bar mode", () => {
     const { container } = renderProgress("bar");
-    expect(container.querySelector(".waveform-wrapper")).toBeNull();
+    expect(container.querySelector(".rmap-waveform-wrapper")).toBeNull();
     expect(container.querySelector("#rm-waveform")).toBeNull();
   });
 });

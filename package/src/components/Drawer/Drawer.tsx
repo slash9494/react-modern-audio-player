@@ -47,7 +47,7 @@ const Drawer: FC<PropsWithChildren<DrawerProps>> = ({
   );
 
   return (
-    <div className="drawer-container" ref={drawerRef}>
+    <div className="rmap-drawer-container" ref={drawerRef}>
       <drawerContext.Provider value={contextValue}>
         <>
           {placement === "top" && content}

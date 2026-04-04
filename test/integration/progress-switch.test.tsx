@@ -44,13 +44,13 @@ describe("Progress initial rendering", () => {
   it("7-4: bar mode — waveform wrapper is not in DOM", () => {
     const { container } = renderWithProgress("bar");
     expect(screen.getByTestId("progress-bar")).toBeInTheDocument();
-    expect(container.querySelector(".waveform-wrapper")).toBeNull();
+    expect(container.querySelector(".rmap-waveform-wrapper")).toBeNull();
   });
 
   it("7-5: waveform mode — waveform is active, bar is absent", () => {
     const { container } = renderWithProgress("waveform");
     expect(screen.queryByTestId("progress-bar")).not.toBeInTheDocument();
-    const waveform = container.querySelector(".waveform-wrapper");
+    const waveform = container.querySelector(".rmap-waveform-wrapper");
     expect(waveform).toBeInTheDocument();
     expect(waveform?.getAttribute("data-active")).toBe("true");
   });
@@ -63,7 +63,7 @@ describe("Progress mode switching — DOM persistence", () => {
   it("7-8: waveform mounts on first activation then persists", () => {
     const { container, rerenderWith } = renderSwitchable();
 
-    const waveform = () => container.querySelector(".waveform-wrapper");
+    const waveform = () => container.querySelector(".rmap-waveform-wrapper");
 
     // bar start — no waveform in DOM
     expect(waveform()).toBeNull();

@@ -56,7 +56,7 @@ export const DropdownContent: FC<PropsWithChildren<DropdownContentProps>> = ({
         <div
           {...dropdownContentProps}
           id={dropdownId}
-          style={placementStyle}
+          style={{ ...placementStyle, ...dropdownContentProps.style }}
           onClick={onClick}
         >
           {children}
@@ -75,7 +75,7 @@ export const DropdownContent: FC<PropsWithChildren<DropdownContentProps>> = ({
   return isWithAnimation ? (
     <CssTransition
       visible={isOpen}
-      name={"dropdown-content-wrapper"}
+      name={"rmap-dropdown-content"}
       enterTime={20}
       leaveTime={60}
       clearTime={300}

@@ -30,20 +30,20 @@ export const useSortableListItem: <T>(
     draggable,
     onDragStart: (e: React.DragEvent<HTMLLIElement>) => {
       e.stopPropagation();
-      e.currentTarget.classList.add("dragstart");
+      e.currentTarget.classList.add("drag-start");
       onDragStartCb && onDragStartCb(e);
     },
     onDragEnd: (e: React.DragEvent<HTMLLIElement>) => {
       e.stopPropagation();
-      e.currentTarget.classList.remove("dragstart");
+      e.currentTarget.classList.remove("drag-start");
     },
     onDragEnter: (e: React.DragEvent<HTMLLIElement>) => {
       e.stopPropagation();
-      e.currentTarget.classList.add("dragover");
+      e.currentTarget.classList.add("drag-over");
     },
     onDragLeave: (e: React.DragEvent<HTMLLIElement>) => {
       e.stopPropagation();
-      e.currentTarget.classList.remove("dragover");
+      e.currentTarget.classList.remove("drag-over");
     },
     onDragOver: (e: React.DragEvent<HTMLLIElement>) => {
       e.preventDefault();
@@ -52,7 +52,7 @@ export const useSortableListItem: <T>(
     },
     onDrop: (e: React.DragEvent<HTMLLIElement>) => {
       e.stopPropagation();
-      e.currentTarget.classList.remove("dragover");
+      e.currentTarget.classList.remove("drag-over");
       const curListData = [...listData];
       const draggedItem = listData[dragStartIdx];
       curListData.splice(dragStartIdx, 1);

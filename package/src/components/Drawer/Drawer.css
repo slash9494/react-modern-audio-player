@@ -1,31 +1,30 @@
 @import "../../styles/animations.css";
 
-.drawer-container {
+.rmap-drawer-container {
   position: relative;
   min-width: 20px;
   min-height: 20px;
 }
 
-.drawer-container .drawer-trigger-wrapper {
-  width: 100%;
-  height: 100%;
-  cursor: pointer;
+.rmap-drawer-container .rmap-drawer-trigger {
   position: absolute;
+  inset: 0;
+  cursor: pointer;
   display: flex;
 }
 
-.drawer-container .drawer-trigger-wrapper[aria-expanded="true"] svg {
+.rmap-drawer-container .rmap-drawer-trigger[aria-expanded="true"] svg {
   color: var(--rm-audio-player-sortable-list-button-active);
 }
 
-.drawer-container .drawer-content-wrapper {
+.rmap-drawer-container .rmap-drawer-content {
   transform-origin: center top;
 }
 
-.drawer-container .drawer-content-wrapper-enter {
-  animation: appearanceIn 0.25s ease-out normal forwards;
+.rmap-drawer-container .rmap-drawer-content-enter {
+  animation: rmap-appearance-in 0.25s ease-out normal forwards;
 }
 
-.drawer-container .drawer-content-wrapper-leave {
-  animation: appearanceOut 0.1s ease-in forwards;
+.rmap-drawer-container .rmap-drawer-content-leave {
+  animation: rmap-appearance-out 0.1s ease-in forwards;
 }

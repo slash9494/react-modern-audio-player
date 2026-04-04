@@ -78,6 +78,7 @@ test.describe("Progress mode switching (e2e)", () => {
 
     // Get waveform bounding box and click at ~50% position
     const waveform = page.locator("#rm-waveform");
+    await expect(waveform).toBeVisible({ timeout: 10000 });
     const box = await waveform.boundingBox();
     expect(box).toBeTruthy();
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -120,12 +121,16 @@ test.describe("Progress mode switching (e2e)", () => {
     await waveform.focus();
     await page.keyboard.press("ArrowRight");
 
-    const timeAfter = await page.evaluate(() => {
-      const audio = document.querySelector("audio");
-      return audio?.currentTime ?? 0;
-    });
-
-    expect(timeAfter).toBeGreaterThanOrEqual(timeBefore + 1);
+    await expect
+      .poll(
+        async () => {
+          return await page.evaluate(
+            () => document.querySelector("audio")?.currentTime ?? 0
+          );
+        },
+        { timeout: 5000 }
+      )
+      .toBeGreaterThanOrEqual(timeBefore + 1);
   });
 
   test("7-10: waveform switch then next track plays from start", async ({

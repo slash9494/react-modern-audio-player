@@ -24,7 +24,7 @@ export const DrawerTrigger: FC<DrawerTriggerProps> = ({
 
   return (
     <StyledBtn
-      className="drawer-trigger-wrapper"
+      className="rmap-drawer-trigger"
       type="button"
       aria-expanded={isOpen}
       aria-controls={drawerId}

@@ -42,7 +42,7 @@ export const AudioPlayer = <
   usePropsStateEffect(restProps);
 
   return (
-    <div id="rm-audio-player" className="rm-audio-player-container">
+    <div id="rm-audio-player" className="rmap-player-container">
       <Audio audioRef={audioRef} />
       <Interface>{children}</Interface>
     </div>

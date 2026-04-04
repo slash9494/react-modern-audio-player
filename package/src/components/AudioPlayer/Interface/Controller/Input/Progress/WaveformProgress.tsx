@@ -50,7 +50,7 @@ export const WaveformProgress: FC<{ isActive: boolean }> = ({ isActive }) => {
   const handleKeyDown = useProgressKeyDown(onSeek);
 
   return (
-    <div className="waveform-wrapper" data-active={isActive}>
+    <div className="rmap-waveform-wrapper" data-active={isActive}>
       <div
         id="rm-waveform"
         ref={waveformRef}

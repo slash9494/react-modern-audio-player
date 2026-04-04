@@ -73,11 +73,7 @@ export const Trigger = forwardRef<HTMLDivElement>((_, ref) => {
     elementRefs?.audioEl?.volume,
   ]);
   return (
-    <div
-      onClick={changeMuteState}
-      className="volume-trigger-container"
-      ref={ref}
-    >
+    <div onClick={changeMuteState} className="rmap-volume-trigger" ref={ref}>
       {VolumeIcon}
     </div>
   );

@@ -25,26 +25,30 @@ export const Interface: FC<InterfaceProps> = ({ children }) => {
 
   return (
     <div
-      className="interface-container"
+      className="rmap-interface-container"
       data-testid="audio-player"
       role="region"
       aria-label="Audio player"
     >
-      {playListPlacement === "top" && <div className="sortable-play-list" />}
+      {playListPlacement === "top" && (
+        <div className="rmap-sortable-playlist" />
+      )}
       <Grid
         alignItems={"center"}
         justifyContent={"center"}
         areas={gridAreas}
         minHeight={"30px"}
         columns={gridColumns}
-        UNSAFE_className="interface-grid"
+        UNSAFE_className="rmap-interface-grid"
       >
         <Information />
         <Controller />
 
         {CustomComponents}
       </Grid>
-      {playListPlacement === "bottom" && <div className="sortable-play-list" />}
+      {playListPlacement === "bottom" && (
+        <div className="rmap-sortable-playlist" />
+      )}
     </div>
   );
 };

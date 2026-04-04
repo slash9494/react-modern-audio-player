@@ -1,4 +1,4 @@
-.list-item-container {
+.rmap-playlist-item {
   width: 100%;
   height: 100%;
   display: flex;
@@ -6,27 +6,27 @@
   padding: 10px 20px;
 }
 
-.list-item-container.curPlayed {
+.rmap-playlist-item.cur-played {
   background: var(--rm-audio-player-selected-list-item-background);
 }
 
-.list-item-container .list-item-contents-wrapper {
+.rmap-playlist-item .rmap-playlist-item-contents {
   width: 100%;
   display: flex;
   gap: 10px;
 }
 
-.list-item-container .album-cover-wrapper {
+.rmap-playlist-item .rmap-playlist-album-cover {
   display: flex;
   align-items: center;
 }
 
-.list-item-container .album-cover-wrapper img {
+.rmap-playlist-item .rmap-playlist-album-cover img {
   width: 35px;
   height: 35px;
 }
 
-.list-item-container .album-info-wrapper {
+.rmap-playlist-item .rmap-playlist-album-info {
   display: grid;
   min-width: 10px;
   font-size: 13px;
@@ -34,7 +34,7 @@
   padding: 2px 0%;
 }
 
-.list-item-container .album-info-wrapper span {
+.rmap-playlist-item .rmap-playlist-album-info span {
   align-self: center;
   text-overflow: ellipsis;
   white-space: nowrap;

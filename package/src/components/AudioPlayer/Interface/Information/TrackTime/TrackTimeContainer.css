@@ -8,27 +8,27 @@
 }
 
 /* position="left": margin-right on child */
-.track-time-container[data-position="left"] .track-current-time,
-.track-time-container[data-position="left"] .track-duration {
+.track-time-container[data-position="left"] .rmap-track-current-time,
+.track-time-container[data-position="left"] .rmap-track-duration {
   margin-right: -10px;
 }
 
 /* position="right": prepend "/" before child */
-.track-time-container[data-position="right"] .track-current-time:before,
-.track-time-container[data-position="right"] .track-duration:before {
+.track-time-container[data-position="right"] .rmap-track-current-time:before,
+.track-time-container[data-position="right"] .rmap-track-duration:before {
   content: "/";
   margin: 0 0.3rem;
 }
 
 /* Current-specific styles */
-.track-time-current-container .track-current-time {
+.rmap-track-time-current .rmap-track-current-time {
   font-weight: 700;
   letter-spacing: -0.1rem;
   color: var(--rm-audio-player-track-current-time);
 }
 
 /* Duration-specific styles */
-.track-time-duration-container .track-duration {
+.rmap-track-time-duration .rmap-track-duration {
   display: flex;
   color: var(--rm-audio-player-track-duration);
   letter-spacing: -0.1rem;

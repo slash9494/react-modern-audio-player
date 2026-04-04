@@ -1,4 +1,4 @@
-.bar-progress-wrapper {
+.rmap-bar-progress-wrapper {
   display: flex;
   width: 100%;
   height: 18px;
@@ -9,7 +9,7 @@
   container-type: inline-size;
 }
 
-.bar-progress-wrapper .rm-player-progress-bar {
+.rmap-bar-progress-wrapper .rmap-progress-bar {
   position: relative;
   width: 100%;
   height: 100%;
@@ -17,7 +17,7 @@
   background-color: var(--rm-audio-player-progress-bar-background);
 }
 
-.bar-progress-wrapper .rm-player-progress {
+.rmap-bar-progress-wrapper .rmap-progress-fill {
   position: absolute;
   left: 0;
   width: 100%;
@@ -27,23 +27,23 @@
   transform: scaleX(0);
 }
 
-.bar-progress-wrapper .rm-player-progress-handle {
+.rmap-bar-progress-wrapper .rmap-progress-handle {
   position: absolute;
   left: -4px;
   background-color: var(--rm-audio-player-progress-bar);
-  border-radius: 100%;
+  border-radius: 50%;
   height: 8px;
   width: 8px;
   opacity: 0;
   transition: opacity 0.2s ease-in-out;
 }
 
-.bar-progress-wrapper:hover .rm-player-progress-handle,
-.bar-progress-wrapper:focus-visible .rm-player-progress-handle {
+.rmap-bar-progress-wrapper:hover .rmap-progress-handle,
+.rmap-bar-progress-wrapper:focus-visible .rmap-progress-handle {
   opacity: 1;
 }
 
-.bar-progress-wrapper:focus-visible {
+.rmap-bar-progress-wrapper:focus-visible {
   outline: 2px solid var(--rm-audio-player-progress-bar, #0072f5);
   outline-offset: 2px;
 }

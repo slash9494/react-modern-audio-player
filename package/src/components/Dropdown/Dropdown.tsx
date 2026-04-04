@@ -65,7 +65,7 @@ const Dropdown: FC<PropsWithChildren<DropdownProps>> = ({
   return (
     <dropdownContext.Provider value={contextValue}>
       <div
-        className="dropdown-container"
+        className="rmap-dropdown-container"
         ref={dropdownRef}
         {...dropdownEventProps}
       >

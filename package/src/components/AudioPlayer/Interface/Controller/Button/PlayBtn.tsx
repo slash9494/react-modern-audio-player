@@ -21,7 +21,7 @@ export const PlayBtn: FC = memo(function PlayBtn() {
       type="button"
       aria-label={curAudioState.isPlaying ? "Pause" : "Play"}
       onClick={changePlayState}
-      className="play-button"
+      className="rmap-play-btn"
       data-testid="play-btn"
     >
       {curAudioState.isPlaying ? (

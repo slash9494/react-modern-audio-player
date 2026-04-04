@@ -32,13 +32,14 @@ export const VolumeSlider: FC<{ placement: VolumeSliderPlacement }> = ({
     [curAudioState.muted, audioPlayerDispatch]
   );
 
-  const volumeValue =
-    (curAudioState.volume ?? elementRefs?.audioEl?.volume ?? 0) * 100;
+  const resolvedVolume =
+    curAudioState.volume ?? elementRefs?.audioEl?.volume ?? 0;
+  const volumeValue = resolvedVolume * 100;
 
   return (
     <div
       ref={contentRef}
-      className="volume-content-container"
+      className="rmap-volume-container"
       data-placement={placement}
       data-testid="volume-slider"
       style={
@@ -47,12 +48,12 @@ export const VolumeSlider: FC<{ placement: VolumeSliderPlacement }> = ({
         } as React.CSSProperties
       }
     >
-      <div className="volume-panel-wrapper">
+      <div className="rmap-volume-panel">
         <input
-          className="volume-slider-input"
+          className="rmap-volume-slider"
           type="range"
           style={{ cursor: "pointer" }}
-          defaultValue={curAudioState.volume}
+          defaultValue={resolvedVolume}
           onChange={onChangeVolume}
           min="0"
           max="1"

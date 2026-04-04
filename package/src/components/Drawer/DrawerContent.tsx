@@ -90,7 +90,7 @@ export const DrawerContent: FC<PropsWithChildren<DrawerContentProps>> = ({
   const Content = (
     <div
       ref={containerRef}
-      className="drawer-content-container"
+      className="rmap-drawer-content-container"
       role="dialog"
       aria-modal="true"
       aria-label={ariaLabel}
@@ -104,7 +104,7 @@ export const DrawerContent: FC<PropsWithChildren<DrawerContentProps>> = ({
   return isWithAnimation ? (
     <CssTransition
       visible={isOpen}
-      name={"drawer-content-wrapper"}
+      name={"rmap-drawer-content"}
       enterTime={20}
       leaveTime={60}
       clearTime={300}

@@ -25,13 +25,13 @@ export const PlayList: FC = () => {
     ReactDOM.createPortal(
       <CssTransition
         visible={isOpen}
-        name={"playlist-content"}
+        name={"rmap-playlist-content"}
         enterTime={20}
         leaveTime={20}
         clearTime={300}
         {...cssTransitionEventProps}
       >
-        <div className="play-list-container">
+        <div className="rmap-playlist-container">
           <SortableList>
             {/** //TODO : change props event to context  */}
             {playList.map((data, index) => (
@@ -49,7 +49,7 @@ export const PlayList: FC = () => {
           </SortableList>
         </div>
       </CssTransition>,
-      document.querySelector(".sortable-play-list") as HTMLDivElement
+      document.querySelector(".rmap-sortable-playlist") as HTMLDivElement
     )
   ) : (
     <></>

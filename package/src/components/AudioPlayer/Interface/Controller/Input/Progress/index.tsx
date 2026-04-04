@@ -15,7 +15,7 @@ export const Progress: FC = () => {
   }, [isWaveform, waveformMounted]);
 
   return (
-    <div className="progress-container">
+    <div className="rmap-progress-container">
       {waveformMounted && <WaveformProgress isActive={isWaveform} />}
       {isBar && <BarProgress />}
     </div>

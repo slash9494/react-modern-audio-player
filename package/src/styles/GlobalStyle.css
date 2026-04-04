@@ -20,7 +20,6 @@
 .rm-audio-player-provider blockquote:after,
 .rm-audio-player-provider q:before,
 .rm-audio-player-provider q:after {
-  content: "";
   content: none;
 }
 

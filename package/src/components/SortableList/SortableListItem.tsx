@@ -15,8 +15,8 @@ export const SortableListItem = <T extends ListItem>(
   const eventProps = useSortableListItem(useListItemProps);
 
   return (
-    <li className="list-item-root-container" {...eventProps}>
-      <div className="list-item-inner">{children}</div>
+    <li className="rmap-sortable-item" {...eventProps}>
+      <div className="rmap-sortable-item-inner">{children}</div>
     </li>
   );
 };

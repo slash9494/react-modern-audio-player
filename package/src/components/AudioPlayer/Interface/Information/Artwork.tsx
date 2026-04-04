@@ -12,12 +12,12 @@ export const Artwork: FC = memo(function Artwork() {
     [track?.writer, track?.name].filter(Boolean).join(" - ") || "Album artwork";
 
   return (
-    <div className="artwork-container">
+    <div className="rmap-artwork-container">
       {track?.img ? (
         <img src={track.img} alt={altText} style={coverImgsCss?.artwork} />
       ) : (
         <div
-          className="artwork-fallback"
+          className="rmap-artwork-fallback"
           role="img"
           aria-label={altText}
           style={coverImgsCss?.artwork}

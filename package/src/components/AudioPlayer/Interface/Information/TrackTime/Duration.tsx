@@ -10,9 +10,11 @@ export const Duration: FC<TrackTimeChildrenProps> = ({ position }) => {
   return (
     <TrackTimeContainer
       position={position}
-      className="track-time-duration-container"
+      className="rmap-track-time-duration"
     >
-      <span className="track-duration">{getTimeWithPadStart(duration)}</span>
+      <span className="rmap-track-duration">
+        {getTimeWithPadStart(duration)}
+      </span>
     </TrackTimeContainer>
   );
 };

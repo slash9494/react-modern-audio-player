@@ -63,7 +63,7 @@ describe("Volume tooltip (slider)", () => {
   function openVolumeTooltip() {
     const dropdown = screen
       .getByTestId("volume-trigger-btn")
-      .closest(".dropdown-container");
+      .closest(".rmap-dropdown-container");
     expect(dropdown).not.toBeNull();
     act(() => {
       fireEvent.mouseEnter(dropdown!);

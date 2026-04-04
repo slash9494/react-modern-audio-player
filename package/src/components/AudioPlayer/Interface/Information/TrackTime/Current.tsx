@@ -8,11 +8,11 @@ export const Current: FC<TrackTimeChildrenProps> = ({ position }) => {
   const { currentTime } = useTimeContext();
 
   return (
-    <TrackTimeContainer
-      position={position}
-      className="track-time-current-container"
-    >
-      <span className="track-current-time" data-testid="track-current-time">
+    <TrackTimeContainer position={position} className="rmap-track-time-current">
+      <span
+        className="rmap-track-current-time"
+        data-testid="track-current-time"
+      >
         {getTimeWithPadStart(currentTime)}
       </span>
     </TrackTimeContainer>

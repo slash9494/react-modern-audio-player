@@ -16,7 +16,7 @@ export const BarProgress: FC = () => {
 
   return (
     <div
-      className="bar-progress-wrapper"
+      className="rmap-bar-progress-wrapper"
       data-testid="progress-bar"
       role="slider"
       tabIndex={0}
@@ -30,14 +30,14 @@ export const BarProgress: FC = () => {
       onKeyDown={handleKeyDown}
       {...eventProps}
     >
-      <div className="rm-player-progress-bar">
+      <div className="rmap-progress-bar">
         <div
-          className="rm-player-progress"
+          className="rmap-progress-fill"
           style={{ transform: `scaleX(${progressRatio})` }}
         />
       </div>
       <div
-        className="rm-player-progress-handle"
+        className="rmap-progress-handle"
         style={{
           transform: `translateX(${progressRatio * 100}cqw)`,
         }}

@@ -70,9 +70,9 @@ describe("Grid — edge cases", () => {
 
 describe("Grid — className & children", () => {
   it("UNSAFE_className applied", () => {
-    const { container } = render(<Grid UNSAFE_className="my-grid" />);
+    const { container } = render(<Grid UNSAFE_className="rmap-grid" />);
     const el = container.firstChild as HTMLElement;
-    expect(el.className).toBe("my-grid");
+    expect(el.className).toBe("rmap-grid");
   });
 
   it("children rendered", () => {

@@ -6,7 +6,7 @@ export const TrackInfo: FC = memo(function TrackInfo() {
   const { playList, curIdx } = useTrackContext();
   const curPlayData = playList[curIdx];
   return (
-    <div className="track-info-container">
+    <div className="rmap-track-info-container">
       {curPlayData?.customTrackInfo ? (
         curPlayData.customTrackInfo
       ) : (

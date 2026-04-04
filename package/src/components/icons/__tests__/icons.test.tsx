@@ -94,9 +94,9 @@ describe("color prop", () => {
 
 describe("SVGProps forwarding", () => {
   it("className forwarded", () => {
-    const { container } = render(<MdPlayCircleFilled className="my-icon" />);
+    const { container } = render(<MdPlayCircleFilled className="rmap-icon" />);
     const svg = container.querySelector("svg")!;
-    expect(svg.classList.contains("my-icon")).toBe(true);
+    expect(svg.classList.contains("rmap-icon")).toBe(true);
   });
 
   it("role forwarded", () => {

@@ -44,7 +44,7 @@ export const Controller: FC = () => {
         }
         visible={Boolean(activeUI.playButton ?? activeUI.all)}
       >
-        <div className="btn-wrapper">
+        <div className="rmap-ctrl-btn-wrapper">
           <PrevNnextBtn
             type="prev"
             visible={Boolean(activeUI.prevNnext ?? activeUI.all)}
