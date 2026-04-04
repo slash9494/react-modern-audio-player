@@ -49,6 +49,7 @@
 
   - Before: `const state = useNonNullableContext(audioPlayerStateContext);`
   - After: Import only the context your component needs:
+
     ```ts
     import {
       usePlaybackContext,   // curAudioState (isPlaying, repeatType, volume, muted)

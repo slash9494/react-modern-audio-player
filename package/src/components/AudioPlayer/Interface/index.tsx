@@ -30,6 +30,7 @@ export const Interface: FC<InterfaceProps> = ({ children }) => {
       role="region"
       aria-label="Audio player"
     >
+      {/* Portal target for SortablePlayList when placement is "top" */}
       {playListPlacement === "top" && (
         <div className="rmap-sortable-playlist" />
       )}

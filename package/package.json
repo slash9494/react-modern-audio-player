@@ -52,7 +52,7 @@
     "@vitest/coverage-v8": "^2.1.0",
     "agentation": "^3.0.2",
     "jsdom": "^28.1.0",
-    "typescript": "^5.7.0",
+    "typescript": "^5.7.2",
     "vite": "^5.4.14",
     "vite-plugin-dts": "^4.5.0",
     "vite-plugin-libcss": "^1.1.1",

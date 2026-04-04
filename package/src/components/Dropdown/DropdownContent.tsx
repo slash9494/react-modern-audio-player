@@ -4,7 +4,6 @@ import {
   HTMLAttributes,
   PropsWithChildren,
   useEffect,
-  useMemo,
   useState,
 } from "react";
 import { CssTransition } from "@/ui/CssTransition";
@@ -50,27 +49,16 @@ export const DropdownContent: FC<PropsWithChildren<DropdownContentProps>> = ({
 
   const placementStyle = useDropdownPlacementStyle(placement, dropdownSize);
 
-  const Content = useMemo(
-    () =>
-      dropdownSize ? (
-        <div
-          {...dropdownContentProps}
-          id={dropdownId}
-          style={{ ...placementStyle, ...dropdownContentProps.style }}
-          onClick={onClick}
-        >
-          {children}
-        </div>
-      ) : null,
-    [
-      children,
-      dropdownContentProps,
-      dropdownSize,
-      placementStyle,
-      dropdownId,
-      onClick,
-    ]
-  );
+  const Content = dropdownSize ? (
+    <div
+      {...dropdownContentProps}
+      id={dropdownId}
+      style={{ ...placementStyle, ...dropdownContentProps.style }}
+      onClick={onClick}
+    >
+      {children}
+    </div>
+  ) : null;
 
   return isWithAnimation ? (
     <CssTransition

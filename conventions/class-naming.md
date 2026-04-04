@@ -23,7 +23,7 @@ rmap-{component}-{element}
 1. **Every class name** in `.css`, `className`, test queries, and selectors must start with `rmap-` — **except** state modifiers (see rule 4)
 2. **kebab-case only** — no camelCase, no underscores
 3. **No bare generic names** — `wrapper`, `container`, `content` alone are prohibited; always pair with a component scope (e.g., `rmap-volume-container`)
-4. **State modifiers** are exempt from the `rmap-` prefix and use a CSS dot chain — `.rmap-playlist-item.cur-played`, `.rmap-sortable-item.drag-start`. State modifiers describe temporary visual states (e.g., `cur-played`, `drag-start`, `drag-over`)
+4. **State modifiers** are exempt from the `rmap-` prefix and use a CSS dot chain — `.rmap-playlist-item.cur-played`, `.rmap-sortable-item.drag-start`. State modifiers describe temporary visual states (e.g., `cur-played`, `drag-start`, `drag-over`). The state modifier class itself (e.g., `cur-played`) never needs a prefix; only the base class it chains onto must carry `rmap-`.
 
 ## CSS Custom Properties (Variables)
 

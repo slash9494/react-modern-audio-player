@@ -1,21 +1,37 @@
 import { useTimeContext } from "@/hooks/context/useTimeContext";
 import { getTimeWithPadStart } from "@/utils/getTime";
 import { safeRatio } from "@/utils/safeRatio";
-import { FC } from "react";
+import { FC, useEffect, useRef, useState } from "react";
 import { useProgress } from "./useProgress";
 import { useProgressKeyDown } from "./useProgressKeyDown";
 import "./BarProgress.css";
 
 export const BarProgress: FC = () => {
   const { currentTime, duration } = useTimeContext();
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  const [wrapperWidth, setWrapperWidth] = useState(0);
+
+  useEffect(() => {
+    const el = wrapperRef.current;
+    if (!el) return;
+    setWrapperWidth(el.offsetWidth);
+    const ro = new ResizeObserver(([entry]) => {
+      setWrapperWidth(entry.contentBoxSize[0].inlineSize);
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
 
   const progressRatio = safeRatio(currentTime, duration);
 
   const eventProps = useProgress();
   const handleKeyDown = useProgressKeyDown();
 
+  const progressOffset = progressRatio * wrapperWidth;
+
   return (
     <div
+      ref={wrapperRef}
       className="rmap-bar-progress-wrapper"
       data-testid="progress-bar"
       role="slider"
@@ -39,7 +55,7 @@ export const BarProgress: FC = () => {
       <div
         className="rmap-progress-handle"
         style={{
-          transform: `translateX(${progressRatio * 100}cqw)`,
+          transform: `translateX(${progressOffset}px)`,
         }}
       />
     </div>

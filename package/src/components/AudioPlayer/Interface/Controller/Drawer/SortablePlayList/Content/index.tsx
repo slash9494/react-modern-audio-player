@@ -49,7 +49,7 @@ export const PlayList: FC = () => {
           </SortableList>
         </div>
       </CssTransition>,
-      document.querySelector(".rmap-sortable-playlist") as HTMLDivElement
+      document.querySelector(".rmap-sortable-playlist") ?? document.body
     )
   ) : (
     <></>

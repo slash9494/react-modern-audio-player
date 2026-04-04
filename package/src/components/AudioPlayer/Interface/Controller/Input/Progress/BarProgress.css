@@ -6,7 +6,6 @@
   cursor: pointer;
   position: relative;
   align-items: center;
-  container-type: inline-size;
 }
 
 .rmap-bar-progress-wrapper .rmap-progress-bar {

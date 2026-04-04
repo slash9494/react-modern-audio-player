@@ -2,7 +2,7 @@
   border-top: 2px solid transparent;
   border-bottom: 2px solid transparent;
   transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out,
-    box-shadow 0.3s ease-in-out;
+    box-shadow 0.3s ease-in-out, backdrop-filter 0.3s ease-in-out;
 }
 
 .rmap-sortable-item * {

@@ -118,6 +118,8 @@
   border: none;
 }
 
+/* Cross-browser track styling: duplicate rules are required because
+   browsers ignore vendor-prefixed selectors they do not recognize. */
 .rmap-volume-container input::-moz-range-track {
   -webkit-appearance: none;
   appearance: none;

@@ -11,7 +11,7 @@ import {
 } from "@/components/icons";
 import { Icon } from "../../Icon";
 import "./Trigger.css";
-export const Trigger = forwardRef<HTMLDivElement>((_, ref) => {
+export const Trigger = forwardRef<HTMLButtonElement>((_, ref) => {
   const { curAudioState } = usePlaybackContext();
   const { customIcons, elementRefs } = useResourceContext();
   const audioPlayerDispatch = useNonNullableContext(audioPlayerDispatchContext);
@@ -73,9 +73,15 @@ export const Trigger = forwardRef<HTMLDivElement>((_, ref) => {
     elementRefs?.audioEl?.volume,
   ]);
   return (
-    <div onClick={changeMuteState} className="rmap-volume-trigger" ref={ref}>
+    <button
+      onClick={changeMuteState}
+      className="rmap-volume-trigger"
+      ref={ref}
+      type="button"
+      aria-label="Toggle mute"
+    >
       {VolumeIcon}
-    </div>
+    </button>
   );
 });
 Trigger.displayName = "Trigger";

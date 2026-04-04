@@ -3,7 +3,7 @@ import { audioPlayerDispatchContext } from "@/components/AudioPlayer/Context/dis
 import { VolumeSliderPlacement } from "@/components/AudioPlayer/Context/StateContext";
 import { usePlaybackContext } from "@/hooks/context/usePlaybackContext";
 import { useResourceContext } from "@/hooks/context/useResourceContext";
-import { ChangeEvent, FC, useCallback, useRef } from "react";
+import { ChangeEvent, FC, useCallback, useMemo, useRef } from "react";
 import "./Content.css";
 
 export const VolumeSlider: FC<{ placement: VolumeSliderPlacement }> = ({
@@ -36,24 +36,28 @@ export const VolumeSlider: FC<{ placement: VolumeSliderPlacement }> = ({
     curAudioState.volume ?? elementRefs?.audioEl?.volume ?? 0;
   const volumeValue = resolvedVolume * 100;
 
+  const volumeStyle = useMemo(
+    () =>
+      ({
+        "--rm-audio-player-volume-value": `${volumeValue}%`,
+      } as React.CSSProperties),
+    [volumeValue]
+  );
+
   return (
     <div
       ref={contentRef}
       className="rmap-volume-container"
       data-placement={placement}
       data-testid="volume-slider"
-      style={
-        {
-          "--rm-audio-player-volume-value": `${volumeValue}%`,
-        } as React.CSSProperties
-      }
+      style={volumeStyle}
     >
       <div className="rmap-volume-panel">
         <input
           className="rmap-volume-slider"
           type="range"
           style={{ cursor: "pointer" }}
-          defaultValue={resolvedVolume}
+          value={resolvedVolume}
           onChange={onChangeVolume}
           min="0"
           max="1"
