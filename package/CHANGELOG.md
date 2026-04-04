@@ -43,7 +43,22 @@
 
   - If you were passing Spectrum-specific props (e.g. `colorScheme`, `locale`), replace them with standard HTML div attributes.
 
-- **`styled-components` moved to `peerDependencies`**: consumers must install `styled-components ^5.3.5` explicitly if not already present.
+- **`styled-components` removed**: The library no longer uses `styled-components`. It is removed from both `dependencies` and `peerDependencies`. All styles are now vanilla CSS. Consumers can uninstall `styled-components` if it was only used by this library.
+
+- **`audioPlayerStateContext` removed**: The monolithic state context has been split into 4 domain-specific contexts to eliminate unnecessary re-renders (~70% reduction).
+
+  - Before: `const state = useNonNullableContext(audioPlayerStateContext);`
+  - After: Import only the context your component needs:
+    ```ts
+    import {
+      usePlaybackContext,   // curAudioState (isPlaying, repeatType, volume, muted)
+      useTrackContext,      // playList, curIdx, curPlayId
+      useUIContext,         // activeUI, placements
+      useResourceContext,   // elementRefs, customIcons, coverImgsCss
+    } from "react-modern-audio-player";
+    ```
+
+- **CSS class names prefixed with `rmap-`**: All internal CSS class names now use the `rmap-` prefix (e.g., `btn-wrapper` → `rmap-ctrl-btn-wrapper`). If you targeted internal class names for custom styling, update your selectors. CSS custom properties (`--rm-audio-player-*`) are unchanged.
 
 ### Bug Fixes
 
@@ -60,7 +75,7 @@
 | `react-icons` (3 icon sets)  | bundled (~15–25 kB)          | removed — 12 inlined SVGs    | ~15–25 kB           |
 | `wavesurfer.js`              | always bundled (~192 kB raw) | lazy chunk, loaded on demand | ~192 kB from main   |
 | `styled-components`          | bundled                      | moved to `peerDependencies`  | ~15 kB              |
-| `sideEffects`                | not set                      | `false`                      | better tree-shaking |
+| `sideEffects`                | not set                      | `["*.css"]`                  | better tree-shaking |
 | **Main bundle (gzip)**       | **~65 kB+**                  | **~16 kB**                   | **~75% reduction**  |
 
 - **`ElementRefs.trackCurTimeEl` removed**: `HTMLSpanElement | undefined` → removed

@@ -49,7 +49,6 @@ npm install --save react-modern-audio-player
 
 - React **18.0.0** or higher
 - react-dom **18.0.0** or higher
-- styled-components **^5.3.5**
 
 # **Next.js / Server Components**
 
