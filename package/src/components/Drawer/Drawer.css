@@ -22,7 +22,7 @@
 }
 
 .rmap-drawer-container .rmap-drawer-content-enter {
-  animation: rmap-appearance-in 0.25s ease-out normal forwards;
+  animation: rmap-appearance-in 0.25s ease-out forwards;
 }
 
 .rmap-drawer-container .rmap-drawer-content-leave {
