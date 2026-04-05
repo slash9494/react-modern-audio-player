@@ -61,15 +61,12 @@ describe("Volume tooltip (slider)", () => {
   });
 
   function openVolumeTooltip() {
-    const dropdown = screen
-      .getByTestId("volume-trigger-btn")
-      .closest(".rmap-dropdown-container");
-    expect(dropdown).not.toBeNull();
+    const dropdown = screen.getByTestId("volume-dropdown");
     act(() => {
-      fireEvent.mouseEnter(dropdown!);
+      fireEvent.mouseEnter(dropdown);
       vi.advanceTimersByTime(200);
     });
-    return dropdown!;
+    return dropdown;
   }
 
   it("hovering volume button reveals the volume slider", () => {

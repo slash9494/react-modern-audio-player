@@ -6,7 +6,7 @@
   padding: 10px 20px;
 }
 
-.rmap-playlist-item.cur-played {
+.rmap-playlist-item.rmap-cur-played {
   background: var(--rm-audio-player-selected-list-item-background);
 }
 

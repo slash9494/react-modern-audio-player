@@ -20,6 +20,7 @@ export interface DropdownProps
   outboundClickActive?: boolean;
   placement?: DropdownContext["placement"];
   disabled?: boolean;
+  "data-testid"?: string;
 }
 
 const Dropdown: FC<PropsWithChildren<DropdownProps>> = ({
@@ -30,6 +31,7 @@ const Dropdown: FC<PropsWithChildren<DropdownProps>> = ({
   placement = "bottom",
   disabled = false,
   onOpenChange,
+  "data-testid": testId,
 }) => {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [trigger, content] = React.Children.toArray(children);
@@ -67,6 +69,7 @@ const Dropdown: FC<PropsWithChildren<DropdownProps>> = ({
       <div
         className="rmap-dropdown-container"
         ref={dropdownRef}
+        data-testid={testId}
         {...dropdownEventProps}
       >
         <>

@@ -14,7 +14,7 @@ export const PlayListItem = memo(function PlayListItem({
   const isCurrentId = curPlayId === data.id;
   return (
     <div
-      className={`rmap-playlist-item${isCurrentId ? " cur-played" : ""}`}
+      className={`rmap-playlist-item${isCurrentId ? " rmap-cur-played" : ""}`}
       data-testid="playlist-item"
       aria-current={isCurrentId ? "true" : undefined}
     >
