@@ -21,7 +21,9 @@ export type InterfacePlacementKey =
   | "trackTimeCurrent"
   | "trackTimeDuration";
 
-export type InterfaceGridTemplateArea<TMaxLength extends number> = Partial<
+export type InterfaceGridTemplateArea<
+  TMaxLength extends number = typeof defaultInterfacePlacementMaxLength
+> = Partial<
   Record<
     InterfacePlacementKey,
     `row${NumbersToUnionNum<TMaxLength>}-${NumbersToUnionNum<TMaxLength>}`
