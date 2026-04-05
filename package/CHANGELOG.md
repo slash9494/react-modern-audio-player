@@ -75,7 +75,7 @@
 | `@react-spectrum/*` (4 pkgs) | bundled (~20–30 kB)          | removed — native HTML + CSS  | ~20–30 kB           |
 | `react-icons` (3 icon sets)  | bundled (~15–25 kB)          | removed — 12 inlined SVGs    | ~15–25 kB           |
 | `wavesurfer.js`              | always bundled (~192 kB raw) | lazy chunk, loaded on demand | ~192 kB from main   |
-| `styled-components`          | bundled                      | moved to `peerDependencies`  | ~15 kB              |
+| `styled-components`          | bundled                      | removed — vanilla CSS        | ~15 kB              |
 | `sideEffects`                | not set                      | `["*.css"]`                  | better tree-shaking |
 | **Main bundle (gzip)**       | **~65 kB+**                  | **~16 kB**                   | **~75% reduction**  |
 

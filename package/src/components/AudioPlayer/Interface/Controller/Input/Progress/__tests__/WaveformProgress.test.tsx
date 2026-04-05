@@ -61,11 +61,6 @@ describe("WaveformProgress deferred initialization", () => {
     expect(container.querySelector(".rmap-waveform-wrapper")).toBeNull();
     expect(container.querySelector("#rm-waveform")).toBeNull();
   });
-
-  it("waveform slider is absent in bar mode (no tabIndex leak)", () => {
-    const { container } = renderProgress("bar");
-    expect(container.querySelector("#rm-waveform")).toBeNull();
-  });
 });
 
 describe("WaveformProgress accessibility", () => {
