@@ -8,7 +8,7 @@ import {
   useState,
 } from "react";
 import styled, { css } from "styled-components";
-import { CssTransition } from "../CssTransition";
+import { CssTransition } from "@/ui/CssTransition";
 import { dropdownContext } from "./DropdownContext";
 import { useDropdown } from "./useDropdown";
 
@@ -28,7 +28,7 @@ export const DropdownContent: FC<PropsWithChildren<DropdownContentProps>> = ({
   isWithAnimation = true,
   ...dropdownContentProps
 }) => {
-  const { dropdownRef, placement, isOpen, setIsOpen } =
+  const { dropdownRef, placement, isOpen, setIsOpen, dropdownId } =
     useNonNullableContext(dropdownContext);
   const [dropdownSize, setDropdownSize] = useState<DropdownSize>();
   const { onClick } = useDropdown({
@@ -53,6 +53,7 @@ export const DropdownContent: FC<PropsWithChildren<DropdownContentProps>> = ({
       dropdownSize ? (
         <DropdownContentContainer
           {...dropdownContentProps}
+          id={dropdownId}
           dropdownSize={dropdownSize}
           placement={placement}
           onClick={onClick}

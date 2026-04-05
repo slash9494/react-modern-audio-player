@@ -1,22 +1,12 @@
-import { FC, useRef } from "react";
+import { FC } from "react";
 import styled from "styled-components";
 import { TrackTimeContainer } from "./Styles";
 import { TrackTimeChildrenProps } from "./Types";
-import { useRefsDispatch } from "@/hooks/useRefsDispatch";
-import { audioPlayerStateContext } from "@/components/AudioPlayer/Context";
-import { useNonNullableContext } from "@/hooks/useNonNullableContext";
+import { useTimeContext } from "@/hooks/context/useTimeContext";
 import { getTimeWithPadStart } from "@/utils/getTime";
 
 export const Current: FC<TrackTimeChildrenProps> = ({ position }) => {
-  const trackCurTimeRef = useRef<HTMLSpanElement>(null);
-  const { elementRefs } = useNonNullableContext(audioPlayerStateContext);
-
-  useRefsDispatch(
-    {
-      refs: { trackCurTimeEl: trackCurTimeRef },
-    },
-    []
-  );
+  const { currentTime } = useTimeContext();
 
   return (
     <TrackTimeCurrentContainer
@@ -24,10 +14,8 @@ export const Current: FC<TrackTimeChildrenProps> = ({ position }) => {
       className="track-time-current-container"
       childrenClassName="track-current-time"
     >
-      <span ref={trackCurTimeRef} className="track-current-time">
-        {elementRefs?.audioEl?.currentTime
-          ? getTimeWithPadStart(elementRefs.audioEl.currentTime)
-          : "00:00"}
+      <span className="track-current-time" data-testid="track-current-time">
+        {getTimeWithPadStart(currentTime)}
       </span>
     </TrackTimeCurrentContainer>
   );

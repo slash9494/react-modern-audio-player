@@ -1,6 +1,5 @@
-import { useNonNullableContext } from "@/hooks/useNonNullableContext";
-import { audioPlayerStateContext } from "@/components/AudioPlayer/Context/StateContext";
-import { FC } from "react";
+import { useTrackContext } from "@/hooks/context/useTrackContext";
+import { FC, memo } from "react";
 import styled from "styled-components";
 
 const TrackInfoContainer = styled.div`
@@ -21,8 +20,8 @@ const TrackInfoContainer = styled.div`
   }
 `;
 
-export const TrackInfo: FC = () => {
-  const { playList, curIdx } = useNonNullableContext(audioPlayerStateContext);
+export const TrackInfo: FC = memo(function TrackInfo() {
+  const { playList, curIdx } = useTrackContext();
   const curPlayData = playList[curIdx];
   return (
     <TrackInfoContainer className="track-info-container">
@@ -31,7 +30,9 @@ export const TrackInfo: FC = () => {
       ) : (
         <>
           {curPlayData?.name && (
-            <span className="title">{curPlayData.name}</span>
+            <span className="title" data-testid="track-title">
+              {curPlayData.name}
+            </span>
           )}
           {curPlayData?.writer && (
             <span className="writer">{curPlayData.writer}</span>
@@ -40,4 +41,4 @@ export const TrackInfo: FC = () => {
       )}
     </TrackInfoContainer>
   );
-};
+});

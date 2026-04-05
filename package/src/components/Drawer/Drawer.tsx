@@ -2,14 +2,15 @@ import React, {
   PropsWithChildren,
   useRef,
   FC,
-  useLayoutEffect,
+  useEffect,
+  useId,
   useState,
 } from "react";
 import styled from "styled-components";
 import { DrawerContext, drawerContext } from "./DrawerContext";
 import { DrawerTrigger } from "./DrawerTrigger";
 import { DrawerContent } from "./DrawerContent";
-import { appearanceIn, appearanceOut } from "../CssTransition";
+import { appearanceIn, appearanceOut } from "@/ui/CssTransition";
 import useClickOutside from "@/hooks/useClickOutside";
 
 export interface DrawerProps extends Omit<Partial<DrawerContext>, "setIsOpen"> {
@@ -27,13 +28,14 @@ const Drawer: FC<PropsWithChildren<DrawerProps>> = ({
   const drawerRef = useRef<HTMLDivElement>(null);
   const [trigger, content] = React.Children.toArray(children);
   const [isOpen, setIsOpen] = useState(false);
+  const drawerId = useId();
 
   useClickOutside(drawerRef, () => {
     if (!outboundClickActive) return;
     setIsOpen(false);
     onOpenChange && onOpenChange(false);
   });
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (isOpenProp !== undefined) {
       setIsOpen(isOpenProp);
     }
@@ -41,7 +43,9 @@ const Drawer: FC<PropsWithChildren<DrawerProps>> = ({
 
   return (
     <DrawerContainer className="drawer-container" ref={drawerRef}>
-      <drawerContext.Provider value={{ isOpen, setIsOpen, onOpenChange }}>
+      <drawerContext.Provider
+        value={{ isOpen, setIsOpen, onOpenChange, drawerId }}
+      >
         <>
           {placement === "top" && content}
           {trigger}
@@ -69,6 +73,9 @@ export const DrawerContainer = styled.div`
     cursor: pointer;
     position: absolute;
     display: flex;
+    &[aria-expanded="true"] svg {
+      color: var(--rm-audio-player-sortable-list-button-active);
+    }
   }
 
   .drawer-content-wrapper {

@@ -1,17 +1,15 @@
 import Grid from "@/components/Grid";
-import { useNonNullableContext } from "@/hooks/useNonNullableContext";
-import {
-  audioPlayerStateContext,
-  defaultInterfacePlacement,
-} from "@/components/AudioPlayer/Context/StateContext";
+import { defaultInterfacePlacement } from "@/components/AudioPlayer/Context/StateContext";
+import { useTrackContext } from "@/hooks/context/useTrackContext";
+import { useUIContext } from "@/hooks/context/useUIContext";
 import { FC } from "react";
 import { Artwork } from "./Artwork";
 import { TrackInfo } from "./TrackInfo";
 import { TrackTime } from "./TrackTime";
 
 export const Information: FC = () => {
-  const { interfacePlacement, playList, curIdx, activeUI } =
-    useNonNullableContext(audioPlayerStateContext);
+  const { playList, curIdx } = useTrackContext();
+  const { interfacePlacement, activeUI } = useUIContext();
 
   const isTrackInfoActive =
     Boolean(

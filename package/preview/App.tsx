@@ -1,43 +1,48 @@
 import PlayerLogo from "./assets/images/noname.png";
 import { useState } from "react";
+import { Agentation } from "agentation";
 import AudioPlayerWithProviders, {
   ActiveUI,
-  AudioPlayerStateContext,
+  CustomIcons,
   InterfacePlacement,
   PlayerPlacement,
   PlayList,
+  PlayListPlacement,
+  VolumeSliderPlacement,
+  useAudioPlayer,
 } from "../src";
+
 const playList: PlayList = [
   {
-    name: "React Modern Audio Player-1",
+    name: "Track 1",
     writer: "LYH",
     img: `${PlayerLogo}`,
     src: "https://cdn.pixabay.com/audio/2022/08/23/audio_d16737dc28.mp3",
     id: 1,
   },
   {
-    name: "React Modern Audio Player-1",
+    name: "Track 2",
     writer: "LYH",
     img: `${PlayerLogo}`,
     src: "https://cdn.pixabay.com/audio/2022/01/21/audio_c44fddb424.mp3",
     id: 2,
   },
   {
-    name: "React Modern Audio Player-1",
+    name: "Track 3",
     writer: "LYH",
     img: `${PlayerLogo}`,
     src: "https://cdn.pixabay.com/audio/2022/08/03/audio_54ca0ffa52.mp3",
     id: 3,
   },
   {
-    name: "React Modern Audio Player-1",
+    name: "Track 4",
     writer: "LYH",
     img: `${PlayerLogo}`,
     src: "https://cdn.pixabay.com/audio/2022/07/25/audio_3266b47d61.mp3",
     id: 4,
   },
   {
-    name: "React Modern Audio Player-1",
+    name: "Track 5",
     writer: "LYH",
     img: `${PlayerLogo}`,
     src: "https://cdn.pixabay.com/audio/2022/08/02/audio_884fe92c21.mp3",
@@ -51,56 +56,87 @@ const initialState = {
   curPlayId: 1,
 };
 
+interface TestConfig {
+  playerPlacement?: PlayerPlacement;
+  progressType?: "bar" | "waveform";
+  activeUI?: Partial<ActiveUI>;
+  interfaceTemplateArea?: InterfacePlacement["templateArea"];
+  volumeSliderPlacement?: VolumeSliderPlacement;
+  playListPlacement?: PlayListPlacement;
+  customIconTestIds?: Partial<Record<keyof CustomIcons, string>>;
+}
+
+function parseTestConfig(): TestConfig {
+  try {
+    const raw = new URLSearchParams(window.location.search).get("config");
+    return raw ? (JSON.parse(atob(raw)) as TestConfig) : {};
+  } catch {
+    return {};
+  }
+}
+
+const CustomComponent = () => {
+  const { currentTime, duration, seek, isPlaying, togglePlay } =
+    useAudioPlayer();
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+      <button onClick={() => seek(currentTime + 30)}>+30s</button>
+      <button onClick={togglePlay}>{isPlaying ? "Pause" : "Play"}</button>
+      <span
+        style={{
+          minWidth: "80px",
+          fontVariantNumeric: "tabular-nums",
+          margin: "0 2px",
+        }}
+      >
+        {currentTime.toFixed(0)}s / {duration.toFixed(0)}s
+      </span>
+    </div>
+  );
+};
+
 function App() {
-  const [progressType, setProgressType] = useState("bar");
-  const [playerPlacement, setPlayerPlacement] = useState("static");
+  const testConfig = parseTestConfig();
+
+  const [progressType, setProgressType] = useState<"bar" | "waveform">(
+    testConfig.progressType ?? "bar"
+  );
+  const [playerPlacement, setPlayerPlacement] = useState<string>(
+    testConfig.playerPlacement ?? "static"
+  );
+
+  const playListPlacement: PlayListPlacement =
+    testConfig.playListPlacement ?? "bottom";
 
   const placement = {
     interface: {
-      templateArea: {
-        // playList: "row1-3",
-        // progress: "row2-1",
-        // playButton: "row1-1",
-        // repeatType: "row2-10",
-        // volume: "row1-3",
-        // trackTimeCurrent: "row2-1",
-        // trackTimeDuration: "row2-3",
-      },
+      templateArea: testConfig.interfaceTemplateArea ?? {},
       customComponentsArea: {
         test1: "row1-10",
       },
     } as InterfacePlacement<11>,
     player: playerPlacement as PlayerPlacement,
+    playList: playListPlacement,
+    volumeSlider: testConfig.volumeSliderPlacement,
   };
 
-  const activeUI: ActiveUI = {
+  const activeUI: ActiveUI = testConfig.activeUI ?? {
     all: true,
     progress: progressType as "bar" | "waveform",
-    // playButton: true,
-    // repeatType: true,
-    // volume: true,
-    // playList: "sortable",
-    // prevNnext: true,
-    // trackTime: true,
   };
 
-  const CustomComponent = ({
-    audioPlayerState,
-  }: {
-    audioPlayerState?: AudioPlayerStateContext;
-  }) => {
-    const audioEl = audioPlayerState?.elementRefs?.audioEl;
-    const handOverTime = () => {
-      if (audioEl) {
-        audioEl.currentTime += 30;
-      }
-    };
-    return (
-      <>
-        <button onClick={handOverTime}>+30</button>
-      </>
-    );
-  };
+  const customIcons: CustomIcons | undefined = testConfig.customIconTestIds
+    ? Object.fromEntries(
+        Object.entries(testConfig.customIconTestIds).map(([key, testId]) => [
+          key,
+          <span
+            key={key}
+            data-testid={testId}
+            style={{ display: "inline-block", width: "1em", height: "1em" }}
+          />,
+        ])
+      )
+    : undefined;
 
   return (
     <div
@@ -153,11 +189,16 @@ function App() {
           audioInitialState={initialState}
           placement={placement}
           activeUI={activeUI}
+          customIcons={customIcons}
         >
           <AudioPlayerWithProviders.CustomComponent id="test1">
             <CustomComponent />
           </AudioPlayerWithProviders.CustomComponent>
         </AudioPlayerWithProviders>
+
+        {process.env.NODE_ENV === "development" && (
+          <Agentation endpoint="http://localhost:4747" />
+        )}
       </div>
     </div>
   );

@@ -2,14 +2,16 @@ import React, {
   PropsWithChildren,
   useRef,
   FC,
-  useLayoutEffect,
+  useEffect,
+  useId,
+  useMemo,
   useState,
 } from "react";
 import styled from "styled-components";
 import { DropdownContext, dropdownContext } from "./DropdownContext";
 import { DropdownTrigger } from "./DropdownTrigger";
 import { DropdownContent } from "./DropdownContent";
-import { appearanceIn, appearanceOut } from "../CssTransition";
+import { appearanceIn, appearanceOut } from "@/ui/CssTransition";
 import useClickOutside from "@/hooks/useClickOutside";
 import { useDropdown } from "./useDropdown";
 
@@ -40,17 +42,29 @@ const Dropdown: FC<PropsWithChildren<DropdownProps>> = ({
     clickArea: "root",
   });
 
+  const dropdownId = useId();
+
   useClickOutside(dropdownRef, () => outboundClickActive && setIsOpen(false));
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (isOpenProp !== undefined) {
       setIsOpen(isOpenProp);
     }
   }, [isOpenProp]);
 
+  const contextValue = useMemo(
+    () => ({
+      dropdownRef,
+      placement,
+      isOpen,
+      setIsOpen,
+      onOpenChange,
+      dropdownId,
+    }),
+    [placement, isOpen, onOpenChange, dropdownId]
+  );
+
   return (
-    <dropdownContext.Provider
-      value={{ dropdownRef, placement, isOpen, setIsOpen, onOpenChange }}
-    >
+    <dropdownContext.Provider value={contextValue}>
       <DropdownContainer
         className="dropdown-container"
         ref={dropdownRef}

@@ -1,7 +1,7 @@
 import { createGlobalStyle } from "styled-components";
 import "./vars.css";
-export const GlobalStyle = createGlobalStyle`
 
+export const GlobalStyle = createGlobalStyle`
 .rm-audio-player-provider {
   * {
     box-sizing: border-box;
@@ -34,6 +34,7 @@ export const GlobalStyle = createGlobalStyle`
     margin: 0;
     padding: 0;
     background: transparent;
+    color: inherit;
     cursor: pointer;
     vertical-align: baseline;
     border: 0;

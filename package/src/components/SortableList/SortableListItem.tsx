@@ -1,4 +1,3 @@
-import { Flex } from "@react-spectrum/layout";
 import { PropsWithChildren } from "react";
 import styled from "styled-components";
 import { ListItem } from "./index";
@@ -20,10 +19,15 @@ export const SortableListItem = <T extends ListItem>(
       className="list-item-root-container"
       {...eventProps}
     >
-      <Flex alignItems={"center"}>{children}</Flex>
+      <SortableListItemInner>{children}</SortableListItemInner>
     </SortableListItemContainer>
   );
 };
+
+const SortableListItemInner = styled.div`
+  display: flex;
+  align-items: center;
+`;
 
 const SortableListItemContainer = styled.li`
   border-top: 2px solid transparent;
@@ -41,6 +45,9 @@ const SortableListItemContainer = styled.li`
   &.dragover {
     transform: scale(1.02);
     backdrop-filter: blur(20px);
-    box-shadow: 0px 3.58195px 22.3872px -2.68646px rgb(0 0 0 / 20%);
+    box-shadow: 0px 3.58195px 22.3872px -2.68646px rgb(var(
+            --rm-audio-player-shadow,
+            0 0 0
+          ) / 20%);
   }
 `;

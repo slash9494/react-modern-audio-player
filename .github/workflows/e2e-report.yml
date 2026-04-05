@@ -9,13 +9,17 @@ jobs:
   report:
     runs-on: ubuntu-latest
     if: github.event.workflow_run.event == 'pull_request'
+    timeout-minutes: 10
+    concurrency:
+      group: "${{ github.workflow }}-${{ github.event.workflow_run.head_repository.id }}-${{ github.event.workflow_run.head_branch }}"
+      cancel-in-progress: true
     permissions:
       pull-requests: write
       issues: write
       actions: read
     steps:
       - name: Download PR metadata
-        uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e # v4
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: e2e-pr-meta
           path: e2e-pr-meta
@@ -24,7 +28,7 @@ jobs:
         continue-on-error: true
 
       - name: Post E2E result comment
-        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7
+        uses: actions/github-script@450193c5abd4cdb17ba9f3ffcfe8f635c4bb6c2a # v8
         with:
           script: |
             const fs = require('fs');

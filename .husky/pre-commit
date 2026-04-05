@@ -1,7 +1,8 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
+# Step 1: Prettier + ESLint on staged files
 npx lint-staged
 
-
-
+# Step 2: Unit tests for modified files only
+cd package && yarn vitest run --changed

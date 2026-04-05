@@ -1,24 +1,34 @@
-import {
-  AudioData,
-  audioPlayerStateContext,
-} from "@/components/AudioPlayer/Context";
-import { useNonNullableContext } from "@/hooks/useNonNullableContext";
+import { memo } from "react";
+import { AudioData } from "@/components/AudioPlayer/Context";
+import { useTrackContext } from "@/hooks/context/useTrackContext";
+import { useResourceContext } from "@/hooks/context/useResourceContext";
 import classNames from "classnames";
 import styled from "styled-components";
 
-export const PlayListItem = ({ data }: { data: AudioData }) => {
-  const { curPlayId, coverImgsCss } = useNonNullableContext(
-    audioPlayerStateContext
-  );
+export const PlayListItem = memo(function PlayListItem({
+  data,
+}: {
+  data: AudioData;
+}) {
+  const { curPlayId } = useTrackContext();
+  const { coverImgsCss } = useResourceContext();
   return (
     <ListItemContainer
       className={classNames("list-item-container", {
         curPlayed: curPlayId === data.id,
       })}
+      data-testid="playlist-item"
+      aria-current={curPlayId === data.id ? "true" : undefined}
     >
       <div className="list-item-contents-wrapper">
         <div className="album-cover-wrapper">
-          <img src={data.img} alt="" style={coverImgsCss?.listThumbnail} />
+          {data.img && (
+            <img
+              src={data.img}
+              alt={data.name || "Album thumbnail"}
+              style={coverImgsCss?.listThumbnail}
+            />
+          )}
         </div>
         <div className="album-info-wrapper">
           {data.writer && <span className="writer">{data.writer}</span>}
@@ -30,7 +40,7 @@ export const PlayListItem = ({ data }: { data: AudioData }) => {
       </div>
     </ListItemContainer>
   );
-};
+});
 
 const ListItemContainer = styled.div`
   width: 100%;

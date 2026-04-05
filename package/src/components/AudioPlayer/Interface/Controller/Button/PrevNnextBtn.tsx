@@ -1,9 +1,9 @@
+import { FC, memo, useMemo } from "react";
 import { useNonNullableContext } from "@/hooks/useNonNullableContext";
 import { audioPlayerDispatchContext } from "@/components/AudioPlayer/Context/dispatchContext";
-import { audioPlayerStateContext } from "@/components/AudioPlayer/Context/StateContext";
-import { FC, useMemo } from "react";
-import { StyledBtn } from "./StyledBtn";
-import { ImPrevious, ImNext } from "react-icons/im";
+import { useResourceContext } from "@/hooks/context/useResourceContext";
+import { StyledBtn } from "@/ui/StyledBtn";
+import { ImPrevious, ImNext } from "@/components/icons";
 import { Icon } from "../Icon";
 
 interface PrevNnextBtnProps {
@@ -11,8 +11,11 @@ interface PrevNnextBtnProps {
   visible: boolean;
 }
 
-export const PrevNnextBtn: FC<PrevNnextBtnProps> = ({ type, visible }) => {
-  const { customIcons } = useNonNullableContext(audioPlayerStateContext);
+export const PrevNnextBtn: FC<PrevNnextBtnProps> = memo(function PrevNnextBtn({
+  type,
+  visible,
+}) {
+  const { customIcons } = useResourceContext();
   const audioPlayerDispatch = useNonNullableContext(audioPlayerDispatchContext);
   const changeAudio = () => {
     if (type === "next") {
@@ -33,8 +36,14 @@ export const PrevNnextBtn: FC<PrevNnextBtnProps> = ({ type, visible }) => {
   }, [customIcons?.next, customIcons?.prev, type]);
 
   return visible ? (
-    <StyledBtn onClick={changeAudio} className="prev-n-next-button">
+    <StyledBtn
+      type="button"
+      aria-label={type === "prev" ? "Previous track" : "Next track"}
+      onClick={changeAudio}
+      className="prev-n-next-button"
+      data-testid={`${type}-btn`}
+    >
       {PrevNnextIcon}
     </StyledBtn>
   ) : null;
-};
+});

@@ -1,4 +1,3 @@
-import { View } from "@react-spectrum/view";
 import {
   ActiveUI,
   PlayListPlacement,
@@ -16,7 +15,6 @@ import { Interface } from "../Interface";
 import { usePropsStateEffect } from "./usePropsStateEffect";
 
 // TODO : feature - add Equalizer component
-// TODO : feature - add dynamic spectrum form
 
 export interface AudioPlayerProps<TInterfacePlacementLength extends number> {
   children?: React.ReactNode;
@@ -44,9 +42,9 @@ export const AudioPlayer = <
   usePropsStateEffect(restProps);
 
   return (
-    <View id="rm-audio-player" UNSAFE_className="rm-audio-player-container">
+    <div id="rm-audio-player" className="rm-audio-player-container">
       <Audio audioRef={audioRef} />
       <Interface>{children}</Interface>
-    </View>
+    </div>
   );
 };

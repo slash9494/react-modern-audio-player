@@ -1,10 +1,5 @@
-import React, {
-  cloneElement,
-  FC,
-  PropsWithChildren,
-  useLayoutEffect,
-  useState,
-} from "react";
+import React, { cloneElement, FC, PropsWithChildren, useState } from "react";
+import { useIsomorphicLayoutEffect } from "@/utils/ssr";
 import { keyframes } from "styled-components";
 
 export const appearanceIn = keyframes({
@@ -56,7 +51,7 @@ export const CssTransition: FC<PropsWithChildren<CssTransitionProps>> = ({
   const [classNames, setClassNames] = useState("");
   const [renderable, setRenderable] = useState(false);
 
-  useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     const statusClassName = visible ? "enter" : "leave";
     const time = visible ? enterTime : leaveTime;
     if (visible && !renderable) {

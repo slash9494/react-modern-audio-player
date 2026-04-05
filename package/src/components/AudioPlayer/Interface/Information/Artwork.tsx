@@ -1,6 +1,6 @@
-import { useNonNullableContext } from "@/hooks/useNonNullableContext";
-import { audioPlayerStateContext } from "@/components/AudioPlayer/Context/StateContext";
-import { FC } from "react";
+import { useTrackContext } from "@/hooks/context/useTrackContext";
+import { useResourceContext } from "@/hooks/context/useResourceContext";
+import { FC, memo } from "react";
 import styled from "styled-components";
 
 const ArtworkContainer = styled.div`
@@ -8,20 +8,35 @@ const ArtworkContainer = styled.div`
   align-items: center;
   width: 100%;
   height: 100%;
-  img {
+  img,
+  .artwork-fallback {
     width: 50px;
     height: 50px;
   }
 `;
 
-export const Artwork: FC = () => {
-  const { playList, curIdx, coverImgsCss } = useNonNullableContext(
-    audioPlayerStateContext
-  );
+export const Artwork: FC = memo(function Artwork() {
+  const { playList, curIdx } = useTrackContext();
+  const { coverImgsCss } = useResourceContext();
+
+  const track = playList[curIdx];
+  const altText =
+    [track?.writer, track?.name].filter(Boolean).join(" - ") || "Album artwork";
 
   return (
     <ArtworkContainer className="artwork-container">
-      <img src={playList[curIdx]?.img} alt={""} style={coverImgsCss?.artwork} />
+      {track?.img ? (
+        <img src={track.img} alt={altText} style={coverImgsCss?.artwork} />
+      ) : (
+        <div
+          className="artwork-fallback"
+          role="img"
+          aria-label={altText}
+          style={coverImgsCss?.artwork}
+        >
+          {track?.name || "♪"}
+        </div>
+      )}
     </ArtworkContainer>
   );
-};
+});

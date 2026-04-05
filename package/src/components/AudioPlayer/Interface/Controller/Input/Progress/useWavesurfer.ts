@@ -1,9 +1,10 @@
 import { useNonNullableContext } from "@/hooks/useNonNullableContext";
 import { useVariableColor } from "@/hooks/useVariableColor";
 import { audioPlayerDispatchContext } from "@/components/AudioPlayer/Context/dispatchContext";
-import { audioPlayerStateContext } from "@/components/AudioPlayer/Context/StateContext";
+import { usePlaybackContext } from "@/hooks/context/usePlaybackContext";
+import { useTrackContext } from "@/hooks/context/useTrackContext";
+import { useResourceContext } from "@/hooks/context/useResourceContext";
 import { useEffect } from "react";
-import WaveSurfer from "wavesurfer.js";
 
 const waveformColors = {
   progressColor: "--rm-audio-player-waveform-bar",
@@ -14,32 +15,67 @@ const waveformColors = {
 
 export const useWaveSurfer = (waveformRef: React.RefObject<HTMLElement>) => {
   const audioPlayerDispatch = useNonNullableContext(audioPlayerDispatchContext);
-  const { elementRefs, curPlayId, curAudioState } = useNonNullableContext(
-    audioPlayerStateContext
-  );
+  const { curAudioState } = usePlaybackContext();
+  const { curPlayId } = useTrackContext();
+  const { elementRefs } = useResourceContext();
   const colorsRef = useVariableColor(waveformColors);
 
-  /** init waveSurfer */
+  /** init waveSurfer — lazy loaded on first use */
   useEffect(() => {
-    if (elementRefs?.waveformInst || !colorsRef.current) return;
+    if (
+      elementRefs?.waveformInst ||
+      !colorsRef.current?.progressColor ||
+      !colorsRef.current?.waveColor
+    )
+      return;
 
-    const waveSurfer = WaveSurfer.create({
-      barWidth: 1,
-      cursorWidth: 2,
-      container: "#rm-waveform",
-      height: 80,
-      progressColor: `${colorsRef.current.progressColor}`,
-      responsive: true,
-      waveColor: `${colorsRef.current.waveColor}`,
-      cursorColor: "var(--rm-audio-player-waveform-cursor)",
-      backend: "MediaElement",
-      removeMediaElementOnDestroy: false,
-    });
+    let cancelled = false;
+    import("wavesurfer.js")
+      .then(({ default: WaveSurfer }) => {
+        if (
+          cancelled ||
+          !waveformRef.current ||
+          !colorsRef.current?.progressColor ||
+          !colorsRef.current?.waveColor
+        ) {
+          console.error("[useWaveSurfer] missing required dependencies");
+          return;
+        }
 
-    audioPlayerDispatch({
-      type: "SET_ELEMENT_REFS",
-      elementRefs: { waveformInst: waveSurfer },
-    });
+        let waveSurfer;
+        try {
+          waveSurfer = WaveSurfer.create({
+            barWidth: 1,
+            cursorWidth: 2,
+            container: waveformRef.current as HTMLElement,
+            height: 80,
+            progressColor: colorsRef.current.progressColor,
+            responsive: true,
+            waveColor: colorsRef.current.waveColor,
+            cursorColor: "var(--rm-audio-player-waveform-cursor)",
+            backend: "MediaElement",
+            removeMediaElementOnDestroy: false,
+          });
+        } catch (err) {
+          console.error(
+            "[useWaveSurfer] failed to create WaveSurfer instance",
+            err
+          );
+          return;
+        }
+
+        audioPlayerDispatch({
+          type: "SET_ELEMENT_REFS",
+          elementRefs: { waveformInst: waveSurfer },
+        });
+      })
+      .catch((err) => {
+        console.error("[useWaveSurfer] failed to load wavesurfer.js", err);
+      });
+
+    return () => {
+      cancelled = true;
+    };
   }, [elementRefs?.waveformInst, audioPlayerDispatch, colorsRef]);
 
   // TODO : preserve audio state when loading new audio
@@ -54,16 +90,18 @@ export const useWaveSurfer = (waveformRef: React.RefObject<HTMLElement>) => {
     }
 
     if (curAudioState.isPlaying) elementRefs?.audioEl?.play();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [curPlayId, elementRefs?.audioEl, elementRefs?.waveformInst]);
 
-  // set waveform responsively
+  // set waveform responsively — trigger drawer 'redraw' on container resize
+  // which internally calls drawBuffer() + drawer.progress() to update all layers
   useEffect(() => {
     if (!waveformRef.current || !elementRefs?.waveformInst) return;
 
-    const redrawWaveform = () => {
-      elementRefs.waveformInst?.drawBuffer();
+    const onContainerResize = () => {
+      elementRefs.waveformInst?.drawer?.fireEvent("redraw");
     };
-    const resizeObserver = new ResizeObserver(redrawWaveform);
+    const resizeObserver = new ResizeObserver(onContainerResize);
     resizeObserver.observe(waveformRef.current);
 
     return () => {
@@ -71,19 +109,38 @@ export const useWaveSurfer = (waveformRef: React.RefObject<HTMLElement>) => {
     };
   }, [elementRefs?.waveformInst, waveformRef]);
 
-  /** delete empty wave surfer */
+  /** cleanup waveSurfer on unmount */
   useEffect(
     () => () => {
-      const waveEl = document.getElementsByTagName("wave");
-      if (waveEl.length) {
-        waveEl[0].remove();
+      const waveEl = waveformRef.current?.querySelector("wave");
+      if (waveEl) {
+        waveEl.remove();
+        elementRefs?.waveformInst?.destroy();
         audioPlayerDispatch({
           type: "SET_ELEMENT_REFS",
           elementRefs: { waveformInst: undefined },
         });
-        elementRefs?.waveformInst?.destroy();
       }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
+
+  // Re-initialize WaveSurfer when color scheme changes
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    const onSchemeChange = () => {
+      const waveEl = waveformRef.current?.querySelector("wave");
+      if (waveEl) {
+        waveEl.remove();
+      }
+      elementRefs?.waveformInst?.destroy();
+      audioPlayerDispatch({
+        type: "SET_ELEMENT_REFS",
+        elementRefs: { waveformInst: undefined },
+      });
+    };
+    mediaQuery.addEventListener("change", onSchemeChange);
+    return () => mediaQuery.removeEventListener("change", onSchemeChange);
+  }, [audioPlayerDispatch, elementRefs?.waveformInst]);
 };

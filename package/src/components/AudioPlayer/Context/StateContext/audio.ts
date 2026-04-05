@@ -18,11 +18,14 @@ export type AudioCustomProps = {
 export type AudioData = {
   src: string;
   id: number;
-  name?: string | ReactNode;
-  writer?: string | ReactNode;
+  name?: string;
+  writer?: string;
   img?: string;
   description?: string | ReactNode;
   customTrackInfo?: string | ReactNode;
 };
 
-export type AudioState = AudioNativeProps & AudioCustomProps;
+export type AudioState = AudioNativeProps &
+  Omit<AudioCustomProps, "repeatType"> & {
+    repeatType: RepeatType;
+  };
