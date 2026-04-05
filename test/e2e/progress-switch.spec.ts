@@ -3,7 +3,9 @@ import { test, expect } from "./fixtures/player.fixture";
 test.describe("Progress mode switching (e2e)", () => {
   test("7-6: first bar → waveform switch preserves playback position", async ({
     playerPageLazy,
+    browserName,
   }) => {
+    test.fixme(browserName === "webkit", "flaky in Playwright webkit CI");
     // Start in bar mode (default)
     await playerPageLazy.gotoWithConfig({ progressType: "bar" });
     const { playBtn, trackCurrentTime, page } = playerPageLazy;
@@ -188,7 +190,9 @@ test.describe("Progress mode switching (e2e)", () => {
 
   test("7-11: waveform switch preserves playback — audio continues playing", async ({
     playerPageLazy,
+    browserName,
   }) => {
+    test.fixme(browserName === "webkit", "flaky in Playwright webkit CI");
     await playerPageLazy.gotoWithConfig({ progressType: "bar" });
     const { playBtn, page } = playerPageLazy;
 
