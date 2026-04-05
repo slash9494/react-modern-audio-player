@@ -1,20 +1,23 @@
 import { useUIContext } from "@/hooks/context/useUIContext";
-import { FC } from "react";
-import styled from "styled-components";
+import { FC, useEffect, useState } from "react";
 import { BarProgress } from "./BarProgress";
 import { WaveformProgress } from "./WaveformProgress";
-
-const ProgressContainer = styled.div`
-  min-width: 100px;
-`;
+import "./Progress.css";
 
 export const Progress: FC = () => {
   const { activeUI } = useUIContext();
+  const isWaveform = activeUI.progress === "waveform";
+  const isBar = activeUI.progress === "bar";
+  const [waveformMounted, setWaveformMounted] = useState(isWaveform);
+
+  useEffect(() => {
+    if (isWaveform && !waveformMounted) setWaveformMounted(true);
+  }, [isWaveform, waveformMounted]);
 
   return (
-    <ProgressContainer className="progress-container">
-      {activeUI.progress === "waveform" && <WaveformProgress />}
-      {activeUI.progress === "bar" && <BarProgress />}
-    </ProgressContainer>
+    <div className="rmap-progress-container">
+      {waveformMounted && <WaveformProgress isActive={isWaveform} />}
+      {isBar && <BarProgress />}
+    </div>
   );
 };

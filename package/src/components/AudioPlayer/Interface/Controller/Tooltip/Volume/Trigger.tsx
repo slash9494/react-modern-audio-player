@@ -9,17 +9,9 @@ import {
   TbVolume2,
   TbVolume,
 } from "@/components/icons";
-import styled from "styled-components";
 import { Icon } from "../../Icon";
-
-const TriggerContainer = styled.div`
-  width: 20px;
-  height: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-export const Trigger = forwardRef<HTMLDivElement>((_, ref) => {
+import "./Trigger.css";
+export const Trigger = forwardRef<HTMLButtonElement>((_, ref) => {
   const { curAudioState } = usePlaybackContext();
   const { customIcons, elementRefs } = useResourceContext();
   const audioPlayerDispatch = useNonNullableContext(audioPlayerDispatchContext);
@@ -81,13 +73,15 @@ export const Trigger = forwardRef<HTMLDivElement>((_, ref) => {
     elementRefs?.audioEl?.volume,
   ]);
   return (
-    <TriggerContainer
+    <button
       onClick={changeMuteState}
-      className="volume-trigger-container"
+      className="rmap-volume-trigger"
       ref={ref}
+      type="button"
+      aria-label="Toggle mute"
     >
       {VolumeIcon}
-    </TriggerContainer>
+    </button>
   );
 });
 Trigger.displayName = "Trigger";

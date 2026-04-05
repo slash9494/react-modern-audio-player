@@ -15,7 +15,7 @@ export const DropdownTrigger: FC<PropsWithChildren> = ({ children }) => {
 
   return (
     <div
-      className="dropdown-trigger-wrapper"
+      className="rmap-dropdown-trigger"
       role="button"
       tabIndex={0}
       aria-expanded={isOpen}

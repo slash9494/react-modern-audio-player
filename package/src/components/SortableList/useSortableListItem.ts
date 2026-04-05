@@ -30,29 +30,29 @@ export const useSortableListItem: <T>(
     draggable,
     onDragStart: (e: React.DragEvent<HTMLLIElement>) => {
       e.stopPropagation();
-      e.currentTarget.classList.add("dragstart");
-      onDragStartCb && onDragStartCb(e);
+      e.currentTarget.classList.add("rmap-drag-start");
+      onDragStartCb?.(e);
     },
     onDragEnd: (e: React.DragEvent<HTMLLIElement>) => {
       e.stopPropagation();
-      e.currentTarget.classList.remove("dragstart");
+      e.currentTarget.classList.remove("rmap-drag-start");
     },
     onDragEnter: (e: React.DragEvent<HTMLLIElement>) => {
       e.stopPropagation();
-      e.currentTarget.classList.add("dragover");
+      e.currentTarget.classList.add("rmap-drag-over");
     },
     onDragLeave: (e: React.DragEvent<HTMLLIElement>) => {
       e.stopPropagation();
-      e.currentTarget.classList.remove("dragover");
+      e.currentTarget.classList.remove("rmap-drag-over");
     },
     onDragOver: (e: React.DragEvent<HTMLLIElement>) => {
       e.preventDefault();
       e.stopPropagation();
-      onDragOverCb && onDragOverCb(e);
+      onDragOverCb?.(e);
     },
     onDrop: (e: React.DragEvent<HTMLLIElement>) => {
       e.stopPropagation();
-      e.currentTarget.classList.remove("dragover");
+      e.currentTarget.classList.remove("rmap-drag-over");
       const curListData = [...listData];
       const draggedItem = listData[dragStartIdx];
       curListData.splice(dragStartIdx, 1);
@@ -70,11 +70,11 @@ export const useSortableListItem: <T>(
             ]
       ).map((item, idx) => ({ ...item, index: idx }));
 
-      onDropCb && onDropCb(e, newListData);
+      onDropCb?.(e, newListData);
     },
     onClick: (e: React.MouseEvent<HTMLLIElement>) => {
       e.stopPropagation();
-      onClickCb && onClickCb(e);
+      onClickCb?.(e);
     },
   };
 };

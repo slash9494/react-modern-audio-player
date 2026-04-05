@@ -30,7 +30,6 @@ export default defineConfig({
         "react/jsx-runtime",
         "react/jsx-dev-runtime",
         "react-dom",
-        "styled-components",
       ],
       treeshake: { moduleSideEffects: false },
       output: {

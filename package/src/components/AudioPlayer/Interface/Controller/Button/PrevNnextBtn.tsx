@@ -40,7 +40,7 @@ export const PrevNnextBtn: FC<PrevNnextBtnProps> = memo(function PrevNnextBtn({
       type="button"
       aria-label={type === "prev" ? "Previous track" : "Next track"}
       onClick={changeAudio}
-      className="prev-n-next-button"
+      className="rmap-prev-next-btn"
       data-testid={`${type}-btn`}
     >
       {PrevNnextIcon}

@@ -4,7 +4,7 @@ import { audioPlayerDispatchContext } from "@/components/AudioPlayer/Context/dis
 import { usePlaybackContext } from "@/hooks/context/usePlaybackContext";
 import { useTrackContext } from "@/hooks/context/useTrackContext";
 import { useResourceContext } from "@/hooks/context/useResourceContext";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 const waveformColors = {
   progressColor: "--rm-audio-player-waveform-bar",
@@ -19,6 +19,8 @@ export const useWaveSurfer = (waveformRef: React.RefObject<HTMLElement>) => {
   const { curPlayId } = useTrackContext();
   const { elementRefs } = useResourceContext();
   const colorsRef = useVariableColor(waveformColors);
+  const waveformInstRef = useRef(elementRefs?.waveformInst);
+  waveformInstRef.current = elementRefs?.waveformInst;
 
   /** init waveSurfer — lazy loaded on first use */
   useEffect(() => {
@@ -78,18 +80,36 @@ export const useWaveSurfer = (waveformRef: React.RefObject<HTMLElement>) => {
     };
   }, [elementRefs?.waveformInst, audioPlayerDispatch, colorsRef]);
 
-  // TODO : preserve audio state when loading new audio
-  /** load audio */
+  /** load audio — preserve playback position across waveform init */
+  const prevPlayIdRef = useRef(curPlayId);
   useEffect(() => {
     if (!elementRefs?.audioEl || !elementRefs?.waveformInst) return;
-    elementRefs.audioEl.pause();
-    elementRefs.waveformInst.load(elementRefs?.audioEl);
+    const audioEl = elementRefs.audioEl;
+    const waveform = elementRefs.waveformInst;
+    const isTrackChange = prevPlayIdRef.current !== curPlayId;
+    prevPlayIdRef.current = curPlayId;
 
-    if (curAudioState.volume) {
-      elementRefs.audioEl.volume = curAudioState.volume;
+    const savedTime = isTrackChange ? 0 : audioEl.currentTime;
+    const wasPlaying = curAudioState.isPlaying;
+
+    waveform.load(audioEl);
+
+    if (curAudioState.volume != null) {
+      audioEl.volume = curAudioState.volume;
     }
 
-    if (curAudioState.isPlaying) elementRefs?.audioEl?.play();
+    const onReady = () => {
+      if (!isTrackChange && savedTime > 0 && audioEl.duration) {
+        audioEl.currentTime = savedTime;
+        waveform.seekTo(savedTime / audioEl.duration);
+      }
+      if (wasPlaying) audioEl.play();
+    };
+    waveform.on("ready", onReady);
+
+    return () => {
+      waveform.un("ready", onReady);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [curPlayId, elementRefs?.audioEl, elementRefs?.waveformInst]);
 
@@ -115,15 +135,15 @@ export const useWaveSurfer = (waveformRef: React.RefObject<HTMLElement>) => {
       const waveEl = waveformRef.current?.querySelector("wave");
       if (waveEl) {
         waveEl.remove();
-        elementRefs?.waveformInst?.destroy();
-        audioPlayerDispatch({
-          type: "SET_ELEMENT_REFS",
-          elementRefs: { waveformInst: undefined },
-        });
       }
+      waveformInstRef.current?.destroy();
+      audioPlayerDispatch({
+        type: "SET_ELEMENT_REFS",
+        elementRefs: { waveformInst: undefined },
+      });
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
+    [audioPlayerDispatch]
   );
 
   // Re-initialize WaveSurfer when color scheme changes

@@ -1,0 +1,36 @@
+.rmap-track-time-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 16px;
+  font-family: monospace !important;
+  font-size: 16px !important;
+}
+
+/* position="left": margin-right on child */
+.rmap-track-time-container[data-position="left"] .rmap-track-current-time,
+.rmap-track-time-container[data-position="left"] .rmap-track-duration {
+  margin-right: -10px;
+}
+
+/* position="right": prepend "/" before child */
+.rmap-track-time-container[data-position="right"]
+  .rmap-track-current-time:before,
+.rmap-track-time-container[data-position="right"] .rmap-track-duration:before {
+  content: "/";
+  margin: 0 0.3rem;
+}
+
+/* Current-specific styles */
+.rmap-track-time-current .rmap-track-current-time {
+  font-weight: 700;
+  letter-spacing: -0.1rem;
+  color: var(--rm-audio-player-track-current-time);
+}
+
+/* Duration-specific styles */
+.rmap-track-time-duration .rmap-track-duration {
+  display: flex;
+  color: var(--rm-audio-player-track-duration);
+  letter-spacing: -0.1rem;
+}

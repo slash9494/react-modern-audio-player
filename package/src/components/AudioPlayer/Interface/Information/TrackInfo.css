@@ -1,0 +1,20 @@
+.rmap-track-info-container {
+  display: grid;
+  align-items: center;
+  row-gap: 5px;
+  width: 200px;
+}
+
+.rmap-track-info-container span {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.rmap-track-info-container .title {
+  font-size: 16px;
+}
+
+.rmap-track-info-container .writer {
+  font-size: 12px;
+}

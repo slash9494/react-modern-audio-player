@@ -22,12 +22,13 @@ export const Volume: FC = () => {
     <Dropdown
       placement={contextVolumePlacement || volumeSliderPlacement}
       triggerType="hover"
-      disabled={!(volumeSliderEl ?? true)}
+      disabled={volumeSliderEl === false}
+      data-testid="volume-dropdown"
     >
       <Dropdown.Trigger>
         <VolumeTriggerBtn ref={triggerRef} />
       </Dropdown.Trigger>
-      <Dropdown.Content>
+      <Dropdown.Content role="tooltip">
         <VolumeSlider
           placement={contextVolumePlacement || volumeSliderPlacement}
         />

@@ -48,7 +48,7 @@ export const RepeatTypeBtn: FC = memo(function RepeatTypeBtn() {
       type="button"
       aria-label={repeatAriaLabels[curAudioState.repeatType]}
       onClick={changeRepeatType}
-      className="repeat-button"
+      className="rmap-repeat-btn"
       data-testid="repeat-btn"
       data-repeattype={curAudioState.repeatType}
     >

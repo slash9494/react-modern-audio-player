@@ -2,35 +2,22 @@ import { usePlaybackContext } from "@/hooks/context/usePlaybackContext";
 import { useResourceContext } from "@/hooks/context/useResourceContext";
 import { getTimeWithPadStart } from "@/utils/getTime";
 import { FC, useCallback, useEffect, useRef } from "react";
-import styled from "styled-components";
 import { safeRatio } from "@/utils/safeRatio";
 import { useProgress } from "./useProgress";
 import { useProgressKeyDown } from "./useProgressKeyDown";
 import { useWaveSurfer } from "./useWavesurfer";
+import "./WaveformProgress.css";
 
-const WaveformWrapper = styled.div`
-  display: flex;
-  width: 100%;
-  #rm-waveform {
-    width: 100%;
-    overflow: hidden;
-    wave {
-      cursor: pointer !important;
-      overflow-x: hidden !important;
-    }
-  }
-`;
-
-export const WaveformProgress: FC = () => {
+export const WaveformProgress: FC<{ isActive: boolean }> = ({ isActive }) => {
   const waveformRef = useRef<HTMLDivElement>(null);
   const { curAudioState } = usePlaybackContext();
   const { elementRefs } = useResourceContext();
 
   useWaveSurfer(waveformRef);
 
-  // apply current time to waveform when progress is active
   useEffect(() => {
     if (
+      !isActive ||
       !elementRefs?.waveformInst ||
       !elementRefs?.audioEl ||
       !curAudioState.isLoadedMetaData ||
@@ -44,6 +31,7 @@ export const WaveformProgress: FC = () => {
     );
     elementRefs.waveformInst.seekTo(ratio);
   }, [
+    isActive,
     curAudioState.isLoadedMetaData,
     elementRefs?.waveformInst,
     elementRefs?.audioEl,
@@ -62,12 +50,12 @@ export const WaveformProgress: FC = () => {
   const handleKeyDown = useProgressKeyDown(onSeek);
 
   return (
-    <WaveformWrapper className="waveform-wrapper">
+    <div className="rmap-waveform-wrapper" data-active={isActive}>
       <div
         id="rm-waveform"
         ref={waveformRef}
         role="slider"
-        tabIndex={0}
+        tabIndex={isActive ? 0 : -1}
         aria-label="Seek"
         aria-valuemin={0}
         aria-valuemax={100}
@@ -82,6 +70,6 @@ export const WaveformProgress: FC = () => {
         onKeyDown={handleKeyDown}
         {...eventProps}
       />
-    </WaveformWrapper>
+    </div>
   );
 };

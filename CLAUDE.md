@@ -119,6 +119,17 @@ If a change has no user-facing impact, no README update is required — but alwa
 
 ---
 
+## Naming Conventions
+
+All identifiers must follow the conventions defined in the `conventions/` directory.
+
+- **Read before writing** — load the relevant convention file before creating or modifying any name
+- `conventions/class-naming.md` — CSS class names, `className`, keyframes, test selectors (`rmap-` prefix required)
+- `conventions/code-naming.md` — variables, constants, functions, hooks, types, interfaces (intent-revealing names required)
+- CSS custom properties (`--rm-audio-player-*`) are exempt and keep their existing prefix
+
+---
+
 ## Localization & Language Policy
 
 - **Primary Language**: All project-related communications and artifacts must be in **English only**.

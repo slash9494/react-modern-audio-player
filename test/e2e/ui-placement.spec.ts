@@ -166,8 +166,8 @@ test.describe("PlayListPlacement — DOM order", () => {
     playerPage,
   }) => {
     const isBottomPlacement = await playerPage.page.evaluate(() => {
-      const list = document.querySelector(".sortable-play-list");
-      const grid = document.querySelector(".interface-grid");
+      const list = document.querySelector(".rmap-sortable-playlist");
+      const grid = document.querySelector(".rmap-interface-grid");
       if (!list || !grid) return null;
       // DOCUMENT_POSITION_FOLLOWING means grid comes before list in DOM
       return Boolean(
@@ -183,8 +183,8 @@ test.describe("PlayListPlacement — DOM order", () => {
     await playerPageLazy.gotoWithConfig({ playListPlacement: "top" });
 
     const isTopPlacement = await playerPageLazy.page.evaluate(() => {
-      const list = document.querySelector(".sortable-play-list");
-      const grid = document.querySelector(".interface-grid");
+      const list = document.querySelector(".rmap-sortable-playlist");
+      const grid = document.querySelector(".rmap-interface-grid");
       if (!list || !grid) return null;
       return Boolean(
         list.compareDocumentPosition(grid) & Node.DOCUMENT_POSITION_FOLLOWING
