@@ -19,19 +19,23 @@ export const Audio: FC<{
   const curPlayedAudioData = playList.find(
     (audioData) => audioData.id === curPlayId
   );
-  const audioNativeStates: AudioNativeProps = Object.fromEntries(
-    Object.entries(curAudioState).filter((state) => {
-      if (
-        state[0] === "isPlaying" ||
-        state[0] === "repeatType" ||
-        state[0] === "curPlayId" ||
-        state[0] === "isLoadedMetaData"
-      ) {
-        return false;
-      }
-      return true;
-    })
-  );
+  // Drop the React-side fields that are not valid HTML <audio> attributes
+  // before spreading the rest onto the element. Destructuring makes the
+  // intent obvious and removes the opaque `Object.entries → filter →
+  // fromEntries` sequence.
+  const {
+    isPlaying: _isPlaying,
+    repeatType: _repeatType,
+    isLoadedMetaData: _isLoadedMetaData,
+    ...audioNativeStates
+  } = curAudioState as AudioNativeProps & {
+    isPlaying?: unknown;
+    repeatType?: unknown;
+    isLoadedMetaData?: unknown;
+  };
+  void _isPlaying;
+  void _repeatType;
+  void _isLoadedMetaData;
 
   const useAudioEventProps = useAudio();
 
