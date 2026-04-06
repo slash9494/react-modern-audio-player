@@ -4,6 +4,10 @@ import { AudioContextAction } from "./dispatchContext";
 import { AudioPlayerStateContext } from "./StateContext";
 
 const getRandomIdx = (curIdx: number, minNumber: number, maxNumber: number) => {
+  // Guard: when the playable range collapses to a single index (e.g. a
+  // playlist with one track) the loop below would spin forever waiting
+  // for a different value. Returning curIdx is the only correct answer.
+  if (maxNumber - minNumber < 1) return curIdx;
   let nextIdx = getRandomNumber(minNumber, maxNumber);
   while (nextIdx === curIdx) {
     nextIdx = getRandomNumber(minNumber, maxNumber);
@@ -32,6 +36,16 @@ export const audioPlayerReducer = (
         };
       }
       if (state.curAudioState.repeatType === "SHUFFLE") {
+        // Single-track playlist: SHUFFLE has nowhere to jump. Rewind in
+        // place instead of flipping isLoadedMetaData (which would disable
+        // the progress bar) or re-dispatching the same index.
+        if (state.playList.length <= 1) {
+          return {
+            ...state,
+            audioResetKey: state.audioResetKey + 1,
+            curAudioState: { ...state.curAudioState, currentTime: 0 },
+          };
+        }
         const randomIdx = getRandomIdx(
           state.curIdx,
           0,
@@ -59,7 +73,13 @@ export const audioPlayerReducer = (
       };
     }
     case "PREV_AUDIO": {
+      // Single-track playlist: every prev press is a rewind, regardless of
+      // repeatType. Falling through to the per-mode branches would either
+      // (a) flip isLoadedMetaData=false on the only track and disable the
+      // progress bar (ALL/no-mode path) or (b) re-dispatch the same index
+      // for SHUFFLE without resetting audio. Treat it as a single concern.
       if (
+        state.playList.length <= 1 ||
         (state.elementRefs?.audioEl &&
           state.elementRefs?.audioEl.currentTime > 1) ||
         (state.elementRefs?.waveformInst &&

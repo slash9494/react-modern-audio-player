@@ -85,6 +85,59 @@ describe("NEXT_AUDIO", () => {
       nexts.every((s) => s.audioResetKey === state.audioResetKey + 1)
     ).toBe(true);
   });
+
+  it("PREV with one-track playlist always rewinds (any repeatType, never disables metadata)", () => {
+    const base = makeBaseState();
+    const singleTrackState = {
+      ...base,
+      playList: [{ id: 1, src: "track1.mp3" }],
+      curIdx: 0,
+      curPlayId: 1,
+      curAudioState: {
+        ...base.curAudioState,
+        isLoadedMetaData: true,
+      },
+    };
+    // Repeat for every mode — pressing PREV must rewind, keep curIdx,
+    // bump audioResetKey, and never flip isLoadedMetaData to false
+    // (which would disable Progress interactions).
+    (["ALL", "ONE", "NONE", "SHUFFLE"] as const).forEach((mode) => {
+      const state = {
+        ...singleTrackState,
+        audioResetKey: 0,
+        curAudioState: { ...singleTrackState.curAudioState, repeatType: mode },
+      };
+      const next = audioPlayerReducer(state, { type: "PREV_AUDIO" });
+      expect(next.curIdx).toBe(0);
+      expect(next.curPlayId).toBe(1);
+      expect(next.curAudioState.isLoadedMetaData).toBe(true);
+      expect(next.audioResetKey).toBe(1);
+      expect(next.curAudioState.currentTime).toBe(0);
+    });
+  });
+
+  it("does not hang when repeatType SHUFFLE and playList has only one track", () => {
+    const base = makeBaseState();
+    const state = {
+      ...base,
+      playList: [{ id: 1, src: "track1.mp3" }],
+      curIdx: 0,
+      curPlayId: 1,
+      curAudioState: {
+        ...base.curAudioState,
+        repeatType: "SHUFFLE" as const,
+        isLoadedMetaData: true,
+      },
+    };
+    // Regression: getRandomIdx used to spin forever when min === max,
+    // and the SHUFFLE branch used to flip isLoadedMetaData to false on
+    // the only track — disabling the progress bar.
+    const next = audioPlayerReducer(state, { type: "NEXT_AUDIO" });
+    expect(next.curIdx).toBe(0);
+    expect(next.curPlayId).toBe(1);
+    expect(next.curAudioState.isLoadedMetaData).toBe(true);
+    expect(next.audioResetKey).toBe(state.audioResetKey + 1);
+  });
 });
 
 // ─────────────────────────────────────────
