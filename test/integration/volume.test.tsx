@@ -79,7 +79,7 @@ describe("Volume tooltip (slider)", () => {
     const { audio } = renderWithVolume(0.5);
     openVolumeTooltip();
 
-    const slider = screen.getByLabelText("Volume");
+    const slider = screen.getByLabelText(/^Volume( \(muted\))?$/);
     fireEvent.change(slider, { target: { value: "0" } });
 
     expect(audio.volume).toBe(0);
@@ -89,7 +89,7 @@ describe("Volume tooltip (slider)", () => {
     const { audio } = renderWithVolume(0.3);
     openVolumeTooltip();
 
-    const slider = screen.getByLabelText("Volume");
+    const slider = screen.getByLabelText(/^Volume( \(muted\))?$/);
     fireEvent.change(slider, { target: { value: "1" } });
 
     expect(audio.volume).toBe(1);
