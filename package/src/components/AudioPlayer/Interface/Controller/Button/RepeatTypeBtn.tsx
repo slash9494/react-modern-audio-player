@@ -20,27 +20,25 @@ const repeatAriaLabels: Record<RepeatType, string> = {
   SHUFFLE: "Shuffle",
 };
 
+// Cycle order: ALL → ONE → NONE → SHUFFLE → ALL.
+// A direct lookup makes the cycle declarative and removes the four-case
+// switch + default branch from the click handler.
+const NEXT_REPEAT_TYPE: Record<RepeatType, RepeatType> = {
+  ALL: "ONE",
+  ONE: "NONE",
+  NONE: "SHUFFLE",
+  SHUFFLE: "ALL",
+};
+
 export const RepeatTypeBtn: FC = memo(function RepeatTypeBtn() {
   const { curAudioState } = usePlaybackContext();
   const { customIcons } = useResourceContext();
   const audioPlayerDispatch = useNonNullableContext(audioPlayerDispatchContext);
   const changeRepeatType = () => {
-    switch (curAudioState.repeatType) {
-      case "ALL":
-        audioPlayerDispatch({ type: "SET_REPEAT_TYPE", repeatType: "ONE" });
-        break;
-      case "ONE":
-        audioPlayerDispatch({ type: "SET_REPEAT_TYPE", repeatType: "NONE" });
-        break;
-      case "NONE":
-        audioPlayerDispatch({ type: "SET_REPEAT_TYPE", repeatType: "SHUFFLE" });
-        break;
-      case "SHUFFLE":
-        audioPlayerDispatch({ type: "SET_REPEAT_TYPE", repeatType: "ALL" });
-        break;
-      default:
-        break;
-    }
+    audioPlayerDispatch({
+      type: "SET_REPEAT_TYPE",
+      repeatType: NEXT_REPEAT_TYPE[curAudioState.repeatType],
+    });
   };
 
   return (
