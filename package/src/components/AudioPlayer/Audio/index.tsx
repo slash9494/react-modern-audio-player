@@ -33,9 +33,6 @@ export const Audio: FC<{
     repeatType?: unknown;
     isLoadedMetaData?: unknown;
   };
-  void _isPlaying;
-  void _repeatType;
-  void _isLoadedMetaData;
 
   const useAudioEventProps = useAudio();
 
