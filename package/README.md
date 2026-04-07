@@ -330,7 +330,7 @@ const defaultInterfacePlacement = {
 
 `rootContainerProps` accepts any standard `HTMLAttributes<HTMLDivElement>` (e.g. `className`, `style`, `data-*`). The root container always has the class `rm-audio-player-provider` applied automatically.
 
-> ⚠️ Setting the native CSS `color-scheme` property via `rootContainerProps={{ style: { colorScheme: "dark" } }}` will **not** toggle the player's theme. The library's theme is driven by the `prefers-color-scheme` media query and the `[data-theme]` attribute selector — use the top-level [`colorScheme`](#colorscheme) prop instead.
+> ⚠️ Setting the native CSS `color-scheme` property via `rootContainerProps={{ style: { colorScheme: "dark" } }}` will **not** toggle the player's theme. The library's theme is driven by the `prefers-color-scheme` media query and the `[data-theme]` attribute selector — use the top-level [`colorScheme`](#theme-mode--dark-mode-) prop instead.
 
 # Override Style
 
