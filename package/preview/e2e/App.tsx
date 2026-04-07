@@ -55,8 +55,16 @@ function parseTestConfig(): TestConfig {
 function App() {
   const config = parseTestConfig();
 
+  // When the test does NOT supply its own activeUI, default to "all on +
+  // bar progress" so legacy specs (e.g. ui-placement) that only configure
+  // templateArea still see a mounted BarProgress. When the test DOES supply
+  // activeUI, we honor it verbatim — that path drives presence/absence
+  // assertions like `{ all: false, playButton: true } → only play-btn`,
+  // and silently injecting a default `progress: "bar"` would re-mount the
+  // bar and break those specs.
+  const hasActiveUIOverride = config.activeUI !== undefined;
   const [progressType, setProgressType] = useState<ProgressUI | undefined>(
-    config.progressType
+    config.progressType ?? (hasActiveUIOverride ? undefined : "bar")
   );
 
   const customIcons: CustomIcons | undefined = config.customIconTestIds
@@ -72,9 +80,6 @@ function App() {
       ) as Record<keyof CustomIcons, ReactElement>)
     : undefined;
 
-  // Only inject `progress` into activeUI when explicitly set, so e2e cases
-  // like `{ all: false, playButton: true }` can still assert progress-bar
-  // is absent. Forcing a default would silently mount the progress UI.
   const activeUI: ActiveUI = {
     ...((config.activeUI as ActiveUI) ?? { all: true }),
     ...(progressType !== undefined && { progress: progressType }),
