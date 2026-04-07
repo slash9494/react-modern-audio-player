@@ -41,13 +41,13 @@ export class PlayerPage {
   }
 
   async goto() {
-    await this.page.goto("/");
+    await this.page.goto("/preview/e2e/");
     await this.player.waitFor({ state: "visible" });
   }
 
   async gotoWithConfig(config: TestConfig) {
     const encoded = btoa(JSON.stringify(config));
-    await this.page.goto(`/?config=${encoded}`);
+    await this.page.goto(`/preview/e2e/?config=${encoded}`);
     await this.player.waitFor({ state: "visible" });
   }
 

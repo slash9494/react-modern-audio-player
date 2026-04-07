@@ -17,6 +17,14 @@ import {
   defaultCustomComponentsArea,
 } from "./playerMode";
 
+/**
+ * Demo entry — mirrors the public codesandbox demo at
+ * https://codesandbox.io/s/basic-91y82y. Used as the dev playground
+ * (`yarn dev` → http://localhost:5173) and what consumers see when they
+ * land on the repo. The Playwright e2e fixture lives in `App.e2e.tsx`
+ * (loaded via `e2e.html`) so demo refactors cannot break the test contract.
+ */
+
 const initialState = {
   muted: true,
   volume: 0.2,
