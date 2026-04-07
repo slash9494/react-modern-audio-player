@@ -85,19 +85,20 @@ export const useGridTemplate = (
       let progressColIdx: number | undefined;
       const gridAreas = new Array(maxRow).fill("").map((_, rowIdx) => {
         let cols = "";
-        let isWithProgress = false;
+        // Captured during the filter pass below so `progressItem` and
+        // `curRowPlacementArr` stay in sync by construction — no separate
+        // `isWithProgress` flag, no second `find()` scan, and TS narrows
+        // the nullable away inside the `if (progressItem)` branch so the
+        // former `"" fallback` dead-code path is gone.
+        let progressItem: (typeof totalPlacementArr)[number] | undefined;
 
-        const curRowPlacementArr = totalPlacementArr.filter(({ key, row }) => {
-          if (row === rowIdx + 1) {
-            if (key === "progress") {
-              isWithProgress = true;
-            }
-            return true;
-          }
-          return false;
+        const curRowPlacementArr = totalPlacementArr.filter((item) => {
+          if (item.row !== rowIdx + 1) return false;
+          if (item.key === "progress") progressItem = item;
+          return true;
         });
 
-        if (isWithProgress) {
+        if (progressItem) {
           // Build one slot per column. Each slot gets the area name
           // `row{r}-{col}` by default; empty slots are absorbed by progress
           // so progress visually expands across the unused space. Slot-based
@@ -110,12 +111,7 @@ export const useGridTemplate = (
           >();
           curRowPlacementArr.forEach((item) => itemByCol.set(item.col, item));
 
-          const progressItem = curRowPlacementArr.find(
-            ({ key }) => key === "progress"
-          );
-          const progressAreaName = progressItem
-            ? `row${rowIdx + 1}-${progressItem.col}`
-            : "";
+          const progressAreaName = `row${rowIdx + 1}-${progressItem.col}`;
 
           const slotNames: string[] = [];
           for (let i = 0; i < maxCol; i++) {
@@ -130,13 +126,12 @@ export const useGridTemplate = (
           }
 
           // Mark the center of the progress span as the 1fr column.
+          // `progressAreaName` is guaranteed to appear in `slotNames`:
+          // progress's own col lands in itemByCol (hit branch) and produces
+          // an identical `row{r}-{col}` name, so indexOf is never -1.
           const firstProgressIdx = slotNames.indexOf(progressAreaName);
           const lastProgressIdx = slotNames.lastIndexOf(progressAreaName);
-          if (firstProgressIdx !== -1) {
-            progressColIdx = Math.floor(
-              (firstProgressIdx + lastProgressIdx) / 2
-            );
-          }
+          progressColIdx = Math.floor((firstProgressIdx + lastProgressIdx) / 2);
 
           cols = " " + slotNames.join(" ");
         } else {
