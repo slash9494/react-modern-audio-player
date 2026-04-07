@@ -1,4 +1,4 @@
-import { ReactElement } from "react";
+import { ReactElement, useState } from "react";
 import AudioPlayerWithProviders, {
   ActiveUI,
   CustomIcons,
@@ -15,15 +15,15 @@ import { playList } from "../playList";
  * E2E test fixture entry.
  *
  * Playwright fixtures (`test/e2e/fixtures/player.fixture.ts`) navigate to
- * `/e2e.html?config=base64(json)` to drive deterministic UI scenarios.
+ * `/preview/e2e/?config=base64(json)` to drive deterministic UI scenarios.
  * Every field in the config overrides a default; missing fields fall back
- * to the values used by the e2e suite (which were the original demo defaults
- * before the codesandbox-style demo was introduced).
+ * to the values used by the e2e suite.
  *
- * This file is intentionally minimal: no Editor controls, no demo
- * `CustomComponent`, no theme cycling — exactly what the test contract
- * needs and nothing else. The "demo" experience lives in `App.tsx`
- * (loaded by `index.html`), which is decoupled from this fixture.
+ * Intentionally minimal: only the controls the e2e specs interact with —
+ * a "change progress type" toggle (used by progress-switch.spec.ts to
+ * test in-page bar↔waveform transitions). No demo widgets, no codesandbox
+ * styling. The "demo" experience lives in `preview/App.tsx` and is
+ * decoupled from this fixture.
  */
 
 const initialState = {
@@ -55,6 +55,10 @@ function parseTestConfig(): TestConfig {
 function App() {
   const config = parseTestConfig();
 
+  const [progressType, setProgressType] = useState<ProgressUI | undefined>(
+    config.progressType
+  );
+
   const customIcons: CustomIcons | undefined = config.customIconTestIds
     ? (Object.fromEntries(
         Object.entries(config.customIconTestIds).map(([key, testId]) => [
@@ -68,15 +72,20 @@ function App() {
       ) as Record<keyof CustomIcons, ReactElement>)
     : undefined;
 
+  // Only inject `progress` into activeUI when explicitly set, so e2e cases
+  // like `{ all: false, playButton: true }` can still assert progress-bar
+  // is absent. Forcing a default would silently mount the progress UI.
+  const activeUI: ActiveUI = {
+    ...((config.activeUI as ActiveUI) ?? { all: true }),
+    ...(progressType !== undefined && { progress: progressType }),
+  };
+
   return (
     <div style={{ width: "100%", padding: "1rem", boxSizing: "border-box" }}>
       <AudioPlayerWithProviders
         playList={playList}
         audioInitialState={initialState}
-        activeUI={{
-          ...((config.activeUI as ActiveUI) ?? { all: true }),
-          progress: config.progressType ?? "bar",
-        }}
+        activeUI={activeUI}
         customIcons={customIcons}
         placement={
           {
@@ -94,6 +103,21 @@ function App() {
           }
         }
       />
+
+      {/*
+        In-page toggle used by progress-switch.spec.ts (7-6, 7-10, 7-11) to
+        flip between bar and waveform without a page reload, so wavesurfer
+        re-init / position-preservation paths can be exercised.
+       */}
+      <button
+        type="button"
+        onClick={() =>
+          setProgressType((prev) => (prev === "waveform" ? "bar" : "waveform"))
+        }
+        style={{ marginTop: "1rem" }}
+      >
+        change progress type
+      </button>
     </div>
   );
 }
