@@ -148,11 +148,17 @@ export const useWaveSurfer = (waveformRef: React.RefObject<HTMLElement>) => {
     [audioPlayerDispatch]
   );
 
-  // Destroy the WaveSurfer instance whenever the color scheme changes —
-  // either via the OS-level `prefers-color-scheme` media query, or via the
-  // consumer-controlled `colorScheme` prop on the provider. The init effect
-  // above will then re-create the instance with the freshly-resolved colors.
-  const destroyInstance = () => {
+  // Destroy the WaveSurfer instance so the init effect above re-creates it
+  // with the freshly-resolved CSS variable colors. Triggered on either the
+  // OS-level `prefers-color-scheme` media query or the consumer-controlled
+  // `colorScheme` prop change.
+  //
+  // The function is stored on a mutable ref that is rewritten on every
+  // render, so callers (media-query listener, prop-change effect) always
+  // invoke the latest closure — no stale `elementRefs?.waveformInst`,
+  // no listener churn on waveform lifecycle, no exhaustive-deps suppressions.
+  const destroyInstanceRef = useRef<() => void>();
+  destroyInstanceRef.current = () => {
     const waveEl = waveformRef.current?.querySelector("wave");
     if (waveEl) {
       waveEl.remove();
@@ -165,18 +171,17 @@ export const useWaveSurfer = (waveformRef: React.RefObject<HTMLElement>) => {
   };
 
   useEffect(() => {
+    const handler = () => destroyInstanceRef.current?.();
     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-    mediaQuery.addEventListener("change", destroyInstance);
-    return () => mediaQuery.removeEventListener("change", destroyInstance);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [audioPlayerDispatch, elementRefs?.waveformInst]);
+    mediaQuery.addEventListener("change", handler);
+    return () => mediaQuery.removeEventListener("change", handler);
+  }, []);
 
   // Re-init when consumer toggles the explicit colorScheme prop.
   const prevColorSchemeRef = useRef(colorScheme);
   useEffect(() => {
     if (prevColorSchemeRef.current === colorScheme) return;
     prevColorSchemeRef.current = colorScheme;
-    destroyInstance();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    destroyInstanceRef.current?.();
   }, [colorScheme]);
 };
