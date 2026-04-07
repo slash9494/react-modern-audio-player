@@ -4,7 +4,11 @@ import { useIsomorphicLayoutEffect } from "@/utils/ssr";
 export type VariableColors<T extends string> = Record<T, string>;
 
 export const useVariableColor = <Keys extends string>(
-  variableColors: VariableColors<Keys>
+  variableColors: VariableColors<Keys>,
+  // Optional dependency that should trigger a re-read of CSS variables —
+  // typically the consumer-controlled colorScheme. The OS-level
+  // `prefers-color-scheme` media query is always observed.
+  colorSchemeOverride?: string
 ) => {
   const colorsRef = useRef<VariableColors<Keys>>();
 
@@ -28,7 +32,7 @@ export const useVariableColor = <Keys extends string>(
     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
     mediaQuery.addEventListener("change", readColors);
     return () => mediaQuery.removeEventListener("change", readColors);
-  }, [readColors]);
+  }, [readColors, colorSchemeOverride]);
 
   return colorsRef;
 };

@@ -4,6 +4,15 @@
 
 ### New Features
 
+- **`colorScheme` prop**: forces the player to render in `"light"` or `"dark"` mode regardless of the OS `prefers-color-scheme` setting. When omitted, the player follows the OS preference (existing behavior). The provider applies a `data-theme` attribute on the root container, and the WaveSurfer instance is automatically re-initialized when the prop changes so waveform colors stay in sync. Maps to the same use case as Adobe Spectrum's `<Provider colorScheme>`.
+  - **Placement**: `colorScheme` is a **top-level prop** on `<AudioPlayer>`, not nested under `rootContainerProps`. Previously the only way to influence theme from the consumer side was to pass `rootContainerProps={{ style: { colorScheme: ... } }}` (a native CSS property that did not actually override the library's OS-media-query–driven theme). The new top-level `colorScheme` prop is the supported way to override the theme.
+    ```tsx
+    // ❌ Before — native CSS property, did not actually toggle the theme
+    <AudioPlayer rootContainerProps={{ style: { colorScheme: "dark" } }} />
+
+    // ✅ After — top-level prop, drives `[data-theme]` + wavesurfer re-init
+    <AudioPlayer colorScheme="dark" />
+    ```
 - **`useAudioPlayer()` public hook**: exposes a stable API to control the player externally
   - Returns `play`, `pause`, `togglePlay`, `next`, `prev`, `seek`, `setVolume`, `setTrack`
   - Returns state: `isPlaying`, `volume`, `currentTime`, `duration`, `repeatType`, `muted`, `currentTrack`, `currentIndex`, `playList`

@@ -25,7 +25,7 @@
 }
 
 @media (prefers-color-scheme: dark) {
-  .rm-audio-player-provider {
+  .rm-audio-player-provider:not([data-theme="light"]) {
     --rm-audio-player-text-color: #ededed;
     --rm-audio-player-shadow: 255 255 255;
     --rm-audio-player-interface-container: #1e1e1e;
@@ -48,4 +48,28 @@
     --rm-audio-player-sortable-list-button-active: #0072f5;
     --rm-audio-player-selected-list-item-background: #5c5c5c;
   }
+}
+
+.rm-audio-player-provider[data-theme="dark"] {
+  --rm-audio-player-text-color: #ededed;
+  --rm-audio-player-shadow: 255 255 255;
+  --rm-audio-player-interface-container: #1e1e1e;
+  --rm-audio-player-volume-background: #5c5c5c;
+  --rm-audio-player-volume-panel-background: #2c2c2c;
+  --rm-audio-player-volume-panel-border: #393939;
+  --rm-audio-player-volume-thumb: #d3d3d3;
+  --rm-audio-player-volume-fill: rgba(255, 255, 255, 0.5);
+  --rm-audio-player-volume-track: #494949;
+  --rm-audio-player-track-current-time: #0072f5;
+  --rm-audio-player-track-duration: #a2a2a2;
+  --rm-audio-player-progress-bar: #0072f5;
+  --rm-audio-player-progress-bar-background: #d1d1d1;
+  --rm-audio-player-waveform-cursor: #c8c8c8;
+  --rm-audio-player-waveform-background: var(
+    --rm-audio-player-progress-bar-background
+  );
+  --rm-audio-player-waveform-bar: var(--rm-audio-player-progress-bar);
+  --rm-audio-player-sortable-list: #2c2c2c;
+  --rm-audio-player-sortable-list-button-active: #0072f5;
+  --rm-audio-player-selected-list-item-background: #5c5c5c;
 }

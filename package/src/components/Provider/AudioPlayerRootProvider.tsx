@@ -39,7 +39,8 @@ const PLACEMENT_OFFSET_MAP: Partial<Record<PlayerPlacement, PlacementOffset>> =
 export const AudioPlayerRootProvider: FC<
   PropsWithChildren<AudioPlayerRootProviderProps>
 > = ({ children, rootContainerProps }) => {
-  const { playerPlacement: contextPlayerPlacement } = useUIContext();
+  const { playerPlacement: contextPlayerPlacement, colorScheme } =
+    useUIContext();
 
   const placementOffset = useMemo<PlacementOffset | undefined>(
     () =>
@@ -65,6 +66,7 @@ export const AudioPlayerRootProvider: FC<
       className={`rm-audio-player-provider${
         rootContainerProps?.className ? ` ${rootContainerProps.className}` : ""
       }`}
+      data-theme={colorScheme}
       style={style}
     >
       {children}
