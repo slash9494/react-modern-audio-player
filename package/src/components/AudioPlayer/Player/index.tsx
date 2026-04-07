@@ -30,6 +30,12 @@ export interface AudioPlayerProps<TInterfacePlacementLength extends number> {
     interface?: InterfacePlacement<TInterfacePlacementLength>;
     volumeSlider?: VolumeSliderPlacement;
   };
+  /**
+   * Forces the player to render in a specific color scheme, overriding the
+   * operating system `prefers-color-scheme` setting. When omitted, the
+   * player follows the OS preference.
+   */
+  colorScheme?: "light" | "dark";
 }
 
 export const AudioPlayer = <

@@ -31,7 +31,9 @@
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage"
   },
-  "sideEffects": ["*.css"],
+  "sideEffects": [
+    "*.css"
+  ],
   "peerDependencies": {
     "react": ">=18.0.0",
     "react-dom": ">=18.0.0"
@@ -51,7 +53,7 @@
     "@vitejs/plugin-react": "^4.3.4",
     "@vitest/coverage-v8": "^2.1.0",
     "agentation": "^3.0.2",
-    "jsdom": "^28.1.0",
+    "jsdom": "^25.0.0",
     "typescript": "^5.7.2",
     "vite": "^5.4.14",
     "vite-plugin-dts": "^4.5.0",

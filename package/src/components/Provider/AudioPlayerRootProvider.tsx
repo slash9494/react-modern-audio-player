@@ -3,50 +3,52 @@ import {
   FC,
   HTMLAttributes,
   PropsWithChildren,
-  useEffect,
-  useState,
+  useMemo,
 } from "react";
 import { useUIContext } from "@/hooks/context/useUIContext";
+import { PlayerPlacement } from "@/components/AudioPlayer/Context/StateContext";
 
 export interface AudioPlayerRootProviderProps {
   rootContainerProps?: Omit<HTMLAttributes<HTMLDivElement>, "children">;
 }
 
+type PlacementOffset = Pick<CSSProperties, "top" | "right" | "bottom" | "left">;
+
+const PLACEMENT_OFFSET_BASE: PlacementOffset = {
+  top: "auto",
+  right: "auto",
+  bottom: "auto",
+  left: "auto",
+};
+
+// Map of `playerPlacement` token → CSS offset overrides. Replaces the
+// previous useState + useEffect derived-state pattern with a pure lookup
+// that is computed during render. This eliminates the 1-frame stale render
+// (where `position: fixed` was applied before the offsets) and the
+// hydration mismatch risk on SSR.
+const PLACEMENT_OFFSET_MAP: Partial<Record<PlayerPlacement, PlacementOffset>> =
+  {
+    bottom: { ...PLACEMENT_OFFSET_BASE, bottom: 0 },
+    top: { ...PLACEMENT_OFFSET_BASE, top: 0 },
+    "bottom-left": { ...PLACEMENT_OFFSET_BASE, bottom: 0, left: 0 },
+    "bottom-right": { ...PLACEMENT_OFFSET_BASE, bottom: 0, right: 0 },
+    "top-left": { ...PLACEMENT_OFFSET_BASE, top: 0, left: 0 },
+    "top-right": { ...PLACEMENT_OFFSET_BASE, top: 0, right: 0 },
+  };
+
 export const AudioPlayerRootProvider: FC<
   PropsWithChildren<AudioPlayerRootProviderProps>
 > = ({ children, rootContainerProps }) => {
-  const { playerPlacement: contextPlayerPlacement } = useUIContext();
-  const [placementState, setPlacementState] =
-    useState<Pick<CSSProperties, "top" | "right" | "bottom" | "left">>();
-  useEffect(() => {
-    if (contextPlayerPlacement) {
-      const placementValidation = () => {
-        const base = {
-          top: "auto",
-          right: "auto",
-          bottom: "auto",
-          left: "auto",
-        } as const;
-        switch (contextPlayerPlacement) {
-          case "bottom":
-            return { ...base, bottom: 0 };
-          case "top":
-            return { ...base, top: 0 };
-          case "bottom-left":
-            return { ...base, bottom: 0, left: 0 };
-          case "bottom-right":
-            return { ...base, bottom: 0, right: 0 };
-          case "top-left":
-            return { ...base, top: 0, left: 0 };
-          case "top-right":
-            return { ...base, top: 0, right: 0 };
-          default:
-            break;
-        }
-      };
-      setPlacementState(placementValidation());
-    }
-  }, [contextPlayerPlacement]);
+  const { playerPlacement: contextPlayerPlacement, colorScheme } =
+    useUIContext();
+
+  const placementOffset = useMemo<PlacementOffset | undefined>(
+    () =>
+      contextPlayerPlacement
+        ? PLACEMENT_OFFSET_MAP[contextPlayerPlacement]
+        : undefined,
+    [contextPlayerPlacement]
+  );
 
   const isFixed =
     contextPlayerPlacement !== "static" && Boolean(contextPlayerPlacement);
@@ -54,7 +56,7 @@ export const AudioPlayerRootProvider: FC<
   const style: CSSProperties = {
     width: "100%",
     position: isFixed ? "fixed" : "static",
-    ...placementState,
+    ...placementOffset,
     ...(rootContainerProps?.style ?? {}),
   };
 
@@ -64,6 +66,7 @@ export const AudioPlayerRootProvider: FC<
       className={`rm-audio-player-provider${
         rootContainerProps?.className ? ` ${rootContainerProps.className}` : ""
       }`}
+      data-theme={colorScheme}
       style={style}
     >
       {children}

@@ -19,6 +19,12 @@ If the branch starts with `v*/`, also load the corresponding agent from `agents/
 
 ---
 
+## Repo Analysis Load Policy
+
+Before performing any code/folder modification or analysis task, read all files inside `.claude/docs/repo-analysis/` to ensure accurate context on the current repository structure. (Not required for trivial chat or unrelated questions.)
+
+---
+
 ## External Documentation Policy
 
 When referencing library APIs, framework behavior, or any external documentation:

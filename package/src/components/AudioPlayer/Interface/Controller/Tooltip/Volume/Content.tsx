@@ -35,6 +35,8 @@ export const VolumeSlider: FC<{ placement: VolumeSliderPlacement }> = ({
   const resolvedVolume =
     curAudioState.volume ?? elementRefs?.audioEl?.volume ?? 0;
   const volumeValue = resolvedVolume * 100;
+  const volumePercent = Math.round(volumeValue);
+  const isMuted = curAudioState.muted;
 
   const volumeStyle = useMemo(
     () =>
@@ -62,7 +64,8 @@ export const VolumeSlider: FC<{ placement: VolumeSliderPlacement }> = ({
           min="0"
           max="1"
           step="0.01"
-          aria-label="Volume"
+          aria-label={isMuted ? "Volume (muted)" : "Volume"}
+          aria-valuetext={`${volumePercent} percent`}
         />
       </div>
     </div>

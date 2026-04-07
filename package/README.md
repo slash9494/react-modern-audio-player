@@ -171,6 +171,7 @@ interface AudioPlayerProps {
     volumeSlider?: VolumeSliderPlacement;
   };
   rootContainerProps?: RootContainerProps;
+  colorScheme?: "light" | "dark";
 }
 ```
 
@@ -183,6 +184,7 @@ interface AudioPlayerProps {
 | `coverImgsCss`       | [CoverImgsCss](#coverimgscss)             | undefined                                                                                                       |
 | `placement`          | [Placement](#placement)                   | playListPlacement : "bottom" </br>interfacePlacement :[DefaultInterfacePlacement](#default-interface-placement) |
 | `rootContainerProps` | [RootContainerProps](#rootcontainerprops) | width: 100%<br/>position: 'static'<br/>className: rm-audio-player-provider                                      |
+| `colorScheme`        | `"light" \| "dark"`                       | undefined (follows OS `prefers-color-scheme`)                                                                   |
 
 ## PlayList
 
@@ -328,11 +330,14 @@ const defaultInterfacePlacement = {
 
 `rootContainerProps` accepts any standard `HTMLAttributes<HTMLDivElement>` (e.g. `className`, `style`, `data-*`). The root container always has the class `rm-audio-player-provider` applied automatically.
 
+> ⚠️ Setting the native CSS `color-scheme` property via `rootContainerProps={{ style: { colorScheme: "dark" } }}` will **not** toggle the player's theme. The library's theme is driven by the `prefers-color-scheme` media query and the `[data-theme]` attribute selector — use the top-level [`colorScheme`](#theme-mode--dark-mode-) prop instead.
+
 # Override Style
 
 ## Theme mode ( dark-mode )
 
-> Dark mode is driven by `system-theme` (`prefers-color-scheme: dark`).
+> Dark mode is driven by `system-theme` (`prefers-color-scheme: dark`) by default.
+> To force a specific theme regardless of OS preference, pass the top-level `colorScheme="light" | "dark"` prop on `<AudioPlayer>` — this applies a `data-theme` attribute on `.rm-audio-player-provider` which overrides the media query.
 > You can override any color by redefining the CSS variables below on `.rm-audio-player-provider`.
 
 ```css

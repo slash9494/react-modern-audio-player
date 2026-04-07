@@ -4,6 +4,7 @@ import { audioPlayerDispatchContext } from "@/components/AudioPlayer/Context/dis
 import { usePlaybackContext } from "@/hooks/context/usePlaybackContext";
 import { useTrackContext } from "@/hooks/context/useTrackContext";
 import { useResourceContext } from "@/hooks/context/useResourceContext";
+import { useUIContext } from "@/hooks/context/useUIContext";
 import { useEffect, useRef } from "react";
 
 const waveformColors = {
@@ -18,7 +19,8 @@ export const useWaveSurfer = (waveformRef: React.RefObject<HTMLElement>) => {
   const { curAudioState } = usePlaybackContext();
   const { curPlayId } = useTrackContext();
   const { elementRefs } = useResourceContext();
-  const colorsRef = useVariableColor(waveformColors);
+  const { colorScheme } = useUIContext();
+  const colorsRef = useVariableColor(waveformColors, colorScheme);
   const waveformInstRef = useRef(elementRefs?.waveformInst);
   waveformInstRef.current = elementRefs?.waveformInst;
 
@@ -146,21 +148,40 @@ export const useWaveSurfer = (waveformRef: React.RefObject<HTMLElement>) => {
     [audioPlayerDispatch]
   );
 
-  // Re-initialize WaveSurfer when color scheme changes
+  // Destroy the WaveSurfer instance so the init effect above re-creates it
+  // with the freshly-resolved CSS variable colors. Triggered on either the
+  // OS-level `prefers-color-scheme` media query or the consumer-controlled
+  // `colorScheme` prop change.
+  //
+  // The function is stored on a mutable ref that is rewritten on every
+  // render, so callers (media-query listener, prop-change effect) always
+  // invoke the latest closure — no stale `elementRefs?.waveformInst`,
+  // no listener churn on waveform lifecycle, no exhaustive-deps suppressions.
+  const destroyInstanceRef = useRef<() => void>();
+  destroyInstanceRef.current = () => {
+    const waveEl = waveformRef.current?.querySelector("wave");
+    if (waveEl) {
+      waveEl.remove();
+    }
+    elementRefs?.waveformInst?.destroy();
+    audioPlayerDispatch({
+      type: "SET_ELEMENT_REFS",
+      elementRefs: { waveformInst: undefined },
+    });
+  };
+
   useEffect(() => {
+    const handler = () => destroyInstanceRef.current?.();
     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-    const onSchemeChange = () => {
-      const waveEl = waveformRef.current?.querySelector("wave");
-      if (waveEl) {
-        waveEl.remove();
-      }
-      elementRefs?.waveformInst?.destroy();
-      audioPlayerDispatch({
-        type: "SET_ELEMENT_REFS",
-        elementRefs: { waveformInst: undefined },
-      });
-    };
-    mediaQuery.addEventListener("change", onSchemeChange);
-    return () => mediaQuery.removeEventListener("change", onSchemeChange);
-  }, [audioPlayerDispatch, elementRefs?.waveformInst]);
+    mediaQuery.addEventListener("change", handler);
+    return () => mediaQuery.removeEventListener("change", handler);
+  }, []);
+
+  // Re-init when consumer toggles the explicit colorScheme prop.
+  const prevColorSchemeRef = useRef(colorScheme);
+  useEffect(() => {
+    if (prevColorSchemeRef.current === colorScheme) return;
+    prevColorSchemeRef.current = colorScheme;
+    destroyInstanceRef.current?.();
+  }, [colorScheme]);
 };

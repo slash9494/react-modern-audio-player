@@ -26,6 +26,7 @@ export const AudioPlayerProvider = <
     audioInitialState,
     activeUI: activeUIProp,
     placement: placementProp,
+    colorScheme,
     ...otherProps
   } = props;
 
@@ -108,6 +109,7 @@ export const AudioPlayerProvider = <
       playerPlacement: state.playerPlacement,
       interfacePlacement: state.interfacePlacement,
       volumeSliderPlacement: state.volumeSliderPlacement,
+      colorScheme,
     }),
     [
       state.activeUI,
@@ -115,6 +117,7 @@ export const AudioPlayerProvider = <
       state.playerPlacement,
       state.interfacePlacement,
       state.volumeSliderPlacement,
+      colorScheme,
     ]
   );
 

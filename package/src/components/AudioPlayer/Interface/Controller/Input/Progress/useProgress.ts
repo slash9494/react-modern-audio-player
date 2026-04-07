@@ -1,7 +1,13 @@
 import { usePlaybackContext } from "@/hooks/context/usePlaybackContext";
 import { useResourceContext } from "@/hooks/context/useResourceContext";
 import { safeRatio } from "@/utils/safeRatio";
-import { HTMLAttributes, useCallback, useState, MouseEvent } from "react";
+import {
+  HTMLAttributes,
+  useCallback,
+  useEffect,
+  useState,
+  MouseEvent,
+} from "react";
 
 export const useProgress = (): HTMLAttributes<HTMLDivElement> => {
   const { curAudioState } = usePlaybackContext();
@@ -22,10 +28,17 @@ export const useProgress = (): HTMLAttributes<HTMLDivElement> => {
     [curAudioState?.isLoadedMetaData, elementRefs?.audioEl]
   );
 
-  const setSelectStartActive = useCallback(
-    (state: boolean) => (document.onselectstart = () => state),
-    []
-  );
+  // Block native text selection while user is dragging the progress bar.
+  // Uses addEventListener with cleanup so we never leave a stale global
+  // handler attached to `document` after unmount or when dragging ends.
+  useEffect(() => {
+    if (!isTimeChangeActive) return;
+    const preventSelection = (event: Event) => event.preventDefault();
+    document.addEventListener("selectstart", preventSelection);
+    return () => {
+      document.removeEventListener("selectstart", preventSelection);
+    };
+  }, [isTimeChangeActive]);
 
   return {
     onMouseDown: () => setTimeChangeActive(true),
@@ -33,7 +46,5 @@ export const useProgress = (): HTMLAttributes<HTMLDivElement> => {
     onMouseLeave: () => setTimeChangeActive(false),
     onMouseMove: isTimeChangeActive ? moveAudioTime : undefined,
     onClick: moveAudioTime,
-    onMouseOver: () => setSelectStartActive(false),
-    onMouseOut: () => isTimeChangeActive && setSelectStartActive(true),
   };
 };
