@@ -56,17 +56,13 @@ export const useAudioPlayer = (): AudioPlayerControls => {
 
   const prev = useCallback(() => {
     if (playList.length === 0) return;
-    const currentTime =
-      elementRefs?.waveformInst?.getCurrentTime() ??
-      elementRefs?.audioEl?.currentTime ??
-      0;
+    // wavesurfer wraps the same `<audio>` element via the MediaElement
+    // backend (useWavesurfer.ts), so reading audioEl.currentTime covers
+    // both bar and waveform progress modes. The legacy reducer used to
+    // OR audioEl and waveformInst reads but that branch was dead.
+    const currentTime = elementRefs?.audioEl?.currentTime ?? 0;
     dispatch({ type: "PREV_AUDIO", currentTime });
-  }, [
-    dispatch,
-    playList.length,
-    elementRefs?.audioEl,
-    elementRefs?.waveformInst,
-  ]);
+  }, [dispatch, playList.length, elementRefs?.audioEl]);
 
   const seek = useCallback(
     (time: number) => {

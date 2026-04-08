@@ -34,8 +34,7 @@ export const CssTransition: FC<PropsWithChildren<CssTransitionProps>> = ({
 
     setClassNames(`${name}-${statusClassName}`);
 
-    // set class to active
-    const timer = setTimeout(() => {
+    const activateClassTimer = setTimeout(() => {
       setClassNames(
         `${name}-${statusClassName} ${name}-${statusClassName}-active`
       );
@@ -44,21 +43,20 @@ export const CssTransition: FC<PropsWithChildren<CssTransitionProps>> = ({
       } else {
         onEntered?.();
       }
-      clearTimeout(timer);
+      clearTimeout(activateClassTimer);
     }, time);
 
-    // remove classNames when animation over
-    const clearClassesTimer = setTimeout(() => {
+    const resetClassesTimer = setTimeout(() => {
       if (!visible) {
         setClassNames(name);
         setRenderable(false);
       }
-      clearTimeout(clearClassesTimer);
+      clearTimeout(resetClassesTimer);
     }, time + clearTime);
 
     return () => {
-      clearTimeout(timer);
-      clearTimeout(clearClassesTimer);
+      clearTimeout(activateClassTimer);
+      clearTimeout(resetClassesTimer);
     };
   }, [visible, renderable]);
 

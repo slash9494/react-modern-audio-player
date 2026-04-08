@@ -24,24 +24,16 @@ import { useTrackContext } from "@/hooks/context/useTrackContext";
 import { useUIContext } from "@/hooks/context/useUIContext";
 import { useResourceContext } from "@/hooks/context/useResourceContext";
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Fixtures
-// ─────────────────────────────────────────────────────────────────────────────
-
 const basePlayList = [
   { id: 1, src: "a.mp3" },
   { id: 2, src: "b.mp3" },
   { id: 3, src: "c.mp3" },
 ];
 
-// ─────────────────────────────────────────────────────────────────────────────
-// DispatchCapture
 // Reads the dispatch context in render and stores it in a ref so tests can
 // call dispatch outside of React without needing a button or user-event.
 // Writing to a ref in the render body (not useEffect) is intentional —
 // it populates the ref synchronously before render() returns.
-// ─────────────────────────────────────────────────────────────────────────────
-
 type DispatchRef = { current: ((action: AudioContextAction) => void) | null };
 
 const DispatchCapture: FC<{ dispatchRef: DispatchRef }> = ({ dispatchRef }) => {
@@ -49,12 +41,8 @@ const DispatchCapture: FC<{ dispatchRef: DispatchRef }> = ({ dispatchRef }) => {
   return null;
 };
 
-// ─────────────────────────────────────────────────────────────────────────────
-// renderIsolated
 // Renders AudioPlayerProvider without StrictMode so render-body counters are
 // not inflated by React's double-invoke behaviour in development.
-// ─────────────────────────────────────────────────────────────────────────────
-
 function renderIsolated(children: ReactNode, curPlayId = 1) {
   const dispatchRef: DispatchRef = { current: null };
   render(
@@ -69,13 +57,9 @@ function renderIsolated(children: ReactNode, curPlayId = 1) {
   return dispatchRef as { current: (action: AudioContextAction) => void };
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// makeProbes
 // Creates fresh probe component types and independent render counters per test.
 // Components are defined inside this factory so each test gets unique function
 // references — React will not try to reconcile across test renders.
-// ─────────────────────────────────────────────────────────────────────────────
-
 function makeProbes() {
   let playbackCount = 0;
   let timeCount = 0;
@@ -128,10 +112,6 @@ function makeProbes() {
   };
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Helpers
-// ─────────────────────────────────────────────────────────────────────────────
-
 /** All four probes as a JSX fragment — mount them all for full isolation coverage. */
 function AllProbes({
   PlaybackProbe,
@@ -150,10 +130,6 @@ function AllProbes({
     </>
   );
 }
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Tests
-// ─────────────────────────────────────────────────────────────────────────────
 
 describe("playbackContext isolation", () => {
   it("CHANGE_PLAYING_STATE only re-renders playback consumers", () => {

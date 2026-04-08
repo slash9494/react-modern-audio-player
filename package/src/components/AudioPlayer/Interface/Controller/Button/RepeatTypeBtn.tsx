@@ -21,8 +21,6 @@ const repeatAriaLabels: Record<RepeatType, string> = {
 };
 
 // Cycle order: ALL → ONE → NONE → SHUFFLE → ALL.
-// A direct lookup makes the cycle declarative and removes the four-case
-// switch + default branch from the click handler.
 const NEXT_REPEAT_TYPE: Record<RepeatType, RepeatType> = {
   ALL: "ONE",
   ONE: "NONE",

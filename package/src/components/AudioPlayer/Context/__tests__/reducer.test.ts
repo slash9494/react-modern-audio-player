@@ -25,9 +25,6 @@ const makeBaseState = (): AudioPlayerStateContext => ({
   },
 });
 
-// ─────────────────────────────────────────
-// NEXT_AUDIO
-// ─────────────────────────────────────────
 describe("NEXT_AUDIO", () => {
   it("advances to next track (normal)", () => {
     const state = { ...makeBaseState(), curIdx: 0, curPlayId: 1 };
@@ -110,9 +107,6 @@ describe("NEXT_AUDIO", () => {
   });
 });
 
-// ─────────────────────────────────────────
-// PREV_AUDIO
-// ─────────────────────────────────────────
 describe("PREV_AUDIO", () => {
   it("goes to previous track (normal)", () => {
     const state = { ...makeBaseState(), curIdx: 1, curPlayId: 2 };
@@ -221,9 +215,6 @@ describe("PREV_AUDIO", () => {
   });
 });
 
-// ─────────────────────────────────────────
-// CHANGE_PLAYING_STATE
-// ─────────────────────────────────────────
 describe("CHANGE_PLAYING_STATE", () => {
   it("toggles isPlaying from false to true", () => {
     const base = makeBaseState();
@@ -267,9 +258,6 @@ describe("CHANGE_PLAYING_STATE", () => {
   });
 });
 
-// ─────────────────────────────────────────
-// SET_REPEAT_TYPE
-// ─────────────────────────────────────────
 describe("SET_REPEAT_TYPE", () => {
   it.each([
     ["ALL" as const],
@@ -285,9 +273,6 @@ describe("SET_REPEAT_TYPE", () => {
   });
 });
 
-// ─────────────────────────────────────────
-// UPDATE_PLAY_LIST
-// ─────────────────────────────────────────
 describe("UPDATE_PLAY_LIST", () => {
   it("updates playlist and recalculates curIdx", () => {
     const newPlayList = [
@@ -317,9 +302,6 @@ describe("UPDATE_PLAY_LIST", () => {
   });
 });
 
-// ─────────────────────────────────────────
-// SET_VOLUME / SET_MUTED
-// ─────────────────────────────────────────
 describe("SET_VOLUME", () => {
   it("updates volume in curAudioState", () => {
     const next = audioPlayerReducer(makeBaseState(), {

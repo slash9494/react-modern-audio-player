@@ -129,11 +129,9 @@ export const AudioPlayerProvider = <
     ]
   );
 
-  // Native HTML <audio> attributes piped through audioInitialState
-  // (controls, preload, loop, crossOrigin, playsInline, ...). Derived from
-  // the prop reference rather than reducer state so per-tick playback
-  // dispatches do not invalidate this object and force <Audio> to re-render.
-  const audioAttrsValue = useMemo<AudioAttrsContext>(() => {
+  // Sourced from the audioInitialState prop reference (not reducer state)
+  // so per-tick SET_AUDIO_STATE dispatches never invalidate this object.
+  const audioNativeAttrsValue = useMemo<AudioAttrsContext>(() => {
     if (!audioInitialState) return {};
     const {
       isPlaying: _isPlaying,
@@ -145,16 +143,8 @@ export const AudioPlayerProvider = <
       muted: _muted,
       curPlayId: _curPlayId,
       ...nativeAttrs
-    } = audioInitialState as AudioAttrsContext & {
-      isPlaying?: unknown;
-      repeatType?: unknown;
-      isLoadedMetaData?: unknown;
-      currentTime?: unknown;
-      duration?: unknown;
-      volume?: unknown;
-      muted?: unknown;
-      curPlayId?: unknown;
-    };
+    } = audioInitialState;
+
     return nativeAttrs;
   }, [audioInitialState]);
 
@@ -178,7 +168,7 @@ export const AudioPlayerProvider = <
         <trackContext.Provider value={trackValue}>
           <uiContext.Provider value={uiValue}>
             <resourceContext.Provider value={resourceValue}>
-              <audioAttrsContext.Provider value={audioAttrsValue}>
+              <audioAttrsContext.Provider value={audioNativeAttrsValue}>
                 <audioPlayerDispatchContext.Provider value={dispatch}>
                   {children}
                 </audioPlayerDispatchContext.Provider>

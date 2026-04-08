@@ -22,10 +22,12 @@ export const PrevNnextBtn: FC<PrevNnextBtnProps> = memo(function PrevNnextBtn({
       audioPlayerDispatch({ type: "NEXT_AUDIO" });
     }
     if (type === "prev") {
-      const currentTime =
-        elementRefs?.waveformInst?.getCurrentTime() ??
-        elementRefs?.audioEl?.currentTime ??
-        0;
+      // wavesurfer is configured with `backend: "MediaElement"` and wraps
+      // the same `<audio>` element (useWavesurfer.ts), so
+      // waveformInst.getCurrentTime() and audioEl.currentTime always
+      // return identical values. Reading audioEl directly is sufficient —
+      // the legacy reducer used to OR both refs but that branch was dead.
+      const currentTime = elementRefs?.audioEl?.currentTime ?? 0;
       audioPlayerDispatch({ type: "PREV_AUDIO", currentTime });
     }
   };
