@@ -7,6 +7,10 @@ import {
   Placements,
 } from "@/components/AudioPlayer/Context";
 import { playbackContext } from "@/components/AudioPlayer/Context/PlaybackContext";
+import {
+  AudioAttrsContext,
+  audioAttrsContext,
+} from "@/components/AudioPlayer/Context/AudioAttrsContext";
 import { timeContext } from "@/components/AudioPlayer/Context/TimeContext";
 import { trackContext } from "@/components/AudioPlayer/Context/TrackContext";
 import { uiContext } from "@/components/AudioPlayer/Context/UIContext";
@@ -125,6 +129,35 @@ export const AudioPlayerProvider = <
     ]
   );
 
+  // Native HTML <audio> attributes piped through audioInitialState
+  // (controls, preload, loop, crossOrigin, playsInline, ...). Derived from
+  // the prop reference rather than reducer state so per-tick playback
+  // dispatches do not invalidate this object and force <Audio> to re-render.
+  const audioAttrsValue = useMemo<AudioAttrsContext>(() => {
+    if (!audioInitialState) return {};
+    const {
+      isPlaying: _isPlaying,
+      repeatType: _repeatType,
+      isLoadedMetaData: _isLoadedMetaData,
+      currentTime: _currentTime,
+      duration: _duration,
+      volume: _volume,
+      muted: _muted,
+      curPlayId: _curPlayId,
+      ...nativeAttrs
+    } = audioInitialState as AudioAttrsContext & {
+      isPlaying?: unknown;
+      repeatType?: unknown;
+      isLoadedMetaData?: unknown;
+      currentTime?: unknown;
+      duration?: unknown;
+      volume?: unknown;
+      muted?: unknown;
+      curPlayId?: unknown;
+    };
+    return nativeAttrs;
+  }, [audioInitialState]);
+
   const resourceValue = useMemo(
     () => ({
       elementRefs: state.elementRefs,
@@ -145,9 +178,11 @@ export const AudioPlayerProvider = <
         <trackContext.Provider value={trackValue}>
           <uiContext.Provider value={uiValue}>
             <resourceContext.Provider value={resourceValue}>
-              <audioPlayerDispatchContext.Provider value={dispatch}>
-                {children}
-              </audioPlayerDispatchContext.Provider>
+              <audioAttrsContext.Provider value={audioAttrsValue}>
+                <audioPlayerDispatchContext.Provider value={dispatch}>
+                  {children}
+                </audioPlayerDispatchContext.Provider>
+              </audioAttrsContext.Provider>
             </resourceContext.Provider>
           </uiContext.Provider>
         </trackContext.Provider>

@@ -1,8 +1,9 @@
 import { useNonNullableContext } from "@/hooks/useNonNullableContext";
 import { audioPlayerDispatchContext } from "@/components/AudioPlayer/Context/dispatchContext";
+import { audioAttrsContext } from "@/components/AudioPlayer/Context/AudioAttrsContext";
 import { usePlaybackContext } from "@/hooks/context/usePlaybackContext";
 import { useTrackContext } from "@/hooks/context/useTrackContext";
-import React, { FC, useEffect, useRef } from "react";
+import React, { FC, useContext, useEffect, useRef } from "react";
 import { useAudio } from "./useAudio";
 
 // TODO : optimize large audio files
@@ -13,6 +14,7 @@ export const Audio: FC<{
   const audioRef = useRef<HTMLAudioElement>(null);
   const { isPlaying, muted } = usePlaybackContext();
   const { curPlayId, playList } = useTrackContext();
+  const nativeAudioAttrs = useContext(audioAttrsContext) ?? {};
   const audioPlayerDispatch = useNonNullableContext(audioPlayerDispatchContext);
 
   const curPlayedAudioData = playList.find(
@@ -37,6 +39,7 @@ export const Audio: FC<{
   return (
     <audio
       id="rm-audio-player-audio"
+      {...nativeAudioAttrs}
       autoPlay={isPlaying}
       muted={muted}
       ref={audioRef}
