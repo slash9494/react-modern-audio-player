@@ -16,8 +16,7 @@ const waveformColors = {
 
 export const useWaveSurfer = (waveformRef: React.RefObject<HTMLElement>) => {
   const audioPlayerDispatch = useNonNullableContext(audioPlayerDispatchContext);
-  const { isPlaying: isPlaybackActive, volume: playbackVolume } =
-    usePlaybackContext();
+  const { isPlaying: isPlaybackActive } = usePlaybackContext();
   const { curPlayId } = useTrackContext();
   const { elementRefs } = useResourceContext();
   const { colorScheme } = useUIContext();
@@ -102,9 +101,11 @@ export const useWaveSurfer = (waveformRef: React.RefObject<HTMLElement>) => {
 
     waveform.load(audioEl);
 
-    if (playbackVolume != null) {
-      audioEl.volume = playbackVolume;
-    }
+    // Volume is owned by useAudio's volume effect. Writing it here during
+    // wavesurfer re-init (e.g. colorScheme change) would fire a DOM
+    // volumechange event while the previous wavesurfer instance's
+    // listener is still attached to audioEl — its `this.mediaElement` is
+    // already nulled by destroy(), so the listener throws.
 
     const onReady = () => {
       if (!isTrackChange && savedTime > 0 && audioEl.duration) {
