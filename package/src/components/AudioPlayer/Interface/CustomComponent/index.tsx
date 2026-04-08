@@ -25,9 +25,21 @@ export const CustomComponent: FC<CustomComponentProps> = ({
   const ui = useUIContext();
   const resource = useResourceContext();
 
-  // Assemble full state shape for backward-compat with custom component children
+  // Assemble full state shape for backward-compat with custom component
+  // children. The internal playbackContext was flattened in v2 — reconstruct
+  // the legacy `curAudioState` shape here so external consumers continue to
+  // see the nested object they were originally written against.
   const audioPlayerState = {
-    ...playback,
+    curAudioState: {
+      isPlaying: playback.isPlaying,
+      volume: playback.volume,
+      muted: playback.muted,
+      repeatType: playback.repeatType,
+      isLoadedMetaData: playback.isLoadedMetaData,
+      currentTime: time.currentTime,
+      duration: time.duration,
+    },
+    audioResetKey: playback.audioResetKey,
     ...time,
     ...track,
     ...ui,

@@ -16,7 +16,7 @@ const waveformColors = {
 
 export const useWaveSurfer = (waveformRef: React.RefObject<HTMLElement>) => {
   const audioPlayerDispatch = useNonNullableContext(audioPlayerDispatchContext);
-  const { curAudioState } = usePlaybackContext();
+  const { isPlaying, volume } = usePlaybackContext();
   const { curPlayId } = useTrackContext();
   const { elementRefs } = useResourceContext();
   const { colorScheme } = useUIContext();
@@ -92,12 +92,12 @@ export const useWaveSurfer = (waveformRef: React.RefObject<HTMLElement>) => {
     prevPlayIdRef.current = curPlayId;
 
     const savedTime = isTrackChange ? 0 : audioEl.currentTime;
-    const wasPlaying = curAudioState.isPlaying;
+    const wasPlaying = isPlaying;
 
     waveform.load(audioEl);
 
-    if (curAudioState.volume != null) {
-      audioEl.volume = curAudioState.volume;
+    if (volume != null) {
+      audioEl.volume = volume;
     }
 
     const onReady = () => {

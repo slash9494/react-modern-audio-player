@@ -32,7 +32,7 @@ export interface AudioPlayerControls {
 
 export const useAudioPlayer = (): AudioPlayerControls => {
   const dispatch = useNonNullableContext(audioPlayerDispatchContext);
-  const { curAudioState } = usePlaybackContext();
+  const playback = usePlaybackContext();
   const { currentTime, duration } = useTimeContext();
   const { playList, curIdx } = useTrackContext();
   const { elementRefs } = useResourceContext();
@@ -56,20 +56,26 @@ export const useAudioPlayer = (): AudioPlayerControls => {
 
   const prev = useCallback(() => {
     if (playList.length === 0) return;
-    dispatch({ type: "PREV_AUDIO" });
-  }, [dispatch, playList.length]);
+    const currentTime =
+      elementRefs?.waveformInst?.getCurrentTime() ??
+      elementRefs?.audioEl?.currentTime ??
+      0;
+    dispatch({ type: "PREV_AUDIO", currentTime });
+  }, [
+    dispatch,
+    playList.length,
+    elementRefs?.audioEl,
+    elementRefs?.waveformInst,
+  ]);
 
   const seek = useCallback(
     (time: number) => {
-      if (elementRefs?.audioEl) {
-        elementRefs.audioEl.currentTime = time;
-        dispatch({
-          type: "SET_AUDIO_STATE",
-          audioState: { currentTime: time },
-        });
-      }
+      dispatch({
+        type: "SET_AUDIO_STATE",
+        audioState: { currentTime: time },
+      });
     },
-    [elementRefs?.audioEl, dispatch]
+    [dispatch]
   );
 
   const setVolume = useCallback(
@@ -93,12 +99,12 @@ export const useAudioPlayer = (): AudioPlayerControls => {
   );
 
   return {
-    isPlaying: curAudioState.isPlaying ?? false,
-    volume: curAudioState.volume ?? 1,
+    isPlaying: playback.isPlaying ?? false,
+    volume: playback.volume ?? 1,
     currentTime,
     duration,
-    repeatType: curAudioState.repeatType ?? "ALL",
-    muted: curAudioState.muted ?? false,
+    repeatType: playback.repeatType ?? "ALL",
+    muted: playback.muted ?? false,
     currentTrack: playList[curIdx] ?? null,
     currentIndex: curIdx,
     playList,

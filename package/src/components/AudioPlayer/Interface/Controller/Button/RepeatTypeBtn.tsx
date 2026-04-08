@@ -31,35 +31,35 @@ const NEXT_REPEAT_TYPE: Record<RepeatType, RepeatType> = {
 };
 
 export const RepeatTypeBtn: FC = memo(function RepeatTypeBtn() {
-  const { curAudioState } = usePlaybackContext();
+  const { repeatType } = usePlaybackContext();
   const { customIcons } = useResourceContext();
   const audioPlayerDispatch = useNonNullableContext(audioPlayerDispatchContext);
   const changeRepeatType = () => {
     audioPlayerDispatch({
       type: "SET_REPEAT_TYPE",
-      repeatType: NEXT_REPEAT_TYPE[curAudioState.repeatType],
+      repeatType: NEXT_REPEAT_TYPE[repeatType],
     });
   };
 
   return (
     <StyledBtn
       type="button"
-      aria-label={repeatAriaLabels[curAudioState.repeatType]}
+      aria-label={repeatAriaLabels[repeatType]}
       onClick={changeRepeatType}
       className="rmap-repeat-btn"
       data-testid="repeat-btn"
-      data-repeattype={curAudioState.repeatType}
+      data-repeattype={repeatType}
     >
-      {curAudioState.repeatType === "ALL" && (
+      {repeatType === "ALL" && (
         <Icon render={<TbRepeat />} customIcon={customIcons?.repeatAll} />
       )}
-      {curAudioState.repeatType === "ONE" && (
+      {repeatType === "ONE" && (
         <Icon render={<TbRepeatOnce />} customIcon={customIcons?.repeatOne} />
       )}
-      {curAudioState.repeatType === "NONE" && (
+      {repeatType === "NONE" && (
         <Icon render={<TbRepeatOff />} customIcon={customIcons?.repeatNone} />
       )}
-      {curAudioState.repeatType === "SHUFFLE" && (
+      {repeatType === "SHUFFLE" && (
         <Icon
           render={<TbArrowsShuffle />}
           customIcon={customIcons?.repeatShuffle}

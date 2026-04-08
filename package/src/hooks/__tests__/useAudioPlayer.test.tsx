@@ -9,8 +9,6 @@ import { renderHook, act } from "@testing-library/react";
 import { FC, ReactNode } from "react";
 import { AudioPlayerProvider } from "@/components/Provider/AudioPlayerProvider";
 import { useAudioPlayer } from "../useAudioPlayer";
-import { useNonNullableContext } from "../useNonNullableContext";
-import { audioPlayerDispatchContext } from "@/components/AudioPlayer/Context/dispatchContext";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Fixtures
@@ -202,33 +200,18 @@ describe("setVolume", () => {
 // ─────────────────────────────────────────────────────────────────────────────
 
 describe("seek", () => {
-  it("sets audioEl.currentTime when audioEl is present", () => {
-    const audioEl = document.createElement("audio");
-    Object.defineProperty(audioEl, "currentTime", {
-      writable: true,
-      value: 0,
-    });
-
-    const { result } = renderHook(
-      () => ({
-        player: useAudioPlayer(),
-        dispatch: useNonNullableContext(audioPlayerDispatchContext),
-      }),
-      { wrapper: Wrapper }
-    );
-
-    act(() => {
-      result.current.dispatch({
-        type: "SET_ELEMENT_REFS",
-        elementRefs: { audioEl },
-      });
+  it("dispatches the new currentTime so timeContext consumers see it", () => {
+    // seek() is now a pure dispatch — DOM sync is handled by useAudio's
+    // effect once the resulting state change reaches the <Audio> element.
+    const { result } = renderHook(() => useAudioPlayer(), {
+      wrapper: Wrapper,
     });
 
     act(() => {
-      result.current.player.seek(30);
+      result.current.seek(30);
     });
 
-    expect(audioEl.currentTime).toBe(30);
+    expect(result.current.currentTime).toBe(30);
   });
 
   it("does not throw when audioEl is absent", () => {

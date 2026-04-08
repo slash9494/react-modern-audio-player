@@ -3,6 +3,8 @@ import { getRandomNumber } from "@/utils/getRandomNumber";
 import { AudioContextAction } from "./dispatchContext";
 import { AudioPlayerStateContext } from "./StateContext";
 
+const PREV_RESET_THRESHOLD_SEC = 1;
+
 const getRandomIdx = (curIdx: number, minNumber: number, maxNumber: number) => {
   // Guard: when the playable range collapses to a single index (e.g. a
   // playlist with one track) the loop below would spin forever waiting
@@ -78,13 +80,14 @@ export const audioPlayerReducer = (
       // (a) flip isLoadedMetaData=false on the only track and disable the
       // progress bar (ALL/no-mode path) or (b) re-dispatch the same index
       // for SHUFFLE without resetting audio. Treat it as a single concern.
+      const isSingleTrackPlaylist = state.playList.length <= 1;
+      const shouldRewindToStart = action.currentTime > PREV_RESET_THRESHOLD_SEC;
+      const isFirstTrackNoRepeat =
+        state.curAudioState.repeatType === "NONE" && state.curIdx === 0;
       if (
-        state.playList.length <= 1 ||
-        (state.elementRefs?.audioEl &&
-          state.elementRefs?.audioEl.currentTime > 1) ||
-        (state.elementRefs?.waveformInst &&
-          state.elementRefs?.waveformInst.getCurrentTime() > 1) ||
-        (state.curAudioState.repeatType === "NONE" && state.curIdx === 0)
+        isSingleTrackPlaylist ||
+        shouldRewindToStart ||
+        isFirstTrackNoRepeat
       ) {
         return {
           ...state,

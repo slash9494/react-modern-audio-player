@@ -10,7 +10,7 @@ export const VolumeSlider: FC<{ placement: VolumeSliderPlacement }> = ({
   placement,
 }) => {
   const contentRef = useRef<HTMLDivElement>(null);
-  const { curAudioState } = usePlaybackContext();
+  const { volume, muted } = usePlaybackContext();
   const { elementRefs } = useResourceContext();
   const audioPlayerDispatch = useNonNullableContext(audioPlayerDispatchContext);
 
@@ -18,7 +18,7 @@ export const VolumeSlider: FC<{ placement: VolumeSliderPlacement }> = ({
     (e: ChangeEvent<HTMLInputElement>) => {
       e.stopPropagation();
       e.preventDefault();
-      if (curAudioState.muted) {
+      if (muted) {
         audioPlayerDispatch({ type: "SET_MUTED", muted: false });
       }
 
@@ -29,14 +29,13 @@ export const VolumeSlider: FC<{ placement: VolumeSliderPlacement }> = ({
         volume: parsedValue,
       });
     },
-    [curAudioState.muted, audioPlayerDispatch]
+    [muted, audioPlayerDispatch]
   );
 
-  const resolvedVolume =
-    curAudioState.volume ?? elementRefs?.audioEl?.volume ?? 0;
+  const resolvedVolume = volume ?? elementRefs?.audioEl?.volume ?? 0;
   const volumeValue = resolvedVolume * 100;
   const volumePercent = Math.round(volumeValue);
-  const isMuted = curAudioState.muted;
+  const isMuted = muted;
 
   const volumeStyle = useMemo(
     () =>

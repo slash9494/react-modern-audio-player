@@ -80,7 +80,11 @@ export const AudioPlayerProvider = <
 
   const playbackValue = useMemo(
     () => ({
-      curAudioState: state.curAudioState,
+      isPlaying: state.curAudioState.isPlaying,
+      volume: state.curAudioState.volume,
+      muted: state.curAudioState.muted,
+      repeatType: state.curAudioState.repeatType,
+      isLoadedMetaData: state.curAudioState.isLoadedMetaData,
       audioResetKey: state.audioResetKey,
     }),
     [

@@ -6,7 +6,6 @@ import { resourceContext } from "@/components/AudioPlayer/Context/ResourceContex
 import { audioPlayerDispatchContext } from "@/components/AudioPlayer/Context/dispatchContext";
 import { uiContext } from "@/components/AudioPlayer/Context/UIContext";
 import { trackContext } from "@/components/AudioPlayer/Context/TrackContext";
-import { AudioState } from "@/components/AudioPlayer/Context/StateContext";
 import { Progress } from "../index";
 
 const mockDispatch = vi.fn();
@@ -22,12 +21,11 @@ const renderProgress = (progress: "bar" | "waveform") =>
         <timeContext.Provider value={{ currentTime: 0, duration: 180 }}>
           <playbackContext.Provider
             value={{
-              curAudioState: {
-                isPlaying: false,
-                repeatType: "ALL",
-                muted: false,
-                volume: 0.5,
-              } as AudioState,
+              isPlaying: false,
+              repeatType: "ALL",
+              muted: false,
+              volume: 0.5,
+              isLoadedMetaData: undefined,
               audioResetKey: 0,
             }}
           >

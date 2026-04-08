@@ -15,14 +15,18 @@ export const PrevNnextBtn: FC<PrevNnextBtnProps> = memo(function PrevNnextBtn({
   type,
   visible,
 }) {
-  const { customIcons } = useResourceContext();
+  const { customIcons, elementRefs } = useResourceContext();
   const audioPlayerDispatch = useNonNullableContext(audioPlayerDispatchContext);
   const changeAudio = () => {
     if (type === "next") {
       audioPlayerDispatch({ type: "NEXT_AUDIO" });
     }
     if (type === "prev") {
-      audioPlayerDispatch({ type: "PREV_AUDIO" });
+      const currentTime =
+        elementRefs?.waveformInst?.getCurrentTime() ??
+        elementRefs?.audioEl?.currentTime ??
+        0;
+      audioPlayerDispatch({ type: "PREV_AUDIO", currentTime });
     }
   };
   const PrevNnextIcon = useMemo(() => {

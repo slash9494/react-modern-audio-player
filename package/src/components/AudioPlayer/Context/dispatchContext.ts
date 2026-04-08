@@ -18,7 +18,7 @@ export type AudioContextAction<
   TInterfacePlacementLength extends number = typeof defaultInterfacePlacementMaxLength
 > =
   | { type: "NEXT_AUDIO" }
-  | { type: "PREV_AUDIO" }
+  | { type: "PREV_AUDIO"; currentTime: number }
   | { type: "UPDATE_PLAY_LIST"; playList: PlayList }
   | { type: "SET_AUDIO_STATE"; audioState: Partial<AudioState> }
   | {

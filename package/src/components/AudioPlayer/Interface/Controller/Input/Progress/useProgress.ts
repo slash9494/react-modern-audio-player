@@ -10,13 +10,13 @@ import {
 } from "react";
 
 export const useProgress = (): HTMLAttributes<HTMLDivElement> => {
-  const { curAudioState } = usePlaybackContext();
+  const { isLoadedMetaData } = usePlaybackContext();
   const { elementRefs } = useResourceContext();
   const [isTimeChangeActive, setTimeChangeActive] = useState(false);
 
   const moveAudioTime = useCallback(
     (e: MouseEvent<HTMLDivElement>) => {
-      if (!elementRefs?.audioEl || !curAudioState?.isLoadedMetaData) return;
+      if (!elementRefs?.audioEl || !isLoadedMetaData) return;
       const { clientX } = e;
       const { clientWidth } = e.currentTarget;
       const boundingRect = e.currentTarget.getBoundingClientRect();
@@ -25,7 +25,7 @@ export const useProgress = (): HTMLAttributes<HTMLDivElement> => {
         safeRatio(curPositionX, clientWidth) * elementRefs.audioEl.duration;
       elementRefs.audioEl.currentTime = curPositionTime;
     },
-    [curAudioState?.isLoadedMetaData, elementRefs?.audioEl]
+    [isLoadedMetaData, elementRefs?.audioEl]
   );
 
   // Block native text selection while user is dragging the progress bar.

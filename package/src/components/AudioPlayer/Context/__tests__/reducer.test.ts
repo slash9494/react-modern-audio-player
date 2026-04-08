@@ -116,29 +116,32 @@ describe("NEXT_AUDIO", () => {
 describe("PREV_AUDIO", () => {
   it("goes to previous track (normal)", () => {
     const state = { ...makeBaseState(), curIdx: 1, curPlayId: 2 };
-    const next = audioPlayerReducer(state, { type: "PREV_AUDIO" });
+    const next = audioPlayerReducer(state, {
+      type: "PREV_AUDIO",
+      currentTime: 0,
+    });
     expect(next.curIdx).toBe(0);
     expect(next.curPlayId).toBe(1);
   });
 
   it("wraps around to last track when at first (repeatType ALL)", () => {
     const state = { ...makeBaseState(), curIdx: 0, curPlayId: 1 };
-    const next = audioPlayerReducer(state, { type: "PREV_AUDIO" });
+    const next = audioPlayerReducer(state, {
+      type: "PREV_AUDIO",
+      currentTime: 0,
+    });
     expect(next.curIdx).toBe(2);
     expect(next.curPlayId).toBe(3);
   });
 
-  it("resets current track (stays) when currentTime > 1", () => {
-    const audioEl = document.createElement("audio");
-    audioEl.currentTime = 5;
-    const base = makeBaseState();
-    const state = {
-      ...base,
-      curIdx: 1,
-      curPlayId: 2,
-      elementRefs: { audioEl },
-    };
-    const next = audioPlayerReducer(state, { type: "PREV_AUDIO" });
+  it("resets current track (stays) when payload currentTime > 1", () => {
+    // Reducer is now pure: rewind decision uses the action payload only,
+    // so the test no longer needs to construct a mock <audio> element.
+    const state = { ...makeBaseState(), curIdx: 1, curPlayId: 2 };
+    const next = audioPlayerReducer(state, {
+      type: "PREV_AUDIO",
+      currentTime: 5,
+    });
     expect(next.curIdx).toBe(1);
     expect(next.curPlayId).toBe(2);
     expect(next.audioResetKey).toBe(state.audioResetKey + 1);
@@ -155,7 +158,10 @@ describe("PREV_AUDIO", () => {
         repeatType: "NONE" as const,
       },
     };
-    const next = audioPlayerReducer(state, { type: "PREV_AUDIO" });
+    const next = audioPlayerReducer(state, {
+      type: "PREV_AUDIO",
+      currentTime: 0,
+    });
     expect(next.curIdx).toBe(0);
     expect(next.audioResetKey).toBe(state.audioResetKey + 1);
   });
@@ -173,7 +179,7 @@ describe("PREV_AUDIO", () => {
     };
     // SHUFFLE must never return the current index
     const nexts = Array.from({ length: 50 }, () =>
-      audioPlayerReducer(state, { type: "PREV_AUDIO" })
+      audioPlayerReducer(state, { type: "PREV_AUDIO", currentTime: 0 })
     );
     expect(nexts.every((s) => s.curIdx !== 1)).toBe(true);
     expect(
@@ -202,7 +208,10 @@ describe("PREV_AUDIO", () => {
         audioResetKey: 0,
         curAudioState: { ...singleTrackState.curAudioState, repeatType: mode },
       };
-      const next = audioPlayerReducer(state, { type: "PREV_AUDIO" });
+      const next = audioPlayerReducer(state, {
+        type: "PREV_AUDIO",
+        currentTime: 0,
+      });
       expect(next.curIdx).toBe(0);
       expect(next.curPlayId).toBe(1);
       expect(next.curAudioState.isLoadedMetaData).toBe(true);

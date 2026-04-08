@@ -9,7 +9,7 @@ import { MdPauseCircleFilled, MdPlayCircleFilled } from "@/components/icons";
 import { Icon } from "../Icon";
 
 export const PlayBtn: FC = memo(function PlayBtn() {
-  const { curAudioState } = usePlaybackContext();
+  const { isPlaying } = usePlaybackContext();
   const { customIcons } = useResourceContext();
   const audioPlayerDispatch = useNonNullableContext(audioPlayerDispatchContext);
 
@@ -19,12 +19,12 @@ export const PlayBtn: FC = memo(function PlayBtn() {
   return (
     <StyledBtn
       type="button"
-      aria-label={curAudioState.isPlaying ? "Pause" : "Play"}
+      aria-label={isPlaying ? "Pause" : "Play"}
       onClick={changePlayState}
       className="rmap-play-btn"
       data-testid="play-btn"
     >
-      {curAudioState.isPlaying ? (
+      {isPlaying ? (
         <Icon
           render={<MdPauseCircleFilled />}
           customIcon={customIcons?.pause}

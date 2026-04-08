@@ -446,7 +446,7 @@ describe("cross-context actions — intentional multi-slice updates", () => {
     const dispatch = renderIsolated(<AllProbes {...probes} />, 2);
     const base = probes.snapshot();
 
-    act(() => dispatch.current({ type: "PREV_AUDIO" }));
+    act(() => dispatch.current({ type: "PREV_AUDIO", currentTime: 0 }));
 
     const after = probes.snapshot();
     expect(after.trackCount - base.trackCount).toBe(1);

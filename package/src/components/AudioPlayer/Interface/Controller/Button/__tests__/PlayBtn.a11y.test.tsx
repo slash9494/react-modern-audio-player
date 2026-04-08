@@ -5,17 +5,14 @@ import { PlayBtn } from "../PlayBtn";
 import { playbackContext } from "@/components/AudioPlayer/Context/PlaybackContext";
 import { resourceContext } from "@/components/AudioPlayer/Context/ResourceContext";
 import { audioPlayerDispatchContext } from "@/components/AudioPlayer/Context/dispatchContext";
-import { AudioState } from "@/components/AudioPlayer/Context/StateContext";
-
 const mockDispatch = vi.fn();
 
 const makePlaybackValue = (isPlaying: boolean) => ({
-  curAudioState: {
-    isPlaying,
-    repeatType: "ALL" as const,
-    muted: false,
-    volume: 0.5,
-  } as AudioState,
+  isPlaying,
+  repeatType: "ALL" as const,
+  muted: false,
+  volume: 0.5,
+  isLoadedMetaData: undefined,
   audioResetKey: 0,
 });
 

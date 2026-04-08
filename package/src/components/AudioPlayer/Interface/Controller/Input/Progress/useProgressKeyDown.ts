@@ -5,12 +5,12 @@ import React, { useCallback } from "react";
 export const useProgressKeyDown = (
   onSeek?: (newTime: number, duration: number) => void
 ) => {
-  const { curAudioState } = usePlaybackContext();
+  const { isLoadedMetaData } = usePlaybackContext();
   const { elementRefs } = useResourceContext();
 
   return useCallback(
     (event: React.KeyboardEvent<HTMLDivElement>) => {
-      if (!elementRefs?.audioEl || !curAudioState?.isLoadedMetaData) return;
+      if (!elementRefs?.audioEl || !isLoadedMetaData) return;
       const audio = elementRefs.audioEl;
       let newTime: number | null = null;
       switch (event.key) {
@@ -40,6 +40,6 @@ export const useProgressKeyDown = (
         onSeek?.(newTime, audio.duration);
       }
     },
-    [elementRefs?.audioEl, curAudioState?.isLoadedMetaData, onSeek]
+    [elementRefs?.audioEl, isLoadedMetaData, onSeek]
   );
 };
