@@ -41,10 +41,10 @@ describe("base class", () => {
     mockPlacement(undefined);
   });
 
-  it("rm-audio-player-provider class always present", () => {
+  it("rmap-player-provider class always present", () => {
     const { container } = renderProvider();
     const el = container.firstChild as HTMLElement;
-    expect(el.classList.contains("rm-audio-player-provider")).toBe(true);
+    expect(el.classList.contains("rmap-player-provider")).toBe(true);
   });
 
   it("rootContainerProps.className appended", () => {
@@ -52,13 +52,13 @@ describe("base class", () => {
       rootContainerProps: { className: "custom-class" },
     });
     const el = container.firstChild as HTMLElement;
-    expect(el.className).toBe("rm-audio-player-provider custom-class");
+    expect(el.className).toBe("rmap-player-provider custom-class");
   });
 
   it("no trailing space when className absent", () => {
     const { container } = renderProvider();
     const el = container.firstChild as HTMLElement;
-    expect(el.className).toBe("rm-audio-player-provider");
+    expect(el.className).toBe("rmap-player-provider");
   });
 });
 

@@ -1,34 +1,34 @@
-.rm-audio-player-provider * {
+.rmap-player-provider * {
   box-sizing: border-box;
   font: inherit;
   font-size: 100%;
 }
 
-.rm-audio-player-provider ol,
-.rm-audio-player-provider ul {
+.rmap-player-provider ol,
+.rmap-player-provider ul {
   list-style: none;
   margin: 0;
   padding: 0;
 }
 
-.rm-audio-player-provider blockquote,
-.rm-audio-player-provider q {
+.rmap-player-provider blockquote,
+.rmap-player-provider q {
   quotes: none;
 }
 
-.rm-audio-player-provider blockquote:before,
-.rm-audio-player-provider blockquote:after,
-.rm-audio-player-provider q:before,
-.rm-audio-player-provider q:after {
+.rmap-player-provider blockquote:before,
+.rmap-player-provider blockquote:after,
+.rmap-player-provider q:before,
+.rmap-player-provider q:after {
   content: none;
 }
 
-.rm-audio-player-provider table {
+.rmap-player-provider table {
   border-collapse: collapse;
   border-spacing: 0;
 }
 
-.rm-audio-player-provider button {
+.rmap-player-provider button {
   margin: 0;
   padding: 0;
   background: transparent;

@@ -183,7 +183,7 @@ interface AudioPlayerProps {
 | `customIcons`        | [CustomIcons](#customicons)               | undefined                                                                                                       |
 | `coverImgsCss`       | [CoverImgsCss](#coverimgscss)             | undefined                                                                                                       |
 | `placement`          | [Placement](#placement)                   | playListPlacement : "bottom" </br>interfacePlacement :[DefaultInterfacePlacement](#default-interface-placement) |
-| `rootContainerProps` | [RootContainerProps](#rootcontainerprops) | width: 100%<br/>position: 'static'<br/>className: rm-audio-player-provider                                      |
+| `rootContainerProps` | [RootContainerProps](#rootcontainerprops) | width: 100%<br/>position: 'static'<br/>className: rmap-player-provider                                          |
 | `colorScheme`        | `"light" \| "dark"`                       | undefined (follows OS `prefers-color-scheme`)                                                                   |
 
 ## PlayList
@@ -328,21 +328,21 @@ const defaultInterfacePlacement = {
 
 ## RootContainerProps
 
-`rootContainerProps` accepts any standard `HTMLAttributes<HTMLDivElement>` (e.g. `className`, `style`, `data-*`). The root container always has the class `rm-audio-player-provider` applied automatically.
+`rootContainerProps` accepts any standard `HTMLAttributes<HTMLDivElement>` (e.g. `className`, `style`, `data-*`). The root container always has the class `rmap-player-provider` applied automatically.
 
-> ⚠️ Setting the native CSS `color-scheme` property via `rootContainerProps={{ style: { colorScheme: "dark" } }}` will **not** toggle the player's theme. The library's theme is driven by the `prefers-color-scheme` media query and the `[data-theme]` attribute selector — use the top-level [`colorScheme`](#theme-mode--dark-mode-) prop instead.
+> ⚠️ Setting the native CSS `color-scheme` property via `rootContainerProps={{ style: { colorScheme: "dark" } }}` will **not** toggle the player's theme. The library's theme is driven by the `prefers-color-scheme` media query and the `[data-theme]` attribute selector — use the top-level [`colorScheme`](#theme-mode--dark-mode) prop instead.
 
 # Override Style
 
 ## Theme mode ( dark-mode )
 
 > Dark mode is driven by `system-theme` (`prefers-color-scheme: dark`) by default.
-> To force a specific theme regardless of OS preference, pass the top-level `colorScheme="light" | "dark"` prop on `<AudioPlayer>` — this applies a `data-theme` attribute on `.rm-audio-player-provider` which overrides the media query.
-> You can override any color by redefining the CSS variables below on `.rm-audio-player-provider`.
+> To force a specific theme regardless of OS preference, pass the top-level `colorScheme="light" | "dark"` prop on `<AudioPlayer>` — this applies a `data-theme` attribute on `.rmap-player-provider` which overrides the media query.
+> You can override any color by redefining the CSS variables below on `.rmap-player-provider`.
 
 ```css
 @media (prefers-color-scheme: dark) {
-  .rm-audio-player-provider {
+  .rmap-player-provider {
     --rm-audio-player-interface-container: #1e1e1e;
     /* override other variables as needed */
   }
@@ -357,12 +357,12 @@ const defaultInterfacePlacement = {
 
 ### root ClassName
 
-- rm-audio-player-provider
+- rmap-player-provider
 
 ### color variables
 
 ```css
-.rm-audio-player-provider {
+.rmap-player-provider {
   --rm-audio-player-text-color: #2c2c2c;
   --rm-audio-player-shadow: 0 0 0;
   --rm-audio-player-interface-container: #f5f5f5;

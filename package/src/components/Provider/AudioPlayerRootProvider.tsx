@@ -63,10 +63,10 @@ export const AudioPlayerRootProvider: FC<
   return (
     <div
       {...rootContainerProps}
-      className={`rm-audio-player-provider${
+      className={`rmap-player-provider${
         rootContainerProps?.className ? ` ${rootContainerProps.className}` : ""
       }`}
-      data-theme={colorScheme}
+      data-theme={colorScheme ?? undefined}
       style={style}
     >
       {children}

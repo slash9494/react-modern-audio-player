@@ -192,6 +192,41 @@ describe("useAudio seek sync effect", () => {
   });
 });
 
+describe("useAudio play effect — initial mount", () => {
+  beforeEach(() => {
+    window.HTMLMediaElement.prototype.play = vi
+      .fn()
+      .mockResolvedValue(undefined);
+    window.HTMLMediaElement.prototype.pause = vi.fn();
+  });
+
+  it("calls audioEl.play() when isPlaying=true on initial mount with an audioEl present", () => {
+    const audioEl = makeAudioEl(0, TRACK_DURATION_SEC);
+    const dispatch = vi.fn();
+    const wrapper: FC<{ children: ReactNode }> = ({ children }) => (
+      <timeContext.Provider
+        value={{ currentTime: 0, duration: TRACK_DURATION_SEC }}
+      >
+        <playbackContext.Provider
+          value={{ ...makePlaybackValue(), isPlaying: true }}
+        >
+          <resourceContext.Provider
+            value={{
+              elementRefs: { audioEl, waveformInst: undefined as never },
+            }}
+          >
+            <audioPlayerDispatchContext.Provider value={dispatch}>
+              {children}
+            </audioPlayerDispatchContext.Provider>
+          </resourceContext.Provider>
+        </playbackContext.Provider>
+      </timeContext.Provider>
+    );
+    renderHook(() => useAudio(), { wrapper });
+    expect(audioEl.play).toHaveBeenCalledTimes(1);
+  });
+});
+
 describe("useAudio onEnded handler", () => {
   beforeEach(() => {
     window.HTMLMediaElement.prototype.play = vi

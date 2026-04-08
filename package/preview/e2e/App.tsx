@@ -53,7 +53,7 @@ function parseTestConfig(): TestConfig {
 }
 
 function App() {
-  const config = parseTestConfig();
+  const [config] = useState<TestConfig>(() => parseTestConfig());
 
   // When the test does NOT supply its own activeUI, default to "all on +
   // bar progress" so legacy specs (e.g. ui-placement) that only configure
@@ -116,6 +116,7 @@ function App() {
        */}
       <button
         type="button"
+        data-testid="rmap-toggle-progress-type"
         onClick={() =>
           setProgressType((prev) => (prev === "waveform" ? "bar" : "waveform"))
         }

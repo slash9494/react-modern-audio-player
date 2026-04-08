@@ -12,7 +12,7 @@ export const Audio: FC<{
   audioRef?: React.MutableRefObject<HTMLAudioElement>;
 }> = ({ audioRef: propsAudioRef }) => {
   const audioRef = useRef<HTMLAudioElement>(null);
-  const { isPlaying, muted } = usePlaybackContext();
+  const { muted } = usePlaybackContext();
   const { curPlayId, playList } = useTrackContext();
   const nativeAudioAttrs = useAudioAttrsContext();
   const audioPlayerDispatch = useNonNullableContext(audioPlayerDispatchContext);
@@ -40,7 +40,6 @@ export const Audio: FC<{
     <audio
       id="rm-audio-player-audio"
       {...nativeAudioAttrs}
-      autoPlay={isPlaying}
       muted={muted}
       ref={audioRef}
       src={curPlayedAudioData?.src}

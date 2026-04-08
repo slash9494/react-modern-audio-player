@@ -81,6 +81,7 @@ export const useWaveSurfer = (waveformRef: React.RefObject<HTMLElement>) => {
     return () => {
       cancelled = true;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [elementRefs?.waveformInst, audioPlayerDispatch, colorsRef]);
 
   /** load audio — preserve playback position across waveform init */
@@ -93,6 +94,10 @@ export const useWaveSurfer = (waveformRef: React.RefObject<HTMLElement>) => {
     prevPlayIdRef.current = curPlayId;
 
     const savedTime = isTrackChange ? 0 : audioEl.currentTime;
+    // Intentional stale capture: wasPlaying reads isPlaybackActive at the
+    // time waveform.load() is called so the onReady callback can resume
+    // playback without taking isPlaybackActive as a reactive dependency
+    // (which would re-run the effect on every play/pause toggle).
     const wasPlaying = isPlaybackActive;
 
     waveform.load(audioEl);
@@ -152,7 +157,7 @@ export const useWaveSurfer = (waveformRef: React.RefObject<HTMLElement>) => {
   // Latest-closure ref so the media-query and colorScheme listeners below
   // always destroy the *current* waveformInst without taking it as a dep
   // (which would churn listener attachment on every waveform lifecycle).
-  const destroyInstanceRef = useRef<() => void>();
+  const destroyInstanceRef = useRef<(() => void) | undefined>(undefined);
   destroyInstanceRef.current = () => {
     const waveEl = waveformRef.current?.querySelector("wave");
     if (waveEl) {
