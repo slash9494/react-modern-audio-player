@@ -25,7 +25,7 @@ const renderProgress = (progress: "bar" | "waveform") =>
               repeatType: "ALL",
               muted: false,
               volume: 0.5,
-              isLoadedMetaData: undefined,
+              isLoadedMetaData: false,
               audioResetKey: 0,
             }}
           >
