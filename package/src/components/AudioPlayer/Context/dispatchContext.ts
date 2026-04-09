@@ -47,3 +47,4 @@ export type AudioPlayerDispatchContext = Dispatch<AudioContextAction>;
 
 export const audioPlayerDispatchContext =
   createContext<AudioPlayerDispatchContext | null>(null);
+audioPlayerDispatchContext.displayName = "AudioPlayerDispatchContext";

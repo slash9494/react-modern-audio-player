@@ -9,3 +9,4 @@ export interface DropdownContext {
 }
 
 export const dropdownContext = createContext<DropdownContext | null>(null);
+dropdownContext.displayName = "DropdownContext";

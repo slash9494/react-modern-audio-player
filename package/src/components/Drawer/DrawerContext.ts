@@ -8,3 +8,4 @@ export interface DrawerContext {
 }
 
 export const drawerContext = createContext<DrawerContext | null>(null);
+drawerContext.displayName = "DrawerContext";
