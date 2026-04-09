@@ -15,7 +15,7 @@ export type RMAudioPlayerProps<
 > = AudioPlayerProps<TInterfacePlacementLength> & AudioPlayerRootProviderProps;
 
 function AudioPlayerWithProvidersInner<
-  TInterfacePlacementLength extends number
+  TInterfacePlacementLength extends number = typeof defaultInterfacePlacementMaxLength
 >({
   rootContainerProps,
   ...audioPlayProps

@@ -8,9 +8,8 @@ import { usePropsStateEffect } from "./usePropsStateEffect";
 
 // TODO : feature - add Equalizer component
 
-export interface AudioPlayerProps<
-  TInterfacePlacementLength extends number = typeof defaultInterfacePlacementMaxLength
-> extends AudioPlayerStateProviderProps<TInterfacePlacementLength> {
+export interface AudioPlayerProps<TInterfacePlacementLength extends number>
+  extends AudioPlayerStateProviderProps<TInterfacePlacementLength> {
   children?: React.ReactNode;
   audioRef?: React.MutableRefObject<HTMLAudioElement>;
   /**
