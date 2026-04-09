@@ -21,7 +21,7 @@
   },
   "scripts": {
     "dev": "vite --host",
-    "build": "rm -rf dist && tsc && vite build",
+    "build": "rm -rf dist && tsc -p tsconfig.json && vite build",
     "preview": "vite preview",
     "typeCheck": "tsc --project ./tsconfig.json --noEmit",
     "test": "vitest run",

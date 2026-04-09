@@ -4,7 +4,7 @@
     "useDefineForClassFields": true,
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "allowJs": false,
-    "skipLibCheck": true, // TODO: remove this after fixing type issues
+    "skipLibCheck": true,
     "esModuleInterop": false,
     "allowSyntheticDefaultImports": true,
     "strict": true,
@@ -23,5 +23,6 @@
       "@/ui/*": ["./src/ui/*"]
     }
   },
-  "include": ["**/*.d.ts", "src", "preview"]
+  "include": ["src", "preview"],
+  "exclude": ["node_modules", "dist"]
 }
