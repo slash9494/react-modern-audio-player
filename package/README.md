@@ -49,25 +49,7 @@ npm install --save react-modern-audio-player
 
 - React **18.0.0** or higher
 - react-dom **18.0.0** or higher
-
-# **Next.js / Server Components**
-
-This library includes the `'use client'` directive and can be imported directly in Next.js App Router without additional wrappers.
-
-```tsx
-// app/page.tsx — works directly, no wrapper needed
-import AudioPlayer from "react-modern-audio-player";
-
-const playList = [
-  { name: "track", writer: "artist", img: "cover.jpg", src: "audio.mp3", id: 1 },
-];
-
-export default function Page() {
-  return <AudioPlayer playList={playList} />;
-}
-```
-
-> For React 16/17 projects, use v1.x of this library.
+  > For React 16/17 projects, use v1.x of this library.
 
 # **Quick Start**
 
@@ -88,71 +70,59 @@ function Player() {
 }
 ```
 
-# useAudioPlayer
+# **Next.js / Server Components**
 
-Control the player externally using the `useAudioPlayer` hook. Must be called inside `AudioPlayerProvider`.
+This library includes the `'use client'` directive and can be imported directly in Next.js App Router.
+
+**Server Component** — render `<AudioPlayer>` with static props (no hooks, no compound components):
 
 ```tsx
-import AudioPlayer, { useAudioPlayer } from 'react-modern-audio-player';
+// app/page.tsx — Server Component, no 'use client' needed
+import AudioPlayer from "react-modern-audio-player";
 
-function PlayerControls() {
-  const {
-    isPlaying,
-    currentTrack,
-    currentTime,
-    duration,
-    togglePlay,
-    next,
-    prev,
-    seek,
-    setVolume,
-    setTrack,
-  } = useAudioPlayer();
+const playList = [
+  { name: "track", writer: "artist", img: "cover.jpg", src: "audio.mp3", id: 1 },
+];
 
-  return (
-    <div>
-      <button onClick={togglePlay}>{isPlaying ? 'Pause' : 'Play'}</button>
-      <button onClick={prev}>Prev</button>
-      <button onClick={next}>Next</button>
-      <button onClick={() => seek(30)}>+30s</button>
-      <button onClick={() => setVolume(0.5)}>Volume 50%</button>
-      <button onClick={() => setTrack(1)}>Track 2</button>
-      <p>{currentTrack?.name} — {currentTime.toFixed(0)}s / {duration.toFixed(0)}s</p>
-    </div>
-  );
+export default function Page() {
+  return <AudioPlayer playList={playList} activeUI={{ playButton: true }} />;
+}
+```
+
+**Client Component** — use `useAudioPlayer` hooks or `AudioPlayer.CustomComponent`:
+
+```tsx
+"use client";
+// app/player/page.tsx — Client Component required for hooks & compound pattern
+import AudioPlayer, { useAudioPlayer } from "react-modern-audio-player";
+
+function Controls() {
+  const { isPlaying, togglePlay } = useAudioPlayer();
+  return <button onClick={togglePlay}>{isPlaying ? "Pause" : "Play"}</button>;
 }
 
-function App() {
-  const playList = [{ id: 1, src: 'audio.mp3', name: 'Track 1' }];
+export default function PlayerPage() {
   return (
     <AudioPlayer playList={playList}>
-      <PlayerControls />
+      <AudioPlayer.CustomComponent id="controls">
+        <Controls />
+      </AudioPlayer.CustomComponent>
     </AudioPlayer>
   );
 }
 ```
 
-## AudioPlayerControls
+> **Why `'use client'`?** The library's `'use client'` directive marks the **client boundary** — it allows Server Components to import and render `<AudioPlayer>`. However, `useAudioPlayer()` hooks and `AudioPlayer.CustomComponent` require client-side React features (state, context), so components using them must be Client Components.
 
-| Property | Type | Description |
-|---|---|---|
-| `isPlaying` | `boolean` | Current playback state |
-| `volume` | `number` | Current volume (0–1) |
-| `currentTime` | `number` | Elapsed time in seconds |
-| `duration` | `number` | Track duration in seconds |
-| `repeatType` | `RepeatType` | Current repeat mode |
-| `muted` | `boolean` | Whether audio is muted |
-| `currentTrack` | `AudioData \| null` | Currently playing track |
-| `currentIndex` | `number` | Index in playlist |
-| `playList` | `PlayList` | Full playlist |
-| `play()` | `() => void` | Start playback |
-| `pause()` | `() => void` | Pause playback |
-| `togglePlay()` | `() => void` | Toggle play/pause |
-| `next()` | `() => void` | Skip to next track |
-| `prev()` | `() => void` | Skip to previous track |
-| `seek(time)` | `(time: number) => void` | Seek to time in seconds |
-| `setVolume(vol)` | `(volume: number) => void` | Set volume (0–1, clamped) |
-| `setTrack(index)` | `(index: number) => void` | Jump to playlist index |
+## Table of Contents
+
+| Category             | Sections                                                                                                                                              |
+| -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Props**            | [PlayList](#playlist) · [InitialStates](#initialstates) · [ActiveUI](#activeui) · [Placement](#placement) · [RootContainerProps](#rootcontainerprops) |
+| **Override & Style** | [CustomIcons](#customicons) · [CoverImgsCss](#coverimgscss) · [Theme mode](#theme-mode--dark-mode) · [ID & Classnames](#id--classnames)               |
+| **Player Hook API**  | [useAudioPlayer](#useaudioplayer) · [AudioPlayerControls](#audioplayercontrols)                                                                       |
+| **Custom Component** | [Custom Component](#custom-component)                                                                                                                 |
+| **Example**          | [Example](#example)                                                                                                                                   |
 
 # Props
 
@@ -387,6 +357,75 @@ const defaultInterfacePlacement = {
 }
 ```
 
+# useAudioPlayer
+
+Control the player externally using the `useAudioPlayer` hook. Must be called inside `AudioPlayerProvider`.
+
+```tsx
+import AudioPlayer, { useAudioPlayer } from "react-modern-audio-player";
+
+function PlayerControls() {
+  const {
+    isPlaying,
+    currentTrack,
+    currentTime,
+    duration,
+    togglePlay,
+    next,
+    prev,
+    seek,
+    setVolume,
+    setTrack,
+  } = useAudioPlayer();
+
+  return (
+    <div>
+      <button onClick={togglePlay}>{isPlaying ? "Pause" : "Play"}</button>
+      <button onClick={prev}>Prev</button>
+      <button onClick={next}>Next</button>
+      <button onClick={() => seek(30)}>+30s</button>
+      <button onClick={() => setVolume(0.5)}>Volume 50%</button>
+      <button onClick={() => setTrack(1)}>Track 2</button>
+      <p>
+        {currentTrack?.name} — {currentTime.toFixed(0)}s / {duration.toFixed(0)}
+        s
+      </p>
+    </div>
+  );
+}
+
+function App() {
+  const playList = [{ id: 1, src: "audio.mp3", name: "Track 1" }];
+  return (
+    <AudioPlayer playList={playList}>
+      <PlayerControls />
+    </AudioPlayer>
+  );
+}
+```
+
+## AudioPlayerControls
+
+| Property          | Type                       | Description               |
+| ----------------- | -------------------------- | ------------------------- |
+| `isPlaying`       | `boolean`                  | Current playback state    |
+| `volume`          | `number`                   | Current volume (0–1)      |
+| `currentTime`     | `number`                   | Elapsed time in seconds   |
+| `duration`        | `number`                   | Track duration in seconds |
+| `repeatType`      | `RepeatType`               | Current repeat mode       |
+| `muted`           | `boolean`                  | Whether audio is muted    |
+| `currentTrack`    | `AudioData \| null`        | Currently playing track   |
+| `currentIndex`    | `number`                   | Index in playlist         |
+| `playList`        | `PlayList`                 | Full playlist             |
+| `play()`          | `() => void`               | Start playback            |
+| `pause()`         | `() => void`               | Pause playback            |
+| `togglePlay()`    | `() => void`               | Toggle play/pause         |
+| `next()`          | `() => void`               | Skip to next track        |
+| `prev()`          | `() => void`               | Skip to previous track    |
+| `seek(time)`      | `(time: number) => void`   | Seek to time in seconds   |
+| `setVolume(vol)`  | `(volume: number) => void` | Set volume (0–1, clamped) |
+| `setTrack(index)` | `(index: number) => void`  | Jump to playlist index    |
+
 # Context Hooks
 
 Components inside `AudioPlayer` can subscribe to only the state slice they need, avoiding unnecessary re-renders.
@@ -417,7 +456,10 @@ const MyComponent = () => {
 You can place a custom component anywhere in the player interface using `AudioPlayer.CustomComponent`. Use `useAudioPlayer` inside it to access player state and controls.
 
 ```tsx
-import AudioPlayer, { useAudioPlayer, InterfacePlacement } from 'react-modern-audio-player';
+import AudioPlayer, {
+  useAudioPlayer,
+  InterfacePlacement,
+} from "react-modern-audio-player";
 
 const activeUI: ActiveUI = {
   all: true,
@@ -436,25 +478,24 @@ const placement = {
 };
 
 const CustomComponent = () => {
-  const { currentTime, duration, seek, isPlaying, togglePlay } = useAudioPlayer();
+  const { currentTime, duration, seek, isPlaying, togglePlay } =
+    useAudioPlayer();
   return (
     <>
       <button onClick={() => seek(currentTime + 30)}>+30s</button>
-      <button onClick={togglePlay}>{isPlaying ? 'Pause' : 'Play'}</button>
-      <span>{currentTime.toFixed(0)}s / {duration.toFixed(0)}s</span>
+      <button onClick={togglePlay}>{isPlaying ? "Pause" : "Play"}</button>
+      <span>
+        {currentTime.toFixed(0)}s / {duration.toFixed(0)}s
+      </span>
     </>
   );
 };
 
-<AudioPlayer
-  playList={playList}
-  placement={placement}
-  activeUI={activeUI}
->
+<AudioPlayer playList={playList} placement={placement} activeUI={activeUI}>
   <AudioPlayer.CustomComponent id="playerCustomComponent">
     <CustomComponent />
   </AudioPlayer.CustomComponent>
-</AudioPlayer>
+</AudioPlayer>;
 ```
 
 # **Example**

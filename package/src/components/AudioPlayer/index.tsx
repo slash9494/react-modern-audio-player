@@ -1,4 +1,3 @@
-import React from "react";
 import {
   AudioPlayerProvider,
   AudioPlayerRootProvider,
@@ -14,7 +13,7 @@ export type RMAudioPlayerProps<
   TInterfacePlacementLength extends number = typeof defaultInterfacePlacementMaxLength
 > = AudioPlayerProps<TInterfacePlacementLength> & AudioPlayerRootProviderProps;
 
-function AudioPlayerWithProvidersInner<
+function AudioPlayerWithProviders<
   TInterfacePlacementLength extends number = typeof defaultInterfacePlacementMaxLength
 >({
   rootContainerProps,
@@ -29,13 +28,7 @@ function AudioPlayerWithProvidersInner<
   );
 }
 
-const AudioPlayerWithProviders = React.memo(
-  AudioPlayerWithProvidersInner
-) as unknown as typeof AudioPlayerWithProvidersInner & {
-  displayName?: string;
-  CustomComponent: typeof CustomComponent;
-};
-
 AudioPlayerWithProviders.displayName = "AudioPlayerWithProviders";
+AudioPlayerWithProviders.CustomComponent = CustomComponent;
 
 export default AudioPlayerWithProviders;

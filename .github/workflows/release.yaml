@@ -3,57 +3,52 @@ name: release
 on:
   push:
     branches: [main]
+
 jobs:
   publish:
     runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'push' }}
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
-        with:
-          cache: 'yarn'
-          node-version: '16'
+      - uses: actions/checkout@v4
 
-      - name: Configure git
-        run: |
-          git config user.email "slash9494@naver.com"
-          git config user.name "Yun Hyeon Lee"
-
-      - id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn cache dir)"
-      - uses: actions/cache@v2
+      - uses: actions/setup-node@v4
         with:
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-
-            
+          node-version: "20"
+          cache: "yarn"
+          registry-url: "https://registry.npmjs.org"
+
       - name: Install dependencies
         run: yarn --frozen-lockfile
 
       - name: Build
-        run: yarn build 
+        run: yarn build
 
-      - name: Creating .npmrc
+      - name: Determine version and dist-tag
+        id: version
         run: |
-          cat << EOF > "$HOME/.npmrc"
-            email=slash9494@naver.com
-            //registry.npmjs.org/:_authToken=$NPM_TOKEN
-          EOF
+          VERSION=$(node -p "require('./package/package.json').version")
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          if [[ "$VERSION" == *beta* || "$VERSION" == *rc* || "$VERSION" == *alpha* ]]; then
+            echo "tag=next" >> $GITHUB_OUTPUT
+            echo "prerelease=true" >> $GITHUB_OUTPUT
+          else
+            echo "tag=latest" >> $GITHUB_OUTPUT
+            echo "prerelease=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Publish to npm
+        run: npm publish ./package --tag ${{ steps.version.outputs.tag }} --access public
         env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}        
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: publish
-        uses: JS-DevTools/npm-publish@v1
-        with:
-          token: ${{ secrets.NPM_TOKEN }}
-          package: './package/package.json'
-          access: 'public'
+      - name: Create git tag
+        run: |
+          git tag "v${{ steps.version.outputs.version }}"
+          git push origin "v${{ steps.version.outputs.version }}"
 
-      - name: Tag new version
-        if: steps.publish.outputs.type != 'none'
-        uses: Klemensas/action-autotag@stable
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
         with:
-          GITHUB_TOKEN: ${{ github.token }}
-          tag_prefix: "v"
-          package_root: "./package"
+          tag_name: "v${{ steps.version.outputs.version }}"
+          name: "v${{ steps.version.outputs.version }}"
+          prerelease: ${{ steps.version.outputs.prerelease }}
+          generate_release_notes: true

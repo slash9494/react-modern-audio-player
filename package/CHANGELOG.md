@@ -2,84 +2,56 @@
 
 ## v2.0.0 (Unreleased)
 
-### New Features
+<!-- Phase 5+ changes accumulate here -->
 
-- **`colorScheme` prop**: forces the player to render in `"light"` or `"dark"` mode regardless of the OS `prefers-color-scheme` setting. When omitted, the player follows the OS preference (existing behavior). The provider applies a `data-theme` attribute on the root container, and the WaveSurfer instance is automatically re-initialized when the prop changes so waveform colors stay in sync. Maps to the same use case as Adobe Spectrum's `<Provider colorScheme>`.
-  - **Placement**: `colorScheme` is a **top-level prop** on `<AudioPlayer>`, not nested under `rootContainerProps`. Previously the only way to influence theme from the consumer side was to pass `rootContainerProps={{ style: { colorScheme: ... } }}` (a native CSS property that did not actually override the library's OS-media-query–driven theme). The new top-level `colorScheme` prop is the supported way to override the theme.
-    ```tsx
-    // ❌ Before — native CSS property, did not actually toggle the theme
-    <AudioPlayer rootContainerProps={{ style: { colorScheme: "dark" } }} />
+---
 
-    // ✅ After — top-level prop, drives `[data-theme]` + wavesurfer re-init
-    <AudioPlayer colorScheme="dark" />
-    ```
+## v2.0.0-beta.1 (2026-04-09)
+
+### ✨ New Features
+
+- **`colorScheme` prop**: forces the player to render in `"light"` or `"dark"` mode regardless of the OS `prefers-color-scheme` setting. When omitted, the player follows the OS preference (existing behavior). The provider applies a `data-theme` attribute on the root container, and the WaveSurfer instance is automatically re-initialized when the prop changes so waveform colors stay in sync.
+  ```tsx
+  // ❌ Before — native CSS property, did not actually toggle the theme
+  <AudioPlayer rootContainerProps={{ style: { colorScheme: "dark" } }} />
+
+  // ✅ After — top-level prop, drives `[data-theme]` + wavesurfer re-init
+  <AudioPlayer colorScheme="dark" />
+  ```
 - **`useAudioPlayer()` public hook**: exposes a stable API to control the player externally
   - Returns `play`, `pause`, `togglePlay`, `next`, `prev`, `seek`, `setVolume`, `setTrack`
   - Returns state: `isPlaying`, `volume`, `currentTime`, `duration`, `repeatType`, `muted`, `currentTrack`, `currentIndex`, `playList`
   - Must be called inside `AudioPlayerProvider` (or `AudioPlayer` which wraps it)
-  - Replaces the previous pattern of accessing `audioPlayerState` via `CustomComponent` props
+- **Conditional progress rendering**: `WaveformProgress` and `BarProgress` are now conditionally rendered based on `activeUI.progress` instead of rendering both and toggling via CSS. Only the active component is mounted.
 
-### Bug Fixes
+### 🐛 Bug Fixes
 
-- **WaveSurfer memory leak on unmount**: `waveformInst.destroy()` was never called due to a stale closure in the cleanup effect (empty deps `[]` captured `elementRefs` as `undefined` at mount time). Fixed by tracking the instance via `useRef` so the cleanup always holds the latest reference.
-
-### SSR / Next.js Compatibility
-
-- **`react` and `react-dom` peerDependencies bumped to `>=18.0.0`**: The library already required React 18 features (`useId`). This formalizes the minimum version. Consumers on React 16/17 should use v1.x.
-- **`useIsomorphicLayoutEffect`**: All `useLayoutEffect` calls that require layout timing replaced with an isomorphic wrapper that falls back to `useEffect` during SSR, eliminating React's server-side warning.
-- **`useLayoutEffect` → `useEffect` downgrade**: 6 call sites across 4 files that did not require layout timing were downgraded to `useEffect` (prop sync, state dispatch patterns).
-- **`'use client'` directive**: Added to the library entry point so Next.js App Router consumers can import directly without a client wrapper file.
-- **SSR-safe `window`/`document` access**: `isBrowser` guard utility added; applied to `useVariableColor` and `useGridTemplate`.
-
-### Accessibility
-
-- **Dropdown `useId` + ARIA attributes**: `Dropdown` now generates a unique `dropdownId` via `useId()` (matching the existing `Drawer` pattern). `DropdownTrigger` gains `aria-expanded` and `aria-controls` attributes. `DropdownContent` receives matching `id`.
-
-### Progress Rendering
-
-- **Conditional rendering**: `WaveformProgress` and `BarProgress` are now conditionally rendered based on `activeUI.progress` instead of rendering both and toggling via CSS. Only the active component is mounted.
-
-### Breaking Changes
-
-- **`react` and `react-dom` minimum version is now `>=18.0.0`**: Projects using React 16/17 must stay on v1.x.
-- **`SpectrumProvider` renamed to `AudioPlayerRootProvider`**: import name changed
-  - Before: `import { AudioPlayer, SpectrumProvider } from "react-modern-audio-player"`
-  - After: `import { AudioPlayer, AudioPlayerRootProvider } from "react-modern-audio-player"`
-- **`SpectrumProviderProps` renamed to `AudioPlayerRootProviderProps`**: type import name changed
-  - Before: `import type { SpectrumProviderProps } from "react-modern-audio-player"`
-  - After: `import type { AudioPlayerRootProviderProps } from "react-modern-audio-player"`
-- **`AudioPlayerRootProviderProps.rootContainerProps` type changed**: `ProviderProps` (React Spectrum) → `HTMLAttributes<HTMLDivElement>`
-
-  - If you were passing Spectrum-specific props (e.g. `colorScheme`, `locale`), replace them with standard HTML div attributes.
-
-- **`styled-components` removed**: The library no longer uses `styled-components`. It is removed from both `dependencies` and `peerDependencies`. All styles are now vanilla CSS. Consumers can uninstall `styled-components` if it was only used by this library.
-
-- **`audioPlayerStateContext` removed**: The monolithic state context has been split into 4 domain-specific contexts to eliminate unnecessary re-renders (~70% reduction).
-
-  - Before: `const state = useNonNullableContext(audioPlayerStateContext);`
-  - After: Import only the context your component needs:
-
-    ```ts
-    import {
-      usePlaybackContext,   // curAudioState (isPlaying, repeatType, volume, muted)
-      useTrackContext,      // playList, curIdx, curPlayId
-      useUIContext,         // activeUI, placements
-      useResourceContext,   // elementRefs, customIcons, coverImgsCss
-    } from "react-modern-audio-player";
-    ```
-
-- **CSS class names prefixed with `rmap-`**: All internal CSS class names now use the `rmap-` prefix (e.g., `btn-wrapper` → `rmap-ctrl-btn-wrapper`). If you targeted internal class names for custom styling, update your selectors. CSS custom properties (`--rm-audio-player-*`) are unchanged.
-
-- **`rm-audio-player-provider` class renamed to `rmap-player-provider`**: Consumers who target this class in their own stylesheets or tests must update selectors. The CSS custom properties (`--rm-audio-player-*`) are unchanged.
-
-### Bug Fixes
-
+- **WaveSurfer memory leak on unmount**: `waveformInst.destroy()` was never called due to a stale closure in the cleanup effect. Fixed by tracking the instance via `useRef`.
 - **Theme color switching**: system dark/light theme changes now correctly update progress bar, volume slider, shadow, and waveform colors
 - **Progress bar handle position**: handle no longer drifts when player placement changes (replaced JS-based width tracking with CSS container query units)
 - **Waveform progress rendering**: waveform blue progress layer now redraws correctly on container resize and placement changes
 - **Waveform theme re-initialization**: waveform canvas re-creates with correct colors when system color scheme changes
+- **`useDidUpdateEffect` StrictMode fix**: boolean ref was flipped inside deps effect causing premature execution on React 18 StrictMode's setup₁→cleanup₁→setup₂ cycle. Fixed by separating mount tracking into its own empty-deps effect.
+- **Volume reset on source load**: browser resets volume to 1.0 when loading a new audio source. Volume is now re-applied after `loadedmetadata`.
+- **`audioInitialState` not applied correctly** (Fixes [#9](https://github.com/slash9494/react-modern-audio-player/issues/9))
+- **Generic type error `InterfaceGridTemplateArea`** (Fixes [#22](https://github.com/slash9494/react-modern-audio-player/issues/22))
 
-### Bundle Size Optimization
+### 🌐 SSR / Next.js Compatibility
+
+- **`'use client'` directive**: Added to the library entry point so Next.js App Router consumers can import `<AudioPlayer>` directly from Server Components. For `useAudioPlayer()` hooks and `AudioPlayer.CustomComponent` compound pattern, consumers must use `'use client'` in their own component (standard RSC behavior, same as Radix/Chakra).
+- **`useIsomorphicLayoutEffect`**: All `useLayoutEffect` calls replaced with an isomorphic wrapper that falls back to `useEffect` during SSR.
+- **SSR-safe `window`/`document` access**: `isBrowser` guard utility added; applied to `useVariableColor` and `useGridTemplate`.
+- **`useLayoutEffect` → `useEffect` downgrade**: 6 call sites that did not require layout timing were downgraded to `useEffect`.
+- Fixes [#20](https://github.com/slash9494/react-modern-audio-player/issues/20) — Next.js 14 `ReferenceError: self is not defined`
+- Fixes [#12](https://github.com/slash9494/react-modern-audio-player/issues/12) — `Cannot find name 'WaveSurfer'` when building Next.js app
+- Fixes [#7](https://github.com/slash9494/react-modern-audio-player/issues/7), [#13](https://github.com/slash9494/react-modern-audio-player/issues/13) — CSS syntax errors / failed to compile global CSS
+
+### ♿ Accessibility
+
+- **Dropdown `useId` + ARIA attributes**: `Dropdown` now generates a unique `dropdownId` via `useId()`. `DropdownTrigger` gains `aria-expanded` and `aria-controls` attributes.
+- Fixes [#10](https://github.com/slash9494/react-modern-audio-player/issues/10) — Clicking control buttons no longer triggers form submit
+
+### 📦 Bundle Size Optimization
 
 | Change                       | Before                       | After                        | Saving              |
 | ---------------------------- | ---------------------------- | ---------------------------- | ------------------- |
@@ -90,30 +62,29 @@
 | `sideEffects`                | not set                      | `["*.css"]`                  | better tree-shaking |
 | **Main bundle (gzip)**       | **~65 kB+**                  | **~16 kB**                   | **~75% reduction**  |
 
-- **`ElementRefs.trackCurTimeEl` removed**: `HTMLSpanElement | undefined` → removed
+### 💥 Breaking Changes
 
-  - Time display is now driven by `curAudioState.currentTime` via React state. Remove any direct access to this ref.
-
-- **`ElementRefs.trackDurationEl` removed**: `HTMLSpanElement | undefined` → removed
-
-  - Duration display is now driven by `curAudioState.duration` via React state. Remove any direct access to this ref.
-
-- **`ElementRefs.progressBarEl` removed**: `HTMLDivElement | undefined` → removed
-
-  - Progress bar width is now measured locally within the component. Remove any direct access to this ref.
-
-- **`ElementRefs.progressValueEl` removed**: `HTMLDivElement | undefined` → removed
-
-  - Progress fill is now driven by inline `style` bound to `curAudioState.currentTime`. Remove any direct access to this ref.
-
-- **`ElementRefs.progressHandleEl` removed**: `HTMLDivElement | undefined` → removed
-
-  - Progress handle is now driven by inline `style` bound to `curAudioState.currentTime`. Remove any direct access to this ref.
-
-- **`AudioData.name` type narrowed**: `string | ReactNode` → `string`
-  - If you were passing a ReactNode as `name`, use `customTrackInfo` instead
-- **`AudioData.writer` type narrowed**: `string | ReactNode` → `string`
-  - If you were passing a ReactNode as `writer`, use `customTrackInfo` instead
+- **`react` and `react-dom` minimum version is now `>=18.0.0`**: Projects using React 16/17 must stay on v1.x.
+- **`SpectrumProvider` renamed to `AudioPlayerRootProvider`**: import name changed
+  - Before: `import { AudioPlayer, SpectrumProvider } from "react-modern-audio-player"`
+  - After: `import { AudioPlayer, AudioPlayerRootProvider } from "react-modern-audio-player"`
+- **`SpectrumProviderProps` renamed to `AudioPlayerRootProviderProps`**: type import name changed
+- **`AudioPlayerRootProviderProps.rootContainerProps` type changed**: `ProviderProps` (React Spectrum) → `HTMLAttributes<HTMLDivElement>`
+- **`styled-components` removed**: The library no longer uses `styled-components`. It is removed from both `dependencies` and `peerDependencies`. All styles are now vanilla CSS.
+- **`audioPlayerStateContext` removed**: Split into 4 domain-specific contexts (~70% re-render reduction).
+  ```ts
+  import {
+    usePlaybackContext,   // isPlaying, repeatType, volume, muted
+    useTrackContext,      // playList, curIdx, curPlayId
+    useUIContext,         // activeUI, placements
+    useResourceContext,   // elementRefs, customIcons, coverImgsCss
+  } from "react-modern-audio-player";
+  ```
+- **CSS class names prefixed with `rmap-`**: e.g., `btn-wrapper` → `rmap-ctrl-btn-wrapper`. CSS custom properties (`--rm-audio-player-*`) are unchanged.
+- **`rm-audio-player-provider` class renamed to `rmap-player-provider`**
+- **`ElementRefs` removed**: `trackCurTimeEl`, `trackDurationEl`, `progressBarEl`, `progressValueEl`, `progressHandleEl` — all now driven by React state.
+- **`AudioData.name` type narrowed**: `string | ReactNode` → `string` (use `customTrackInfo` for ReactNode)
+- **`AudioData.writer` type narrowed**: `string | ReactNode` → `string` (use `customTrackInfo` for ReactNode)
 
 ---
 

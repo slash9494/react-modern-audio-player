@@ -6,8 +6,9 @@ import "./Progress.css";
 
 export const Progress: FC = () => {
   const { activeUI } = useUIContext();
-  const isWaveform = activeUI.progress === "waveform";
-  const isBar = activeUI.progress === "bar";
+  const progressType = activeUI.progress ?? (activeUI.all ? "bar" : false);
+  const isWaveform = progressType === "waveform";
+  const isBar = progressType === "bar";
   const [waveformMounted, setWaveformMounted] = useState(isWaveform);
 
   useEffect(() => {

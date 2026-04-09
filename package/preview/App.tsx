@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Agentation } from "agentation";
 import AudioPlayerWithProviders, {
   ActiveUI,
   InterfaceGridTemplateArea,
@@ -101,10 +100,7 @@ function App() {
               playList: playListPlacement,
               volumeSlider: volumeSliderPlacement,
             } as {
-              player: PlayerPlacement;
               interface: InterfacePlacement<11>;
-              playList: PlayListPlacement;
-              volumeSlider: VolumeSliderPlacement | undefined;
             }
           }
           colorScheme={theme}
@@ -117,9 +113,9 @@ function App() {
           </AudioPlayerWithProviders.CustomComponent>
         </AudioPlayerWithProviders>
 
-        {process.env.NODE_ENV === "development" && (
+        {/* {process.env.NODE_E지NV === "development" && (
           <Agentation endpoint="http://localhost:4747" />
-        )}
+        )} */}
       </div>
 
       <Editor

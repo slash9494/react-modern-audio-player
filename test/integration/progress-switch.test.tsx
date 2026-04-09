@@ -40,6 +40,19 @@ const renderSwitchable = () => {
   return { ...result, rerenderWith };
 };
 
+describe("Progress fallback with activeUI.all", () => {
+  it("7-3: all:true without explicit progress — defaults to bar", () => {
+    render(
+      <AudioPlayerWithProviders
+        playList={playList}
+        audioInitialState={{ muted: true, volume: 0.2, curPlayId: 1 }}
+        activeUI={{ all: true }}
+      />
+    );
+    expect(screen.getByTestId("progress-bar")).toBeInTheDocument();
+  });
+});
+
 describe("Progress initial rendering", () => {
   it("7-4: bar mode — waveform wrapper is not in DOM", () => {
     const { container } = renderWithProgress("bar");
