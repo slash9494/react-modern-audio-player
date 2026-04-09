@@ -2,7 +2,6 @@
   display: grid;
   align-items: center;
   row-gap: 5px;
-  width: 200px;
 }
 
 .rmap-track-info-container span {
