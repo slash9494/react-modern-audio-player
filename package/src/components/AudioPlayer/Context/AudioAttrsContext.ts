@@ -19,3 +19,4 @@ export type AudioAttrsContext = Omit<
 >;
 
 export const audioAttrsContext = createContext<AudioAttrsContext | null>(null);
+audioAttrsContext.displayName = "AudioAttrsContext";

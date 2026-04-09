@@ -11,3 +11,4 @@ export interface PlaybackContext {
 }
 
 export const playbackContext = createContext<PlaybackContext | null>(null);
+playbackContext.displayName = "PlaybackContext";

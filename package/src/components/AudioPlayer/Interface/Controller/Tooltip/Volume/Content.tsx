@@ -1,4 +1,4 @@
-import { useNonNullableContext } from "@/hooks/useNonNullableContext";
+import { useNonNullableContext } from "@/hooks/context/useNonNullableContext";
 import { audioPlayerDispatchContext } from "@/components/AudioPlayer/Context/dispatchContext";
 import { VolumeSliderPlacement } from "@/components/AudioPlayer/Context/StateContext";
 import { usePlaybackContext } from "@/hooks/context/usePlaybackContext";

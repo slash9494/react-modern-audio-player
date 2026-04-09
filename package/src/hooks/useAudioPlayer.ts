@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import { useNonNullableContext } from "./useNonNullableContext";
+import { useNonNullableContext } from "./context/useNonNullableContext";
 import { audioPlayerDispatchContext } from "@/components/AudioPlayer/Context/dispatchContext";
 import { usePlaybackContext } from "./context/usePlaybackContext";
 import { useTimeContext } from "./context/useTimeContext";
@@ -92,12 +92,12 @@ export const useAudioPlayer = (): AudioPlayerControls => {
   );
 
   return {
-    isPlaying: playback.isPlaying ?? false,
-    volume: playback.volume ?? 1,
+    isPlaying: playback.isPlaying,
+    volume: playback.volume,
     currentTime,
     duration,
-    repeatType: playback.repeatType ?? "ALL",
-    muted: playback.muted ?? false,
+    repeatType: playback.repeatType,
+    muted: playback.muted,
     currentTrack: playList[curIdx] ?? null,
     currentIndex: curIdx,
     playList,

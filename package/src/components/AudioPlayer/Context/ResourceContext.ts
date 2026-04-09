@@ -8,3 +8,4 @@ export interface ResourceContext {
 }
 
 export const resourceContext = createContext<ResourceContext | null>(null);
+resourceContext.displayName = "ResourceContext";

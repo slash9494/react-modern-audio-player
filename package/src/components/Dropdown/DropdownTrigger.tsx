@@ -1,5 +1,5 @@
 import { FC, KeyboardEvent, PropsWithChildren } from "react";
-import { useNonNullableContext } from "@/hooks/useNonNullableContext";
+import { useNonNullableContext } from "@/hooks/context/useNonNullableContext";
 import { dropdownContext } from "./DropdownContext";
 
 export const DropdownTrigger: FC<PropsWithChildren> = ({ children }) => {

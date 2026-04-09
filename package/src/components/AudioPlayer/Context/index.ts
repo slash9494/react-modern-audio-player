@@ -6,3 +6,5 @@ export * from "./AudioAttrsContext";
 export * from "./TrackContext";
 export * from "./UIContext";
 export * from "./ResourceContext";
+export * from "./TimeContext";
+export * from "./providerProps";

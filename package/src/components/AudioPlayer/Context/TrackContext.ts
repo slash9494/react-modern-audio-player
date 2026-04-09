@@ -8,3 +8,4 @@ export interface TrackContext {
 }
 
 export const trackContext = createContext<TrackContext | null>(null);
+trackContext.displayName = "TrackContext";

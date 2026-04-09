@@ -19,3 +19,4 @@ export interface UIContext {
 }
 
 export const uiContext = createContext<UIContext | null>(null);
+uiContext.displayName = "UIContext";

@@ -1,4 +1,4 @@
-import { useNonNullableContext } from "@/hooks/useNonNullableContext";
+import { useNonNullableContext } from "@/hooks/context/useNonNullableContext";
 import { useVariableColor } from "@/hooks/useVariableColor";
 import { audioPlayerDispatchContext } from "@/components/AudioPlayer/Context/dispatchContext";
 import { usePlaybackContext } from "@/hooks/context/usePlaybackContext";

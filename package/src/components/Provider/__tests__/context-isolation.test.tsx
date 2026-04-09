@@ -17,7 +17,7 @@ import {
   audioPlayerDispatchContext,
   AudioContextAction,
 } from "@/components/AudioPlayer/Context/dispatchContext";
-import { useNonNullableContext } from "@/hooks/useNonNullableContext";
+import { useNonNullableContext } from "@/hooks/context/useNonNullableContext";
 import { usePlaybackContext } from "@/hooks/context/usePlaybackContext";
 import { useTimeContext } from "@/hooks/context/useTimeContext";
 import { useTrackContext } from "@/hooks/context/useTrackContext";

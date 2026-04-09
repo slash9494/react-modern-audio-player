@@ -7,3 +7,4 @@ export interface TimeContext {
 }
 
 export const timeContext = createContext<TimeContext | null>(null);
+timeContext.displayName = "TimeContext";
