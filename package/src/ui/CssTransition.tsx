@@ -41,12 +41,20 @@ export const CssTransition: FC<PropsWithChildren<CssTransitionProps>> = ({
   const enterTimeRef = useRef(enterTime);
   const leaveTimeRef = useRef(leaveTime);
   const clearTimeRef = useRef(clearTime);
-  onEnteredRef.current = onEntered;
-  onExitedRef.current = onExited;
-  nameRef.current = name;
-  enterTimeRef.current = enterTime;
-  leaveTimeRef.current = leaveTime;
-  clearTimeRef.current = clearTime;
+
+  // Sync the mirrors inside a committed layout effect — never in the
+  // render body. Under Concurrent Mode an interrupted render could
+  // otherwise leak uncommitted values into timeouts scheduled by a
+  // prior commit's effect. Declared before the animation effect so
+  // the same commit cycle always refreshes the refs first.
+  useIsomorphicLayoutEffect(() => {
+    onEnteredRef.current = onEntered;
+    onExitedRef.current = onExited;
+    nameRef.current = name;
+    enterTimeRef.current = enterTime;
+    leaveTimeRef.current = leaveTime;
+    clearTimeRef.current = clearTime;
+  });
 
   useIsomorphicLayoutEffect(() => {
     const statusClassName = visible ? "enter" : "leave";
