@@ -1,41 +1,49 @@
 import {
   audioPlayerDispatchContext,
   audioPlayerReducer,
-  audioPlayerStateContext,
+  AudioPlayerStateContext,
   AudioState,
+  DEFAULT_AUDIO_STATE,
   defaultInterfacePlacement,
   defaultInterfacePlacementMaxLength,
   Placements,
+  playbackContext,
+  AudioAttrsContext,
+  audioAttrsContext,
+  timeContext,
+  trackContext,
+  uiContext,
+  resourceContext,
+  AudioPlayerStateProviderProps,
 } from "@/components/AudioPlayer/Context";
-import { PropsWithChildren, useReducer } from "react";
-import { AudioPlayerProps } from "../AudioPlayer/Player";
+import { clampVolume } from "@/utils/clampVolume";
+import { PropsWithChildren, useMemo, useReducer } from "react";
 
-export const AudioPlayerProvider = <
-  TInterfacePlacementLength extends number = typeof defaultInterfacePlacementMaxLength
->({
-  children,
-  ...props
-}: PropsWithChildren<AudioPlayerProps<TInterfacePlacementLength>>) => {
+function createInitialState<T extends number>(
+  props: AudioPlayerStateProviderProps<T>
+): AudioPlayerStateContext {
   const {
     playList,
     audioInitialState,
     activeUI: activeUIProp,
     placement: placementProp,
-    ...otherProps
+    customIcons,
+    coverImgsCss,
   } = props;
 
   const curAudioState: AudioState = {
-    isPlaying: audioInitialState?.isPlaying || false,
-    repeatType: audioInitialState?.repeatType || "ALL",
-    volume: audioInitialState?.volume || 1,
-    muted: audioInitialState?.muted,
+    isPlaying: audioInitialState?.isPlaying ?? DEFAULT_AUDIO_STATE.isPlaying,
+    repeatType: audioInitialState?.repeatType ?? DEFAULT_AUDIO_STATE.repeatType,
+    volume:
+      typeof audioInitialState?.volume === "number"
+        ? clampVolume(audioInitialState.volume)
+        : DEFAULT_AUDIO_STATE.volume,
+    muted: audioInitialState?.muted ?? DEFAULT_AUDIO_STATE.muted,
   };
 
-  const activeUI = activeUIProp || {
-    playButton: true,
-  };
+  const activeUI = activeUIProp || { playButton: true };
 
-  const placement: Placements<TInterfacePlacementLength | 10> = {
+  const placement: Placements<T | 10> = {
     playerPlacement: placementProp?.player,
     playListPlacement: placementProp?.playList || "bottom",
     interfacePlacement: placementProp?.interface || {
@@ -46,28 +54,153 @@ export const AudioPlayerProvider = <
     volumeSliderPlacement: placementProp?.volumeSlider,
   };
 
-  const [audioContextState, dispatchAudioContextState] = useReducer(
+  return {
+    playList,
+    curPlayId: audioInitialState?.curPlayId || 1,
+    curIdx: audioInitialState?.curPlayId
+      ? playList.findIndex(
+          (audioData) => audioData.id === audioInitialState?.curPlayId
+        )
+      : 0,
+    curAudioState,
+    activeUI,
+    audioResetKey: 0,
+    seekRequestKey: 0,
+    ...(placement as Placements<10>),
+    customIcons,
+    coverImgsCss,
+  };
+}
+
+interface AudioPlayerProviderProps<T extends number = number>
+  extends AudioPlayerStateProviderProps<T> {
+  colorScheme?: "light" | "dark";
+}
+
+export const AudioPlayerProvider = <
+  TInterfacePlacementLength extends number = typeof defaultInterfacePlacementMaxLength
+>({
+  children,
+  colorScheme,
+  ...initProps
+}: PropsWithChildren<AudioPlayerProviderProps<TInterfacePlacementLength>>) => {
+  const [state, dispatch] = useReducer(
     audioPlayerReducer,
-    {
-      playList,
-      curPlayId: audioInitialState?.curPlayId || 1,
-      curIdx: audioInitialState?.curPlayId
-        ? playList.findIndex(
-            (audioData) => audioData.id === audioInitialState?.curPlayId
-          )
-        : 0,
-      curAudioState,
-      activeUI,
-      ...(placement as Placements<10>),
-      ...otherProps,
-    }
+    initProps as AudioPlayerStateProviderProps<TInterfacePlacementLength>,
+    createInitialState
+  );
+
+  const timeValue = useMemo(
+    () => ({
+      currentTime:
+        state.curAudioState.currentTime ?? DEFAULT_AUDIO_STATE.currentTime,
+      duration: state.curAudioState.duration ?? DEFAULT_AUDIO_STATE.duration,
+      seekRequestKey: state.seekRequestKey,
+    }),
+    [
+      state.curAudioState.currentTime,
+      state.curAudioState.duration,
+      state.seekRequestKey,
+    ]
+  );
+
+  const playbackValue = useMemo(
+    () => ({
+      isPlaying: state.curAudioState.isPlaying ?? DEFAULT_AUDIO_STATE.isPlaying,
+      volume: state.curAudioState.volume ?? DEFAULT_AUDIO_STATE.volume,
+      muted: state.curAudioState.muted ?? DEFAULT_AUDIO_STATE.muted,
+      repeatType: state.curAudioState.repeatType,
+      isLoadedMetaData: state.curAudioState.isLoadedMetaData,
+      audioResetKey: state.audioResetKey,
+    }),
+    [
+      state.curAudioState.isPlaying,
+      state.curAudioState.isLoadedMetaData,
+      state.curAudioState.volume,
+      state.curAudioState.muted,
+      state.curAudioState.repeatType,
+      state.audioResetKey,
+    ]
+  );
+
+  const trackValue = useMemo(
+    () => ({
+      playList: state.playList,
+      curPlayId: state.curPlayId,
+      curIdx: state.curIdx,
+    }),
+    [state.playList, state.curPlayId, state.curIdx]
+  );
+
+  const uiValue = useMemo(
+    () => ({
+      activeUI: state.activeUI,
+      playListPlacement: state.playListPlacement,
+      playerPlacement: state.playerPlacement,
+      interfacePlacement: state.interfacePlacement,
+      volumeSliderPlacement: state.volumeSliderPlacement,
+      colorScheme,
+    }),
+    [
+      state.activeUI,
+      state.playListPlacement,
+      state.playerPlacement,
+      state.interfacePlacement,
+      state.volumeSliderPlacement,
+      colorScheme,
+    ]
+  );
+
+  const { audioInitialState } = initProps;
+
+  // Sourced from the audioInitialState prop reference (not reducer state)
+  // so per-tick SET_AUDIO_STATE dispatches never invalidate this object.
+  const audioNativeAttrsValue = useMemo<AudioAttrsContext>(() => {
+    if (!audioInitialState) return {};
+    const {
+      isPlaying: _isPlaying,
+      repeatType: _repeatType,
+      isLoadedMetaData: _isLoadedMetaData,
+      currentTime: _currentTime,
+      duration: _duration,
+      volume: _volume,
+      muted: _muted,
+      curPlayId: _curPlayId,
+      ...nativeAttrs
+    } = audioInitialState;
+
+    return nativeAttrs;
+  }, [audioInitialState]);
+
+  const resourceValue = useMemo(
+    () => ({
+      elementRefs: state.elementRefs,
+      customIcons: state.customIcons,
+      coverImgsCss: state.coverImgsCss,
+    }),
+    [
+      state.elementRefs?.audioEl,
+      state.elementRefs?.waveformInst,
+      state.customIcons,
+      state.coverImgsCss,
+    ]
   );
 
   return (
-    <audioPlayerStateContext.Provider value={audioContextState}>
-      <audioPlayerDispatchContext.Provider value={dispatchAudioContextState}>
-        {children}
-      </audioPlayerDispatchContext.Provider>
-    </audioPlayerStateContext.Provider>
+    <timeContext.Provider value={timeValue}>
+      <playbackContext.Provider value={playbackValue}>
+        <trackContext.Provider value={trackValue}>
+          <uiContext.Provider value={uiValue}>
+            <resourceContext.Provider value={resourceValue}>
+              <audioAttrsContext.Provider value={audioNativeAttrsValue}>
+                <audioPlayerDispatchContext.Provider value={dispatch}>
+                  {children}
+                </audioPlayerDispatchContext.Provider>
+              </audioAttrsContext.Provider>
+            </resourceContext.Provider>
+          </uiContext.Provider>
+        </trackContext.Provider>
+      </playbackContext.Provider>
+    </timeContext.Provider>
   );
 };

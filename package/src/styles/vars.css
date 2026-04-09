@@ -1,19 +1,76 @@
-.spectrum--medium_9e130c, .spectrum--large_9e130c {
-    --rm-audio-player-interface-container:var(--spectrum-global-color-gray-100);
-    --rm-audio-player-volume-background: #ccc;
-    --rm-audio-player-volume-panel-background:#f2f2f2;
-    --rm-audio-player-volume-panel-border:#ccc;
+.rmap-player-provider {
+  --rm-audio-player-text-color: #2c2c2c;
+  --rm-audio-player-shadow: 0 0 0;
+  --rm-audio-player-interface-container: #f5f5f5;
+  --rm-audio-player-volume-background: #ccc;
+  --rm-audio-player-volume-panel-background: #f2f2f2;
+  --rm-audio-player-volume-panel-border: #ccc;
+  --rm-audio-player-volume-thumb: #5c5c5c;
+  --rm-audio-player-volume-fill: rgba(0, 0, 0, 0.5);
+  --rm-audio-player-volume-track: #ababab;
+  --rm-audio-player-track-current-time: #0072f5;
+  --rm-audio-player-track-duration: #8c8c8c;
+  --rm-audio-player-progress-bar: #0072f5;
+  --rm-audio-player-progress-bar-background: #393939;
+  --rm-audio-player-waveform-cursor: #4b4b4b;
+  --rm-audio-player-waveform-background: var(
+    --rm-audio-player-progress-bar-background
+  );
+  --rm-audio-player-waveform-bar: var(--rm-audio-player-progress-bar);
+  --rm-audio-player-sortable-list: #eaeaea;
+  --rm-audio-player-sortable-list-button-active: #0072f5;
+  --rm-audio-player-selected-list-item-background: #b3b3b3;
+
+  color: var(--rm-audio-player-text-color);
+}
+
+@media (prefers-color-scheme: dark) {
+  .rmap-player-provider:not([data-theme="light"]) {
+    --rm-audio-player-text-color: #ededed;
+    --rm-audio-player-shadow: 255 255 255;
+    --rm-audio-player-interface-container: #1e1e1e;
+    --rm-audio-player-volume-background: #5c5c5c;
+    --rm-audio-player-volume-panel-background: #2c2c2c;
+    --rm-audio-player-volume-panel-border: #393939;
     --rm-audio-player-volume-thumb: #d3d3d3;
-    --rm-audio-player-volume-fill:rgba(0, 0, 0, 0.5);
-    --rm-audio-player-volume-track:#ababab;
-    --rm-audio-player-track-current-time:#0072F5;
-    --rm-audio-player-track-duration:#8c8c8c;
-    --rm-audio-player-progress-bar:#0072F5;
-    --rm-audio-player-progress-bar-background:#D1D1D1;
-    --rm-audio-player-waveform-cursor:var(--spectrum-global-color-gray-800);
-    --rm-audio-player-waveform-background:var(--rm-audio-player-progress-bar-background);
-    --rm-audio-player-waveform-bar:var(--rm-audio-player-progress-bar);
-    --rm-audio-player-sortable-list:var(--spectrum-global-color-gray-200);
-    --rm-audio-player-sortable-list-button-active:#0072F5;
-    --rm-audio-player-selected-list-item-background:var(--spectrum-global-color-gray-500);
+    --rm-audio-player-volume-fill: rgba(255, 255, 255, 0.5);
+    --rm-audio-player-volume-track: #494949;
+    --rm-audio-player-track-current-time: #0072f5;
+    --rm-audio-player-track-duration: #a2a2a2;
+    --rm-audio-player-progress-bar: #0072f5;
+    --rm-audio-player-progress-bar-background: #d1d1d1;
+    --rm-audio-player-waveform-cursor: #c8c8c8;
+    --rm-audio-player-waveform-background: var(
+      --rm-audio-player-progress-bar-background
+    );
+    --rm-audio-player-waveform-bar: var(--rm-audio-player-progress-bar);
+    --rm-audio-player-sortable-list: #2c2c2c;
+    --rm-audio-player-sortable-list-button-active: #0072f5;
+    --rm-audio-player-selected-list-item-background: #5c5c5c;
+  }
+}
+
+/* Keep in sync with @media (prefers-color-scheme: dark) block above */
+.rmap-player-provider[data-theme="dark"] {
+  --rm-audio-player-text-color: #ededed;
+  --rm-audio-player-shadow: 255 255 255;
+  --rm-audio-player-interface-container: #1e1e1e;
+  --rm-audio-player-volume-background: #5c5c5c;
+  --rm-audio-player-volume-panel-background: #2c2c2c;
+  --rm-audio-player-volume-panel-border: #393939;
+  --rm-audio-player-volume-thumb: #d3d3d3;
+  --rm-audio-player-volume-fill: rgba(255, 255, 255, 0.5);
+  --rm-audio-player-volume-track: #494949;
+  --rm-audio-player-track-current-time: #0072f5;
+  --rm-audio-player-track-duration: #a2a2a2;
+  --rm-audio-player-progress-bar: #0072f5;
+  --rm-audio-player-progress-bar-background: #d1d1d1;
+  --rm-audio-player-waveform-cursor: #c8c8c8;
+  --rm-audio-player-waveform-background: var(
+    --rm-audio-player-progress-bar-background
+  );
+  --rm-audio-player-waveform-bar: var(--rm-audio-player-progress-bar);
+  --rm-audio-player-sortable-list: #2c2c2c;
+  --rm-audio-player-sortable-list-button-active: #0072f5;
+  --rm-audio-player-selected-list-item-background: #5c5c5c;
 }

@@ -1,0 +1,75 @@
+import { test as base, expect, Page, Locator } from "@playwright/test";
+
+export interface TestConfig {
+  playerPlacement?: string;
+  progressType?: "bar" | "waveform";
+  activeUI?: Record<string, unknown>;
+  interfaceTemplateArea?: Record<string, string>;
+  volumeSliderPlacement?: string;
+  playListPlacement?: "top" | "bottom";
+  customIconTestIds?: Record<string, string>;
+}
+
+export class PlayerPage {
+  readonly page: Page;
+
+  readonly player: Locator;
+  readonly playBtn: Locator;
+  readonly prevBtn: Locator;
+  readonly nextBtn: Locator;
+  readonly repeatBtn: Locator;
+  readonly volumeTriggerBtn: Locator;
+  readonly volumeSlider: Locator;
+  readonly progressBar: Locator;
+  readonly trackTitle: Locator;
+  readonly trackCurrentTime: Locator;
+  readonly playlistTriggerBtn: Locator;
+
+  constructor(page: Page) {
+    this.page = page;
+    this.player = page.getByTestId("audio-player");
+    this.playBtn = page.getByTestId("play-btn");
+    this.prevBtn = page.getByTestId("prev-btn");
+    this.nextBtn = page.getByTestId("next-btn");
+    this.repeatBtn = page.getByTestId("repeat-btn");
+    this.volumeTriggerBtn = page.getByTestId("volume-trigger-btn");
+    this.volumeSlider = page.getByTestId("volume-slider");
+    this.progressBar = page.getByTestId("progress-bar");
+    this.trackTitle = page.getByTestId("track-title");
+    this.trackCurrentTime = page.getByTestId("track-current-time");
+    this.playlistTriggerBtn = page.getByTestId("playlist-trigger-btn");
+  }
+
+  async goto() {
+    await this.page.goto("/preview/e2e/");
+    await this.player.waitFor({ state: "visible" });
+  }
+
+  async gotoWithConfig(config: TestConfig) {
+    const encoded = btoa(JSON.stringify(config));
+    await this.page.goto(`/preview/e2e/?config=${encoded}`);
+    await this.player.waitFor({ state: "visible" });
+  }
+
+  playlistItems() {
+    return this.page.getByTestId("playlist-item");
+  }
+}
+
+export const test = base.extend<{
+  playerPage: PlayerPage;
+  playerPageLazy: PlayerPage;
+}>({
+  playerPage: async ({ page }, use) => {
+    const playerPage = new PlayerPage(page);
+    await playerPage.goto();
+    await use(playerPage);
+  },
+  // Skips initial goto() — use for tests that call gotoWithConfig() directly
+  playerPageLazy: async ({ page }, use) => {
+    const playerPage = new PlayerPage(page);
+    await use(playerPage);
+  },
+});
+
+export { expect };

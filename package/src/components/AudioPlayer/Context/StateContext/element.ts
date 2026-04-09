@@ -36,11 +36,6 @@ export type CustomIcons = Partial<{
 
 export type ElementRefs = Partial<{
   audioEl: HTMLAudioElement;
-  trackCurTimeEl: HTMLSpanElement;
-  trackDurationEl: HTMLSpanElement;
-  progressBarEl: HTMLDivElement;
-  progressValueEl: HTMLDivElement;
-  progressHandleEl: HTMLDivElement;
   waveformInst: WaveSurfer;
 }>;
 

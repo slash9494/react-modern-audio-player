@@ -1,0 +1,29 @@
+.rmap-playlist-container {
+  transition-property: max-height, opacity;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.rmap-playlist-container.rmap-playlist-content-enter {
+  opacity: 0;
+  max-height: 0;
+}
+
+.rmap-playlist-container.rmap-playlist-content-enter-active {
+  opacity: 1;
+  max-height: 20vh;
+  transition-duration: 0.5s;
+  transition-timing-function: cubic-bezier(0, 0, 0, 1.2);
+}
+
+.rmap-playlist-container.rmap-playlist-content-leave {
+  opacity: 1;
+  max-height: 20vh;
+}
+
+.rmap-playlist-container.rmap-playlist-content-leave-active {
+  opacity: 0;
+  max-height: 0;
+  transition-duration: 0.25s;
+  transition-timing-function: cubic-bezier(0.66, -0.41, 1, 1);
+}

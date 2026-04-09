@@ -1,4 +1,3 @@
-import { createContext } from "react";
 import { AudioState } from "./audio";
 import {
   ActiveUI,
@@ -27,14 +26,14 @@ export interface AudioPlayerStateContext {
   elementRefs?: ElementRefs;
   customIcons?: CustomIcons;
   coverImgsCss?: CoverImgsCss;
+  audioResetKey: number;
+  seekRequestKey: number;
 }
 
-export type InitialStates = AudioState & {
+export type InitialStates = Partial<AudioState> & {
   curPlayId: number;
 };
 
 export * from "./audio";
 export * from "./element";
 export * from "./placement";
-export const audioPlayerStateContext =
-  createContext<AudioPlayerStateContext | null>(null);

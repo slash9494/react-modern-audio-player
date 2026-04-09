@@ -1,0 +1,22 @@
+.rmap-waveform-wrapper {
+  display: flex;
+  width: 100%;
+}
+
+.rmap-waveform-wrapper[data-active="false"] {
+  height: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.rmap-waveform-wrapper #rm-waveform {
+  width: 100%;
+  overflow: hidden;
+}
+
+/* stylelint-disable selector-type-no-unknown */
+.rmap-waveform-wrapper #rm-waveform wave {
+  cursor: pointer !important;
+  overflow-x: hidden !important;
+}
+/* stylelint-enable selector-type-no-unknown */

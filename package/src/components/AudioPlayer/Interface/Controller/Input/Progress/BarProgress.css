@@ -1,0 +1,48 @@
+.rmap-bar-progress-wrapper {
+  display: flex;
+  width: 100%;
+  height: 18px;
+  padding: 8px 0;
+  cursor: pointer;
+  position: relative;
+  align-items: center;
+}
+
+.rmap-bar-progress-wrapper .rmap-progress-bar {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: var(--rm-audio-player-progress-bar-background);
+}
+
+.rmap-bar-progress-wrapper .rmap-progress-fill {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--rm-audio-player-progress-bar);
+  transform-origin: 0 0;
+  transform: scaleX(0);
+}
+
+.rmap-bar-progress-wrapper .rmap-progress-handle {
+  position: absolute;
+  left: -4px;
+  background-color: var(--rm-audio-player-progress-bar);
+  border-radius: 50%;
+  height: 8px;
+  width: 8px;
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
+}
+
+.rmap-bar-progress-wrapper:hover .rmap-progress-handle,
+.rmap-bar-progress-wrapper:focus-visible .rmap-progress-handle {
+  opacity: 1;
+}
+
+.rmap-bar-progress-wrapper:focus-visible {
+  outline: 2px solid var(--rm-audio-player-progress-bar, #0072f5);
+  outline-offset: 2px;
+}

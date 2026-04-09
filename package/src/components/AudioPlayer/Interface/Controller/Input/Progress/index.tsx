@@ -1,21 +1,24 @@
-import { useNonNullableContext } from "@/hooks/useNonNullableContext";
-import { audioPlayerStateContext } from "@/components/AudioPlayer/Context/StateContext";
-import { FC } from "react";
-import styled from "styled-components";
+import { useUIContext } from "@/hooks/context/useUIContext";
+import { FC, useEffect, useState } from "react";
 import { BarProgress } from "./BarProgress";
 import { WaveformProgress } from "./WaveformProgress";
-
-const ProgressContainer = styled.div`
-  min-width: 100px;
-`;
+import "./Progress.css";
 
 export const Progress: FC = () => {
-  const { activeUI } = useNonNullableContext(audioPlayerStateContext);
+  const { activeUI } = useUIContext();
+  const progressType = activeUI.progress ?? (activeUI.all ? "bar" : false);
+  const isWaveform = progressType === "waveform";
+  const isBar = progressType === "bar";
+  const [waveformMounted, setWaveformMounted] = useState(isWaveform);
+
+  useEffect(() => {
+    if (isWaveform && !waveformMounted) setWaveformMounted(true);
+  }, [isWaveform, waveformMounted]);
 
   return (
-    <ProgressContainer className="progress-container">
-      <WaveformProgress isActive={activeUI.progress === "waveform"} />
-      <BarProgress isActive={activeUI.progress !== "waveform"} />
-    </ProgressContainer>
+    <div className="rmap-progress-container">
+      {waveformMounted && <WaveformProgress isActive={isWaveform} />}
+      {isBar && <BarProgress />}
+    </div>
   );
 };

@@ -1,49 +1,28 @@
-import PlayerLogo from "./assets/images/noname.png";
 import { useState } from "react";
 import AudioPlayerWithProviders, {
   ActiveUI,
-  AudioPlayerStateContext,
+  InterfaceGridTemplateArea,
   InterfacePlacement,
   PlayerPlacement,
-  PlayList,
+  PlayListPlacement,
+  ProgressUI,
+  VolumeSliderPlacement,
+  useAudioPlayer,
 } from "../src";
-const playList: PlayList = [
-  {
-    name: "React Modern Audio Player-1",
-    writer: "LYH",
-    img: `${PlayerLogo}`,
-    src: "https://cdn.pixabay.com/audio/2022/08/23/audio_d16737dc28.mp3",
-    id: 1,
-  },
-  {
-    name: "React Modern Audio Player-1",
-    writer: "LYH",
-    img: `${PlayerLogo}`,
-    src: "https://cdn.pixabay.com/audio/2022/01/21/audio_c44fddb424.mp3",
-    id: 2,
-  },
-  {
-    name: "React Modern Audio Player-1",
-    writer: "LYH",
-    img: `${PlayerLogo}`,
-    src: "https://cdn.pixabay.com/audio/2022/08/03/audio_54ca0ffa52.mp3",
-    id: 3,
-  },
-  {
-    name: "React Modern Audio Player-1",
-    writer: "LYH",
-    img: `${PlayerLogo}`,
-    src: "https://cdn.pixabay.com/audio/2022/07/25/audio_3266b47d61.mp3",
-    id: 4,
-  },
-  {
-    name: "React Modern Audio Player-1",
-    writer: "LYH",
-    img: `${PlayerLogo}`,
-    src: "https://cdn.pixabay.com/audio/2022/08/02/audio_884fe92c21.mp3",
-    id: 5,
-  },
-];
+import { playList } from "./playList";
+import Editor from "./Editor";
+import {
+  CustomComponentsArea,
+  defaultCustomComponentsArea,
+} from "./playerMode";
+
+/**
+ * Demo entry — mirrors the public codesandbox demo at
+ * https://codesandbox.io/s/basic-91y82y. Used as the dev playground
+ * (`yarn dev` → http://localhost:5173) and what consumers see when they
+ * land on the repo. The Playwright e2e fixture lives in `App.e2e.tsx`
+ * (loaded via `e2e.html`) so demo refactors cannot break the test contract.
+ */
 
 const initialState = {
   muted: true,
@@ -51,114 +30,105 @@ const initialState = {
   curPlayId: 1,
 };
 
+const CustomComponent = () => {
+  const { currentTime, duration, seek, isPlaying, togglePlay } =
+    useAudioPlayer();
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+      <button onClick={() => seek(currentTime + 30)}>+30s</button>
+      <button onClick={togglePlay}>{isPlaying ? "Pause" : "Play"}</button>
+      <span
+        style={{
+          minWidth: "80px",
+          fontVariantNumeric: "tabular-nums",
+          margin: "0 2px",
+        }}
+      >
+        {currentTime.toFixed(0)}s / {duration.toFixed(0)}s
+      </span>
+    </div>
+  );
+};
+
 function App() {
-  const [progressType, setProgressType] = useState("bar");
-  const [playerPlacement, setPlayerPlacement] = useState("static");
-
-  const placement = {
-    interface: {
-      templateArea: {
-        // playList: "row1-3",
-        // progress: "row2-1",
-        // playButton: "row1-1",
-        // repeatType: "row2-10",
-        // volume: "row1-3",
-        // trackTimeCurrent: "row2-1",
-        // trackTimeDuration: "row2-3",
-      },
-      customComponentsArea: {
-        test1: "row1-10",
-      },
-    } as InterfacePlacement<11>,
-    player: playerPlacement as PlayerPlacement,
-  };
-
-  const activeUI: ActiveUI = {
-    all: true,
-    progress: progressType as "bar" | "waveform",
-    // playButton: true,
-    // repeatType: true,
-    // volume: true,
-    // playList: "sortable",
-    // prevNnext: true,
-    // trackTime: true,
-  };
-
-  const CustomComponent = ({
-    audioPlayerState,
-  }: {
-    audioPlayerState?: AudioPlayerStateContext;
-  }) => {
-    const audioEl = audioPlayerState?.elementRefs?.audioEl;
-    const handOverTime = () => {
-      if (audioEl) {
-        audioEl.currentTime += 30;
-      }
-    };
-    return (
-      <>
-        <button onClick={handOverTime}>+30</button>
-      </>
-    );
-  };
+  const [progressType, setProgressType] = useState<ProgressUI>("waveform");
+  const [playerPlacement, setPlayerPlacement] =
+    useState<PlayerPlacement>("bottom-left");
+  const [interfacePlacement, setInterfacePlacement] =
+    useState<InterfaceGridTemplateArea>();
+  const [playListPlacement, setPlayListPlacement] =
+    useState<PlayListPlacement>("bottom");
+  const [volumeSliderPlacement, setVolumeSliderPlacement] =
+    useState<VolumeSliderPlacement>();
+  const [theme, setTheme] = useState<"dark" | "light" | undefined>();
+  const [width, setWidth] = useState<string>("100%");
+  const [activeUI, setActiveUI] = useState<ActiveUI>({ all: true });
+  const [customComponentsArea, setCustomComponentsArea] =
+    useState<CustomComponentsArea>(defaultCustomComponentsArea);
 
   return (
     <div
       style={{
         width: "100%",
+        minHeight: "100vh",
         display: "flex",
-        height: " 100vh",
+        flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        gap: "1rem",
-        flexDirection: "column",
+        gap: "1.5rem",
+        padding: "2rem 1rem",
+        boxSizing: "border-box",
       }}
     >
-      <h1
-        style={{
-          fontSize: "48px",
-        }}
-      >
-        React modern audio player
-        <button
-          onClick={() =>
-            setProgressType((prev) => (prev === "bar" ? "waveform" : "bar"))
-          }
-        >
-          progress type
-        </button>
-        <button
-          onClick={() => {
-            switch (playerPlacement) {
-              case "static":
-                setPlayerPlacement("top-left");
-                break;
-              case "top-left":
-                setPlayerPlacement("bottom-left");
-                break;
-              case "bottom-left":
-                setPlayerPlacement("static");
-                break;
-              default:
-                break;
-            }
-          }}
-        >
-          change player placement
-        </button>
-      </h1>
-      <div>
+      <h3 style={{ margin: 0 }}>React Modern Audio Player</h3>
+
+      <div style={{ width: "100%" }}>
         <AudioPlayerWithProviders
           playList={playList}
           audioInitialState={initialState}
-          placement={placement}
-          activeUI={activeUI}
+          activeUI={{
+            ...activeUI,
+            progress: progressType,
+          }}
+          placement={
+            {
+              player: playerPlacement,
+              interface: {
+                templateArea: interfacePlacement,
+                customComponentsArea,
+              },
+              playList: playListPlacement,
+              volumeSlider: volumeSliderPlacement,
+            } as {
+              interface: InterfacePlacement<11>;
+            }
+          }
+          colorScheme={theme}
+          rootContainerProps={{
+            style: { width },
+          }}
         >
           <AudioPlayerWithProviders.CustomComponent id="test1">
             <CustomComponent />
           </AudioPlayerWithProviders.CustomComponent>
         </AudioPlayerWithProviders>
+
+        {/* {process.env.NODE_E지NV === "development" && (
+          <Agentation endpoint="http://localhost:4747" />
+        )} */}
       </div>
+
+      <Editor
+        setProgressType={setProgressType}
+        setPlayerPlacement={setPlayerPlacement}
+        setInterfacePlacement={setInterfacePlacement}
+        setPlayListPlacement={setPlayListPlacement}
+        setVolumeSliderPlacement={setVolumeSliderPlacement}
+        setTheme={setTheme}
+        setWidth={setWidth}
+        setActiveUI={setActiveUI}
+        setCustomComponentsArea={setCustomComponentsArea}
+      />
     </div>
   );
 }

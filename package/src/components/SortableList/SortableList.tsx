@@ -1,22 +1,14 @@
 import { FC, PropsWithChildren } from "react";
 import { SortableListItem } from "./SortableListItem";
-import styled from "styled-components";
+import "./SortableList.css";
 
-const SortableList: FC<PropsWithChildren<unknown>> = ({ children }) => {
+const SortableList: FC<PropsWithChildren> = ({ children }) => {
   return (
-    <SortableListContainer className="sortable-list-container">
+    <ul className="rmap-sortable-list-container" aria-label="Sortable list">
       {children}
-    </SortableListContainer>
+    </ul>
   );
 };
-
-const SortableListContainer = styled.ul`
-  ul,
-  li {
-    list-style-type: none;
-  }
-  cursor: pointer;
-`;
 
 type SortableListComponent = typeof SortableList & {
   Item: typeof SortableListItem;

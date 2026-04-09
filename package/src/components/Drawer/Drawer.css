@@ -1,0 +1,30 @@
+@import "../../styles/animations.css";
+
+.rmap-drawer-container {
+  position: relative;
+  min-width: 20px;
+  min-height: 20px;
+}
+
+.rmap-drawer-container .rmap-drawer-trigger {
+  position: absolute;
+  inset: 0;
+  cursor: pointer;
+  display: flex;
+}
+
+.rmap-drawer-container .rmap-drawer-trigger[aria-expanded="true"] svg {
+  color: var(--rm-audio-player-sortable-list-button-active);
+}
+
+.rmap-drawer-container .rmap-drawer-content {
+  transform-origin: center top;
+}
+
+.rmap-drawer-container .rmap-drawer-content-enter {
+  animation: rmap-appearance-in 0.25s ease-out forwards;
+}
+
+.rmap-drawer-container .rmap-drawer-content-leave {
+  animation: rmap-appearance-out 0.1s ease-in forwards;
+}

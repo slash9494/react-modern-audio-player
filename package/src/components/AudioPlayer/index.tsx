@@ -1,33 +1,34 @@
 import {
   AudioPlayerProvider,
-  SpectrumProvider,
-  SpectrumProviderProps,
+  AudioPlayerRootProvider,
+  AudioPlayerRootProviderProps,
 } from "@/components/Provider";
-import { GlobalStyle } from "../../styles/GlobalStyle";
+import "@/styles/vars.css";
+import "@/styles/GlobalStyle.css";
 import { defaultInterfacePlacementMaxLength } from "./Context";
 import { CustomComponent } from "./Interface/CustomComponent";
 import { AudioPlayer, AudioPlayerProps } from "./Player";
 
 export type RMAudioPlayerProps<
   TInterfacePlacementLength extends number = typeof defaultInterfacePlacementMaxLength
-> = AudioPlayerProps<TInterfacePlacementLength> & SpectrumProviderProps;
+> = AudioPlayerProps<TInterfacePlacementLength> & AudioPlayerRootProviderProps;
 
-const AudioPlayerWithProviders = <TInterfacePlacementLength extends number>({
+function AudioPlayerWithProviders<
+  TInterfacePlacementLength extends number = typeof defaultInterfacePlacementMaxLength
+>({
   rootContainerProps,
   ...audioPlayProps
-}: RMAudioPlayerProps<TInterfacePlacementLength>) => {
+}: RMAudioPlayerProps<TInterfacePlacementLength>) {
   return (
     <AudioPlayerProvider {...audioPlayProps}>
-      <SpectrumProvider rootContainerProps={rootContainerProps}>
+      <AudioPlayerRootProvider rootContainerProps={rootContainerProps}>
         <AudioPlayer {...audioPlayProps} />
-        <GlobalStyle />
-      </SpectrumProvider>
+      </AudioPlayerRootProvider>
     </AudioPlayerProvider>
   );
-};
+}
 
-type AudioPlayerComponent = typeof AudioPlayerWithProviders & {
-  CustomComponent: typeof CustomComponent;
-};
+AudioPlayerWithProviders.displayName = "AudioPlayerWithProviders";
+AudioPlayerWithProviders.CustomComponent = CustomComponent;
 
-export default AudioPlayerWithProviders as AudioPlayerComponent;
+export default AudioPlayerWithProviders;

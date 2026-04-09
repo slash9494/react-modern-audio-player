@@ -1,0 +1,8 @@
+.rmap-sortable-list-container,
+.rmap-sortable-list-container li {
+  list-style-type: none;
+}
+
+.rmap-sortable-list-container {
+  cursor: pointer;
+}

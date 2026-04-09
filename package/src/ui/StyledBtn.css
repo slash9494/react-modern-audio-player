@@ -1,0 +1,30 @@
+.styled-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  width: 20px;
+  height: 100%;
+  transition: transform 0.2s ease-out, opacity 0.2s ease-out;
+}
+
+.styled-btn svg {
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.styled-btn:hover {
+  transform: scale(1.1);
+}
+
+.styled-btn:focus-visible {
+  outline: 2px solid var(--rm-audio-player-progress-bar, #0072f5);
+  outline-offset: 2px;
+}
+
+.styled-btn:active {
+  transform: scale(0.8);
+  opacity: 0.5;
+}

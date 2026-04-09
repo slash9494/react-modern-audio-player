@@ -1,6 +1,6 @@
 {
   "name": "react-modern-audio-player",
-  "version": "1.4.0-rc.2",
+  "version": "2.0.0-rc.1",
   "author": {
     "name": "LYH",
     "email": "slash9494@naver.com",
@@ -23,33 +23,43 @@
     "dev": "vite --host",
     "build": "rm -rf dist && tsc && vite build",
     "preview": "vite preview",
-    "typeCheck": "tsc --project ./tsconfig.json --noEmit"
+    "typeCheck": "tsc --project ./tsconfig.json --noEmit",
+    "test": "vitest run",
+    "test:unit": "vitest run src",
+    "test:integration": "vitest run ../test/integration",
+    "test:integration:core": "vitest run ../test/integration/repeat-type.test.tsx ../test/integration/playlist.test.tsx",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage"
   },
+  "sideEffects": [
+    "*.css"
+  ],
   "peerDependencies": {
-    "react": ">=16.8.0",
-    "react-dom": ">=16.8.0"
+    "react": ">=18.0.0",
+    "react-dom": ">=18.0.0"
   },
   "dependencies": {
-    "@react-spectrum/layout": "^3.3.1",
-    "@react-spectrum/provider": "^3.4.1",
-    "@react-spectrum/theme-default": "^3.3.1",
-    "@react-spectrum/view": "^3.2.1",
-    "classnames": "^2.3.1",
-    "react-icons": "^4.4.0",
-    "styled-components": "^5.3.5",
-    "wavesurfer.js": "^6.2.0"
+    "wavesurfer.js": "^6.6.4"
   },
   "devDependencies": {
-    "@types/node": "^17.0.25",
-    "@types/react": "^18.0.1",
-    "@types/react-dom": "^18.0.0",
-    "@types/styled-components": "^5.1.26",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/jsdom": "^28",
+    "@types/node": "^22.0.0",
+    "@types/react": "^18.3.0",
+    "@types/react-dom": "^18.3.0",
     "@types/wavesurfer.js": "^6.0.3",
-    "@vitejs/plugin-react": "^1.0.7",
-    "typescript": "^4.6.3",
-    "vite": "^2.9.0",
-    "vite-plugin-dts": "^1.1.0",
-    "vite-plugin-libcss": "^1.0.5"
+    "@vitejs/plugin-react": "^4.3.4",
+    "@vitest/coverage-v8": "^2.1.0",
+    "agentation": "^3.0.2",
+    "jsdom": "^25.0.0",
+    "typescript": "^5.7.2",
+    "vite": "^5.4.14",
+    "vite-plugin-dts": "^4.5.0",
+    "vite-plugin-libcss": "^1.1.1",
+    "vitest": "^2.1.0",
+    "vitest-axe": "^0.1.0"
   },
   "keywords": [
     "audio",

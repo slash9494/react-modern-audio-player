@@ -1,9 +1,9 @@
-import { useNonNullableContext } from "@/hooks/useNonNullableContext";
+import { FC, memo, useMemo } from "react";
+import { useNonNullableContext } from "@/hooks/context/useNonNullableContext";
 import { audioPlayerDispatchContext } from "@/components/AudioPlayer/Context/dispatchContext";
-import { audioPlayerStateContext } from "@/components/AudioPlayer/Context/StateContext";
-import { FC, useMemo } from "react";
-import { StyledBtn } from "./StyledBtn";
-import { ImPrevious, ImNext } from "react-icons/im";
+import { useResourceContext } from "@/hooks/context/useResourceContext";
+import { StyledBtn } from "@/ui/StyledBtn";
+import { ImPrevious, ImNext } from "@/components/icons";
 import { Icon } from "../Icon";
 
 interface PrevNnextBtnProps {
@@ -11,15 +11,24 @@ interface PrevNnextBtnProps {
   visible: boolean;
 }
 
-export const PrevNnextBtn: FC<PrevNnextBtnProps> = ({ type, visible }) => {
-  const { customIcons } = useNonNullableContext(audioPlayerStateContext);
+export const PrevNnextBtn: FC<PrevNnextBtnProps> = memo(function PrevNnextBtn({
+  type,
+  visible,
+}) {
+  const { customIcons, elementRefs } = useResourceContext();
   const audioPlayerDispatch = useNonNullableContext(audioPlayerDispatchContext);
   const changeAudio = () => {
     if (type === "next") {
       audioPlayerDispatch({ type: "NEXT_AUDIO" });
     }
     if (type === "prev") {
-      audioPlayerDispatch({ type: "PREV_AUDIO" });
+      // wavesurfer is configured with `backend: "MediaElement"` and wraps
+      // the same `<audio>` element (useWavesurfer.ts), so
+      // waveformInst.getCurrentTime() and audioEl.currentTime always
+      // return identical values. Reading audioEl directly is sufficient —
+      // the legacy reducer used to OR both refs but that branch was dead.
+      const currentTime = elementRefs?.audioEl?.currentTime ?? 0;
+      audioPlayerDispatch({ type: "PREV_AUDIO", currentTime });
     }
   };
   const PrevNnextIcon = useMemo(() => {
@@ -33,8 +42,14 @@ export const PrevNnextBtn: FC<PrevNnextBtnProps> = ({ type, visible }) => {
   }, [customIcons?.next, customIcons?.prev, type]);
 
   return visible ? (
-    <StyledBtn onClick={changeAudio} className="prev-n-next-button">
+    <StyledBtn
+      type="button"
+      aria-label={type === "prev" ? "Previous track" : "Next track"}
+      onClick={changeAudio}
+      className="rmap-prev-next-btn"
+      data-testid={`${type}-btn`}
+    >
       {PrevNnextIcon}
     </StyledBtn>
   ) : null;
-};
+});

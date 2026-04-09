@@ -1,0 +1,28 @@
+.rmap-sortable-item {
+  border-top: 2px solid transparent;
+  border-bottom: 2px solid transparent;
+  transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out,
+    box-shadow 0.3s ease-in-out, backdrop-filter 0.3s ease-in-out;
+}
+
+.rmap-sortable-item * {
+  pointer-events: none;
+}
+
+.rmap-sortable-item.rmap-drag-start {
+  opacity: 0.5;
+}
+
+.rmap-sortable-item.rmap-drag-over {
+  transform: scale(1.02);
+  backdrop-filter: blur(20px);
+  box-shadow: 0px 3.58195px 22.3872px -2.68646px rgb(var(
+          --rm-audio-player-shadow,
+          0 0 0
+        ) / 20%);
+}
+
+.rmap-sortable-item-inner {
+  display: flex;
+  align-items: center;
+}

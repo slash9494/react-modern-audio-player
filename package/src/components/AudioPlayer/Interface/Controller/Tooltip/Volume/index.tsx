@@ -2,8 +2,7 @@ import { FC, useRef } from "react";
 import { VolumeSlider } from "./Content";
 import Dropdown from "@/components/Dropdown";
 import { VolumeTriggerBtn } from "../../Button";
-import { useNonNullableContext } from "@/hooks/useNonNullableContext";
-import { audioPlayerStateContext } from "@/components/AudioPlayer/Context";
+import { useUIContext } from "@/hooks/context/useUIContext";
 import { useVolumeSliderPlacement } from "./useVolume";
 
 // TODO : apply event callback props
@@ -13,7 +12,7 @@ export const Volume: FC = () => {
   const {
     activeUI: { volumeSlider: volumeSliderEl },
     volumeSliderPlacement: contextVolumePlacement,
-  } = useNonNullableContext(audioPlayerStateContext);
+  } = useUIContext();
   const volumeSliderPlacement = useVolumeSliderPlacement({
     triggerRef,
     initialState: "bottom",
@@ -23,12 +22,13 @@ export const Volume: FC = () => {
     <Dropdown
       placement={contextVolumePlacement || volumeSliderPlacement}
       triggerType="hover"
-      disabled={!(volumeSliderEl ?? true)}
+      disabled={volumeSliderEl === false}
+      data-testid="volume-dropdown"
     >
       <Dropdown.Trigger>
         <VolumeTriggerBtn ref={triggerRef} />
       </Dropdown.Trigger>
-      <Dropdown.Content>
+      <Dropdown.Content role="tooltip">
         <VolumeSlider
           placement={contextVolumePlacement || volumeSliderPlacement}
         />

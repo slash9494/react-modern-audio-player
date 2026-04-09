@@ -1,0 +1,29 @@
+@import "../../styles/animations.css";
+
+.rmap-dropdown-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  min-height: 20px;
+}
+
+.rmap-dropdown-container .rmap-dropdown-trigger {
+  position: absolute;
+  inset: 0;
+  cursor: pointer;
+  display: flex;
+}
+
+.rmap-dropdown-container .rmap-dropdown-content {
+  transform-origin: center top;
+}
+
+.rmap-dropdown-container .rmap-dropdown-content-enter {
+  animation: rmap-appearance-in 0.25s ease-out normal forwards;
+}
+
+.rmap-dropdown-container .rmap-dropdown-content-leave {
+  animation: rmap-appearance-out 0.1s ease-in forwards;
+}

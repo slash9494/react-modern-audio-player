@@ -1,0 +1,42 @@
+.rmap-playlist-item {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  padding: 10px 20px;
+}
+
+.rmap-playlist-item.rmap-cur-played {
+  background: var(--rm-audio-player-selected-list-item-background);
+}
+
+.rmap-playlist-item .rmap-playlist-item-contents {
+  width: 100%;
+  display: flex;
+  gap: 10px;
+}
+
+.rmap-playlist-item .rmap-playlist-album-cover {
+  display: flex;
+  align-items: center;
+}
+
+.rmap-playlist-item .rmap-playlist-album-cover img {
+  width: 35px;
+  height: 35px;
+}
+
+.rmap-playlist-item .rmap-playlist-album-info {
+  display: grid;
+  min-width: 10px;
+  font-size: 13px;
+  margin-right: 1.5rem;
+  padding: 2px 0%;
+}
+
+.rmap-playlist-item .rmap-playlist-album-info span {
+  align-self: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
