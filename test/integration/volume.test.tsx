@@ -49,6 +49,23 @@ describe("Volume integration", () => {
     expect(muteBtn).toHaveAttribute("data-muted", "false");
     expect(audio.volume).toBe(0.5);
   });
+
+  it("re-applies volume after loadedmetadata resets it", () => {
+    const { audio } = renderWithVolume(0.3);
+    expect(audio.volume).toBe(0.3);
+
+    // Simulate browser resetting volume on source load
+    Object.defineProperty(audio, "volume", {
+      value: 1,
+      writable: true,
+      configurable: true,
+    });
+    expect(audio.volume).toBe(1);
+
+    // Fire loadedmetadata — the handler should re-apply state volume
+    fireEvent(audio, new Event("loadedmetadata", { bubbles: false }));
+    expect(audio.volume).toBe(0.3);
+  });
 });
 
 describe("Volume tooltip (slider)", () => {

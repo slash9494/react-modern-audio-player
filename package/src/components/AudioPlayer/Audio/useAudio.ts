@@ -53,12 +53,18 @@ export const useAudio = (): HTMLAttributes<HTMLAudioElement> => {
   const onLoadedMetadata = useCallback(
     (e: SyntheticEvent<HTMLAudioElement, Event>) => {
       const { duration } = e.currentTarget;
+      // Browsers reset audioEl.volume to 1 when loading a new source.
+      // Re-apply the state-driven volume so the initial/current value
+      // survives the source change.
+      if (playbackVolume != null) {
+        e.currentTarget.volume = playbackVolume;
+      }
       audioPlayerDispatch({
         type: "SET_AUDIO_STATE",
         audioState: { isLoadedMetaData: true, duration },
       });
     },
-    [audioPlayerDispatch]
+    [audioPlayerDispatch, playbackVolume]
   );
 
   // Skip the very first audioResetKey effect run so the freshly-mounted
