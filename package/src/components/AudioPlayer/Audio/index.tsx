@@ -3,14 +3,14 @@ import { audioPlayerDispatchContext } from "@/components/AudioPlayer/Context/dis
 import { useAudioAttrsContext } from "@/hooks/context/useAudioAttrsContext";
 import { usePlaybackContext } from "@/hooks/context/usePlaybackContext";
 import { useTrackContext } from "@/hooks/context/useTrackContext";
-import React, { FC, useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { useAudio } from "./useAudio";
 
 // TODO : optimize large audio files
 
-export const Audio: FC<{
+export const Audio = React.memo<{
   audioRef?: React.MutableRefObject<HTMLAudioElement>;
-}> = ({ audioRef: propsAudioRef }) => {
+}>(({ audioRef: propsAudioRef }) => {
   const audioRef = useRef<HTMLAudioElement>(null);
   const { muted } = usePlaybackContext();
   const { curPlayId, playList } = useTrackContext();
@@ -46,4 +46,6 @@ export const Audio: FC<{
       {...useAudioEventProps}
     ></audio>
   );
-};
+});
+
+Audio.displayName = "Audio";

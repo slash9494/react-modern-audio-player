@@ -1,6 +1,5 @@
-import {
+import React, {
   CSSProperties,
-  FC,
   HTMLAttributes,
   PropsWithChildren,
   useMemo,
@@ -36,9 +35,9 @@ const PLACEMENT_OFFSET_MAP: Partial<Record<PlayerPlacement, PlacementOffset>> =
     "top-right": { ...PLACEMENT_OFFSET_BASE, top: 0, right: 0 },
   };
 
-export const AudioPlayerRootProvider: FC<
+export const AudioPlayerRootProvider = React.memo<
   PropsWithChildren<AudioPlayerRootProviderProps>
-> = ({ children, rootContainerProps }) => {
+>(({ children, rootContainerProps }) => {
   const { playerPlacement: contextPlayerPlacement, colorScheme } =
     useUIContext();
 
@@ -72,4 +71,6 @@ export const AudioPlayerRootProvider: FC<
       {children}
     </div>
   );
-};
+});
+
+AudioPlayerRootProvider.displayName = "AudioPlayerRootProvider";

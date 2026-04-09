@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
 import { useNonNullableContext } from "@/hooks/useNonNullableContext";
+import { useDidUpdateEffect } from "@/hooks/useDidUpdateEffect";
 import { AudioPlayerProps } from ".";
 import {
   audioPlayerDispatchContext,
@@ -17,10 +17,9 @@ export const usePropsStateEffect = <TInterfacePlacementLength extends number>({
   playList,
   customIcons,
 }: Omit<AudioPlayerProps<TInterfacePlacementLength>, "children">) => {
-  const [isMounted, setIsMounted] = useState(false);
   const audioPlayerDispatch = useNonNullableContext(audioPlayerDispatchContext);
-  useEffect(() => {
-    if (!isMounted) return;
+
+  useDidUpdateEffect(() => {
     const {
       player: playerPlacement,
       playList: playListPlacement,
@@ -41,21 +40,18 @@ export const usePropsStateEffect = <TInterfacePlacementLength extends number>({
     });
   }, [audioPlayerDispatch, placement]);
 
-  useEffect(() => {
-    if (!isMounted || !activeUI) return;
-
+  useDidUpdateEffect(() => {
+    if (!activeUI) return;
     audioPlayerDispatch({ type: "SET_ACTIVE_UI", activeUI });
   }, [activeUI, audioPlayerDispatch]);
 
-  useEffect(() => {
-    if (!isMounted || !coverImgsCss) return;
-
+  useDidUpdateEffect(() => {
+    if (!coverImgsCss) return;
     audioPlayerDispatch({ type: "SET_COVER_IMGS_CSS", coverImgsCss });
   }, [audioPlayerDispatch, coverImgsCss]);
 
-  useEffect(() => {
-    if (!isMounted || !audioInitialState) return;
-
+  useDidUpdateEffect(() => {
+    if (!audioInitialState) return;
     audioPlayerDispatch({
       type: "SET_INITIAL_STATES",
       audioState: audioInitialState,
@@ -63,19 +59,12 @@ export const usePropsStateEffect = <TInterfacePlacementLength extends number>({
     });
   }, [audioInitialState, audioPlayerDispatch]);
 
-  useEffect(() => {
-    if (!isMounted) return;
-
+  useDidUpdateEffect(() => {
     audioPlayerDispatch({ type: "UPDATE_PLAY_LIST", playList });
   }, [audioPlayerDispatch, playList]);
 
-  useEffect(() => {
-    if (!isMounted || !customIcons) return;
-
+  useDidUpdateEffect(() => {
+    if (!customIcons) return;
     audioPlayerDispatch({ type: "SET_CUSTOM_ICONS", customIcons });
   }, [customIcons, audioPlayerDispatch]);
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
 };

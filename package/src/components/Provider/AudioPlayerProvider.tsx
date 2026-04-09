@@ -1,6 +1,7 @@
 import {
   audioPlayerDispatchContext,
   audioPlayerReducer,
+  AudioPlayerStateContext,
   AudioState,
   defaultInterfacePlacement,
   defaultInterfacePlacementMaxLength,
@@ -19,19 +20,21 @@ import { clampVolume } from "@/utils/clampVolume";
 import { PropsWithChildren, useMemo, useReducer } from "react";
 import { AudioPlayerProps } from "../AudioPlayer/Player";
 
-export const AudioPlayerProvider = <
-  TInterfacePlacementLength extends number = typeof defaultInterfacePlacementMaxLength
->({
-  children,
-  ...props
-}: PropsWithChildren<AudioPlayerProps<TInterfacePlacementLength>>) => {
+type ProviderInitArg<T extends number = number> = Omit<
+  AudioPlayerProps<T>,
+  "children" | "audioRef" | "colorScheme"
+>;
+
+function createInitialState<T extends number>(
+  props: ProviderInitArg<T>
+): AudioPlayerStateContext {
   const {
     playList,
     audioInitialState,
     activeUI: activeUIProp,
     placement: placementProp,
-    colorScheme,
-    ...otherProps
+    customIcons,
+    coverImgsCss,
   } = props;
 
   const curAudioState: AudioState = {
@@ -44,11 +47,9 @@ export const AudioPlayerProvider = <
     muted: audioInitialState?.muted === true,
   };
 
-  const activeUI = activeUIProp || {
-    playButton: true,
-  };
+  const activeUI = activeUIProp || { playButton: true };
 
-  const placement: Placements<TInterfacePlacementLength | 10> = {
+  const placement: Placements<T | 10> = {
     playerPlacement: placementProp?.player,
     playListPlacement: placementProp?.playList || "bottom",
     interfacePlacement: placementProp?.interface || {
@@ -59,7 +60,7 @@ export const AudioPlayerProvider = <
     volumeSliderPlacement: placementProp?.volumeSlider,
   };
 
-  const [state, dispatch] = useReducer(audioPlayerReducer, {
+  return {
     playList,
     curPlayId: audioInitialState?.curPlayId || 1,
     curIdx: audioInitialState?.curPlayId
@@ -72,8 +73,24 @@ export const AudioPlayerProvider = <
     audioResetKey: 0,
     seekRequestKey: 0,
     ...(placement as Placements<10>),
-    ...otherProps,
-  });
+    customIcons,
+    coverImgsCss,
+  };
+}
+
+export const AudioPlayerProvider = <
+  TInterfacePlacementLength extends number = typeof defaultInterfacePlacementMaxLength
+>({
+  children,
+  audioRef: _audioRef,
+  colorScheme,
+  ...initProps
+}: PropsWithChildren<AudioPlayerProps<TInterfacePlacementLength>>) => {
+  const [state, dispatch] = useReducer(
+    audioPlayerReducer,
+    initProps as ProviderInitArg<TInterfacePlacementLength>,
+    createInitialState
+  );
 
   const timeValue = useMemo(
     () => ({
@@ -134,6 +151,8 @@ export const AudioPlayerProvider = <
       colorScheme,
     ]
   );
+
+  const { audioInitialState } = initProps;
 
   // Sourced from the audioInitialState prop reference (not reducer state)
   // so per-tick SET_AUDIO_STATE dispatches never invalidate this object.
