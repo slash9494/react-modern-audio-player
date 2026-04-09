@@ -1,4 +1,4 @@
-import { useNonNullableContext } from "@/hooks/useNonNullableContext";
+import { useNonNullableContext } from "@/hooks/context/useNonNullableContext";
 import {
   HTMLAttributes,
   SyntheticEvent,

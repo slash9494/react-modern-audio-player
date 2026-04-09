@@ -1,13 +1,5 @@
 import {
-  ActiveUI,
-  PlayListPlacement,
-  CustomIcons,
-  PlayerPlacement,
-  PlayList,
-  InitialStates,
-  InterfacePlacement,
-  CoverImgsCss,
-  VolumeSliderPlacement,
+  AudioPlayerStateProviderProps,
   defaultInterfacePlacementMaxLength,
 } from "@/components/AudioPlayer/Context";
 import { Audio } from "../Audio";
@@ -16,20 +8,11 @@ import { usePropsStateEffect } from "./usePropsStateEffect";
 
 // TODO : feature - add Equalizer component
 
-export interface AudioPlayerProps<TInterfacePlacementLength extends number> {
+export interface AudioPlayerProps<
+  TInterfacePlacementLength extends number = number
+> extends AudioPlayerStateProviderProps<TInterfacePlacementLength> {
   children?: React.ReactNode;
-  playList: PlayList;
-  audioInitialState?: InitialStates;
   audioRef?: React.MutableRefObject<HTMLAudioElement>;
-  activeUI?: ActiveUI;
-  customIcons?: CustomIcons;
-  coverImgsCss?: CoverImgsCss;
-  placement?: {
-    player?: PlayerPlacement;
-    playList?: PlayListPlacement;
-    interface?: InterfacePlacement<TInterfacePlacementLength>;
-    volumeSlider?: VolumeSliderPlacement;
-  };
   /**
    * Forces the player to render in a specific color scheme, overriding the
    * operating system `prefers-color-scheme` setting. When omitted, the

@@ -3,30 +3,24 @@ import {
   audioPlayerReducer,
   AudioPlayerStateContext,
   AudioState,
+  DEFAULT_AUDIO_STATE,
   defaultInterfacePlacement,
   defaultInterfacePlacementMaxLength,
   Placements,
-} from "@/components/AudioPlayer/Context";
-import { playbackContext } from "@/components/AudioPlayer/Context/PlaybackContext";
-import {
+  playbackContext,
   AudioAttrsContext,
   audioAttrsContext,
-} from "@/components/AudioPlayer/Context/AudioAttrsContext";
-import { timeContext } from "@/components/AudioPlayer/Context/TimeContext";
-import { trackContext } from "@/components/AudioPlayer/Context/TrackContext";
-import { uiContext } from "@/components/AudioPlayer/Context/UIContext";
-import { resourceContext } from "@/components/AudioPlayer/Context/ResourceContext";
+  timeContext,
+  trackContext,
+  uiContext,
+  resourceContext,
+  AudioPlayerStateProviderProps,
+} from "@/components/AudioPlayer/Context";
 import { clampVolume } from "@/utils/clampVolume";
 import { PropsWithChildren, useMemo, useReducer } from "react";
-import { AudioPlayerProps } from "../AudioPlayer/Player";
-
-type ProviderInitArg<T extends number = number> = Omit<
-  AudioPlayerProps<T>,
-  "children" | "audioRef" | "colorScheme"
->;
 
 function createInitialState<T extends number>(
-  props: ProviderInitArg<T>
+  props: AudioPlayerStateProviderProps<T>
 ): AudioPlayerStateContext {
   const {
     playList,
@@ -38,13 +32,13 @@ function createInitialState<T extends number>(
   } = props;
 
   const curAudioState: AudioState = {
-    isPlaying: audioInitialState?.isPlaying === true,
-    repeatType: audioInitialState?.repeatType ?? "ALL",
+    isPlaying: audioInitialState?.isPlaying ?? DEFAULT_AUDIO_STATE.isPlaying,
+    repeatType: audioInitialState?.repeatType ?? DEFAULT_AUDIO_STATE.repeatType,
     volume:
       typeof audioInitialState?.volume === "number"
         ? clampVolume(audioInitialState.volume)
-        : 1,
-    muted: audioInitialState?.muted === true,
+        : DEFAULT_AUDIO_STATE.volume,
+    muted: audioInitialState?.muted ?? DEFAULT_AUDIO_STATE.muted,
   };
 
   const activeUI = activeUIProp || { playButton: true };
@@ -78,24 +72,29 @@ function createInitialState<T extends number>(
   };
 }
 
+interface AudioPlayerProviderProps<T extends number = number>
+  extends AudioPlayerStateProviderProps<T> {
+  colorScheme?: "light" | "dark";
+}
+
 export const AudioPlayerProvider = <
   TInterfacePlacementLength extends number = typeof defaultInterfacePlacementMaxLength
 >({
   children,
-  audioRef: _audioRef,
   colorScheme,
   ...initProps
-}: PropsWithChildren<AudioPlayerProps<TInterfacePlacementLength>>) => {
+}: PropsWithChildren<AudioPlayerProviderProps<TInterfacePlacementLength>>) => {
   const [state, dispatch] = useReducer(
     audioPlayerReducer,
-    initProps as ProviderInitArg<TInterfacePlacementLength>,
+    initProps as AudioPlayerStateProviderProps<TInterfacePlacementLength>,
     createInitialState
   );
 
   const timeValue = useMemo(
     () => ({
-      currentTime: state.curAudioState.currentTime ?? 0,
-      duration: state.curAudioState.duration ?? 0,
+      currentTime:
+        state.curAudioState.currentTime ?? DEFAULT_AUDIO_STATE.currentTime,
+      duration: state.curAudioState.duration ?? DEFAULT_AUDIO_STATE.duration,
       seekRequestKey: state.seekRequestKey,
     }),
     [
@@ -107,9 +106,9 @@ export const AudioPlayerProvider = <
 
   const playbackValue = useMemo(
     () => ({
-      isPlaying: state.curAudioState.isPlaying ?? false,
-      volume: state.curAudioState.volume ?? 1,
-      muted: state.curAudioState.muted ?? false,
+      isPlaying: state.curAudioState.isPlaying ?? DEFAULT_AUDIO_STATE.isPlaying,
+      volume: state.curAudioState.volume ?? DEFAULT_AUDIO_STATE.volume,
+      muted: state.curAudioState.muted ?? DEFAULT_AUDIO_STATE.muted,
       repeatType: state.curAudioState.repeatType,
       isLoadedMetaData: state.curAudioState.isLoadedMetaData,
       audioResetKey: state.audioResetKey,

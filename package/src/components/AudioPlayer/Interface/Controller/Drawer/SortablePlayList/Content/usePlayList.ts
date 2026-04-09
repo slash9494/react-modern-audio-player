@@ -4,7 +4,7 @@ import {
 } from "@/components/AudioPlayer/Context";
 import { CssTransitionProps } from "@/ui/CssTransition";
 import { UseSortableListItemProps } from "@/components/SortableList/useSortableListItem";
-import { useNonNullableContext } from "@/hooks/useNonNullableContext";
+import { useNonNullableContext } from "@/hooks/context/useNonNullableContext";
 import { useTrackContext } from "@/hooks/context/useTrackContext";
 import { useUIContext } from "@/hooks/context/useUIContext";
 import { useCallback, useState } from "react";
