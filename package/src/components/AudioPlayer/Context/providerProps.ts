@@ -9,9 +9,10 @@ import type {
   PlayerPlacement,
   VolumeSliderPlacement,
 } from "./StateContext";
+import { defaultInterfacePlacementMaxLength } from "./StateContext";
 
 export interface AudioPlayerPlacement<
-  TInterfacePlacementLength extends number = number
+  TInterfacePlacementLength extends number = typeof defaultInterfacePlacementMaxLength
 > {
   player?: PlayerPlacement;
   playList?: PlayListPlacement;
@@ -20,7 +21,7 @@ export interface AudioPlayerPlacement<
 }
 
 export interface AudioPlayerStateProviderProps<
-  TInterfacePlacementLength extends number = number
+  TInterfacePlacementLength extends number = typeof defaultInterfacePlacementMaxLength
 > {
   playList: PlayList;
   audioInitialState?: InitialStates;
