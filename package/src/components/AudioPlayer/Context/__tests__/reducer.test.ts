@@ -20,6 +20,7 @@ const makeBaseState = (): AudioPlayerStateContext => ({
   activeUI: {},
   playListPlacement: "bottom",
   audioResetKey: 0,
+  seekRequestKey: 0,
   elementRefs: {
     audioEl: document.createElement("audio"),
   },
@@ -361,5 +362,32 @@ describe("SET_MUTED", () => {
     };
     const next = audioPlayerReducer(state, { type: "SET_MUTED", muted: false });
     expect(next.curAudioState.muted).toBe(false);
+  });
+});
+
+describe("SEEK", () => {
+  it("sets curAudioState.currentTime to the payload time", () => {
+    const next = audioPlayerReducer(makeBaseState(), {
+      type: "SEEK",
+      time: 42,
+    });
+    expect(next.curAudioState.currentTime).toBe(42);
+  });
+
+  it("increments seekRequestKey so useAudio's keyed effect fires", () => {
+    const state = { ...makeBaseState(), seekRequestKey: 3 };
+    const next = audioPlayerReducer(state, { type: "SEEK", time: 10 });
+    expect(next.seekRequestKey).toBe(4);
+  });
+
+  it("increments on each SEEK even when the target time is the same", () => {
+    // Effect is keyed on seekRequestKey identity, so repeat seeks to the
+    // same position must still trigger it (e.g. user drags slider and
+    // releases at the starting value).
+    let state = { ...makeBaseState(), seekRequestKey: 0 };
+    state = audioPlayerReducer(state, { type: "SEEK", time: 30 });
+    expect(state.seekRequestKey).toBe(1);
+    state = audioPlayerReducer(state, { type: "SEEK", time: 30 });
+    expect(state.seekRequestKey).toBe(2);
   });
 });

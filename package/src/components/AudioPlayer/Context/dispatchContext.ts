@@ -19,6 +19,7 @@ export type AudioContextAction<
 > =
   | { type: "NEXT_AUDIO" }
   | { type: "PREV_AUDIO"; currentTime: number }
+  | { type: "SEEK"; time: number }
   | { type: "UPDATE_PLAY_LIST"; playList: PlayList }
   | { type: "SET_AUDIO_STATE"; audioState: Partial<AudioState> }
   | {

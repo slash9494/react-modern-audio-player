@@ -27,6 +27,7 @@ export interface AudioPlayerStateContext {
   customIcons?: CustomIcons;
   coverImgsCss?: CoverImgsCss;
   audioResetKey: number;
+  seekRequestKey: number;
 }
 
 export type InitialStates = Partial<AudioState> & {

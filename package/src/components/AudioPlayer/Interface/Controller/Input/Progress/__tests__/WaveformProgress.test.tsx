@@ -18,7 +18,9 @@ const renderProgress = (progress: "bar" | "waveform") =>
       value={{ activeUI: { progress }, playListPlacement: "bottom" }}
     >
       <trackContext.Provider value={{ playList: [], curPlayId: 1, curIdx: 0 }}>
-        <timeContext.Provider value={{ currentTime: 0, duration: 180 }}>
+        <timeContext.Provider
+          value={{ currentTime: 0, duration: 180, seekRequestKey: 0 }}
+        >
           <playbackContext.Provider
             value={{
               isPlaying: false,

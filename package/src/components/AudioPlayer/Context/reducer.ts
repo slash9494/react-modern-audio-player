@@ -155,6 +155,12 @@ export const audioPlayerReducer = (
         ...state,
         curAudioState: { ...state.curAudioState, ...action.audioState },
       };
+    case "SEEK":
+      return {
+        ...state,
+        seekRequestKey: state.seekRequestKey + 1,
+        curAudioState: { ...state.curAudioState, currentTime: action.time },
+      };
     case "SET_INITIAL_STATES":
       return {
         ...state,

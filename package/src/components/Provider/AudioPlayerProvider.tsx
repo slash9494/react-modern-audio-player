@@ -70,6 +70,7 @@ export const AudioPlayerProvider = <
     curAudioState,
     activeUI,
     audioResetKey: 0,
+    seekRequestKey: 0,
     ...(placement as Placements<10>),
     ...otherProps,
   });
@@ -78,8 +79,13 @@ export const AudioPlayerProvider = <
     () => ({
       currentTime: state.curAudioState.currentTime ?? 0,
       duration: state.curAudioState.duration ?? 0,
+      seekRequestKey: state.seekRequestKey,
     }),
-    [state.curAudioState.currentTime, state.curAudioState.duration]
+    [
+      state.curAudioState.currentTime,
+      state.curAudioState.duration,
+      state.seekRequestKey,
+    ]
   );
 
   const playbackValue = useMemo(

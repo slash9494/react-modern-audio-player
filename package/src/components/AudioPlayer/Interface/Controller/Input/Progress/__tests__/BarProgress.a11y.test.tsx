@@ -31,7 +31,9 @@ const makePlaybackValue = () => ({
 
 const renderBar = () =>
   render(
-    <timeContext.Provider value={{ currentTime: 0, duration: 180 }}>
+    <timeContext.Provider
+      value={{ currentTime: 0, duration: 180, seekRequestKey: 0 }}
+    >
       <playbackContext.Provider value={makePlaybackValue()}>
         <resourceContext.Provider
           value={{ elementRefs: { audioEl: mockAudioEl } }}

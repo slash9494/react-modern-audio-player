@@ -12,8 +12,6 @@ import { usePlaybackContext } from "@/hooks/context/usePlaybackContext";
 import { useResourceContext } from "@/hooks/context/useResourceContext";
 import { useTimeContext } from "@/hooks/context/useTimeContext";
 
-const SEEK_SYNC_THRESHOLD_SEC = 0.25;
-
 export const useAudio = (): HTMLAttributes<HTMLAudioElement> => {
   const {
     isPlaying,
@@ -21,7 +19,7 @@ export const useAudio = (): HTMLAttributes<HTMLAudioElement> => {
     repeatType,
     audioResetKey,
   } = usePlaybackContext();
-  const { currentTime: playbackCurrentTime } = useTimeContext();
+  const { currentTime: playbackCurrentTime, seekRequestKey } = useTimeContext();
   const { elementRefs } = useResourceContext();
   const audioPlayerDispatch = useNonNullableContext(audioPlayerDispatchContext);
 
@@ -44,10 +42,7 @@ export const useAudio = (): HTMLAttributes<HTMLAudioElement> => {
       // = 0 before play() runs, so the restart starts from 0 and a pending
       // onTimeUpdate at ~end cannot resurrect the stale position.
       flushSync(() => {
-        audioPlayerDispatch({
-          type: "SET_AUDIO_STATE",
-          audioState: { currentTime: 0 },
-        });
+        audioPlayerDispatch({ type: "SEEK", time: 0 });
       });
       elementRefs.audioEl.play();
       return;
@@ -97,13 +92,18 @@ export const useAudio = (): HTMLAttributes<HTMLAudioElement> => {
     elementRefs.audioEl.volume = playbackVolume;
   }, [elementRefs?.audioEl, playbackVolume]);
 
+  // Apply seeks explicitly signaled by a SEEK dispatch. Keyed on
+  // seekRequestKey so ordinary onTimeUpdate echoes (which change
+  // playbackCurrentTime) never reach the DOM write path and cannot
+  // pull audio backwards when React commits land later than the
+  // browser's real playback position.
+  const lastAppliedSeekKeyRef = useRef(0);
   useEffect(() => {
+    if (seekRequestKey === lastAppliedSeekKeyRef.current) return;
+    lastAppliedSeekKeyRef.current = seekRequestKey;
+
     const audioEl = elementRefs?.audioEl;
     if (!audioEl || playbackCurrentTime == null) return;
-
-    const seekDeltaSec = Math.abs(audioEl.currentTime - playbackCurrentTime);
-    const isFeedbackFromTimeUpdate = seekDeltaSec <= SEEK_SYNC_THRESHOLD_SEC;
-    if (isFeedbackFromTimeUpdate) return;
 
     audioEl.currentTime = playbackCurrentTime;
 
@@ -116,7 +116,12 @@ export const useAudio = (): HTMLAttributes<HTMLAudioElement> => {
     const rawRatio = playbackCurrentTime / trackDuration;
     const clampedRatio = Math.min(1, Math.max(0, rawRatio));
     waveform.seekTo(clampedRatio);
-  }, [playbackCurrentTime, elementRefs?.audioEl, elementRefs?.waveformInst]);
+  }, [
+    seekRequestKey,
+    playbackCurrentTime,
+    elementRefs?.audioEl,
+    elementRefs?.waveformInst,
+  ]);
 
   return {
     onTimeUpdate,

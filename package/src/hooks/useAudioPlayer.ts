@@ -66,10 +66,7 @@ export const useAudioPlayer = (): AudioPlayerControls => {
 
   const seek = useCallback(
     (time: number) => {
-      dispatch({
-        type: "SET_AUDIO_STATE",
-        audioState: { currentTime: time },
-      });
+      dispatch({ type: "SEEK", time });
     },
     [dispatch]
   );
