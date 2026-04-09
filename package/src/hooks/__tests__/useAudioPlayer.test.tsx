@@ -9,12 +9,6 @@ import { renderHook, act } from "@testing-library/react";
 import { FC, ReactNode } from "react";
 import { AudioPlayerProvider } from "@/components/Provider/AudioPlayerProvider";
 import { useAudioPlayer } from "../useAudioPlayer";
-import { useNonNullableContext } from "../useNonNullableContext";
-import { audioPlayerDispatchContext } from "@/components/AudioPlayer/Context/dispatchContext";
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Fixtures
-// ─────────────────────────────────────────────────────────────────────────────
 
 const basePlayList = [
   { id: 1, src: "a.mp3" },
@@ -31,10 +25,6 @@ beforeEach(() => {
   window.HTMLMediaElement.prototype.pause = vi.fn();
   window.HTMLMediaElement.prototype.load = vi.fn();
 });
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Initial state
-// ─────────────────────────────────────────────────────────────────────────────
 
 describe("initial state", () => {
   it("returns correct defaults", () => {
@@ -53,10 +43,6 @@ describe("initial state", () => {
     expect(result.current.playList).toEqual(basePlayList);
   });
 });
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Playback actions
-// ─────────────────────────────────────────────────────────────────────────────
 
 describe("play / pause / togglePlay", () => {
   it("play() sets isPlaying to true", () => {
@@ -92,10 +78,6 @@ describe("play / pause / togglePlay", () => {
     expect(result.current.isPlaying).toBe(false);
   });
 });
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Track navigation
-// ─────────────────────────────────────────────────────────────────────────────
 
 describe("next / prev", () => {
   it("next() advances to the next track", () => {
@@ -134,10 +116,6 @@ describe("next / prev", () => {
   });
 });
 
-// ─────────────────────────────────────────────────────────────────────────────
-// setTrack
-// ─────────────────────────────────────────────────────────────────────────────
-
 describe("setTrack", () => {
   it("jumps to the specified index", () => {
     const { result } = renderHook(() => useAudioPlayer(), {
@@ -160,10 +138,6 @@ describe("setTrack", () => {
     expect(result.current.currentIndex).toBe(0);
   });
 });
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Volume
-// ─────────────────────────────────────────────────────────────────────────────
 
 describe("setVolume", () => {
   it("updates volume", () => {
@@ -197,38 +171,19 @@ describe("setVolume", () => {
   });
 });
 
-// ─────────────────────────────────────────────────────────────────────────────
-// seek
-// ─────────────────────────────────────────────────────────────────────────────
-
 describe("seek", () => {
-  it("sets audioEl.currentTime when audioEl is present", () => {
-    const audioEl = document.createElement("audio");
-    Object.defineProperty(audioEl, "currentTime", {
-      writable: true,
-      value: 0,
-    });
-
-    const { result } = renderHook(
-      () => ({
-        player: useAudioPlayer(),
-        dispatch: useNonNullableContext(audioPlayerDispatchContext),
-      }),
-      { wrapper: Wrapper }
-    );
-
-    act(() => {
-      result.current.dispatch({
-        type: "SET_ELEMENT_REFS",
-        elementRefs: { audioEl },
-      });
+  it("dispatches the new currentTime so timeContext consumers see it", () => {
+    // seek() is now a pure dispatch — DOM sync is handled by useAudio's
+    // effect once the resulting state change reaches the <Audio> element.
+    const { result } = renderHook(() => useAudioPlayer(), {
+      wrapper: Wrapper,
     });
 
     act(() => {
-      result.current.player.seek(30);
+      result.current.seek(30);
     });
 
-    expect(audioEl.currentTime).toBe(30);
+    expect(result.current.currentTime).toBe(30);
   });
 
   it("does not throw when audioEl is absent", () => {
@@ -239,10 +194,6 @@ describe("seek", () => {
     expect(() => act(() => result.current.seek(30))).not.toThrow();
   });
 });
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Error boundary — outside provider
-// ─────────────────────────────────────────────────────────────────────────────
 
 describe("error handling", () => {
   it("throws when used outside AudioPlayerProvider", () => {

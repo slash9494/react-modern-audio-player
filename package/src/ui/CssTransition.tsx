@@ -1,4 +1,10 @@
-import React, { cloneElement, FC, PropsWithChildren, useState } from "react";
+import React, {
+  cloneElement,
+  FC,
+  PropsWithChildren,
+  useRef,
+  useState,
+} from "react";
 import { useIsomorphicLayoutEffect } from "@/utils/ssr";
 import "@/styles/animations.css";
 
@@ -25,40 +31,62 @@ export const CssTransition: FC<PropsWithChildren<CssTransitionProps>> = ({
   const [classNames, setClassNames] = useState("");
   const [renderable, setRenderable] = useState(false);
 
+  // Latest-ref mirrors so the timer callbacks below always invoke the
+  // newest props without taking them as effect dependencies. Adding the
+  // raw props to the dep array would restart the timers on every parent
+  // render that recreates the callback identity, breaking the animation.
+  const onEnteredRef = useRef(onEntered);
+  const onExitedRef = useRef(onExited);
+  const nameRef = useRef(name);
+  const enterTimeRef = useRef(enterTime);
+  const leaveTimeRef = useRef(leaveTime);
+  const clearTimeRef = useRef(clearTime);
+
+  // Sync the mirrors inside a committed layout effect — never in the
+  // render body. Under Concurrent Mode an interrupted render could
+  // otherwise leak uncommitted values into timeouts scheduled by a
+  // prior commit's effect. Declared before the animation effect so
+  // the same commit cycle always refreshes the refs first.
+  useIsomorphicLayoutEffect(() => {
+    onEnteredRef.current = onEntered;
+    onExitedRef.current = onExited;
+    nameRef.current = name;
+    enterTimeRef.current = enterTime;
+    leaveTimeRef.current = leaveTime;
+    clearTimeRef.current = clearTime;
+  });
+
   useIsomorphicLayoutEffect(() => {
     const statusClassName = visible ? "enter" : "leave";
-    const time = visible ? enterTime : leaveTime;
+    const transitionName = nameRef.current;
+    const time = visible ? enterTimeRef.current : leaveTimeRef.current;
     if (visible && !renderable) {
       setRenderable(true);
     }
 
-    setClassNames(`${name}-${statusClassName}`);
+    setClassNames(`${transitionName}-${statusClassName}`);
 
-    // set class to active
-    const timer = setTimeout(() => {
+    const activateClassTimer = setTimeout(() => {
       setClassNames(
-        `${name}-${statusClassName} ${name}-${statusClassName}-active`
+        `${transitionName}-${statusClassName} ${transitionName}-${statusClassName}-active`
       );
       if (statusClassName === "leave") {
-        onExited?.();
+        onExitedRef.current?.();
       } else {
-        onEntered?.();
+        onEnteredRef.current?.();
       }
-      clearTimeout(timer);
     }, time);
 
-    // remove classNames when animation over
-    const clearClassesTimer = setTimeout(() => {
+    const resetClassesTimer = setTimeout(() => {
       if (!visible) {
-        setClassNames(name);
+        setClassNames(transitionName);
         setRenderable(false);
       }
-      clearTimeout(clearClassesTimer);
-    }, time + clearTime);
+    }, time + clearTimeRef.current);
 
     return () => {
-      clearTimeout(timer);
-      clearTimeout(clearClassesTimer);
+      clearTimeout(activateClassTimer);
+      clearTimeout(resetClassesTimer);
     };
   }, [visible, renderable]);
 

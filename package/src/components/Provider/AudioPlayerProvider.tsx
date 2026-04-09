@@ -7,6 +7,10 @@ import {
   Placements,
 } from "@/components/AudioPlayer/Context";
 import { playbackContext } from "@/components/AudioPlayer/Context/PlaybackContext";
+import {
+  AudioAttrsContext,
+  audioAttrsContext,
+} from "@/components/AudioPlayer/Context/AudioAttrsContext";
 import { timeContext } from "@/components/AudioPlayer/Context/TimeContext";
 import { trackContext } from "@/components/AudioPlayer/Context/TrackContext";
 import { uiContext } from "@/components/AudioPlayer/Context/UIContext";
@@ -66,6 +70,7 @@ export const AudioPlayerProvider = <
     curAudioState,
     activeUI,
     audioResetKey: 0,
+    seekRequestKey: 0,
     ...(placement as Placements<10>),
     ...otherProps,
   });
@@ -74,13 +79,22 @@ export const AudioPlayerProvider = <
     () => ({
       currentTime: state.curAudioState.currentTime ?? 0,
       duration: state.curAudioState.duration ?? 0,
+      seekRequestKey: state.seekRequestKey,
     }),
-    [state.curAudioState.currentTime, state.curAudioState.duration]
+    [
+      state.curAudioState.currentTime,
+      state.curAudioState.duration,
+      state.seekRequestKey,
+    ]
   );
 
   const playbackValue = useMemo(
     () => ({
-      curAudioState: state.curAudioState,
+      isPlaying: state.curAudioState.isPlaying ?? false,
+      volume: state.curAudioState.volume ?? 1,
+      muted: state.curAudioState.muted ?? false,
+      repeatType: state.curAudioState.repeatType,
+      isLoadedMetaData: state.curAudioState.isLoadedMetaData,
       audioResetKey: state.audioResetKey,
     }),
     [
@@ -121,6 +135,25 @@ export const AudioPlayerProvider = <
     ]
   );
 
+  // Sourced from the audioInitialState prop reference (not reducer state)
+  // so per-tick SET_AUDIO_STATE dispatches never invalidate this object.
+  const audioNativeAttrsValue = useMemo<AudioAttrsContext>(() => {
+    if (!audioInitialState) return {};
+    const {
+      isPlaying: _isPlaying,
+      repeatType: _repeatType,
+      isLoadedMetaData: _isLoadedMetaData,
+      currentTime: _currentTime,
+      duration: _duration,
+      volume: _volume,
+      muted: _muted,
+      curPlayId: _curPlayId,
+      ...nativeAttrs
+    } = audioInitialState;
+
+    return nativeAttrs;
+  }, [audioInitialState]);
+
   const resourceValue = useMemo(
     () => ({
       elementRefs: state.elementRefs,
@@ -141,9 +174,11 @@ export const AudioPlayerProvider = <
         <trackContext.Provider value={trackValue}>
           <uiContext.Provider value={uiValue}>
             <resourceContext.Provider value={resourceValue}>
-              <audioPlayerDispatchContext.Provider value={dispatch}>
-                {children}
-              </audioPlayerDispatchContext.Provider>
+              <audioAttrsContext.Provider value={audioNativeAttrsValue}>
+                <audioPlayerDispatchContext.Provider value={dispatch}>
+                  {children}
+                </audioPlayerDispatchContext.Provider>
+              </audioAttrsContext.Provider>
             </resourceContext.Provider>
           </uiContext.Provider>
         </trackContext.Provider>

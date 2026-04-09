@@ -10,7 +10,7 @@ import "./WaveformProgress.css";
 
 export const WaveformProgress: FC<{ isActive: boolean }> = ({ isActive }) => {
   const waveformRef = useRef<HTMLDivElement>(null);
-  const { curAudioState } = usePlaybackContext();
+  const { isLoadedMetaData, isPlaying } = usePlaybackContext();
   const { elementRefs } = useResourceContext();
 
   useWaveSurfer(waveformRef);
@@ -20,8 +20,8 @@ export const WaveformProgress: FC<{ isActive: boolean }> = ({ isActive }) => {
       !isActive ||
       !elementRefs?.waveformInst ||
       !elementRefs?.audioEl ||
-      !curAudioState.isLoadedMetaData ||
-      curAudioState.isPlaying
+      !isLoadedMetaData ||
+      isPlaying
     )
       return;
 
@@ -32,10 +32,10 @@ export const WaveformProgress: FC<{ isActive: boolean }> = ({ isActive }) => {
     elementRefs.waveformInst.seekTo(ratio);
   }, [
     isActive,
-    curAudioState.isLoadedMetaData,
+    isLoadedMetaData,
     elementRefs?.waveformInst,
     elementRefs?.audioEl,
-    curAudioState.isPlaying,
+    isPlaying,
   ]);
 
   const eventProps = useProgress();

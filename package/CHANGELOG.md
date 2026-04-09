@@ -70,6 +70,8 @@
 
 - **CSS class names prefixed with `rmap-`**: All internal CSS class names now use the `rmap-` prefix (e.g., `btn-wrapper` → `rmap-ctrl-btn-wrapper`). If you targeted internal class names for custom styling, update your selectors. CSS custom properties (`--rm-audio-player-*`) are unchanged.
 
+- **`rm-audio-player-provider` class renamed to `rmap-player-provider`**: Consumers who target this class in their own stylesheets or tests must update selectors. The CSS custom properties (`--rm-audio-player-*`) are unchanged.
+
 ### Bug Fixes
 
 - **Theme color switching**: system dark/light theme changes now correctly update progress bar, volume slider, shadow, and waveform colors

@@ -1,8 +1,12 @@
 import { createContext } from "react";
-import { AudioState } from "./StateContext";
+import { RepeatType } from "./StateContext";
 
 export interface PlaybackContext {
-  curAudioState: AudioState;
+  isPlaying: boolean;
+  volume: number;
+  muted: boolean;
+  repeatType: RepeatType;
+  isLoadedMetaData: boolean | undefined;
   audioResetKey: number;
 }
 

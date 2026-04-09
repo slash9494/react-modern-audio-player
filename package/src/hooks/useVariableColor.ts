@@ -13,7 +13,7 @@ export const useVariableColor = <Keys extends string>(
   const colorsRef = useRef<VariableColors<Keys>>();
 
   const readColors = useCallback(() => {
-    const el = document.getElementsByClassName("rm-audio-player-provider")[0];
+    const el = document.getElementsByClassName("rmap-player-provider")[0];
     if (!el) return;
     const parsedColors: VariableColors<Keys> = Object.entries(
       variableColors

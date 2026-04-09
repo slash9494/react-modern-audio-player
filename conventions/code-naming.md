@@ -97,6 +97,62 @@ Use the same word for the same domain concept throughout the codebase.
 
 ---
 
+## Comments
+
+Comments are a **last resort**, not a default. Before writing any comment — inline, block, or JSDoc — ask: *can this be expressed through naming or code structure instead?* If yes, rewrite the code and drop the comment.
+
+### Rules
+
+1. **Prefer naming over comments.**
+   - Extract intermediate values into named variables (`isFeedbackFromTimeUpdate`, `isTrackDurationReady`, `clampedRatio`).
+   - Extract multi-step logic into named helper functions.
+   - Rename ambiguous identifiers before explaining them.
+2. **Prefer control flow over comments.**
+   - Early-return named guards instead of commenting on conditional blocks.
+   - Split a branching body into labeled constants rather than annotating each branch.
+3. **Only comment when no amount of renaming or restructuring can convey the intent.** Valid cases:
+   - **Non-obvious *why***: the reason for a decision that the code itself cannot show (historical incidents, upstream bugs, external contracts, race conditions that only manifest at runtime).
+   - **Cross-file coupling**: invariants enforced elsewhere that a reader of this file cannot see.
+   - **TODO / FIXME** with a concrete follow-up or ticket reference.
+4. **Remove comments that restate the code.** `// increment counter` above `counter++` is noise.
+5. **Remove comments that name identifiers the code already names.** If a block comment says "volume effect" above a `useEffect`, hoist that phrase into a named variable or a JSDoc on a named function instead — or drop it entirely when the hook body reads obviously.
+6. **Long comments are a smell.** 3+ lines of comment to explain a function body means the function is under-named or under-decomposed. Refactor first.
+
+### Anti-patterns vs. preferred form
+
+```ts
+// BAD — comment restates the check
+// Skip if the delta is below the timeupdate tick threshold to avoid
+// feeding back our own onTimeUpdate dispatches into another seek.
+if (Math.abs(audioEl.currentTime - playbackCurrentTime) <= 0.25) return;
+
+// GOOD — predicate name carries the reason
+const seekDeltaSec = Math.abs(audioEl.currentTime - playbackCurrentTime);
+const isFeedbackFromTimeUpdate = seekDeltaSec <= SEEK_SYNC_THRESHOLD_SEC;
+if (isFeedbackFromTimeUpdate) return;
+```
+
+```ts
+// BAD — label comment above a hook
+// volume effect
+useEffect(() => { ... }, [volume]);
+
+// GOOD — no label needed; effect body self-explains with named values
+useEffect(() => {
+  if (!audioEl || playbackVolume == null) return;
+  audioEl.volume = playbackVolume;
+}, [audioEl, playbackVolume]);
+```
+
+```ts
+// ACCEPTABLE — non-obvious *why* that code cannot show
+// wavesurfer wraps the same <audio> element via the MediaElement backend
+// (useWavesurfer.ts), so reading audioEl.currentTime covers both modes.
+const currentTime = elementRefs?.audioEl?.currentTime ?? 0;
+```
+
+---
+
 ## Anti-Patterns
 
 ```ts

@@ -3,7 +3,7 @@ import type { Locator } from "@playwright/test";
 
 test.describe("PlayerPlacement — position", () => {
   test("static (default) → position is not fixed", async ({ playerPage }) => {
-    const provider = playerPage.page.locator(".rm-audio-player-provider");
+    const provider = playerPage.page.locator(".rmap-player-provider");
     const position = await provider.evaluate(
       (el) => getComputedStyle(el).position
     );
@@ -27,7 +27,7 @@ test.describe("PlayerPlacement — position", () => {
       playerPageLazy,
     }) => {
       await playerPageLazy.gotoWithConfig({ playerPlacement: placement });
-      const provider = playerPageLazy.page.locator(".rm-audio-player-provider");
+      const provider = playerPageLazy.page.locator(".rmap-player-provider");
 
       const position = await provider.evaluate(
         (el) => getComputedStyle(el).position

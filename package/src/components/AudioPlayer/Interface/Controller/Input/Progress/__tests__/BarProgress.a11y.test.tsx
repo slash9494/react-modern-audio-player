@@ -6,7 +6,6 @@ import { playbackContext } from "@/components/AudioPlayer/Context/PlaybackContex
 import { timeContext } from "@/components/AudioPlayer/Context/TimeContext";
 import { resourceContext } from "@/components/AudioPlayer/Context/ResourceContext";
 import { audioPlayerDispatchContext } from "@/components/AudioPlayer/Context/dispatchContext";
-import { AudioState } from "@/components/AudioPlayer/Context/StateContext";
 
 const mockDispatch = vi.fn();
 const mockAudioEl = document.createElement("audio");
@@ -22,19 +21,19 @@ beforeEach(() => {
 });
 
 const makePlaybackValue = () => ({
-  curAudioState: {
-    isPlaying: false,
-    repeatType: "ALL" as const,
-    muted: false,
-    volume: 0.5,
-    isLoadedMetaData: true,
-  } as AudioState,
+  isPlaying: false,
+  repeatType: "ALL" as const,
+  muted: false,
+  volume: 0.5,
+  isLoadedMetaData: true,
   audioResetKey: 0,
 });
 
 const renderBar = () =>
   render(
-    <timeContext.Provider value={{ currentTime: 0, duration: 180 }}>
+    <timeContext.Provider
+      value={{ currentTime: 0, duration: 180, seekRequestKey: 0 }}
+    >
       <playbackContext.Provider value={makePlaybackValue()}>
         <resourceContext.Provider
           value={{ elementRefs: { audioEl: mockAudioEl } }}

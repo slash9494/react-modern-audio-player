@@ -6,12 +6,20 @@ import {
   useEffect,
   useRef,
 } from "react";
+import { flushSync } from "react-dom";
 import { audioPlayerDispatchContext } from "../Context";
 import { usePlaybackContext } from "@/hooks/context/usePlaybackContext";
 import { useResourceContext } from "@/hooks/context/useResourceContext";
+import { useTimeContext } from "@/hooks/context/useTimeContext";
 
 export const useAudio = (): HTMLAttributes<HTMLAudioElement> => {
-  const { curAudioState, audioResetKey } = usePlaybackContext();
+  const {
+    isPlaying,
+    volume: playbackVolume,
+    repeatType,
+    audioResetKey,
+  } = usePlaybackContext();
+  const { currentTime: playbackCurrentTime, seekRequestKey } = useTimeContext();
   const { elementRefs } = useResourceContext();
   const audioPlayerDispatch = useNonNullableContext(audioPlayerDispatchContext);
 
@@ -29,13 +37,18 @@ export const useAudio = (): HTMLAttributes<HTMLAudioElement> => {
 
   const onEnded = useCallback(() => {
     if (!elementRefs?.audioEl) return;
-    if (curAudioState.repeatType === "ONE") {
-      elementRefs.audioEl.currentTime = 0;
+    if (repeatType === "ONE") {
+      // flushSync forces the seek sync effect to write audioEl.currentTime
+      // = 0 before play() runs, so the restart starts from 0 and a pending
+      // onTimeUpdate at ~end cannot resurrect the stale position.
+      flushSync(() => {
+        audioPlayerDispatch({ type: "SEEK", time: 0 });
+      });
       elementRefs.audioEl.play();
       return;
     }
     audioPlayerDispatch({ type: "NEXT_AUDIO" });
-  }, [audioPlayerDispatch, curAudioState.repeatType, elementRefs?.audioEl]);
+  }, [audioPlayerDispatch, repeatType, elementRefs?.audioEl]);
 
   const onLoadedMetadata = useCallback(
     (e: SyntheticEvent<HTMLAudioElement, Event>) => {
@@ -48,22 +61,21 @@ export const useAudio = (): HTMLAttributes<HTMLAudioElement> => {
     [audioPlayerDispatch]
   );
 
-  const hasMountedRef = useRef(false);
-
-  /** audio reset — triggered by NEXT_AUDIO / PREV_AUDIO via audioResetKey */
+  // Skip the very first audioResetKey effect run so the freshly-mounted
+  // <audio> element keeps any consumer-set initial currentTime.
+  const hasSkippedInitialResetRef = useRef(false);
   useEffect(() => {
     if (!elementRefs?.audioEl) return;
-    if (!hasMountedRef.current) {
-      hasMountedRef.current = true;
+    if (!hasSkippedInitialResetRef.current) {
+      hasSkippedInitialResetRef.current = true;
       return;
     }
     elementRefs.audioEl.currentTime = 0;
   }, [audioResetKey, elementRefs?.audioEl]);
 
-  /** play */
   useEffect(() => {
     if (!elementRefs?.audioEl) return;
-    if (curAudioState.isPlaying) {
+    if (isPlaying) {
       void elementRefs.audioEl.play().catch(() => {
         audioPlayerDispatch({
           type: "SET_AUDIO_STATE",
@@ -73,13 +85,43 @@ export const useAudio = (): HTMLAttributes<HTMLAudioElement> => {
     } else {
       elementRefs.audioEl.pause();
     }
-  }, [elementRefs?.audioEl, curAudioState.isPlaying, audioPlayerDispatch]);
+  }, [elementRefs?.audioEl, isPlaying, audioPlayerDispatch]);
 
-  /** volume */
   useEffect(() => {
-    if (!elementRefs?.audioEl || curAudioState.volume == null) return;
-    elementRefs.audioEl.volume = curAudioState.volume;
-  }, [elementRefs?.audioEl, curAudioState.volume]);
+    if (!elementRefs?.audioEl || playbackVolume == null) return;
+    elementRefs.audioEl.volume = playbackVolume;
+  }, [elementRefs?.audioEl, playbackVolume]);
+
+  // Apply seeks explicitly signaled by a SEEK dispatch. Keyed on
+  // seekRequestKey so ordinary onTimeUpdate echoes (which change
+  // playbackCurrentTime) never reach the DOM write path and cannot
+  // pull audio backwards when React commits land later than the
+  // browser's real playback position.
+  const lastAppliedSeekKeyRef = useRef(0);
+  useEffect(() => {
+    if (seekRequestKey === lastAppliedSeekKeyRef.current) return;
+    lastAppliedSeekKeyRef.current = seekRequestKey;
+
+    const audioEl = elementRefs?.audioEl;
+    if (!audioEl || playbackCurrentTime == null) return;
+
+    audioEl.currentTime = playbackCurrentTime;
+
+    const waveform = elementRefs?.waveformInst;
+    const trackDuration = audioEl.duration;
+    const isTrackDurationReady =
+      Number.isFinite(trackDuration) && trackDuration > 0;
+    if (!waveform || !isTrackDurationReady) return;
+
+    const rawRatio = playbackCurrentTime / trackDuration;
+    const clampedRatio = Math.min(1, Math.max(0, rawRatio));
+    waveform.seekTo(clampedRatio);
+  }, [
+    seekRequestKey,
+    playbackCurrentTime,
+    elementRefs?.audioEl,
+    elementRefs?.waveformInst,
+  ]);
 
   return {
     onTimeUpdate,

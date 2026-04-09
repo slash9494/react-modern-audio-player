@@ -1,4 +1,4 @@
-.rm-audio-player-provider {
+.rmap-player-provider {
   --rm-audio-player-text-color: #2c2c2c;
   --rm-audio-player-shadow: 0 0 0;
   --rm-audio-player-interface-container: #f5f5f5;
@@ -25,7 +25,7 @@
 }
 
 @media (prefers-color-scheme: dark) {
-  .rm-audio-player-provider:not([data-theme="light"]) {
+  .rmap-player-provider:not([data-theme="light"]) {
     --rm-audio-player-text-color: #ededed;
     --rm-audio-player-shadow: 255 255 255;
     --rm-audio-player-interface-container: #1e1e1e;
@@ -50,7 +50,8 @@
   }
 }
 
-.rm-audio-player-provider[data-theme="dark"] {
+/* Keep in sync with @media (prefers-color-scheme: dark) block above */
+.rmap-player-provider[data-theme="dark"] {
   --rm-audio-player-text-color: #ededed;
   --rm-audio-player-shadow: 255 255 255;
   --rm-audio-player-interface-container: #1e1e1e;

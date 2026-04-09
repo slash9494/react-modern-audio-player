@@ -16,32 +16,31 @@ const volumeOpt: SvgIconProps = { size: "100%" };
 
 export const VolumeTriggerBtn = memo(
   forwardRef<HTMLButtonElement>((_, ref) => {
-    const { curAudioState } = usePlaybackContext();
+    const { volume: stateVolume, muted } = usePlaybackContext();
     const { customIcons, elementRefs } = useResourceContext();
     const audioPlayerDispatch = useNonNullableContext(
       audioPlayerDispatchContext
     );
     const changeMuteState = useCallback(
-      () =>
-        audioPlayerDispatch({ type: "SET_MUTED", muted: !curAudioState.muted }),
-      [audioPlayerDispatch, curAudioState.muted]
+      () => audioPlayerDispatch({ type: "SET_MUTED", muted: !muted }),
+      [audioPlayerDispatch, muted]
     );
-    const volume = curAudioState.volume ?? elementRefs?.audioEl?.volume ?? 0;
+    const volume = stateVolume ?? elementRefs?.audioEl?.volume ?? 0;
     const isLowVolume = volume > 0 && volume <= 0.5;
     const isHighVolume = volume > 0.5;
 
     return (
       <StyledBtn
         type="button"
-        aria-label={curAudioState.muted ? "Unmute" : "Mute"}
-        aria-pressed={curAudioState.muted}
+        aria-label={muted ? "Unmute" : "Mute"}
+        aria-pressed={muted}
         onClick={changeMuteState}
         className="rmap-volume-trigger"
         data-testid="volume-trigger-btn"
-        data-muted={String(curAudioState.muted)}
+        data-muted={String(muted)}
         ref={ref}
       >
-        {curAudioState.muted || volume === 0 ? (
+        {muted || volume === 0 ? (
           <Icon
             render={<TbVolume3 {...volumeOpt} />}
             customIcon={customIcons?.volumeMuted}

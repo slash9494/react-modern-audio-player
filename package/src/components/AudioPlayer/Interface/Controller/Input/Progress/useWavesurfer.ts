@@ -16,7 +16,7 @@ const waveformColors = {
 
 export const useWaveSurfer = (waveformRef: React.RefObject<HTMLElement>) => {
   const audioPlayerDispatch = useNonNullableContext(audioPlayerDispatchContext);
-  const { curAudioState } = usePlaybackContext();
+  const { isPlaying: isPlaybackActive } = usePlaybackContext();
   const { curPlayId } = useTrackContext();
   const { elementRefs } = useResourceContext();
   const { colorScheme } = useUIContext();
@@ -80,6 +80,7 @@ export const useWaveSurfer = (waveformRef: React.RefObject<HTMLElement>) => {
     return () => {
       cancelled = true;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [elementRefs?.waveformInst, audioPlayerDispatch, colorsRef]);
 
   /** load audio — preserve playback position across waveform init */
@@ -92,13 +93,19 @@ export const useWaveSurfer = (waveformRef: React.RefObject<HTMLElement>) => {
     prevPlayIdRef.current = curPlayId;
 
     const savedTime = isTrackChange ? 0 : audioEl.currentTime;
-    const wasPlaying = curAudioState.isPlaying;
+    // Intentional stale capture: wasPlaying reads isPlaybackActive at the
+    // time waveform.load() is called so the onReady callback can resume
+    // playback without taking isPlaybackActive as a reactive dependency
+    // (which would re-run the effect on every play/pause toggle).
+    const wasPlaying = isPlaybackActive;
 
     waveform.load(audioEl);
 
-    if (curAudioState.volume != null) {
-      audioEl.volume = curAudioState.volume;
-    }
+    // Volume is owned by useAudio's volume effect. Writing it here during
+    // wavesurfer re-init (e.g. colorScheme change) would fire a DOM
+    // volumechange event while the previous wavesurfer instance's
+    // listener is still attached to audioEl — its `this.mediaElement` is
+    // already nulled by destroy(), so the listener throws.
 
     const onReady = () => {
       if (!isTrackChange && savedTime > 0 && audioEl.duration) {
@@ -115,8 +122,8 @@ export const useWaveSurfer = (waveformRef: React.RefObject<HTMLElement>) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [curPlayId, elementRefs?.audioEl, elementRefs?.waveformInst]);
 
-  // set waveform responsively — trigger drawer 'redraw' on container resize
-  // which internally calls drawBuffer() + drawer.progress() to update all layers
+  // wavesurfer's drawBuffer is not responsive, so we trigger 'redraw' on
+  // container resize via ResizeObserver to keep all canvas layers in sync.
   useEffect(() => {
     if (!waveformRef.current || !elementRefs?.waveformInst) return;
 
@@ -148,16 +155,10 @@ export const useWaveSurfer = (waveformRef: React.RefObject<HTMLElement>) => {
     [audioPlayerDispatch]
   );
 
-  // Destroy the WaveSurfer instance so the init effect above re-creates it
-  // with the freshly-resolved CSS variable colors. Triggered on either the
-  // OS-level `prefers-color-scheme` media query or the consumer-controlled
-  // `colorScheme` prop change.
-  //
-  // The function is stored on a mutable ref that is rewritten on every
-  // render, so callers (media-query listener, prop-change effect) always
-  // invoke the latest closure — no stale `elementRefs?.waveformInst`,
-  // no listener churn on waveform lifecycle, no exhaustive-deps suppressions.
-  const destroyInstanceRef = useRef<() => void>();
+  // Latest-closure ref so the media-query and colorScheme listeners below
+  // always destroy the *current* waveformInst without taking it as a dep
+  // (which would churn listener attachment on every waveform lifecycle).
+  const destroyInstanceRef = useRef<(() => void) | undefined>(undefined);
   destroyInstanceRef.current = () => {
     const waveEl = waveformRef.current?.querySelector("wave");
     if (waveEl) {
@@ -177,7 +178,6 @@ export const useWaveSurfer = (waveformRef: React.RefObject<HTMLElement>) => {
     return () => mediaQuery.removeEventListener("change", handler);
   }, []);
 
-  // Re-init when consumer toggles the explicit colorScheme prop.
   const prevColorSchemeRef = useRef(colorScheme);
   useEffect(() => {
     if (prevColorSchemeRef.current === colorScheme) return;

@@ -20,14 +20,12 @@ const makeBaseState = (): AudioPlayerStateContext => ({
   activeUI: {},
   playListPlacement: "bottom",
   audioResetKey: 0,
+  seekRequestKey: 0,
   elementRefs: {
     audioEl: document.createElement("audio"),
   },
 });
 
-// ─────────────────────────────────────────
-// NEXT_AUDIO
-// ─────────────────────────────────────────
 describe("NEXT_AUDIO", () => {
   it("advances to next track (normal)", () => {
     const state = { ...makeBaseState(), curIdx: 0, curPlayId: 1 };
@@ -110,35 +108,35 @@ describe("NEXT_AUDIO", () => {
   });
 });
 
-// ─────────────────────────────────────────
-// PREV_AUDIO
-// ─────────────────────────────────────────
 describe("PREV_AUDIO", () => {
   it("goes to previous track (normal)", () => {
     const state = { ...makeBaseState(), curIdx: 1, curPlayId: 2 };
-    const next = audioPlayerReducer(state, { type: "PREV_AUDIO" });
+    const next = audioPlayerReducer(state, {
+      type: "PREV_AUDIO",
+      currentTime: 0,
+    });
     expect(next.curIdx).toBe(0);
     expect(next.curPlayId).toBe(1);
   });
 
   it("wraps around to last track when at first (repeatType ALL)", () => {
     const state = { ...makeBaseState(), curIdx: 0, curPlayId: 1 };
-    const next = audioPlayerReducer(state, { type: "PREV_AUDIO" });
+    const next = audioPlayerReducer(state, {
+      type: "PREV_AUDIO",
+      currentTime: 0,
+    });
     expect(next.curIdx).toBe(2);
     expect(next.curPlayId).toBe(3);
   });
 
-  it("resets current track (stays) when currentTime > 1", () => {
-    const audioEl = document.createElement("audio");
-    audioEl.currentTime = 5;
-    const base = makeBaseState();
-    const state = {
-      ...base,
-      curIdx: 1,
-      curPlayId: 2,
-      elementRefs: { audioEl },
-    };
-    const next = audioPlayerReducer(state, { type: "PREV_AUDIO" });
+  it("resets current track (stays) when payload currentTime > 1", () => {
+    // Reducer is now pure: rewind decision uses the action payload only,
+    // so the test no longer needs to construct a mock <audio> element.
+    const state = { ...makeBaseState(), curIdx: 1, curPlayId: 2 };
+    const next = audioPlayerReducer(state, {
+      type: "PREV_AUDIO",
+      currentTime: 5,
+    });
     expect(next.curIdx).toBe(1);
     expect(next.curPlayId).toBe(2);
     expect(next.audioResetKey).toBe(state.audioResetKey + 1);
@@ -155,7 +153,10 @@ describe("PREV_AUDIO", () => {
         repeatType: "NONE" as const,
       },
     };
-    const next = audioPlayerReducer(state, { type: "PREV_AUDIO" });
+    const next = audioPlayerReducer(state, {
+      type: "PREV_AUDIO",
+      currentTime: 0,
+    });
     expect(next.curIdx).toBe(0);
     expect(next.audioResetKey).toBe(state.audioResetKey + 1);
   });
@@ -173,7 +174,7 @@ describe("PREV_AUDIO", () => {
     };
     // SHUFFLE must never return the current index
     const nexts = Array.from({ length: 50 }, () =>
-      audioPlayerReducer(state, { type: "PREV_AUDIO" })
+      audioPlayerReducer(state, { type: "PREV_AUDIO", currentTime: 0 })
     );
     expect(nexts.every((s) => s.curIdx !== 1)).toBe(true);
     expect(
@@ -202,7 +203,10 @@ describe("PREV_AUDIO", () => {
         audioResetKey: 0,
         curAudioState: { ...singleTrackState.curAudioState, repeatType: mode },
       };
-      const next = audioPlayerReducer(state, { type: "PREV_AUDIO" });
+      const next = audioPlayerReducer(state, {
+        type: "PREV_AUDIO",
+        currentTime: 0,
+      });
       expect(next.curIdx).toBe(0);
       expect(next.curPlayId).toBe(1);
       expect(next.curAudioState.isLoadedMetaData).toBe(true);
@@ -212,9 +216,6 @@ describe("PREV_AUDIO", () => {
   });
 });
 
-// ─────────────────────────────────────────
-// CHANGE_PLAYING_STATE
-// ─────────────────────────────────────────
 describe("CHANGE_PLAYING_STATE", () => {
   it("toggles isPlaying from false to true", () => {
     const base = makeBaseState();
@@ -258,9 +259,6 @@ describe("CHANGE_PLAYING_STATE", () => {
   });
 });
 
-// ─────────────────────────────────────────
-// SET_REPEAT_TYPE
-// ─────────────────────────────────────────
 describe("SET_REPEAT_TYPE", () => {
   it.each([
     ["ALL" as const],
@@ -276,9 +274,6 @@ describe("SET_REPEAT_TYPE", () => {
   });
 });
 
-// ─────────────────────────────────────────
-// UPDATE_PLAY_LIST
-// ─────────────────────────────────────────
 describe("UPDATE_PLAY_LIST", () => {
   it("updates playlist and recalculates curIdx", () => {
     const newPlayList = [
@@ -308,9 +303,6 @@ describe("UPDATE_PLAY_LIST", () => {
   });
 });
 
-// ─────────────────────────────────────────
-// SET_VOLUME / SET_MUTED
-// ─────────────────────────────────────────
 describe("SET_VOLUME", () => {
   it("updates volume in curAudioState", () => {
     const next = audioPlayerReducer(makeBaseState(), {
@@ -370,5 +362,32 @@ describe("SET_MUTED", () => {
     };
     const next = audioPlayerReducer(state, { type: "SET_MUTED", muted: false });
     expect(next.curAudioState.muted).toBe(false);
+  });
+});
+
+describe("SEEK", () => {
+  it("sets curAudioState.currentTime to the payload time", () => {
+    const next = audioPlayerReducer(makeBaseState(), {
+      type: "SEEK",
+      time: 42,
+    });
+    expect(next.curAudioState.currentTime).toBe(42);
+  });
+
+  it("increments seekRequestKey so useAudio's keyed effect fires", () => {
+    const state = { ...makeBaseState(), seekRequestKey: 3 };
+    const next = audioPlayerReducer(state, { type: "SEEK", time: 10 });
+    expect(next.seekRequestKey).toBe(4);
+  });
+
+  it("increments on each SEEK even when the target time is the same", () => {
+    // Effect is keyed on seekRequestKey identity, so repeat seeks to the
+    // same position must still trigger it (e.g. user drags slider and
+    // releases at the starting value).
+    let state = { ...makeBaseState(), seekRequestKey: 0 };
+    state = audioPlayerReducer(state, { type: "SEEK", time: 30 });
+    expect(state.seekRequestKey).toBe(1);
+    state = audioPlayerReducer(state, { type: "SEEK", time: 30 });
+    expect(state.seekRequestKey).toBe(2);
   });
 });
