@@ -24,6 +24,7 @@ export interface AudioPlayerControls {
   prev: () => void;
   seek: (time: number) => void;
   setVolume: (volume: number) => void;
+  toggleMute: () => void;
   setTrack: (index: number) => void;
 }
 
@@ -46,7 +47,7 @@ export const useAudioPlayer = (): AudioPlayerControls => {
     repeatType: playback.repeatType,
     muted: vol.muted,
     currentTrack: track.currentTrack,
-    currentIndex: track.curIdx,
+    currentIndex: track.currentIndex,
     playList: track.playList,
     play: playback.play,
     pause: playback.pause,
@@ -55,6 +56,7 @@ export const useAudioPlayer = (): AudioPlayerControls => {
     prev: track.prev,
     seek: time.seek,
     setVolume: vol.setVolume,
+    toggleMute: vol.toggleMute,
     setTrack: track.setTrack,
   };
 };

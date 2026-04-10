@@ -6,8 +6,8 @@ import { useResourceContext } from "@/hooks/context/useResourceContext";
 import type { AudioData } from "@/components/AudioPlayer/Context/StateContext";
 
 export interface AudioPlayerTrackControls {
-  curPlayId: number;
-  curIdx: number;
+  currentPlayId: number;
+  currentIndex: number;
   playList: ReadonlyArray<AudioData>;
   currentTrack: AudioData | null;
   setTrack: (index: number) => void;
@@ -45,8 +45,8 @@ export const useAudioPlayerTrack = (): AudioPlayerTrackControls => {
   }, [dispatch, playList.length, elementRefs?.audioEl]);
 
   return {
-    curPlayId,
-    curIdx,
+    currentPlayId: curPlayId,
+    currentIndex: curIdx,
     playList,
     currentTrack: playList[curIdx] ?? null,
     setTrack,

@@ -13,7 +13,7 @@
 - **`useAudioPlayer` relocated**: `hooks/useAudioPlayer` → `api/useAudioPlayer`. Package entry consumers unaffected; deep-import users must update paths.
 - **`useAudioPlayer` facade decomposition**: Now a convenience facade composing domain-specific sub-hooks. Signature compatible. For fine-grained re-render control, use individual sub-hooks:
   - `useAudioPlayerPlayback()` — `{ isPlaying, repeatType, play, pause, togglePlay }`
-  - `useAudioPlayerTrack()` — `{ curPlayId, curIdx, playList, currentTrack, setTrack, next, prev }`
+  - `useAudioPlayerTrack()` — `{ currentPlayId, currentIndex, playList, currentTrack, setTrack, next, prev }`
   - `useAudioPlayerVolume()` — `{ volume, muted, setVolume, toggleMute }`
   - `useAudioPlayerTime()` — `{ currentTime, duration, seek }`
   - `useAudioPlayerElement()` — `{ audioEl, waveformInst }` (advanced)

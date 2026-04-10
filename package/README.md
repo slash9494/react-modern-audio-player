@@ -455,7 +455,7 @@ function TimeDisplay() {
 | Hook                       | Returns                                                                         |
 | -------------------------- | ------------------------------------------------------------------------------- |
 | `useAudioPlayerPlayback`  | `{ isPlaying, repeatType, play, pause, togglePlay }`                            |
-| `useAudioPlayerTrack`      | `{ curPlayId, curIdx, playList, currentTrack, setTrack, next, prev }`           |
+| `useAudioPlayerTrack`      | `{ currentPlayId, currentIndex, playList, currentTrack, setTrack, next, prev }` |
 | `useAudioPlayerVolume`     | `{ volume, muted, setVolume, toggleMute }`                                      |
 | `useAudioPlayerTime`       | `{ currentTime, duration, seek }`                                               |
 | `useAudioPlayerElement`    | `{ audioEl, waveformInst }` (advanced)                                          |
