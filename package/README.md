@@ -424,6 +424,7 @@ function App() {
 | `prev()`          | `() => void`               | Skip to previous track    |
 | `seek(time)`      | `(time: number) => void`   | Seek to time in seconds   |
 | `setVolume(vol)`  | `(volume: number) => void` | Set volume (0–1, clamped) |
+| `toggleMute()`    | `() => void`               | Toggle mute on/off        |
 | `setTrack(index)` | `(index: number) => void`  | Jump to playlist index    |
 
 ## Sub-Hooks

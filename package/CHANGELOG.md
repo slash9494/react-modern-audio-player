@@ -26,6 +26,7 @@
   - `useAudioPlayerVolume()` — volume and mute controls
   - `useAudioPlayerTime()` — current time, duration, and seek
   - `useAudioPlayerElement()` — raw `audioEl` and `waveformInst` refs (advanced)
+- **`useAudioPlayer().toggleMute()`**: Facade now exposes `toggleMute` from the volume sub-hook.
 
 ---
 
