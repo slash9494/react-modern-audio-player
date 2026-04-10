@@ -7,7 +7,7 @@ import React, {
 import { useUIContext } from "@/hooks/context/useUIContext";
 import { PlayerPlacement } from "@/components/AudioPlayer/Context/StateContext";
 
-export interface AudioPlayerRootProviderProps {
+export interface AudioPlayerContainerProps {
   rootContainerProps?: Omit<HTMLAttributes<HTMLDivElement>, "children">;
 }
 
@@ -35,8 +35,8 @@ const PLACEMENT_OFFSET_MAP: Partial<Record<PlayerPlacement, PlacementOffset>> =
     "top-right": { ...PLACEMENT_OFFSET_BASE, top: 0, right: 0 },
   };
 
-export const AudioPlayerRootProvider = React.memo<
-  PropsWithChildren<AudioPlayerRootProviderProps>
+export const AudioPlayerContainer = React.memo<
+  PropsWithChildren<AudioPlayerContainerProps>
 >(({ children, rootContainerProps }) => {
   const { playerPlacement: contextPlayerPlacement, colorScheme } =
     useUIContext();
@@ -73,4 +73,4 @@ export const AudioPlayerRootProvider = React.memo<
   );
 });
 
-AudioPlayerRootProvider.displayName = "AudioPlayerRootProvider";
+AudioPlayerContainer.displayName = "AudioPlayerContainer";

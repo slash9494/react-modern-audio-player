@@ -2,7 +2,7 @@ import { FC } from "react";
 import { defaultInterfacePlacement } from "@/components/AudioPlayer/Context/StateContext";
 import "./Controller.css";
 import { useUIContext } from "@/hooks/context/useUIContext";
-import { PlayBtn, PrevNnextBtn, RepeatTypeBtn } from "./Button";
+import { PlayBtn, PrevBtn, NextBtn, RepeatTypeBtn } from "./Button";
 import { SortablePlayList } from "./Drawer";
 import { Progress } from "./Input";
 import Grid from "@/components/Grid";
@@ -10,6 +10,7 @@ import { Volume } from "./Tooltip";
 
 export const Controller: FC = () => {
   const { interfacePlacement, activeUI } = useUIContext();
+  const isPrevNextVisible = Boolean(activeUI.prevNnext ?? activeUI.all);
 
   return (
     <>
@@ -45,15 +46,9 @@ export const Controller: FC = () => {
         visible={Boolean(activeUI.playButton ?? activeUI.all)}
       >
         <div className="rmap-ctrl-btn-wrapper">
-          <PrevNnextBtn
-            type="prev"
-            visible={Boolean(activeUI.prevNnext ?? activeUI.all)}
-          />
+          <PrevBtn isVisible={isPrevNextVisible} />
           <PlayBtn />
-          <PrevNnextBtn
-            type="next"
-            visible={Boolean(activeUI.prevNnext ?? activeUI.all)}
-          />
+          <NextBtn isVisible={isPrevNextVisible} />
         </div>
       </Grid.Item>
       <Grid.Item

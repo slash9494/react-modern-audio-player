@@ -11,7 +11,7 @@
 import { describe, it, expect } from "vitest";
 import { render, act } from "@testing-library/react";
 import { FC, ReactNode } from "react";
-import { AudioPlayerProvider } from "@/components/Provider/AudioPlayerProvider";
+import { AudioPlayerStateProvider } from "@/components/AudioPlayer/Provider/AudioPlayerStateProvider";
 import { InitialStates } from "@/components/AudioPlayer/Context/StateContext";
 import {
   audioPlayerDispatchContext,
@@ -41,18 +41,18 @@ const DispatchCapture: FC<{ dispatchRef: DispatchRef }> = ({ dispatchRef }) => {
   return null;
 };
 
-// Renders AudioPlayerProvider without StrictMode so render-body counters are
+// Renders AudioPlayerStateProvider without StrictMode so render-body counters are
 // not inflated by React's double-invoke behaviour in development.
 function renderIsolated(children: ReactNode, curPlayId = 1) {
   const dispatchRef: DispatchRef = { current: null };
   render(
-    <AudioPlayerProvider
+    <AudioPlayerStateProvider
       playList={basePlayList}
       audioInitialState={{ curPlayId } as InitialStates}
     >
       <DispatchCapture dispatchRef={dispatchRef} />
       {children}
-    </AudioPlayerProvider>
+    </AudioPlayerStateProvider>
   );
   return dispatchRef as { current: (action: AudioContextAction) => void };
 }

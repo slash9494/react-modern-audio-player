@@ -72,18 +72,20 @@ function createInitialState<T extends number>(
   };
 }
 
-interface AudioPlayerProviderProps<T extends number = number>
+interface AudioPlayerStateProviderOwnProps<T extends number = number>
   extends AudioPlayerStateProviderProps<T> {
   colorScheme?: "light" | "dark";
 }
 
-export const AudioPlayerProvider = <
+export const AudioPlayerStateProvider = <
   TInterfacePlacementLength extends number = typeof defaultInterfacePlacementMaxLength
 >({
   children,
   colorScheme,
   ...initProps
-}: PropsWithChildren<AudioPlayerProviderProps<TInterfacePlacementLength>>) => {
+}: PropsWithChildren<
+  AudioPlayerStateProviderOwnProps<TInterfacePlacementLength>
+>) => {
   const [state, dispatch] = useReducer(
     audioPlayerReducer,
     initProps as AudioPlayerStateProviderProps<TInterfacePlacementLength>,

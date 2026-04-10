@@ -21,7 +21,8 @@
       "@/hooks/*": ["./src/hooks/*"],
       "@/utils/*": ["./src/utils/*"],
       "@/styles/*": ["./src/styles/*"],
-      "@/ui/*": ["./src/ui/*"]
+      "@/ui/*": ["./src/ui/*"],
+      "@/api/*": ["./src/api/*"]
     }
   },
   "include": ["src", "preview"],

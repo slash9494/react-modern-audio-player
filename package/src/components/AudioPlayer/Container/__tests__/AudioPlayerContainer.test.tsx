@@ -1,7 +1,7 @@
 import { render, act } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { AudioPlayerRootProvider } from "@/components/Provider/AudioPlayerRootProvider";
-import type { AudioPlayerRootProviderProps } from "@/components/Provider/AudioPlayerRootProvider";
+import { AudioPlayerContainer } from "@/components/AudioPlayer/Container/AudioPlayerContainer";
+import type { AudioPlayerContainerProps } from "@/components/AudioPlayer/Container/AudioPlayerContainer";
 import type { UIContext } from "@/components/AudioPlayer/Context/UIContext";
 import type { PlayerPlacement } from "@/components/AudioPlayer/Context/StateContext";
 
@@ -24,15 +24,15 @@ function mockPlacement(playerPlacement?: PlayerPlacement) {
   });
 }
 
-function renderProvider(
-  props: AudioPlayerRootProviderProps = {},
+function renderContainer(
+  props: AudioPlayerContainerProps = {},
   playerPlacement?: PlayerPlacement
 ) {
   mockPlacement(playerPlacement);
   return render(
-    <AudioPlayerRootProvider {...props}>
+    <AudioPlayerContainer {...props}>
       <div data-testid="child" />
-    </AudioPlayerRootProvider>
+    </AudioPlayerContainer>
   );
 }
 
@@ -42,13 +42,13 @@ describe("base class", () => {
   });
 
   it("rmap-player-provider class always present", () => {
-    const { container } = renderProvider();
+    const { container } = renderContainer();
     const el = container.firstChild as HTMLElement;
     expect(el.classList.contains("rmap-player-provider")).toBe(true);
   });
 
   it("rootContainerProps.className appended", () => {
-    const { container } = renderProvider({
+    const { container } = renderContainer({
       rootContainerProps: { className: "custom-class" },
     });
     const el = container.firstChild as HTMLElement;
@@ -56,7 +56,7 @@ describe("base class", () => {
   });
 
   it("no trailing space when className absent", () => {
-    const { container } = renderProvider();
+    const { container } = renderContainer();
     const el = container.firstChild as HTMLElement;
     expect(el.className).toBe("rmap-player-provider");
   });
@@ -64,13 +64,13 @@ describe("base class", () => {
 
 describe("default styles", () => {
   it("width defaults to 100%", () => {
-    const { container } = renderProvider();
+    const { container } = renderContainer();
     const el = container.firstChild as HTMLElement;
     expect(el.style.width).toBe("100%");
   });
 
   it("position is static when no placement", () => {
-    const { container } = renderProvider({}, undefined);
+    const { container } = renderContainer({}, undefined);
     const el = container.firstChild as HTMLElement;
     expect(el.style.position).toBe("static");
   });
@@ -89,7 +89,7 @@ describe("placement → position: fixed", () => {
     async (placement, expectedInsets) => {
       let container!: HTMLElement;
       await act(async () => {
-        ({ container } = renderProvider({}, placement));
+        ({ container } = renderContainer({}, placement));
       });
       const el = container.firstChild as HTMLElement;
       expect(el.style.position).toBe("fixed");
@@ -104,7 +104,7 @@ describe("style override", () => {
   it("rootContainerProps.style.width overrides default", async () => {
     let container!: HTMLElement;
     await act(async () => {
-      ({ container } = renderProvider({
+      ({ container } = renderContainer({
         rootContainerProps: { style: { width: "500px" } },
       }));
     });
@@ -115,7 +115,7 @@ describe("style override", () => {
   it("rootContainerProps.style.position overrides computed position", async () => {
     let container!: HTMLElement;
     await act(async () => {
-      ({ container } = renderProvider(
+      ({ container } = renderContainer(
         { rootContainerProps: { style: { position: "relative" } } },
         "bottom"
       ));
@@ -127,7 +127,7 @@ describe("style override", () => {
   it("arbitrary CSS properties added", async () => {
     let container!: HTMLElement;
     await act(async () => {
-      ({ container } = renderProvider({
+      ({ container } = renderContainer({
         rootContainerProps: { style: { zIndex: 100 } },
       }));
     });
@@ -138,7 +138,7 @@ describe("style override", () => {
 
 describe("HTMLAttributes forwarding", () => {
   it("id forwarded", () => {
-    const { container } = renderProvider({
+    const { container } = renderContainer({
       rootContainerProps: { id: "player-root" },
     });
     const el = container.firstChild as HTMLElement;
@@ -146,7 +146,7 @@ describe("HTMLAttributes forwarding", () => {
   });
 
   it("data-* attribute forwarded", () => {
-    const { container } = renderProvider({
+    const { container } = renderContainer({
       rootContainerProps: { "data-testid": "provider" } as never,
     });
     const el = container.firstChild as HTMLElement;
@@ -154,7 +154,7 @@ describe("HTMLAttributes forwarding", () => {
   });
 
   it("aria-* attribute forwarded", () => {
-    const { container } = renderProvider({
+    const { container } = renderContainer({
       rootContainerProps: { "aria-label": "audio player" } as never,
     });
     const el = container.firstChild as HTMLElement;
@@ -163,7 +163,7 @@ describe("HTMLAttributes forwarding", () => {
 
   it("onClick forwarded", () => {
     const handleClick = vi.fn();
-    const { container } = renderProvider({
+    const { container } = renderContainer({
       rootContainerProps: { onClick: handleClick },
     });
     (container.firstChild as HTMLElement).click();
@@ -173,7 +173,7 @@ describe("HTMLAttributes forwarding", () => {
 
 describe("children", () => {
   it("children rendered inside the provider", () => {
-    const { getByTestId } = renderProvider();
+    const { getByTestId } = renderContainer();
     expect(getByTestId("child")).toBeInTheDocument();
   });
 });

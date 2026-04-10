@@ -1,4 +1,5 @@
 export * from "./PlayBtn";
-export * from "./PrevNnextBtn";
+export * from "./PrevBtn";
+export * from "./NextBtn";
 export * from "./RepeatTypeBtn";
 export * from "./VolumeTriggerBtn";

@@ -1,8 +1,8 @@
+import { AudioPlayerStateProvider } from "@/components/AudioPlayer/Provider";
 import {
-  AudioPlayerProvider,
-  AudioPlayerRootProvider,
-  AudioPlayerRootProviderProps,
-} from "@/components/Provider";
+  AudioPlayerContainer,
+  AudioPlayerContainerProps,
+} from "@/components/AudioPlayer/Container";
 import "@/styles/vars.css";
 import "@/styles/GlobalStyle.css";
 import { defaultInterfacePlacementMaxLength } from "./Context";
@@ -11,7 +11,7 @@ import { AudioPlayer, AudioPlayerProps } from "./Player";
 
 export type RMAudioPlayerProps<
   TInterfacePlacementLength extends number = typeof defaultInterfacePlacementMaxLength
-> = AudioPlayerProps<TInterfacePlacementLength> & AudioPlayerRootProviderProps;
+> = AudioPlayerProps<TInterfacePlacementLength> & AudioPlayerContainerProps;
 
 function AudioPlayerWithProviders<
   TInterfacePlacementLength extends number = typeof defaultInterfacePlacementMaxLength
@@ -20,11 +20,11 @@ function AudioPlayerWithProviders<
   ...audioPlayProps
 }: RMAudioPlayerProps<TInterfacePlacementLength>) {
   return (
-    <AudioPlayerProvider {...audioPlayProps}>
-      <AudioPlayerRootProvider rootContainerProps={rootContainerProps}>
+    <AudioPlayerStateProvider {...audioPlayProps}>
+      <AudioPlayerContainer rootContainerProps={rootContainerProps}>
         <AudioPlayer {...audioPlayProps} />
-      </AudioPlayerRootProvider>
-    </AudioPlayerProvider>
+      </AudioPlayerContainer>
+    </AudioPlayerStateProvider>
   );
 }
 
