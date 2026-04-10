@@ -10,6 +10,7 @@ import { Volume } from "./Tooltip";
 
 export const Controller: FC = () => {
   const { interfacePlacement, activeUI } = useUIContext();
+  const isPrevNextVisible = Boolean(activeUI.prevNnext ?? activeUI.all);
 
   return (
     <>
@@ -45,9 +46,9 @@ export const Controller: FC = () => {
         visible={Boolean(activeUI.playButton ?? activeUI.all)}
       >
         <div className="rmap-ctrl-btn-wrapper">
-          <PrevBtn isVisible={Boolean(activeUI.prevNnext ?? activeUI.all)} />
+          <PrevBtn isVisible={isPrevNextVisible} />
           <PlayBtn />
-          <NextBtn isVisible={Boolean(activeUI.prevNnext ?? activeUI.all)} />
+          <NextBtn isVisible={isPrevNextVisible} />
         </div>
       </Grid.Item>
       <Grid.Item
