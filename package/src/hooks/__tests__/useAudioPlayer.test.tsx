@@ -7,8 +7,8 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { renderHook, act } from "@testing-library/react";
 import { FC, ReactNode } from "react";
-import { AudioPlayerProvider } from "@/components/Provider/AudioPlayerProvider";
-import { useAudioPlayer } from "../useAudioPlayer";
+import { AudioPlayerStateProvider } from "@/components/AudioPlayer/Provider/AudioPlayerStateProvider";
+import { useAudioPlayer } from "@/api/useAudioPlayer";
 
 const basePlayList = [
   { id: 1, src: "a.mp3" },
@@ -17,7 +17,9 @@ const basePlayList = [
 ];
 
 const Wrapper: FC<{ children: ReactNode }> = ({ children }) => (
-  <AudioPlayerProvider playList={basePlayList}>{children}</AudioPlayerProvider>
+  <AudioPlayerStateProvider playList={basePlayList}>
+    {children}
+  </AudioPlayerStateProvider>
 );
 
 beforeEach(() => {
@@ -196,7 +198,7 @@ describe("seek", () => {
 });
 
 describe("error handling", () => {
-  it("throws when used outside AudioPlayerProvider", () => {
+  it("throws when used outside AudioPlayerStateProvider", () => {
     expect(() => renderHook(() => useAudioPlayer())).toThrow();
   });
 });
