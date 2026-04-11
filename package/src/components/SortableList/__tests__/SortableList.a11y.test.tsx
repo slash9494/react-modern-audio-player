@@ -19,7 +19,7 @@ const renderList = () => {
     <SortableList>
       {testData.map((item, i) => (
         <SortableListItem
-          key={i}
+          key={item.name}
           index={i}
           listData={testData}
           dragStartIdx={0}
