@@ -1,3 +1,5 @@
+<!-- markdownlint-disable MD033 MD041 MD028 -->
+
 <p align="center">
 <img width="20%" src="https://user-images.githubusercontent.com/70849655/180391190-2b268d23-c9f3-4e95-9fce-090897842c04.png" alt="rm-audio-player" />
 <h1 align="center">React Modern Audio Player</h1>
@@ -20,7 +22,7 @@
 
 ## DEMO
 
-https://codesandbox.io/s/basic-91y82y?file=/src/App.tsx
+<https://codesandbox.io/s/basic-91y82y?file=/src/App.tsx>
 
 # **Flexible and Customizable UI**
 
@@ -119,8 +121,8 @@ export default function PlayerPage() {
 | Category             | Sections                                                                                                                                              |
 | -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Props**            | [PlayList](#playlist) · [InitialStates](#initialstates) · [ActiveUI](#activeui) · [Placement](#placement) · [RootContainerProps](#rootcontainerprops) |
-| **Override & Style** | [CustomIcons](#customicons) · [CoverImgsCss](#coverimgscss) · [Theme mode](#theme-mode--dark-mode) · [ID & Classnames](#id--classnames)               |
-| **Player Hook API**  | [useAudioPlayer](#useaudioplayer) · [AudioPlayerControls](#audioplayercontrols) · [Sub-Hooks](#sub-hooks)                                              |
+| **Override & Style** | [CustomIcons](#customicons) · [CoverImgsCss](#coverimgscss) · [Theme mode](#theme-mode-dark-mode) · [ID & Classnames](#id--classnames)                |
+| **Player Hook API**  | [useAudioPlayer](#useaudioplayer) · [AudioPlayerControls](#audioplayercontrols) · [Sub-Hooks](#sub-hooks)                                             |
 | **Custom Component** | [Custom Component](#custom-component)                                                                                                                 |
 | **Example**          | [Example](#example)                                                                                                                                   |
 
@@ -269,13 +271,13 @@ type InterfaceGridTemplateArea = Record<InterfacePlacementKey,InterfacePlacement
 type InterfaceGridCustomComponentsArea = Record<componentId,InterfacePlacementValue>;
 
 type InterfaceGridItemArea = Partial<Record<InterfacePlacementKey, string>>;
-	/** example
-	* progress : 2-4
-	* repeatBtn : row1-4 / 2 / row1-4 / 10
-	*
-	* check MDN - grid area
-	* https://developer.mozilla.org/ko/docs/Web/CSS/grid-area
-	*/
+  /** example
+   * progress : 2-4
+   * repeatBtn : row1-4 / 2 / row1-4 / 10
+   *
+   * check MDN - grid area
+   * https://developer.mozilla.org/ko/docs/Web/CSS/grid-area
+   */
 ```
 
 ### Default interface placement
@@ -300,11 +302,11 @@ const defaultInterfacePlacement = {
 
 `rootContainerProps` accepts any standard `HTMLAttributes<HTMLDivElement>` (e.g. `className`, `style`, `data-*`). The root container always has the class `rmap-player-provider` applied automatically.
 
-> ⚠️ Setting the native CSS `color-scheme` property via `rootContainerProps={{ style: { colorScheme: "dark" } }}` will **not** toggle the player's theme. The library's theme is driven by the `prefers-color-scheme` media query and the `[data-theme]` attribute selector — use the top-level [`colorScheme`](#theme-mode--dark-mode) prop instead.
+> ⚠️ Setting the native CSS `color-scheme` property via `rootContainerProps={{ style: { colorScheme: "dark" } }}` will **not** toggle the player's theme. The library's theme is driven by the `prefers-color-scheme` media query and the `[data-theme]` attribute selector — use the top-level [`colorScheme`](#theme-mode-dark-mode) prop instead.
 
 # Override Style
 
-## Theme mode ( dark-mode )
+## Theme mode (dark mode)
 
 > Dark mode is driven by `system-theme` (`prefers-color-scheme: dark`) by default.
 > To force a specific theme regardless of OS preference, pass the top-level `colorScheme="light" | "dark"` prop on `<AudioPlayer>` — this applies a `data-theme` attribute on `.rmap-player-provider` which overrides the media query.
@@ -455,7 +457,7 @@ function TimeDisplay() {
 
 | Hook                       | Returns                                                                         |
 | -------------------------- | ------------------------------------------------------------------------------- |
-| `useAudioPlayerPlayback`  | `{ isPlaying, repeatType, play, pause, togglePlay }`                            |
+| `useAudioPlayerPlayback`   | `{ isPlaying, repeatType, play, pause, togglePlay }`                            |
 | `useAudioPlayerTrack`      | `{ currentPlayId, currentIndex, playList, currentTrack, setTrack, next, prev }` |
 | `useAudioPlayerVolume`     | `{ volume, muted, setVolume, toggleMute }`                                      |
 | `useAudioPlayerTime`       | `{ currentTime, duration, seek }`                                               |

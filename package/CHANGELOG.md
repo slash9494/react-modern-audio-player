@@ -1,40 +1,11 @@
 # React-modern-audio-player
 
-## v2.0.0 (Unreleased)
-
-### 💥 Breaking Changes
-
-- **`PrevNnextBtn` removed**: Split into `PrevBtn` and `NextBtn`. Prop `visible` renamed to `isVisible`. CSS class `rmap-prev-next-btn` replaced by `rmap-prev-btn` and `rmap-next-btn`.
-- **Provider 2nd rename + directory move**:
-  - `AudioPlayerProvider` → `AudioPlayerStateProvider` (moved to `components/AudioPlayer/Provider/`)
-  - `AudioPlayerRootProvider` → `AudioPlayerContainer` (moved to `components/AudioPlayer/Container/`)
-  - `AudioPlayerRootProviderProps` → `AudioPlayerContainerProps`
-  - Old import paths under `components/Provider/` are removed.
-- **`useAudioPlayer` relocated**: `hooks/useAudioPlayer` → `api/useAudioPlayer`. Package entry consumers unaffected; deep-import users must update paths.
-- **`useAudioPlayer` facade decomposition**: Now a convenience facade composing domain-specific sub-hooks. Signature compatible. For fine-grained re-render control, use individual sub-hooks:
-  - `useAudioPlayerPlayback()` — `{ isPlaying, repeatType, play, pause, togglePlay }`
-  - `useAudioPlayerTrack()` — `{ currentPlayId, currentIndex, playList, currentTrack, setTrack, next, prev }`
-  - `useAudioPlayerVolume()` — `{ volume, muted, setVolume, toggleMute }`
-  - `useAudioPlayerTime()` — `{ currentTime, duration, seek }`
-  - `useAudioPlayerElement()` — `{ audioEl, waveformInst }` (advanced)
-
-### ✨ New Features
-
-- **Domain-specific sub-hooks**: Fine-grained alternatives to `useAudioPlayer` that subscribe to only the context slice they need, minimizing re-renders:
-  - `useAudioPlayerPlayback()` — playback state and controls
-  - `useAudioPlayerTrack()` — playlist and track navigation
-  - `useAudioPlayerVolume()` — volume and mute controls
-  - `useAudioPlayerTime()` — current time, duration, and seek
-  - `useAudioPlayerElement()` — raw `audioEl` and `waveformInst` refs (advanced)
-- **`useAudioPlayer().toggleMute()`**: Facade now exposes `toggleMute` from the volume sub-hook.
-
----
-
 ## v2.0.0-beta.1 (2026-04-09)
 
 ### ✨ New Features
 
 - **`colorScheme` prop**: forces the player to render in `"light"` or `"dark"` mode regardless of the OS `prefers-color-scheme` setting. When omitted, the player follows the OS preference (existing behavior). The provider applies a `data-theme` attribute on the root container, and the WaveSurfer instance is automatically re-initialized when the prop changes so waveform colors stay in sync.
+
   ```tsx
   // ❌ Before — native CSS property, did not actually toggle the theme
   <AudioPlayer rootContainerProps={{ style: { colorScheme: "dark" } }} />
@@ -42,10 +13,18 @@
   // ✅ After — top-level prop, drives `[data-theme]` + wavesurfer re-init
   <AudioPlayer colorScheme="dark" />
   ```
+
 - **`useAudioPlayer()` public hook**: exposes a stable API to control the player externally
   - Returns `play`, `pause`, `togglePlay`, `next`, `prev`, `seek`, `setVolume`, `setTrack`
   - Returns state: `isPlaying`, `volume`, `currentTime`, `duration`, `repeatType`, `muted`, `currentTrack`, `currentIndex`, `playList`
   - Must be called inside `AudioPlayerProvider` (or `AudioPlayer` which wraps it)
+- **Domain-specific sub-hooks**: Fine-grained alternatives to `useAudioPlayer` that subscribe to only the context slice they need, minimizing re-renders:
+  - `useAudioPlayerPlayback()` — playback state and controls
+  - `useAudioPlayerTrack()` — playlist and track navigation
+  - `useAudioPlayerVolume()` — volume and mute controls
+  - `useAudioPlayerTime()` — current time, duration, and seek
+  - `useAudioPlayerElement()` — raw `audioEl` and `waveformInst` refs (advanced)
+- **`useAudioPlayer().toggleMute()`**: Facade now exposes `toggleMute` from the volume sub-hook.
 - **Conditional progress rendering**: `WaveformProgress` and `BarProgress` are now conditionally rendered based on `activeUI.progress` instead of rendering both and toggling via CSS. Only the active component is mounted.
 
 ### 🐛 Bug Fixes
@@ -89,13 +68,25 @@
 ### 💥 Breaking Changes
 
 - **`react` and `react-dom` minimum version is now `>=18.0.0`**: Projects using React 16/17 must stay on v1.x.
-- **`SpectrumProvider` renamed to `AudioPlayerRootProvider`**: import name changed
+- **`SpectrumProvider` renamed to `AudioPlayerContainer`**: import name changed
   - Before: `import { AudioPlayer, SpectrumProvider } from "react-modern-audio-player"`
-  - After: `import { AudioPlayer, AudioPlayerRootProvider } from "react-modern-audio-player"`
-- **`SpectrumProviderProps` renamed to `AudioPlayerRootProviderProps`**: type import name changed
-- **`AudioPlayerRootProviderProps.rootContainerProps` type changed**: `ProviderProps` (React Spectrum) → `HTMLAttributes<HTMLDivElement>`
+  - After: `import { AudioPlayer, AudioPlayerContainer } from "react-modern-audio-player"`
+  - (Interim name `AudioPlayerRootProvider` was also removed; `AudioPlayerContainer` is the final name.)
+- **`SpectrumProviderProps` renamed to `AudioPlayerContainerProps`**: type import name changed (interim `AudioPlayerRootProviderProps` also removed)
+- **`AudioPlayerContainerProps.rootContainerProps` type changed**: `ProviderProps` (React Spectrum) → `HTMLAttributes<HTMLDivElement>`
+- **Provider directory reorganized**: Old import paths under `components/Provider/` are removed. Providers now live under `components/AudioPlayer/Provider/` (`AudioPlayerStateProvider`) and `components/AudioPlayer/Container/` (`AudioPlayerContainer`). Package entry consumers unaffected; deep-import users must update paths.
+- **`AudioPlayerProvider` renamed to `AudioPlayerStateProvider`**: internal state provider name changed.
+- **`useAudioPlayer` relocated**: `hooks/useAudioPlayer` → `api/useAudioPlayer`. Package entry consumers unaffected; deep-import users must update paths.
+- **`useAudioPlayer` facade decomposition**: Now a convenience facade composing domain-specific sub-hooks. Signature compatible. For fine-grained re-render control, use individual sub-hooks:
+  - `useAudioPlayerPlayback()` — `{ isPlaying, repeatType, play, pause, togglePlay }`
+  - `useAudioPlayerTrack()` — `{ currentPlayId, currentIndex, playList, currentTrack, setTrack, next, prev }`
+  - `useAudioPlayerVolume()` — `{ volume, muted, setVolume, toggleMute }`
+  - `useAudioPlayerTime()` — `{ currentTime, duration, seek }`
+  - `useAudioPlayerElement()` — `{ audioEl, waveformInst }` (advanced)
+- **`PrevNnextBtn` removed**: Split into `PrevBtn` and `NextBtn`. Prop `visible` renamed to `isVisible`. CSS class `rmap-prev-next-btn` replaced by `rmap-prev-btn` and `rmap-next-btn`.
 - **`styled-components` removed**: The library no longer uses `styled-components`. It is removed from both `dependencies` and `peerDependencies`. All styles are now vanilla CSS.
 - **`audioPlayerStateContext` removed**: Split into 4 domain-specific contexts (~70% re-render reduction).
+
   ```ts
   import {
     usePlaybackContext,   // isPlaying, repeatType, volume, muted
@@ -104,6 +95,7 @@
     useResourceContext,   // elementRefs, customIcons, coverImgsCss
   } from "react-modern-audio-player";
   ```
+
 - **CSS class names prefixed with `rmap-`**: e.g., `btn-wrapper` → `rmap-ctrl-btn-wrapper`. CSS custom properties (`--rm-audio-player-*`) are unchanged.
 - **`rm-audio-player-provider` class renamed to `rmap-player-provider`**
 - **`ElementRefs` removed**: `trackCurTimeEl`, `trackDurationEl`, `progressBarEl`, `progressValueEl`, `progressHandleEl` — all now driven by React state.
