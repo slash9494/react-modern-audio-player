@@ -15,7 +15,7 @@
   <a href="https://www.npmjs.com/package/react-modern-audio-player">
     <img src="https://img.shields.io/npm/dt/react-modern-audio-player" alt="Download">
   </a>
-  <a href="https://bundlephobia.com/package/react-modern-audio-player@0.0.3">
+  <a href="https://bundlephobia.com/package/react-modern-audio-player@2.0.0">
     <img src="https://img.shields.io/bundlephobia/minzip/react-modern-audio-player" alt="BundleSize">
   </a>
 </p>
@@ -407,7 +407,8 @@ function PlayerControls() {
       <button onClick={() => setVolume(0.5)}>Volume 50%</button>
       <button onClick={() => setTrack(1)}>Track 2</button>
       <p>
-        {currentTrack?.name} — {currentTime.toFixed(0)}s / {duration.toFixed(0)}s
+        {currentTrack?.name} — {currentTime.toFixed(0)}s / {duration.toFixed(0)}
+        s
       </p>
     </div>
   );
