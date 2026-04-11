@@ -1,7 +1,7 @@
 <!-- markdownlint-disable MD033 MD041 MD028 -->
 
 <p align="center">
-<img width="20%" src="https://raw.githubusercontent.com/slash9494/react-modern-audio-player/main/package/assets/icon.png" alt="rm-audio-player" />
+<img width="12%" src="https://raw.githubusercontent.com/slash9494/react-modern-audio-player/main/package/assets/icon.png" alt="rm-audio-player" />
 <h1 align="center">React Modern Audio Player</h1>
 </p>
 
@@ -49,7 +49,8 @@
 ### Particular View
 
 <p align="center">
-  <img width="60%" src="https://raw.githubusercontent.com/slash9494/react-modern-audio-player/main/package/assets/screenshots/particular-view-dark.png" alt="Particular view — dark" />
+  <img width="49%" src="https://raw.githubusercontent.com/slash9494/react-modern-audio-player/main/package/assets/screenshots/particular-view-dark.png" alt="Particular view — compact compound" />
+  <img width="49%" src="https://raw.githubusercontent.com/slash9494/react-modern-audio-player/main/package/assets/screenshots/particular-view-play-only-dark.png" alt="Particular view — play button only" />
 </p>
 
 # **Installation**
@@ -94,7 +95,13 @@ This library includes the `'use client'` directive and can be imported directly 
 import AudioPlayer from "react-modern-audio-player";
 
 const playList = [
-  { name: "track", writer: "artist", img: "cover.jpg", src: "audio.mp3", id: 1 },
+  {
+    name: "track",
+    writer: "artist",
+    img: "cover.jpg",
+    src: "audio.mp3",
+    id: 1,
+  },
 ];
 
 export default function Page() {
@@ -462,17 +469,21 @@ function PlayButton() {
 // Only re-renders on time updates
 function TimeDisplay() {
   const { currentTime, duration } = useAudioPlayerTime();
-  return <span>{currentTime.toFixed(0)}s / {duration.toFixed(0)}s</span>;
+  return (
+    <span>
+      {currentTime.toFixed(0)}s / {duration.toFixed(0)}s
+    </span>
+  );
 }
 ```
 
-| Hook                       | Returns                                                                         |
-| -------------------------- | ------------------------------------------------------------------------------- |
-| `useAudioPlayerPlayback`   | `{ isPlaying, repeatType, play, pause, togglePlay }`                            |
-| `useAudioPlayerTrack`      | `{ currentPlayId, currentIndex, playList, currentTrack, setTrack, next, prev }` |
-| `useAudioPlayerVolume`     | `{ volume, muted, setVolume, toggleMute }`                                      |
-| `useAudioPlayerTime`       | `{ currentTime, duration, seek }`                                               |
-| `useAudioPlayerElement`    | `{ audioEl, waveformInst }` (advanced)                                          |
+| Hook                     | Returns                                                                         |
+| ------------------------ | ------------------------------------------------------------------------------- |
+| `useAudioPlayerPlayback` | `{ isPlaying, repeatType, play, pause, togglePlay }`                            |
+| `useAudioPlayerTrack`    | `{ currentPlayId, currentIndex, playList, currentTrack, setTrack, next, prev }` |
+| `useAudioPlayerVolume`   | `{ volume, muted, setVolume, toggleMute }`                                      |
+| `useAudioPlayerTime`     | `{ currentTime, duration, seek }`                                               |
+| `useAudioPlayerElement`  | `{ audioEl, waveformInst }` (advanced)                                          |
 
 # Context Hooks
 
