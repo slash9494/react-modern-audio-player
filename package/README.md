@@ -1,7 +1,7 @@
 <!-- markdownlint-disable MD033 MD041 MD028 -->
 
 <p align="center">
-<img width="20%" src="https://user-images.githubusercontent.com/70849655/180391190-2b268d23-c9f3-4e95-9fce-090897842c04.png" alt="rm-audio-player" />
+<img width="20%" src="https://raw.githubusercontent.com/slash9494/react-modern-audio-player/main/package/assets/icon.png" alt="rm-audio-player" />
 <h1 align="center">React Modern Audio Player</h1>
 </p>
 
@@ -26,20 +26,31 @@
 
 # **Flexible and Customizable UI**
 
-## This can offer waveform by `wavesurfer.js`
+## Waveform progress with `wavesurfer.js`
 
-<img width="100%" src="https://user-images.githubusercontent.com/70849655/180435472-f043dbb4-54df-43e0-bc5c-67492510e817.png" alt="">
+<img width="100%" src="https://raw.githubusercontent.com/slash9494/react-modern-audio-player/main/package/assets/screenshots/waveform-light.png" alt="Waveform view" />
 
-## This can offer various UI and you can also customize each component position
+## Customizable layout and placement — with light & dark themes
 
-> Full View
-> <img width="100%" src="https://user-images.githubusercontent.com/70849655/180435489-263fae23-f066-4a37-a524-58918eb40b0c.png" alt="">
+### Full View
 
-> Position Change
-> <img width="110%" src="https://user-images.githubusercontent.com/70849655/180435493-2c2e08c5-b67b-4ab7-aded-5a0403d42050.png" alt="">
+<p align="center">
+  <img width="49%" src="https://raw.githubusercontent.com/slash9494/react-modern-audio-player/main/package/assets/screenshots/full-view-light.png" alt="Full view — light" />
+  <img width="49%" src="https://raw.githubusercontent.com/slash9494/react-modern-audio-player/main/package/assets/screenshots/full-view-dark.png" alt="Full view — dark" />
+</p>
 
-> Particular View
-> <br/> > <img width="50%" margin='10px' src="https://user-images.githubusercontent.com/70849655/180435497-0f839cd1-e1fd-400f-a013-82ba441ca79b.png" alt=""> > <img width="20%" margin='10px' src="https://user-images.githubusercontent.com/70849655/180435479-4f056620-f850-4d21-ab23-24efc4300d68.png" alt=""> > <br/> > <img width="20%" margin='10px' src="https://user-images.githubusercontent.com/70849655/180435484-3331b7cb-1555-4ffb-a36c-a5343f72c8c3.png" alt=""> > <img width="50%" margin='10px' src="https://user-images.githubusercontent.com/70849655/180435486-2402ba80-7121-410c-9a06-9a737be72ec2.png" alt="">
+### Position Change
+
+<p align="center">
+  <img width="49%" src="https://raw.githubusercontent.com/slash9494/react-modern-audio-player/main/package/assets/screenshots/position-change-light.png" alt="Position change — light" />
+  <img width="49%" src="https://raw.githubusercontent.com/slash9494/react-modern-audio-player/main/package/assets/screenshots/position-change-dark.png" alt="Position change — dark" />
+</p>
+
+### Particular View
+
+<p align="center">
+  <img width="60%" src="https://raw.githubusercontent.com/slash9494/react-modern-audio-player/main/package/assets/screenshots/particular-view-dark.png" alt="Particular view — dark" />
+</p>
 
 # **Installation**
 
