@@ -40,10 +40,64 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
+      - name: Mirror 'next' dist-tag to stable version
+        if: steps.version.outputs.prerelease == 'false'
+        run: npm dist-tag add react-modern-audio-player@${{ steps.version.outputs.version }} next
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
       - name: Create git tag
         run: |
           git tag "v${{ steps.version.outputs.version }}"
           git push origin "v${{ steps.version.outputs.version }}"
+
+      - name: Prepare release notes
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          set -euo pipefail
+
+          # 1) Extract the `## vX.Y.Z` section from package/CHANGELOG.md
+          awk -v v="$VERSION" '
+            BEGIN { target = "## v" v }
+            index($0, target) == 1 {
+              nxt = substr($0, length(target) + 1, 1)
+              if (nxt == "" || nxt == " " || nxt == "(") { found = 1; print; next }
+            }
+            found && /^---$/ { exit }
+            found && /^## v/ { exit }
+            found { print }
+          ' package/CHANGELOG.md > RELEASE_NOTES.md
+
+          if [ ! -s RELEASE_NOTES.md ]; then
+            echo "::error::No CHANGELOG entry found for v$VERSION in package/CHANGELOG.md"
+            exit 1
+          fi
+
+          # 2) Fetch auto-generated notes, then keep only "New Contributors" + "Full Changelog"
+          #    (drops the "## What's Changed" PR list — CHANGELOG.md already covers it)
+          gh api \
+            --method POST \
+            -H "Accept: application/vnd.github+json" \
+            "/repos/${{ github.repository }}/releases/generate-notes" \
+            -f tag_name="v$VERSION" \
+            -q .body > GENERATED_NOTES.md || : > GENERATED_NOTES.md
+
+          awk '
+            /^## New Contributors/ { keep = 1 }
+            /^\*\*Full Changelog\*\*/ { keep = 1 }
+            keep { print }
+          ' GENERATED_NOTES.md > TAIL.md
+
+          # 3) Compose final body
+          if [ -s TAIL.md ]; then
+            printf '\n---\n\n' >> RELEASE_NOTES.md
+            cat TAIL.md >> RELEASE_NOTES.md
+          fi
+
+          echo "=== Final RELEASE_NOTES.md ==="
+          cat RELEASE_NOTES.md
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
@@ -51,4 +105,4 @@ jobs:
           tag_name: "v${{ steps.version.outputs.version }}"
           name: "v${{ steps.version.outputs.version }}"
           prerelease: ${{ steps.version.outputs.prerelease }}
-          generate_release_notes: true
+          body_path: RELEASE_NOTES.md
