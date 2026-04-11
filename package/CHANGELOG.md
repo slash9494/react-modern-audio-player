@@ -1,6 +1,6 @@
 # React-modern-audio-player
 
-## v2.0.0-beta.1 (2026-04-09)
+## v2.0.0 (2026-04-11)
 
 ### ✨ New Features
 
@@ -29,6 +29,7 @@
 
 ### 🐛 Bug Fixes
 
+- **Waveform crash on theme toggle after track change**: toggling the theme after switching tracks in waveform mode no longer throws `TypeError: Cannot read properties of null (reading 'muted')`. Worked around a wavesurfer.js 6.6.4 listener leak (`MediaElement._setupMediaListeners()` overwrites `mediaListeners` before calling `removeEventListener`, orphaning prior closures on every `waveform.load()`) by detaching stale backend listeners before each load, and replaced destroy+recreate with in-place `setWaveColor` / `setProgressColor` updates on theme change.
 - **WaveSurfer memory leak on unmount**: `waveformInst.destroy()` was never called due to a stale closure in the cleanup effect. Fixed by tracking the instance via `useRef`.
 - **Theme color switching**: system dark/light theme changes now correctly update progress bar, volume slider, shadow, and waveform colors
 - **Progress bar handle position**: handle no longer drifts when player placement changes (replaced JS-based width tracking with CSS container query units)
