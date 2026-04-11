@@ -28,7 +28,7 @@ export const useSortableListItem: <T>(
   onReorder: onReorderCb,
   onClick: onClickCb,
 }) => {
-  const reorder = (targetIndex: number) => {
+  const reorder = (targetIndex: number, currentEl: HTMLElement | null) => {
     if (targetIndex < 0 || targetIndex >= listData.length) return;
     const curListData = [...listData];
     const movedItem = curListData.splice(index, 1)[0];
@@ -37,13 +37,19 @@ export const useSortableListItem: <T>(
       ...item,
       index: idx,
     }));
+    const parent = currentEl?.parentElement ?? null;
     onReorderCb?.(newListData);
+    // Restore focus to the moved item at its new DOM position after re-render.
+    if (parent) {
+      requestAnimationFrame(() => {
+        const next = parent.children[targetIndex] as HTMLElement | undefined;
+        next?.focus();
+      });
+    }
   };
 
   return {
-    role: "option" as const,
     tabIndex: 0,
-    "aria-selected": false,
     draggable,
     onKeyDown: (e: React.KeyboardEvent<HTMLLIElement>) => {
       switch (e.key) {
@@ -55,7 +61,7 @@ export const useSortableListItem: <T>(
         case "ArrowUp":
           e.preventDefault();
           if (draggable && e.altKey) {
-            reorder(index - 1);
+            reorder(index - 1, e.currentTarget);
           } else {
             const prev = e.currentTarget
               .previousElementSibling as HTMLElement | null;
@@ -65,7 +71,7 @@ export const useSortableListItem: <T>(
         case "ArrowDown":
           e.preventDefault();
           if (draggable && e.altKey) {
-            reorder(index + 1);
+            reorder(index + 1, e.currentTarget);
           } else {
             const next = e.currentTarget
               .nextElementSibling as HTMLElement | null;
