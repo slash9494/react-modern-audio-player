@@ -3,6 +3,8 @@ name: release
 on:
   push:
     branches: [main]
+    paths:
+      - "package/package.json"
 
 jobs:
   publish:
@@ -35,23 +37,37 @@ jobs:
             echo "prerelease=false" >> $GITHUB_OUTPUT
           fi
 
+          # Safety net: the `paths` filter above already skips the workflow
+          # unless package/package.json changed, but non-version edits to
+          # that file would still reach here. Probe npm to avoid E409
+          # ("cannot publish over previously published version").
+          if npm view react-modern-audio-player@"$VERSION" version >/dev/null 2>&1; then
+            echo "should_publish=false" >> $GITHUB_OUTPUT
+            echo "::notice::react-modern-audio-player@$VERSION already on npm — skipping publish/tag/release"
+          else
+            echo "should_publish=true" >> $GITHUB_OUTPUT
+          fi
+
       - name: Publish to npm
+        if: steps.version.outputs.should_publish == 'true'
         run: npm publish ./package --tag ${{ steps.version.outputs.tag }} --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Mirror 'next' dist-tag to stable version
-        if: steps.version.outputs.prerelease == 'false'
+        if: steps.version.outputs.should_publish == 'true' && steps.version.outputs.prerelease == 'false'
         run: npm dist-tag add react-modern-audio-player@${{ steps.version.outputs.version }} next
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Create git tag
+        if: steps.version.outputs.should_publish == 'true'
         run: |
           git tag "v${{ steps.version.outputs.version }}"
           git push origin "v${{ steps.version.outputs.version }}"
 
       - name: Prepare release notes
+        if: steps.version.outputs.should_publish == 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VERSION: ${{ steps.version.outputs.version }}
@@ -100,6 +116,7 @@ jobs:
           cat RELEASE_NOTES.md
 
       - name: Create GitHub Release
+        if: steps.version.outputs.should_publish == 'true'
         uses: softprops/action-gh-release@v2
         with:
           tag_name: "v${{ steps.version.outputs.version }}"
