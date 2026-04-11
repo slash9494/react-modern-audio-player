@@ -20,6 +20,7 @@ export const PlayBtn: FC = memo(function PlayBtn() {
     <StyledBtn
       type="button"
       aria-label={isPlaying ? "Pause" : "Play"}
+      aria-pressed={isPlaying}
       onClick={changePlayState}
       className="rmap-play-btn"
       data-testid="play-btn"

@@ -1,28 +1,33 @@
-import { FC, KeyboardEvent, PropsWithChildren } from "react";
+import { ButtonHTMLAttributes, forwardRef } from "react";
 import { useNonNullableContext } from "@/hooks/context/useNonNullableContext";
 import { dropdownContext } from "./DropdownContext";
+import { StyledBtn } from "@/ui/StyledBtn";
 
-export const DropdownTrigger: FC<PropsWithChildren> = ({ children }) => {
-  const { isOpen, setIsOpen, dropdownId } =
-    useNonNullableContext(dropdownContext);
+type DropdownTriggerProps = Omit<
+  ButtonHTMLAttributes<HTMLButtonElement>,
+  "type"
+>;
 
-  const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
-    if (e.key === "Enter" || e.key === " ") {
-      e.preventDefault();
-      setIsOpen((prev) => !prev);
-    }
-  };
+export const DropdownTrigger = forwardRef<
+  HTMLButtonElement,
+  DropdownTriggerProps
+>(({ children, className, ...props }, ref) => {
+  const { isOpen, dropdownId } = useNonNullableContext(dropdownContext);
+  const mergedClassName = className
+    ? `rmap-dropdown-trigger ${className}`
+    : "rmap-dropdown-trigger";
 
   return (
-    <div
-      className="rmap-dropdown-trigger"
-      role="button"
-      tabIndex={0}
+    <StyledBtn
+      className={mergedClassName}
+      type="button"
       aria-expanded={isOpen}
       aria-controls={dropdownId}
-      onKeyDown={handleKeyDown}
+      ref={ref}
+      {...props}
     >
       {children}
-    </div>
+    </StyledBtn>
   );
-};
+});
+DropdownTrigger.displayName = "DropdownTrigger";

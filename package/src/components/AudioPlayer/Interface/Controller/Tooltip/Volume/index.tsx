@@ -1,14 +1,21 @@
-import { FC, useRef } from "react";
+import { FC, useCallback, useRef } from "react";
 import { VolumeSlider } from "./Content";
 import Dropdown from "@/components/Dropdown";
-import { VolumeTriggerBtn } from "../../Button";
+import { VolumeIcon } from "../../Button";
 import { useUIContext } from "@/hooks/context/useUIContext";
 import { useVolumeSliderPlacement } from "./useVolume";
-
-// TODO : apply event callback props
+import { usePlaybackContext } from "@/hooks/context/usePlaybackContext";
+import { useNonNullableContext } from "@/hooks/context/useNonNullableContext";
+import { audioPlayerDispatchContext } from "@/components/AudioPlayer/Context/dispatchContext";
 
 export const Volume: FC = () => {
   const triggerRef = useRef<HTMLButtonElement>(null);
+  const { muted } = usePlaybackContext();
+  const audioPlayerDispatch = useNonNullableContext(audioPlayerDispatchContext);
+  const toggleMute = useCallback(
+    () => audioPlayerDispatch({ type: "SET_MUTED", muted: !muted }),
+    [audioPlayerDispatch, muted]
+  );
   const {
     activeUI: { volumeSlider: volumeSliderEl },
     volumeSliderPlacement: contextVolumePlacement,
@@ -25,8 +32,16 @@ export const Volume: FC = () => {
       disabled={volumeSliderEl === false}
       data-testid="volume-dropdown"
     >
-      <Dropdown.Trigger>
-        <VolumeTriggerBtn ref={triggerRef} />
+      <Dropdown.Trigger
+        ref={triggerRef}
+        aria-label={muted ? "Unmute" : "Mute"}
+        aria-pressed={muted}
+        onClick={toggleMute}
+        className="rmap-volume-trigger"
+        data-testid="volume-trigger-btn"
+        data-muted={String(muted)}
+      >
+        <VolumeIcon />
       </Dropdown.Trigger>
       <Dropdown.Content role="tooltip">
         <VolumeSlider
