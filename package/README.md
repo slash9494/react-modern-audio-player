@@ -22,7 +22,7 @@
 
 ## DEMO
 
-<https://codesandbox.io/s/basic-91y82y?file=/src/App.tsx>
+<https://codesandbox.io/p/sandbox/basic-nfrpfq>
 
 # **Flexible and Customizable UI**
 
@@ -407,8 +407,7 @@ function PlayerControls() {
       <button onClick={() => setVolume(0.5)}>Volume 50%</button>
       <button onClick={() => setTrack(1)}>Track 2</button>
       <p>
-        {currentTrack?.name} — {currentTime.toFixed(0)}s / {duration.toFixed(0)}
-        s
+        {currentTrack?.name} — {currentTime.toFixed(0)}s / {duration.toFixed(0)}s
       </p>
     </div>
   );
