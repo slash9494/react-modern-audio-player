@@ -48,9 +48,9 @@
 
 ### Particular View
 
-<p align="center">
-  <img width="49%" src="https://raw.githubusercontent.com/slash9494/react-modern-audio-player/main/package/assets/screenshots/particular-view-dark.png" alt="Particular view — compact compound" />
-  <img width="49%" src="https://raw.githubusercontent.com/slash9494/react-modern-audio-player/main/package/assets/screenshots/particular-view-play-only-dark.png" alt="Particular view — play button only" />
+<p align="center" style="display:flex; gap: 10%;">
+  <img width="39%" src="https://raw.githubusercontent.com/slash9494/react-modern-audio-player/main/package/assets/screenshots/particular-view-dark.png" alt="Particular view — compact compound" />
+  <img width="10%" height="50%" src="https://raw.githubusercontent.com/slash9494/react-modern-audio-player/main/package/assets/screenshots/particular-view-play-only-dark.png" alt="Particular view — play button only" />
 </p>
 
 # **Installation**
@@ -407,8 +407,7 @@ function PlayerControls() {
       <button onClick={() => setVolume(0.5)}>Volume 50%</button>
       <button onClick={() => setTrack(1)}>Track 2</button>
       <p>
-        {currentTrack?.name} — {currentTime.toFixed(0)}s / {duration.toFixed(0)}
-        s
+        {currentTrack?.name} — {currentTime.toFixed(0)}s / {duration.toFixed(0)}s
       </p>
     </div>
   );
