@@ -4,7 +4,11 @@ import "./SortableList.css";
 
 const SortableList: FC<PropsWithChildren> = ({ children }) => {
   return (
-    <ul className="rmap-sortable-list-container" aria-label="Sortable list">
+    <ul
+      className="rmap-sortable-list-container"
+      role="listbox"
+      aria-label="Sortable list"
+    >
       {children}
     </ul>
   );
