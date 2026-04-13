@@ -50,7 +50,12 @@ export const usePlayList = ({
       draggable: activeUI.playList !== "unSortable",
       dragStartIdx,
       onDragStart: (index) => setDragStartIdx(index),
-      onDrop: (e, newPlayList) =>
+      onDrop: (_, newPlayList) =>
+        audioPlayerDispatch({
+          type: "UPDATE_PLAY_LIST",
+          playList: newPlayList,
+        }),
+      onReorder: (newPlayList) =>
         audioPlayerDispatch({
           type: "UPDATE_PLAY_LIST",
           playList: newPlayList,
