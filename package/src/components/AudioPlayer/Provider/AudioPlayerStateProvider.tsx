@@ -54,10 +54,14 @@ function createInitialState<T extends number>(
     volumeSliderPlacement: placementProp?.volumeSlider,
   };
 
+  const isEmpty = playList.length === 0;
+
   return {
     playList,
-    curPlayId: audioInitialState?.curPlayId || 1,
-    curIdx: audioInitialState?.curPlayId
+    curPlayId: isEmpty ? 0 : audioInitialState?.curPlayId || playList[0].id,
+    curIdx: isEmpty
+      ? -1
+      : audioInitialState?.curPlayId
       ? playList.findIndex(
           (audioData) => audioData.id === audioInitialState?.curPlayId
         )
@@ -174,6 +178,9 @@ export const AudioPlayerStateProvider = <
     return nativeAttrs;
   }, [audioInitialState]);
 
+  // Intentionally subscribing to sub-properties (audioEl, waveformInst)
+  // instead of state.elementRefs to avoid unnecessary rerenders.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const resourceValue = useMemo(
     () => ({
       elementRefs: state.elementRefs,

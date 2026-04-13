@@ -109,6 +109,7 @@ export const useWaveSurfer = (waveformRef: React.RefObject<HTMLElement>) => {
   useEffect(() => {
     if (!elementRefs?.audioEl || !elementRefs?.waveformInst) return;
     const audioEl = elementRefs.audioEl;
+    if (!audioEl.getAttribute("src")) return;
     const waveform = elementRefs.waveformInst;
     const isTrackChange = prevPlayIdRef.current !== curPlayId;
     prevPlayIdRef.current = curPlayId;
