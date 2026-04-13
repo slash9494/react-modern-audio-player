@@ -2,8 +2,8 @@
   "name": "react-modern-audio-player",
   "version": "2.0.0",
   "author": {
-    "name": "LYH",
-    "email": "slash9494@naver.com",
+    "name": "MAXX",
+    "email": "slash9494@gmail.com",
     "url": "https://github.com/slash9494"
   },
   "homepage": "https://github.com/slash9494/react-modern-audio-player/",
@@ -62,11 +62,12 @@
     "vitest-axe": "^0.1.0"
   },
   "keywords": [
-    "audio",
-    "music",
-    "player",
-    "media",
-    "react",
-    "react-modern-audio-player"
+    "wavesurfer react",
+    "react music player",
+    "audio player react",
+    "react waveform",
+    "modern-ui",
+    "react-audio-player",
+    "playlist"
   ]
 }
