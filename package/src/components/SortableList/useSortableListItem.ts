@@ -1,3 +1,4 @@
+import { flushSync } from "react-dom";
 import { ListData } from "./index";
 
 export interface UseSortableListItemProps<T> {
@@ -38,13 +39,15 @@ export const useSortableListItem: <T>(
       index: idx,
     }));
     const parent = currentEl?.parentElement ?? null;
-    onReorderCb?.(newListData);
-    // Restore focus to the moved item at its new DOM position after re-render.
+    // flushSync forces React to commit the reorder synchronously so the DOM
+    // is updated before we read parent.children — rAF alone does not wait
+    // for React's render cycle and could focus the pre-reorder element.
+    flushSync(() => {
+      onReorderCb?.(newListData);
+    });
     if (parent) {
-      requestAnimationFrame(() => {
-        const next = parent.children[targetIndex] as HTMLElement | undefined;
-        next?.focus();
-      });
+      const next = parent.children[targetIndex] as HTMLElement | undefined;
+      next?.focus();
     }
   };
 

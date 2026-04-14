@@ -21,10 +21,11 @@ export const DropdownTrigger = forwardRef<
     <StyledBtn
       className={mergedClassName}
       type="button"
+      {...props}
+      aria-haspopup="true"
       aria-expanded={isOpen}
       aria-controls={dropdownId}
       ref={ref}
-      {...props}
     >
       {children}
     </StyledBtn>

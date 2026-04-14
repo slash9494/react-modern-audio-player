@@ -1,4 +1,5 @@
-import { render, fireEvent } from "@testing-library/react";
+import { render } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { describe, it, expect, vi } from "vitest";
 import { axe } from "vitest-axe";
 import SortableList from "../SortableList";
@@ -55,47 +56,52 @@ describe("SortableList accessibility", () => {
   });
 
   describe("keyboard focus navigation", () => {
-    it("ArrowDown moves focus to the next item", () => {
+    it("ArrowDown moves focus to the next item", async () => {
+      const user = userEvent.setup();
       const { items } = renderList();
       items[0].focus();
       expect(document.activeElement).toBe(items[0]);
 
-      fireEvent.keyDown(items[0], { key: "ArrowDown" });
+      await user.keyboard("{ArrowDown}");
       expect(document.activeElement).toBe(items[1]);
     });
 
-    it("ArrowUp moves focus to the previous item", () => {
+    it("ArrowUp moves focus to the previous item", async () => {
+      const user = userEvent.setup();
       const { items } = renderList();
       items[1].focus();
       expect(document.activeElement).toBe(items[1]);
 
-      fireEvent.keyDown(items[1], { key: "ArrowUp" });
+      await user.keyboard("{ArrowUp}");
       expect(document.activeElement).toBe(items[0]);
     });
 
-    it("ArrowDown on the last item does not move focus", () => {
+    it("ArrowDown on the last item does not move focus", async () => {
+      const user = userEvent.setup();
       const { items } = renderList();
       items[2].focus();
 
-      fireEvent.keyDown(items[2], { key: "ArrowDown" });
+      await user.keyboard("{ArrowDown}");
       expect(document.activeElement).toBe(items[2]);
     });
 
-    it("ArrowUp on the first item does not move focus", () => {
+    it("ArrowUp on the first item does not move focus", async () => {
+      const user = userEvent.setup();
       const { items } = renderList();
       items[0].focus();
 
-      fireEvent.keyDown(items[0], { key: "ArrowUp" });
+      await user.keyboard("{ArrowUp}");
       expect(document.activeElement).toBe(items[0]);
     });
   });
 
   describe("keyboard reorder", () => {
-    it("Alt+ArrowDown reorders item down", () => {
+    it("Alt+ArrowDown reorders item down", async () => {
+      const user = userEvent.setup();
       const { onReorder, items } = renderList();
       items[0].focus();
 
-      fireEvent.keyDown(items[0], { key: "ArrowDown", altKey: true });
+      await user.keyboard("{Alt>}{ArrowDown}{/Alt}");
 
       expect(onReorder).toHaveBeenCalledTimes(1);
       const reordered = onReorder.mock.calls[0][0] as TestItem[];
@@ -106,11 +112,12 @@ describe("SortableList accessibility", () => {
       ]);
     });
 
-    it("Alt+ArrowUp reorders item up", () => {
+    it("Alt+ArrowUp reorders item up", async () => {
+      const user = userEvent.setup();
       const { onReorder, items } = renderList();
       items[1].focus();
 
-      fireEvent.keyDown(items[1], { key: "ArrowUp", altKey: true });
+      await user.keyboard("{Alt>}{ArrowUp}{/Alt}");
 
       expect(onReorder).toHaveBeenCalledTimes(1);
       const reordered = onReorder.mock.calls[0][0] as TestItem[];
@@ -121,37 +128,41 @@ describe("SortableList accessibility", () => {
       ]);
     });
 
-    it("Alt+ArrowDown on the last item does not reorder", () => {
+    it("Alt+ArrowDown on the last item does not reorder", async () => {
+      const user = userEvent.setup();
       const { onReorder, items } = renderList();
       items[2].focus();
 
-      fireEvent.keyDown(items[2], { key: "ArrowDown", altKey: true });
+      await user.keyboard("{Alt>}{ArrowDown}{/Alt}");
       expect(onReorder).not.toHaveBeenCalled();
     });
 
-    it("Alt+ArrowUp on the first item does not reorder", () => {
+    it("Alt+ArrowUp on the first item does not reorder", async () => {
+      const user = userEvent.setup();
       const { onReorder, items } = renderList();
       items[0].focus();
 
-      fireEvent.keyDown(items[0], { key: "ArrowUp", altKey: true });
+      await user.keyboard("{Alt>}{ArrowUp}{/Alt}");
       expect(onReorder).not.toHaveBeenCalled();
     });
   });
 
   describe("keyboard activation", () => {
-    it("Enter triggers click", () => {
+    it("Enter triggers click", async () => {
+      const user = userEvent.setup();
       const { onClick, items } = renderList();
       items[0].focus();
 
-      fireEvent.keyDown(items[0], { key: "Enter" });
+      await user.keyboard("{Enter}");
       expect(onClick).toHaveBeenCalledTimes(1);
     });
 
-    it("Space triggers click", () => {
+    it("Space triggers click", async () => {
+      const user = userEvent.setup();
       const { onClick, items } = renderList();
       items[0].focus();
 
-      fireEvent.keyDown(items[0], { key: " " });
+      await user.keyboard(" ");
       expect(onClick).toHaveBeenCalledTimes(1);
     });
   });

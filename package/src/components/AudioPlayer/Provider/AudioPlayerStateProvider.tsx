@@ -55,17 +55,20 @@ function createInitialState<T extends number>(
   };
 
   const isEmpty = playList.length === 0;
+  const requestedId = audioInitialState?.curPlayId;
+  const requestedIdx =
+    requestedId == null
+      ? -1
+      : playList.findIndex((audioData) => audioData.id === requestedId);
 
   return {
     playList,
-    curPlayId: isEmpty ? 0 : audioInitialState?.curPlayId || playList[0].id,
-    curIdx: isEmpty
-      ? -1
-      : audioInitialState?.curPlayId
-      ? playList.findIndex(
-          (audioData) => audioData.id === audioInitialState?.curPlayId
-        )
-      : 0,
+    curPlayId: isEmpty
+      ? 0
+      : requestedIdx >= 0
+      ? (requestedId as number)
+      : playList[0].id,
+    curIdx: isEmpty ? -1 : requestedIdx >= 0 ? requestedIdx : 0,
     curAudioState,
     activeUI,
     audioResetKey: 0,
