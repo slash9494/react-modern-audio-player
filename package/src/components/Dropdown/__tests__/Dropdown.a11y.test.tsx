@@ -96,4 +96,11 @@ describe("DropdownTrigger accessibility", () => {
     const { container } = render(<TriggerWrapper />);
     expect(await axe(container)).toHaveNoViolations();
   });
+
+  it("has no axe violations when expanded", async () => {
+    const { container } = render(
+      <TriggerWrapper contextOverrides={{ isOpen: true }} />
+    );
+    expect(await axe(container)).toHaveNoViolations();
+  });
 });

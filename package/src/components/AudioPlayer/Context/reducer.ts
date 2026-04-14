@@ -23,6 +23,7 @@ export const audioPlayerReducer = (
 ): AudioPlayerStateContext => {
   switch (action.type) {
     case "NEXT_AUDIO": {
+      if (state.playList.length === 0) return state;
       if (
         state.curAudioState.repeatType === "NONE" &&
         state.curIdx + 1 === state.playList.length
@@ -122,14 +123,37 @@ export const audioPlayerReducer = (
       };
     }
     case "UPDATE_PLAY_LIST": {
+      if (action.playList.length === 0) {
+        return {
+          ...state,
+          playList: action.playList,
+          curPlayId: 0,
+          curIdx: -1,
+          curAudioState: {
+            ...state.curAudioState,
+            isPlaying: false,
+            currentTime: 0,
+            duration: 0,
+            isLoadedMetaData: false,
+          },
+        };
+      }
       const curPlayListItem = action.playList.find(
         (item) => item.id === state.curPlayId
       );
       if (!curPlayListItem) {
-        console.error(
-          "UPDATE_PLAY_LIST ERROR - curPlayId is not found on playList"
-        );
-        return state;
+        return {
+          ...state,
+          playList: action.playList,
+          curPlayId: action.playList[0].id,
+          curIdx: 0,
+          audioResetKey: state.audioResetKey + 1,
+          curAudioState: {
+            ...state.curAudioState,
+            currentTime: 0,
+            isLoadedMetaData: false,
+          },
+        };
       }
 
       const curIdx = action.playList.findIndex(

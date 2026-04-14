@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect } from "vitest";
 import { audioPlayerReducer } from "../reducer";
 import { AudioPlayerStateContext } from "../StateContext";
 
@@ -27,6 +27,17 @@ const makeBaseState = (): AudioPlayerStateContext => ({
 });
 
 describe("NEXT_AUDIO", () => {
+  it("returns state unchanged when playlist is empty", () => {
+    const state = {
+      ...makeBaseState(),
+      playList: [],
+      curIdx: -1,
+      curPlayId: 0,
+    };
+    const next = audioPlayerReducer(state, { type: "NEXT_AUDIO" });
+    expect(next).toBe(state);
+  });
+
   it("advances to next track (normal)", () => {
     const state = { ...makeBaseState(), curIdx: 0, curPlayId: 1 };
     const next = audioPlayerReducer(state, { type: "NEXT_AUDIO" });
@@ -289,17 +300,31 @@ describe("UPDATE_PLAY_LIST", () => {
     expect(next.curIdx).toBe(1);
   });
 
-  it("returns current state unchanged when curPlayId not in new playlist", () => {
-    const consoleSpy = vi.spyOn(console, "error").mockImplementation(vi.fn());
+  it("resets to first track when curPlayId not in new playlist", () => {
     const state = makeBaseState();
     const newPlayList = [{ id: 99, src: "other.mp3" }];
     const next = audioPlayerReducer(state, {
       type: "UPDATE_PLAY_LIST",
       playList: newPlayList,
     });
-    expect(next).toBe(state);
-    expect(consoleSpy).toHaveBeenCalled();
-    consoleSpy.mockRestore();
+    expect(next.playList).toEqual(newPlayList);
+    expect(next.curPlayId).toBe(99);
+    expect(next.curIdx).toBe(0);
+    expect(next.audioResetKey).toBe(state.audioResetKey + 1);
+    expect(next.curAudioState.currentTime).toBe(0);
+  });
+
+  it("handles empty playlist update gracefully", () => {
+    const state = makeBaseState();
+    const next = audioPlayerReducer(state, {
+      type: "UPDATE_PLAY_LIST",
+      playList: [],
+    });
+    expect(next.playList).toEqual([]);
+    expect(next.curPlayId).toBe(0);
+    expect(next.curIdx).toBe(-1);
+    expect(next.curAudioState.isPlaying).toBe(false);
+    expect(next.curAudioState.currentTime).toBe(0);
   });
 });
 
