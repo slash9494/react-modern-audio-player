@@ -1,6 +1,23 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
+# Step 0: Guard against package.json version bumps outside main
+# Version bumps must be committed as a dedicated release commit on main.
+BRANCH=$(git branch --show-current)
+if [ "$BRANCH" != "main" ] && git diff --cached --name-only | grep -q "^package/package.json$"; then
+  if git diff --cached package/package.json | grep -qE '^[+-][[:space:]]*"version":'; then
+    echo ""
+    echo "❌ package.json \"version\" change detected on branch '$BRANCH'."
+    echo ""
+    echo "   Version bumps must be committed on 'main' as a dedicated release commit."
+    echo "   Unstage the version change:"
+    echo "     git restore --staged package/package.json"
+    echo "     git checkout -- package/package.json   # if you also want to discard it"
+    echo ""
+    exit 1
+  fi
+fi
+
 # Step 1: Prettier + ESLint on staged files
 npx lint-staged
 
