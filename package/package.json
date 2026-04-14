@@ -62,12 +62,26 @@
     "vitest-axe": "^0.1.0"
   },
   "keywords": [
-    "wavesurfer react",
-    "react music player",
-    "audio player react",
-    "react waveform",
-    "modern-ui",
+    "react",
+    "react-component",
+    "audio",
+    "audio-player",
     "react-audio-player",
-    "playlist"
+    "music-player",
+    "react-music-player",
+    "waveform",
+    "react-waveform",
+    "wavesurfer",
+    "wavesurfer-react",
+    "playlist",
+    "html5-audio",
+    "typescript",
+    "accessible",
+    "a11y",
+    "web-audio",
+    "modern-ui",
+    "dark-mode",
+    "customizable",
+    "nextjs"
   ]
 }
