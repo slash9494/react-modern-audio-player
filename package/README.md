@@ -142,6 +142,7 @@ export default function PlayerPage() {
 | **Override & Style** | [CustomIcons](#customicons) · [CoverImgsCss](#coverimgscss) · [Theme mode](#theme-mode-dark-mode) · [ID & Classnames](#id--classnames)                |
 | **Player Hook API**  | [useAudioPlayer](#useaudioplayer) · [AudioPlayerControls](#audioplayercontrols) · [Sub-Hooks](#sub-hooks)                                             |
 | **Custom Component** | [Custom Component](#custom-component)                                                                                                                 |
+| **Accessibility**    | [Keyboard](#keyboard-support) · [Empty Playlist](#empty-playlist)                                                                                     |
 | **Example**          | [Example](#example)                                                                                                                                   |
 
 # Props
@@ -555,6 +556,43 @@ const CustomComponent = () => {
   </AudioPlayer.CustomComponent>
 </AudioPlayer>;
 ```
+
+# **Accessibility**
+
+The player follows WAI-ARIA patterns and is fully navigable by keyboard and screen readers.
+
+## Keyboard support
+
+All controls are reachable via `Tab` and respond to standard keyboard activation. The playlist uses the WAI-ARIA "Listbox with Rearrangeable Options" pattern:
+
+| Key | Action |
+| --- | --- |
+| `Tab` / `Shift+Tab` | Move focus between player controls |
+| `Space` / `Enter` | Activate the focused button (play/pause, prev/next, repeat, mute, playlist) |
+| `ArrowUp` / `ArrowDown` | Move focus between playlist items |
+| `Alt+ArrowUp` / `Alt+ArrowDown` | Reorder the focused playlist item |
+| `Enter` / `Space` on a playlist item | Select and play that track |
+
+Drag-and-drop reordering is preserved as an alternative — keyboard and mouse both call the same `onReorder` handler.
+
+## Empty Playlist
+
+Passing `playList={[]}` renders the player in an empty state without crashing. This is useful while waiting for asynchronous track data:
+
+```tsx
+function App() {
+  const [tracks, setTracks] = useState<PlayList>([]);
+
+  useEffect(() => {
+    fetchTracks().then(setTracks);
+  }, []);
+
+  // Safe — the player mounts with no audio source and activates once tracks arrive.
+  return <AudioPlayer playList={tracks} />;
+}
+```
+
+When the playlist becomes empty after updates, playback stops cleanly. When an `audioInitialState.curPlayId` doesn't match any track in the current list, the player falls back to the first track automatically.
 
 # **Example**
 

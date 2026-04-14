@@ -1,5 +1,37 @@
 # React-modern-audio-player
 
+## v2.1.0 (2026-04-14)
+
+### ♿ Accessibility
+
+- **SortableList keyboard support**: playlist items are now focusable (`tabIndex=0`) and expose full keyboard control following the WAI-ARIA "Listbox with Rearrangeable Options" pattern:
+
+  | Key | Action |
+  | --- | --- |
+  | `Tab` | Move focus between controls |
+  | `ArrowUp` / `ArrowDown` | Move focus between playlist items |
+  | `Alt+ArrowUp` / `Alt+ArrowDown` | Reorder the focused item |
+  | `Enter` / `Space` | Select the focused track |
+
+- **Native `<button>` for Dropdown trigger**: replaced `<div role="button">` with a real `<button>` element. Enter/Space activation is now handled by the browser natively, and the trigger exposes `aria-haspopup="true"`, `aria-expanded`, and `aria-controls` wired to the dropdown id.
+- **Eliminated nested `<button>` anti-pattern in Volume control**: the volume tooltip trigger was rendering a `<button>` inside `Dropdown.Trigger` (itself a button). Refactored so the outer `Dropdown.Trigger` owns the button role and `VolumeIcon` renders only the icon — screen readers now announce a single control.
+- **PlayBtn ARIA correction**: removed incorrect `aria-pressed` from the play/pause button. Play → Pause changes the button's function (not a toggle state), so the dynamic `aria-label` is the correct signal. Using `aria-pressed` simultaneously announced a conflicting state to screen readers.
+- **vitest-axe smoke tests**: added automated `axe-core` checks for `PlayBtn`, `RepeatTypeBtn`, `BarProgress`, `Dropdown` (both closed and expanded states), `SortableList`, and `Drawer`.
+
+### 🐛 Bug Fixes
+
+- **Empty playlist crash** (Fixes [#25](https://github.com/slash9494/react-modern-audio-player/issues/25)): passing `playList={[]}` or dynamically switching to an empty list no longer throws "fetch url missing" and no longer crashes the component tree.
+  - Reducer `NEXT_AUDIO` early-returns on empty playlist, preventing `(idx + 1) % 0 = NaN` state corruption.
+  - `createInitialState` uses nullish checks instead of truthy checks so tracks with `id: 0` are handled correctly, and falls back to `playList[0].id` when `audioInitialState.curPlayId` doesn't match any track.
+  - `UPDATE_PLAY_LIST` accepts empty arrays (previously silently rejected) and resets `isPlaying`, `currentTime`, `duration`, and `isLoadedMetaData` to safe defaults. When the current track disappears from the new list, playback falls back to the first track.
+  - WaveSurfer `load()` is skipped when the audio element has no `src`, so the waveform renderer no longer throws during empty-state transitions.
+- **SortableList focus restoration after reorder**: replaced `requestAnimationFrame` with `flushSync` so the reorder commits synchronously before focus is restored. The previous rAF-based path could race React's render cycle and focus the pre-reorder element.
+
+### 🔧 Internal
+
+- `DropdownTrigger` spread order: `{...props}` is placed before context-driven ARIA attributes so consumers cannot accidentally override `aria-expanded` or `aria-controls`.
+- SortableList a11y tests migrated from `fireEvent.keyDown` to `@testing-library/user-event` `user.keyboard()` for more realistic browser event sequences.
+
 ## v2.0.0 (2026-04-11)
 
 ### ✨ New Features
