@@ -3,6 +3,8 @@ name: release
 on:
   push:
     branches: [main]
+    paths:
+      - "package/package.json"
 
 jobs:
   publish:
@@ -35,20 +37,89 @@ jobs:
             echo "prerelease=false" >> $GITHUB_OUTPUT
           fi
 
+          # Safety net: the `paths` filter above already skips the workflow
+          # unless package/package.json changed, but non-version edits to
+          # that file would still reach here. Probe npm to avoid E409
+          # ("cannot publish over previously published version").
+          if npm view react-modern-audio-player@"$VERSION" version >/dev/null 2>&1; then
+            echo "should_publish=false" >> $GITHUB_OUTPUT
+            echo "::notice::react-modern-audio-player@$VERSION already on npm — skipping publish/tag/release"
+          else
+            echo "should_publish=true" >> $GITHUB_OUTPUT
+          fi
+
       - name: Publish to npm
+        if: steps.version.outputs.should_publish == 'true'
         run: npm publish ./package --tag ${{ steps.version.outputs.tag }} --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
+      - name: Mirror 'next' dist-tag to stable version
+        if: steps.version.outputs.should_publish == 'true' && steps.version.outputs.prerelease == 'false'
+        run: npm dist-tag add react-modern-audio-player@${{ steps.version.outputs.version }} next
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
       - name: Create git tag
+        if: steps.version.outputs.should_publish == 'true'
         run: |
           git tag "v${{ steps.version.outputs.version }}"
           git push origin "v${{ steps.version.outputs.version }}"
 
+      - name: Prepare release notes
+        if: steps.version.outputs.should_publish == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          set -euo pipefail
+
+          # 1) Extract the `## vX.Y.Z` section from package/CHANGELOG.md
+          awk -v v="$VERSION" '
+            BEGIN { target = "## v" v }
+            index($0, target) == 1 {
+              nxt = substr($0, length(target) + 1, 1)
+              if (nxt == "" || nxt == " " || nxt == "(") { found = 1; print; next }
+            }
+            found && /^---$/ { exit }
+            found && /^## v/ { exit }
+            found { print }
+          ' package/CHANGELOG.md > RELEASE_NOTES.md
+
+          if [ ! -s RELEASE_NOTES.md ]; then
+            echo "::error::No CHANGELOG entry found for v$VERSION in package/CHANGELOG.md"
+            exit 1
+          fi
+
+          # 2) Fetch auto-generated notes, then keep only "New Contributors" + "Full Changelog"
+          #    (drops the "## What's Changed" PR list — CHANGELOG.md already covers it)
+          gh api \
+            --method POST \
+            -H "Accept: application/vnd.github+json" \
+            "/repos/${{ github.repository }}/releases/generate-notes" \
+            -f tag_name="v$VERSION" \
+            -q .body > GENERATED_NOTES.md || : > GENERATED_NOTES.md
+
+          awk '
+            /^## New Contributors/ { keep = 1 }
+            /^\*\*Full Changelog\*\*/ { keep = 1 }
+            keep { print }
+          ' GENERATED_NOTES.md > TAIL.md
+
+          # 3) Compose final body
+          if [ -s TAIL.md ]; then
+            printf '\n---\n\n' >> RELEASE_NOTES.md
+            cat TAIL.md >> RELEASE_NOTES.md
+          fi
+
+          echo "=== Final RELEASE_NOTES.md ==="
+          cat RELEASE_NOTES.md
+
       - name: Create GitHub Release
+        if: steps.version.outputs.should_publish == 'true'
         uses: softprops/action-gh-release@v2
         with:
           tag_name: "v${{ steps.version.outputs.version }}"
           name: "v${{ steps.version.outputs.version }}"
           prerelease: ${{ steps.version.outputs.prerelease }}
-          generate_release_notes: true
+          body_path: RELEASE_NOTES.md
