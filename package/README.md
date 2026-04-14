@@ -18,7 +18,20 @@
   <a href="https://bundlephobia.com/package/react-modern-audio-player@2.0.0">
     <img src="https://img.shields.io/bundlephobia/minzip/react-modern-audio-player" alt="BundleSize">
   </a>
+  <a href="https://github.com/slash9494/react-modern-audio-player/actions/workflows/integration.yml">
+    <img src="https://github.com/slash9494/react-modern-audio-player/actions/workflows/integration.yml/badge.svg?branch=main" alt="CI">
+  </a>
+  <img src="https://img.shields.io/badge/TypeScript-first-3178C6?logo=typescript&logoColor=white" alt="TypeScript">
 </p>
+
+## Highlights
+
+- **Waveform** progress bar powered by `wavesurfer.js`
+- **Playlist** with drag-and-drop reorder, repeat, shuffle
+- **Fully customizable** — swap any sub-component, CSS variable theming, light & dark themes
+- **Accessible** — WAI-ARIA patterns, full keyboard navigation, axe-tested
+- **TypeScript-first** — typed props and hooks (`useAudioPlayer`, sub-hooks)
+- **SSR-friendly** — works with Next.js App Router / Server Components
 
 ## DEMO
 
