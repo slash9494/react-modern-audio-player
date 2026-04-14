@@ -16,7 +16,6 @@ export const VolumeIcon: FC = memo(() => {
   const { customIcons, elementRefs } = useResourceContext();
   const volume = stateVolume ?? elementRefs?.audioEl?.volume ?? 0;
   const isLowVolume = volume > 0 && volume <= 0.5;
-  const isHighVolume = volume > 0.5;
 
   if (muted || volume === 0) {
     return (
@@ -34,14 +33,11 @@ export const VolumeIcon: FC = memo(() => {
       />
     );
   }
-  if (isHighVolume) {
-    return (
-      <Icon
-        render={<TbVolume {...volumeOpt} />}
-        customIcon={customIcons?.volumeFull}
-      />
-    );
-  }
-  return null;
+  return (
+    <Icon
+      render={<TbVolume {...volumeOpt} />}
+      customIcon={customIcons?.volumeFull}
+    />
+  );
 });
 VolumeIcon.displayName = "VolumeIcon";
