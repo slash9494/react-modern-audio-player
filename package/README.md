@@ -19,7 +19,7 @@
     <img src="https://img.shields.io/bundlephobia/minzip/react-modern-audio-player" alt="BundleSize">
   </a>
   <a href="https://github.com/slash9494/react-modern-audio-player/actions/workflows/integration.yml">
-    <img src="https://github.com/slash9494/react-modern-audio-player/actions/workflows/integration.yml/badge.svg?branch=main" alt="CI">
+    <img src="https://img.shields.io/github/actions/workflow/status/slash9494/react-modern-audio-player/integration.yml?branch=main&label=CI" alt="CI">
   </a>
   <img src="https://img.shields.io/badge/TypeScript-first-3178C6?logo=typescript&logoColor=white" alt="TypeScript">
 </p>
