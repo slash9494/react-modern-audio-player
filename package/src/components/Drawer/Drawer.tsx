@@ -16,6 +16,7 @@ import "./Drawer.css";
 export interface DrawerProps extends Omit<Partial<DrawerContext>, "setIsOpen"> {
   outboundClickActive?: boolean;
   placement?: "bottom" | "top";
+  initialOpen?: boolean;
 }
 
 const Drawer: FC<PropsWithChildren<DrawerProps>> = ({
@@ -24,10 +25,11 @@ const Drawer: FC<PropsWithChildren<DrawerProps>> = ({
   children,
   isOpen: isOpenProp,
   onOpenChange,
+  initialOpen,
 }) => {
   const drawerRef = useRef<HTMLDivElement>(null);
   const [trigger, content] = React.Children.toArray(children);
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(initialOpen ?? false);
   const drawerId = useId();
 
   useClickOutside(drawerRef, () => {

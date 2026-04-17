@@ -16,6 +16,7 @@ export interface UIContext {
   interfacePlacement?: InterfacePlacement;
   volumeSliderPlacement?: VolumeSliderPlacement;
   colorScheme?: ColorScheme;
+  playListExpanded?: boolean;
 }
 
 export const uiContext = createContext<UIContext | null>(null);

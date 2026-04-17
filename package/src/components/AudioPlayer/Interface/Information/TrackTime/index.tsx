@@ -6,8 +6,12 @@ import { Current } from "./Current";
 import { Duration } from "./Duration";
 import { TrackTimePosition } from "./Types";
 
-export const TrackTime: FC = () => {
-  const { interfacePlacement, activeUI } = useUIContext();
+export interface TrackTimeProps {
+  visible?: boolean;
+}
+
+export const TrackTime: FC<TrackTimeProps> = ({ visible }) => {
+  const { interfacePlacement } = useUIContext();
 
   const parsePosition = useCallback(
     (str: string) => +str.split(/[^\d]/).join(""),
@@ -42,6 +46,8 @@ export const TrackTime: FC = () => {
     duration: getPosition(durationTimePosition - currentTimePosition),
   };
 
+  const resolvedVisible = visible ?? true;
+
   return (
     <>
       <Grid.Item
@@ -50,7 +56,7 @@ export const TrackTime: FC = () => {
           interfacePlacement?.templateArea?.trackTimeCurrent ||
           defaultInterfacePlacement.templateArea.trackTimeCurrent
         }
-        visible={Boolean(activeUI.trackTime ?? activeUI.all)}
+        visible={resolvedVisible}
       >
         <Current position={positions.current} />
       </Grid.Item>
@@ -60,7 +66,7 @@ export const TrackTime: FC = () => {
           interfacePlacement?.templateArea?.trackTimeDuration ||
           defaultInterfacePlacement.templateArea.trackTimeDuration
         }
-        visible={Boolean(activeUI.trackTime ?? activeUI.all)}
+        visible={resolvedVisible}
       >
         <Duration position={positions.duration} />
       </Grid.Item>

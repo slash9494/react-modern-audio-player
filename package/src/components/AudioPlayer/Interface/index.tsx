@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, isValidElement } from "react";
 import { Controller } from "./Controller";
 import { Information } from "./Information";
 
@@ -6,6 +6,7 @@ import Grid from "@/components/Grid";
 
 import { useUIContext } from "@/hooks/context/useUIContext";
 import { useGridTemplate } from "@/hooks/useGridTemplate";
+import { useDuplicateSlotWarning } from "./useDuplicateSlotWarning";
 import "./Interface.css";
 
 interface InterfaceProps {
@@ -15,7 +16,9 @@ interface InterfaceProps {
 export const Interface: FC<InterfaceProps> = ({ children }) => {
   const { interfacePlacement, activeUI, playListPlacement } = useUIContext();
 
-  const CustomComponents = React.Children.toArray(children);
+  const CustomComponents =
+    React.Children.toArray(children).filter(isValidElement);
+  useDuplicateSlotWarning(CustomComponents, activeUI);
 
   const [gridAreas, gridColumns] = useGridTemplate(
     activeUI,
