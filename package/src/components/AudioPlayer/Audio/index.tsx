@@ -10,7 +10,8 @@ import { useAudio } from "./useAudio";
 
 export const Audio = React.memo<{
   audioRef?: React.MutableRefObject<HTMLAudioElement>;
-}>(({ audioRef: propsAudioRef }) => {
+  audioId?: string;
+}>(({ audioRef: propsAudioRef, audioId }) => {
   const audioRef = useRef<HTMLAudioElement>(null);
   const { muted } = usePlaybackContext();
   const { curPlayId, playList } = useTrackContext();
@@ -38,7 +39,7 @@ export const Audio = React.memo<{
 
   return (
     <audio
-      id="rm-audio-player-audio"
+      id={audioId}
       {...nativeAudioAttrs}
       muted={muted}
       ref={audioRef}
