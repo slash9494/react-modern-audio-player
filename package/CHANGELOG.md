@@ -1,5 +1,57 @@
 # React-modern-audio-player
 
+## v2.2.0 (Unreleased)
+
+### ✨ New Features
+
+- **Compound slots on `AudioPlayer`**: the default export now exposes the built-in controls as static members that can be rendered as children alongside the preset:
+
+  | Static member | Wraps |
+  | --- | --- |
+  | `AudioPlayer.Progress` | progress bar / waveform |
+  | `AudioPlayer.Volume` | volume trigger + slider |
+  | `AudioPlayer.PlayList` | sortable playlist drawer |
+  | `AudioPlayer.PlayButton` | Play + Prev + Next group |
+  | `AudioPlayer.RepeatButton` | repeat-type button |
+  | `AudioPlayer.Artwork` | track artwork |
+  | `AudioPlayer.TrackInfo` | track title / writer |
+  | `AudioPlayer.TrackTime` | current + duration time |
+  | `AudioPlayer.CustomComponent` | user-defined slot (existing) |
+
+  Compound children render **additively** alongside the preset — they do not replace the default layout by themselves. To replace a preset control, disable the corresponding slot in `activeUI` and render the compound counterpart with a custom `gridArea`:
+
+  ```tsx
+  // Hide the preset volume and re-place a custom volume at the right edge
+  <AudioPlayer
+    playList={list}
+    activeUI={{ all: true, volume: false }}
+  >
+    <AudioPlayer.Volume gridArea="1 / 5 / 1 / 6" />
+  </AudioPlayer>
+  ```
+
+  Each compound accepts `gridArea?` and `visible?` (defaults to `true`) plus its own domain props. Original internal components (`PlayBtn`, `PrevBtn`, `NextBtn`, etc.) remain exported for users who want fully custom layouts.
+
+  In development, a `console.warn` is emitted when a compound slot is rendered while its preset counterpart is still active, pointing to the `activeUI` flag that resolves the duplication.
+
+- **`audioInitialState.playListExpanded`** (Fixes [#21](https://github.com/slash9494/react-modern-audio-player/issues/21)): the playlist drawer can now start in the expanded state without user interaction.
+
+  ```tsx
+  <AudioPlayer
+    playList={list}
+    audioInitialState={{ curPlayId: 1, playListExpanded: true }}
+  />
+  ```
+
+  Consistent with the rest of `audioInitialState`: read once at mount, not tracked in reducer state.
+
+- **Multi-instance support** (Fixes [#11](https://github.com/slash9494/react-modern-audio-player/issues/11), [#15](https://github.com/slash9494/react-modern-audio-player/issues/15)): multiple `<AudioPlayer>` instances on the same page no longer collide on DOM IDs. The player container (`#rm-audio-player`) and inner audio element (`#rm-audio-player-audio`) now derive their IDs from `useId()`, producing `rm-audio-player-{id}` and `rm-audio-player-audio-{id}` per instance.
+
+### 🔧 Internal
+
+- `Grid.Item` wrapping moved from `Controller` / `Information` into each individual control (`Progress`, `Volume`, `SortablePlayList`, `RepeatTypeBtn`, `Artwork`, `TrackInfo`). The controls read their default `gridArea` from `interfacePlacement` via context, so preset behavior is unchanged; compound usage gets the same layout defaults for free.
+- New `PlayButton` wrapper in `Controller/Button` encapsulates the `div.rmap-ctrl-btn-wrapper` around Play / Prev / Next. `PlayBtn`, `PrevBtn`, `NextBtn` stay exported for raw usage.
+
 ## v2.1.0 (2026-04-14)
 
 ### ♿ Accessibility
