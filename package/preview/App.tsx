@@ -51,6 +51,10 @@ const CustomComponent = () => {
 };
 
 function App() {
+  const compoundDemo =
+    typeof window !== "undefined" &&
+    new URLSearchParams(window.location.search).get("compound") === "1";
+
   const [progressType, setProgressType] = useState<ProgressUI>("waveform");
   const [playerPlacement, setPlayerPlacement] =
     useState<PlayerPlacement>("bottom-left");
@@ -117,6 +121,23 @@ function App() {
           <Agentation endpoint="http://localhost:4747" />
         )} */}
       </div>
+
+      {compoundDemo && (
+        <div
+          data-testid="compound-demo"
+          style={{ width: "100%", marginTop: "2rem" }}
+        >
+          <h4 style={{ margin: "0 0 0.5rem" }}>Compound mode demo</h4>
+          <AudioPlayerWithProviders
+            playList={playList}
+            audioInitialState={{ curPlayId: 1, playListExpanded: true }}
+            activeUI={{ all: true, volume: false, progress: "bar" }}
+            rootContainerProps={{ style: { width: "100%" } }}
+          >
+            <AudioPlayerWithProviders.Volume />
+          </AudioPlayerWithProviders>
+        </div>
+      )}
 
       <Editor
         setProgressType={setProgressType}
