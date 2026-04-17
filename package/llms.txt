@@ -1,0 +1,61 @@
+# React Modern Audio Player
+
+> Modern, customizable React audio player with waveform visualization, drag-and-drop playlist, WAI-ARIA accessibility, TypeScript-first API, and Next.js App Router (Server Components) support. Published on npm as `react-modern-audio-player`.
+
+This library exports a single default `<AudioPlayer>` component driven by declarative props, plus a compound `<AudioPlayer.CustomComponent>` and a family of `useAudioPlayer*` hooks for programmatic control. Runtime requirements: React 18 or higher, `react-dom` 18 or higher. `wavesurfer.js` 6.x is an internal dependency (no peer install needed). The library entry point ships a `'use client'` directive so it can be imported directly from Next.js Server Components; hook consumers and compound children must themselves be Client Components.
+
+## Installation
+
+```
+npm install react-modern-audio-player
+```
+
+## Quick start
+
+```tsx
+import AudioPlayer from "react-modern-audio-player";
+
+const playList = [
+  { id: 1, src: "audio.mp3", name: "Track 1", writer: "Artist", img: "cover.jpg" },
+];
+
+export default function Page() {
+  return <AudioPlayer playList={playList} />;
+}
+```
+
+## Core API
+
+- `AudioPlayer` (default export) — accepts `playList`, `audioInitialState`, `activeUI`, `placement`, `colorScheme`, `customIcons`, `coverImgsCss`, `rootContainerProps`, `audioRef`.
+- `AudioPlayer.CustomComponent` — compound child that slots custom nodes into a named grid area (`placement.interface.customComponentsArea`). Requires `'use client'` in the consumer file.
+- `useAudioPlayer()` — control hook. Returns `{ isPlaying, volume, currentTime, duration, repeatType, muted, currentTrack, currentIndex, playList, play, pause, togglePlay, next, prev, seek, setVolume, toggleMute, setTrack }`.
+- Sub-hooks for minimal re-renders: `useAudioPlayerPlayback`, `useAudioPlayerTrack`, `useAudioPlayerVolume`, `useAudioPlayerTime`, `useAudioPlayerElement`.
+- Low-level context hooks (advanced): `usePlaybackContext`, `useTrackContext`, `useUIContext`, `useResourceContext`.
+
+## Key types
+
+```ts
+type AudioData = {
+  src: string;
+  id: number;
+  name?: string;
+  writer?: string;
+  img?: string;
+  description?: string | ReactNode;
+  customTrackInfo?: string | ReactNode;
+};
+type PlayList = AudioData[];
+type RepeatType = "ALL" | "ONE" | "NONE" | "SHUFFLE";
+type ProgressUI = "waveform" | "bar" | false;
+```
+
+## Docs
+
+- [README.md](https://unpkg.com/react-modern-audio-player/README.md): full reference — props tables, theme CSS variables, grid placement syntax, keyboard shortcuts, common integration pitfalls ("Gotchas"), and end-to-end examples.
+- [CHANGELOG.md](https://raw.githubusercontent.com/slash9494/react-modern-audio-player/main/package/CHANGELOG.md): version history, breaking changes, migration notes (served from GitHub — not shipped in the npm tarball).
+
+## Optional
+
+- [GitHub repository](https://github.com/slash9494/react-modern-audio-player)
+- [CodeSandbox demo](https://codesandbox.io/p/sandbox/basic-nfrpfq)
+- [npm page](https://www.npmjs.com/package/react-modern-audio-player)
