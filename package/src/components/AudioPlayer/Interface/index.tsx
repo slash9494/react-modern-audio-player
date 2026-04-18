@@ -1,4 +1,4 @@
-import React, { FC, isValidElement } from "react";
+import React, { FC, isValidElement, useState } from "react";
 import { Controller } from "./Controller";
 import { Information } from "./Information";
 
@@ -7,6 +7,7 @@ import Grid from "@/components/Grid";
 import { useUIContext } from "@/hooks/context/useUIContext";
 import { useGridTemplate } from "@/hooks/useGridTemplate";
 import { useDuplicateSlotWarning } from "./useDuplicateSlotWarning";
+import { playListPortalContext } from "./playListPortalContext";
 import "./Interface.css";
 
 interface InterfaceProps {
@@ -26,6 +27,10 @@ export const Interface: FC<InterfaceProps> = ({ children }) => {
     interfacePlacement?.customComponentsArea
   );
 
+  // Callback ref — state-backed so consumers re-render when the node mounts.
+  const [playListPortalNode, setPlayListPortalNode] =
+    useState<HTMLDivElement | null>(null);
+
   return (
     <div
       className="rmap-interface-container"
@@ -33,26 +38,27 @@ export const Interface: FC<InterfaceProps> = ({ children }) => {
       role="region"
       aria-label="Audio player"
     >
-      {/* Portal target for SortablePlayList when placement is "top" */}
-      {playListPlacement === "top" && (
-        <div className="rmap-sortable-playlist" />
-      )}
-      <Grid
-        alignItems={"center"}
-        justifyContent={"center"}
-        areas={gridAreas}
-        minHeight={"30px"}
-        columns={gridColumns}
-        UNSAFE_className="rmap-interface-grid"
-      >
-        <Information />
-        <Controller />
+      <playListPortalContext.Provider value={playListPortalNode}>
+        {playListPlacement === "top" && (
+          <div ref={setPlayListPortalNode} className="rmap-sortable-playlist" />
+        )}
+        <Grid
+          alignItems={"center"}
+          justifyContent={"center"}
+          areas={gridAreas}
+          minHeight={"30px"}
+          columns={gridColumns}
+          UNSAFE_className="rmap-interface-grid"
+        >
+          <Information />
+          <Controller />
 
-        {CustomComponents}
-      </Grid>
-      {playListPlacement === "bottom" && (
-        <div className="rmap-sortable-playlist" />
-      )}
+          {CustomComponents}
+        </Grid>
+        {playListPlacement === "bottom" && (
+          <div ref={setPlayListPortalNode} className="rmap-sortable-playlist" />
+        )}
+      </playListPortalContext.Provider>
     </div>
   );
 };
