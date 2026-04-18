@@ -7,13 +7,18 @@ const basePlayList: PlayList = [
   { name: "Track 2", writer: "LYH", img: "", src: "track2.mp3", id: 2 },
 ];
 
+function createPortalTarget(): HTMLDivElement {
+  const el = document.createElement("div");
+  el.className = "sortable-play-list";
+  document.body.appendChild(el);
+  return el;
+}
+
 describe("Phase 7.5 — multi-instance unique ID (#11/#15)", () => {
   let portalTarget: HTMLDivElement;
 
   beforeEach(() => {
-    portalTarget = document.createElement("div");
-    portalTarget.className = "sortable-play-list";
-    document.body.appendChild(portalTarget);
+    portalTarget = createPortalTarget();
   });
 
   afterEach(() => {
@@ -42,6 +47,18 @@ describe("Phase 7.5 — multi-instance unique ID (#11/#15)", () => {
     expect(first.id).not.toBe(second.id);
   });
 
+  it("ids do not contain colons (safe for CSS/JS selectors)", () => {
+    const { container } = render(
+      <AudioPlayerWithProviders
+        playList={basePlayList.map((t) => ({ ...t }))}
+        activeUI={{ all: true }}
+      />
+    );
+    const playerEl = container.querySelector(".rmap-player-container");
+    expect(playerEl?.id).toBeTruthy();
+    expect(playerEl?.id).not.toContain(":");
+  });
+
   it("audio element ID is derived from the player instance ID", () => {
     const { container } = render(
       <AudioPlayerWithProviders
@@ -58,9 +75,7 @@ describe("Phase 7.5 — playListExpanded (#21)", () => {
   let portalTarget: HTMLDivElement;
 
   beforeEach(() => {
-    portalTarget = document.createElement("div");
-    portalTarget.className = "sortable-play-list";
-    document.body.appendChild(portalTarget);
+    portalTarget = createPortalTarget();
   });
 
   afterEach(() => {
@@ -96,9 +111,7 @@ describe("Phase 7.5 — compound slots (additive)", () => {
   let portalTarget: HTMLDivElement;
 
   beforeEach(() => {
-    portalTarget = document.createElement("div");
-    portalTarget.className = "sortable-play-list";
-    document.body.appendChild(portalTarget);
+    portalTarget = createPortalTarget();
   });
 
   afterEach(() => {
@@ -157,6 +170,8 @@ describe("Phase 7.5 — compound slots (additive)", () => {
   });
 
   it("dev-mode warns when compound duplicates a preset", () => {
+    // Warning hook no-ops under production — this assertion would silently pass.
+    expect(process.env.NODE_ENV).not.toBe("production");
     const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {
       /* suppress */
     });

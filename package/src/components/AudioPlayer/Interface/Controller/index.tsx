@@ -11,11 +11,7 @@ export const Controller: FC = () => {
 
   return (
     <>
-      <Progress
-        visible={Boolean(
-          activeUI.progress !== undefined ? activeUI.progress : activeUI.all
-        )}
-      />
+      <Progress visible={Boolean(activeUI.progress ?? activeUI.all)} />
       <RepeatTypeBtn visible={Boolean(activeUI.repeatType ?? activeUI.all)} />
       <PlayButton visible={Boolean(activeUI.playButton ?? activeUI.all)} />
       <Volume visible={Boolean(activeUI.volume ?? activeUI.all)} />

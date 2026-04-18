@@ -29,7 +29,8 @@ export const AudioPlayer = <
   ...restProps
 }: AudioPlayerProps<TInterfacePlacementLength>) => {
   usePropsStateEffect(restProps);
-  const instanceId = useId();
+  // Strip colons — `useId()` returns `:r0:`-style values that break CSS/JS selectors.
+  const instanceId = useId().replace(/:/g, "");
   const playerId = `rm-audio-player-${instanceId}`;
   const audioId = `rm-audio-player-audio-${instanceId}`;
 

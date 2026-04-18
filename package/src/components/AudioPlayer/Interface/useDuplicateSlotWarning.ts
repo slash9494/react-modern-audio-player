@@ -26,40 +26,47 @@ function isPresetActive(activeUI: ActiveUI, key: ActiveUIKey): boolean {
   return Boolean(activeUI.all);
 }
 
+// Unwrap one layer of memo/forwardRef — wrappers hide the inner `.name`.
+function resolveSlotKey(child: ReactElement): string | undefined {
+  const outer = child?.type as
+    | {
+        name?: string;
+        displayName?: string;
+        type?: { name?: string; displayName?: string };
+      }
+    | undefined;
+  if (!outer) return undefined;
+  const inner = outer.type ?? outer;
+  return inner.displayName || inner.name || undefined;
+}
+
 export function useDuplicateSlotWarning(
   children: ReactElement[],
   activeUI: ActiveUI
 ): void {
+  // Stable signature string so the effect dep is value-compared, not ref-compared.
+  const compoundSignature = children
+    .map(resolveSlotKey)
+    .filter((key): key is string => Boolean(key && slotRegistry[key]))
+    .sort()
+    .join(",");
+
   useEffect(() => {
     if (process.env.NODE_ENV === "production") return;
+    if (!compoundSignature) return;
 
-    const duplicates: string[] = [];
-    for (const child of children) {
-      const type = child?.type as
-        | { name?: string; displayName?: string }
-        | undefined;
-      const key = type?.displayName || type?.name;
-      if (!key) continue;
+    const seen = new Set<string>();
+    for (const key of compoundSignature.split(",")) {
       const meta = slotRegistry[key];
       if (!meta) continue;
-      if (isPresetActive(activeUI, meta.activeUIKey)) {
-        duplicates.push(meta.displayName);
-      }
+      if (seen.has(meta.displayName)) continue;
+      if (!isPresetActive(activeUI, meta.activeUIKey)) continue;
+      seen.add(meta.displayName);
+      // eslint-disable-next-line no-console
+      console.warn(
+        `[react-modern-audio-player] Both preset and compound '${meta.displayName}' are rendered. ` +
+          `Set \`activeUI.${meta.activeUIKey}=false\` to replace the preset control.`
+      );
     }
-
-    if (duplicates.length > 0) {
-      const unique = Array.from(new Set(duplicates));
-      for (const name of unique) {
-        const meta = Object.values(slotRegistry).find(
-          (m) => m.displayName === name
-        );
-        if (!meta) continue;
-        // eslint-disable-next-line no-console
-        console.warn(
-          `[react-modern-audio-player] Both preset and compound '${name}' are rendered. ` +
-            `Set \`activeUI.${meta.activeUIKey}=false\` to replace the preset control.`
-        );
-      }
-    }
-  }, [children, activeUI]);
+  }, [compoundSignature, activeUI]);
 }
