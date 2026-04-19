@@ -1,4 +1,3 @@
-import { useId } from "react";
 import {
   AudioPlayerStateProviderProps,
   defaultInterfacePlacementMaxLength,
@@ -29,14 +28,10 @@ export const AudioPlayer = <
   ...restProps
 }: AudioPlayerProps<TInterfacePlacementLength>) => {
   usePropsStateEffect(restProps);
-  // Strip colons — `useId()` returns `:r0:`-style values that break CSS/JS selectors.
-  const instanceId = useId().replace(/:/g, "");
-  const playerId = `rm-audio-player-${instanceId}`;
-  const audioId = `rm-audio-player-audio-${instanceId}`;
 
   return (
-    <div id={playerId} className="rmap-player-container">
-      <Audio audioRef={audioRef} audioId={audioId} />
+    <div id="rm-audio-player" className="rmap-player-container">
+      <Audio audioRef={audioRef} />
       <Interface>{children}</Interface>
     </div>
   );

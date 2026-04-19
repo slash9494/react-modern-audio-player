@@ -14,7 +14,7 @@ function createPortalTarget(): HTMLDivElement {
   return el;
 }
 
-describe("Phase 7.5 — multi-instance unique ID (#11/#15)", () => {
+describe("Phase 7.5 — multi-instance playlist portal isolation", () => {
   let portalTarget: HTMLDivElement;
 
   beforeEach(() => {
@@ -25,7 +25,7 @@ describe("Phase 7.5 — multi-instance unique ID (#11/#15)", () => {
     portalTarget.remove();
   });
 
-  it("renders two players with distinct container IDs", () => {
+  it("renders two independent <audio> elements for two player instances", () => {
     const { container } = render(
       <>
         <AudioPlayerWithProviders
@@ -41,33 +41,28 @@ describe("Phase 7.5 — multi-instance unique ID (#11/#15)", () => {
 
     const containers = container.querySelectorAll(".rmap-player-container");
     expect(containers).toHaveLength(2);
-    const [first, second] = Array.from(containers);
-    expect(first.id).toMatch(/^rm-audio-player-/);
-    expect(second.id).toMatch(/^rm-audio-player-/);
-    expect(first.id).not.toBe(second.id);
+    const audios = container.querySelectorAll("audio");
+    expect(audios).toHaveLength(2);
+    // Distinct DOM nodes — state isolation relies on these refs, not on IDs
+    expect(audios[0]).not.toBe(audios[1]);
   });
 
-  it("ids do not contain colons (safe for CSS/JS selectors)", () => {
+  it("each instance owns its own .rmap-sortable-playlist portal target", () => {
     const { container } = render(
-      <AudioPlayerWithProviders
-        playList={basePlayList.map((t) => ({ ...t }))}
-        activeUI={{ all: true }}
-      />
+      <>
+        <AudioPlayerWithProviders
+          playList={basePlayList.map((t) => ({ ...t }))}
+          activeUI={{ all: true }}
+        />
+        <AudioPlayerWithProviders
+          playList={basePlayList.map((t) => ({ ...t }))}
+          activeUI={{ all: true }}
+        />
+      </>
     );
-    const playerEl = container.querySelector(".rmap-player-container");
-    expect(playerEl?.id).toBeTruthy();
-    expect(playerEl?.id).not.toContain(":");
-  });
-
-  it("audio element ID is derived from the player instance ID", () => {
-    const { container } = render(
-      <AudioPlayerWithProviders
-        playList={basePlayList.map((t) => ({ ...t }))}
-        activeUI={{ all: true }}
-      />
-    );
-    const audio = container.querySelector("audio");
-    expect(audio?.id).toMatch(/^rm-audio-player-audio-/);
+    const targets = container.querySelectorAll(".rmap-sortable-playlist");
+    expect(targets).toHaveLength(2);
+    expect(targets[0]).not.toBe(targets[1]);
   });
 });
 

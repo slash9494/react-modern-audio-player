@@ -45,7 +45,7 @@
 
   Consistent with the rest of `audioInitialState`: read once at mount, not tracked in reducer state.
 
-- **Multi-instance support** (Fixes [#11](https://github.com/slash9494/react-modern-audio-player/issues/11), [#15](https://github.com/slash9494/react-modern-audio-player/issues/15)): multiple `<AudioPlayer>` instances on the same page no longer collide on DOM IDs. The player container (`#rm-audio-player`) and inner audio element (`#rm-audio-player-audio`) now derive their IDs from `useId()`, producing `rm-audio-player-{id}` and `rm-audio-player-audio-{id}` per instance.
+- **Multi-instance playlist isolation** (Fixes [#11](https://github.com/slash9494/react-modern-audio-player/issues/11), [#15](https://github.com/slash9494/react-modern-audio-player/issues/15)): multiple `<AudioPlayer>` instances on the same page no longer leak playlist content into each other's drawer. Previously `PlayList` resolved its portal target through `document.querySelector(".rmap-sortable-playlist")`, which matched the first target in document order — every secondary player would render its playlist into the first player's drawer. `Interface` now publishes its own portal node through a new `playListPortalContext`, and each instance's drawer renders exclusively into its own target. Audio state (play/pause, volume, mute, current track) was already isolated per instance via the v2 provider split.
 
 ### 🔧 Internal
 
