@@ -6,14 +6,32 @@ import { BarProgress } from "./BarProgress";
 import { WaveformProgress } from "./WaveformProgress";
 import "./Progress.css";
 
+export type ProgressType = "bar" | "waveform";
+
 export interface ProgressProps {
   gridArea?: string;
   visible?: boolean;
+  /**
+   * Override which progress renderer to show. When omitted, falls back to
+   * `activeUI.progress`. Used when the preset is disabled but the compound
+   * `<AudioPlayer.Progress />` is still placed explicitly — without this,
+   * the component would render an empty grid slot.
+   */
+  type?: ProgressType;
 }
 
-export const Progress: FC<ProgressProps> = ({ gridArea, visible }) => {
+function resolveProgressType(
+  override: ProgressType | undefined,
+  activeProgress: "bar" | "waveform" | false | undefined
+): ProgressType {
+  if (override) return override;
+  if (activeProgress === "waveform") return "waveform";
+  return "bar";
+}
+
+export const Progress: FC<ProgressProps> = ({ gridArea, visible, type }) => {
   const { activeUI, interfacePlacement } = useUIContext();
-  const progressType = activeUI.progress ?? (activeUI.all ? "bar" : false);
+  const progressType = resolveProgressType(type, activeUI.progress);
   const isWaveform = progressType === "waveform";
   const isBar = progressType === "bar";
   const [waveformMounted, setWaveformMounted] = useState(isWaveform);

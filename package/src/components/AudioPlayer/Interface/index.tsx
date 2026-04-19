@@ -1,18 +1,29 @@
-import React, { FC, isValidElement, useState } from "react";
+import React, { FC, isValidElement, useMemo, useState } from "react";
 import { Controller } from "./Controller";
 import { Information } from "./Information";
 
 import Grid from "@/components/Grid";
 
+import { ActiveUI } from "@/components/AudioPlayer/Context/StateContext";
 import { useUIContext } from "@/hooks/context/useUIContext";
 import { useGridTemplate } from "@/hooks/useGridTemplate";
 import { useDuplicateSlotWarning } from "./useDuplicateSlotWarning";
 import { playListPortalContext } from "./playListPortalContext";
+import { isPresetActive, resolveSlotKey, slotRegistry } from "./slotRegistry";
 import "./Interface.css";
 
 interface InterfaceProps {
   children: React.ReactNode;
 }
+
+// Fill-in value when a compound slot needs to force its area into the grid
+// template. `useGridTemplate` only checks truthiness, so per-key truthy
+// placeholders are enough to preserve placement without changing consumer
+// behavior in the preset path.
+const COMPOUND_FORCE_VALUES: Partial<Record<keyof ActiveUI, unknown>> = {
+  progress: "bar",
+  playList: "sortable",
+};
 
 export const Interface: FC<InterfaceProps> = ({ children }) => {
   const { interfacePlacement, activeUI, playListPlacement } = useUIContext();
@@ -21,8 +32,36 @@ export const Interface: FC<InterfaceProps> = ({ children }) => {
     React.Children.toArray(children).filter(isValidElement);
   useDuplicateSlotWarning(CustomComponents, activeUI);
 
+  // Stable comma-joined list of activeUI keys that need forcing. Derived
+  // inline so the memo below can depend on a primitive (string) instead of
+  // the per-render `CustomComponents` array — `useGridTemplate` treats its
+  // activeUI input via reference equality, so a new object every render
+  // would loop.
+  const compoundForceKeys = CustomComponents.map(resolveSlotKey)
+    .map((key) => (key ? slotRegistry[key]?.activeUIKey : undefined))
+    .filter(
+      (k): k is keyof ActiveUI => Boolean(k) && !isPresetActive(activeUI, k!)
+    )
+    .sort()
+    .join(",");
+
+  // When a compound slot is rendered while its preset counterpart is off,
+  // the grid template would otherwise drop that named area and the compound
+  // gridArea reference would fall back to implicit tracks. Augment activeUI
+  // for template generation only (Controller/Information still see the
+  // original activeUI so their preset visibility logic stays intact).
+  const effectiveActiveUI = useMemo<ActiveUI>(() => {
+    if (!compoundForceKeys) return activeUI;
+    const next: Record<string, unknown> = { ...activeUI };
+    for (const key of compoundForceKeys.split(",") as (keyof ActiveUI)[]) {
+      const force = COMPOUND_FORCE_VALUES[key];
+      next[key] = force !== undefined ? force : true;
+    }
+    return next as ActiveUI;
+  }, [compoundForceKeys, activeUI]);
+
   const [gridAreas, gridColumns] = useGridTemplate(
-    activeUI,
+    effectiveActiveUI,
     interfacePlacement?.templateArea,
     interfacePlacement?.customComponentsArea
   );

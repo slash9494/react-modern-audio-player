@@ -164,6 +164,63 @@ describe("Phase 7.5 — compound slots (additive)", () => {
     expect(screen.getByTestId("playlist-trigger-btn")).toBeInTheDocument();
   });
 
+  it("compound Progress renders a bar even when activeUI.progress is false", () => {
+    render(
+      <AudioPlayerWithProviders
+        playList={basePlayList.map((t) => ({ ...t }))}
+        activeUI={{ all: true, progress: false }}
+      >
+        <AudioPlayerWithProviders.Progress />
+      </AudioPlayerWithProviders>
+    );
+    // Preset is disabled but the compound is explicitly placed — it must
+    // fall back to the "bar" renderer instead of mounting nothing.
+    expect(screen.getByTestId("progress-bar")).toBeInTheDocument();
+  });
+
+  it("compound Progress honors explicit type prop over activeUI", () => {
+    const { container } = render(
+      <AudioPlayerWithProviders
+        playList={basePlayList.map((t) => ({ ...t }))}
+        activeUI={{ all: true, progress: "bar" }}
+      >
+        <AudioPlayerWithProviders.Progress type="waveform" />
+      </AudioPlayerWithProviders>
+    );
+    // Preset renders "bar"; compound renders "waveform". Both should coexist.
+    expect(screen.getByTestId("progress-bar")).toBeInTheDocument();
+    expect(container.querySelector(".rmap-waveform-wrapper")).not.toBeNull();
+  });
+
+  it("grid template preserves a compound slot's area when its preset is disabled (sparse templateArea)", () => {
+    const { container } = render(
+      <AudioPlayerWithProviders
+        playList={basePlayList.map((t) => ({ ...t }))}
+        activeUI={{ all: false, artwork: true, volume: false }}
+        placement={{
+          interface: {
+            templateArea: {
+              artwork: "row1-1",
+              volume: "row1-2",
+            },
+          },
+        }}
+      >
+        <AudioPlayerWithProviders.Volume />
+      </AudioPlayerWithProviders>
+    );
+    // Without the effectiveActiveUI fix, the grid would only have one
+    // column (artwork alone → maxCol=1) and the compound Volume's default
+    // gridArea "row1-2" would fall back to implicit tracks. With the fix
+    // the grid template keeps both columns.
+    const grid = container.querySelector(
+      ".rmap-interface-grid"
+    ) as HTMLElement | null;
+    expect(grid).not.toBeNull();
+    const areas = grid?.style.gridTemplateAreas ?? "";
+    expect(areas).toContain("row1-2");
+  });
+
   it("dev-mode warns when compound duplicates a preset", () => {
     // Warning hook no-ops under production — this assertion would silently pass.
     expect(process.env.NODE_ENV).not.toBe("production");
