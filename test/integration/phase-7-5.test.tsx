@@ -117,7 +117,11 @@ describe("Phase 7.5 — compound slots (additive)", () => {
     expect(AudioPlayerWithProviders.Progress).toBeDefined();
     expect(AudioPlayerWithProviders.Volume).toBeDefined();
     expect(AudioPlayerWithProviders.PlayList).toBeDefined();
+    expect(AudioPlayerWithProviders.TransportControls).toBeDefined();
     expect(AudioPlayerWithProviders.PlayButton).toBeDefined();
+    expect(AudioPlayerWithProviders.TransportControls).toBe(
+      AudioPlayerWithProviders.PlayButton
+    );
     expect(AudioPlayerWithProviders.RepeatButton).toBeDefined();
     expect(AudioPlayerWithProviders.Artwork).toBeDefined();
     expect(AudioPlayerWithProviders.TrackInfo).toBeDefined();

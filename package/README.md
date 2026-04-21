@@ -15,7 +15,7 @@
   <a href="https://www.npmjs.com/package/react-modern-audio-player">
     <img src="https://img.shields.io/npm/dt/react-modern-audio-player" alt="Download">
   </a>
-  <a href="https://bundlephobia.com/package/react-modern-audio-player@2.0.0">
+  <a href="https://bundlephobia.com/package/react-modern-audio-player">
     <img src="https://img.shields.io/bundlephobia/minzip/react-modern-audio-player" alt="BundleSize">
   </a>
   <a href="https://github.com/slash9494/react-modern-audio-player/actions/workflows/integration.yml">
@@ -611,7 +611,8 @@ const CustomComponent = () => {
 | `AudioPlayer.Progress` | progress bar / waveform |
 | `AudioPlayer.Volume` | volume trigger + slider |
 | `AudioPlayer.PlayList` | sortable playlist drawer (accepts `initialExpanded?`) |
-| `AudioPlayer.PlayButton` | Play + Prev + Next group |
+| `AudioPlayer.TransportControls` | Play + Prev + Next group |
+| `AudioPlayer.PlayButton` | Play + Prev + Next group — **deprecated**, use `AudioPlayer.TransportControls` |
 | `AudioPlayer.RepeatButton` | repeat-type button |
 | `AudioPlayer.Artwork` | track artwork |
 | `AudioPlayer.TrackInfo` | track title / writer |

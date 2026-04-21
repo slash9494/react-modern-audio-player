@@ -11,7 +11,10 @@ import { AudioPlayer, AudioPlayerProps } from "./Player";
 import { Progress } from "./Interface/Controller/Input";
 import { Volume } from "./Interface/Controller/Tooltip";
 import { SortablePlayList } from "./Interface/Controller/Drawer";
-import { PlayButton, RepeatTypeBtn } from "./Interface/Controller/Button";
+import {
+  TransportControls,
+  RepeatTypeBtn,
+} from "./Interface/Controller/Button";
 import { Artwork } from "./Interface/Information/Artwork";
 import { TrackInfo } from "./Interface/Information/TrackInfo";
 import { TrackTime } from "./Interface/Information/TrackTime";
@@ -41,7 +44,9 @@ type AudioPlayerComponent = typeof AudioPlayerWithProviders & {
   Progress: typeof Progress;
   Volume: typeof Volume;
   PlayList: typeof SortablePlayList;
-  PlayButton: typeof PlayButton;
+  TransportControls: typeof TransportControls;
+  /** @deprecated Use `TransportControls` instead. Will be removed in the next major version. */
+  PlayButton: typeof TransportControls;
   RepeatButton: typeof RepeatTypeBtn;
   Artwork: typeof Artwork;
   TrackInfo: typeof TrackInfo;
@@ -53,7 +58,9 @@ const AudioPlayerCompound = Object.assign(AudioPlayerWithProviders, {
   Progress,
   Volume,
   PlayList: SortablePlayList,
-  PlayButton,
+  TransportControls,
+  /** @deprecated Use `TransportControls` instead. Will be removed in the next major version. */
+  PlayButton: TransportControls,
   RepeatButton: RepeatTypeBtn,
   Artwork,
   TrackInfo,

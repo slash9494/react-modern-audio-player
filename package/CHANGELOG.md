@@ -2,6 +2,17 @@
 
 ## v2.2.0 (Unreleased)
 
+### ⚠️ Deprecations
+
+- **`AudioPlayer.PlayButton` → `AudioPlayer.TransportControls`**: the compound wrapper around `Prev` / `Play` / `Next` has been renamed to reflect its role (transport = play/pause/prev/next group, the standard audio/video term). The old `PlayButton` export and static member are kept as a `@deprecated` alias pointing at the same component for one minor version; they will be removed in the next major version. The raw play/pause button `PlayBtn` is unaffected.
+
+  ```tsx
+  // Before
+  <AudioPlayer.PlayButton />
+  // After
+  <AudioPlayer.TransportControls />
+  ```
+
 ### ✨ New Features
 
 - **Compound slots on `AudioPlayer`**: the default export now exposes the built-in controls as static members that can be rendered as children alongside the preset:
@@ -11,7 +22,8 @@
   | `AudioPlayer.Progress` | progress bar / waveform |
   | `AudioPlayer.Volume` | volume trigger + slider |
   | `AudioPlayer.PlayList` | sortable playlist drawer |
-  | `AudioPlayer.PlayButton` | Play + Prev + Next group |
+  | `AudioPlayer.TransportControls` | Play + Prev + Next group |
+  | `AudioPlayer.PlayButton` | **deprecated** alias for `TransportControls` |
   | `AudioPlayer.RepeatButton` | repeat-type button |
   | `AudioPlayer.Artwork` | track artwork |
   | `AudioPlayer.TrackInfo` | track title / writer |
@@ -50,7 +62,7 @@
 ### 🔧 Internal
 
 - `Grid.Item` wrapping moved from `Controller` / `Information` into each individual control (`Progress`, `Volume`, `SortablePlayList`, `RepeatTypeBtn`, `Artwork`, `TrackInfo`). The controls read their default `gridArea` from `interfacePlacement` via context, so preset behavior is unchanged; compound usage gets the same layout defaults for free.
-- New `PlayButton` wrapper in `Controller/Button` encapsulates the `div.rmap-ctrl-btn-wrapper` around Play / Prev / Next. `PlayBtn`, `PrevBtn`, `NextBtn` stay exported for raw usage.
+- New `TransportControls` wrapper in `Controller/Button` encapsulates the `div.rmap-ctrl-btn-wrapper` around Play / Prev / Next with `role="group"` and `aria-label="Playback controls"`. `PlayBtn`, `PrevBtn`, `NextBtn` stay exported for raw usage. A `PlayButton` deprecation alias preserves the previous name.
 
 ## v2.1.0 (2026-04-14)
 

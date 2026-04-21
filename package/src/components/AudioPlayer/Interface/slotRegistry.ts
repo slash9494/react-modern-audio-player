@@ -12,7 +12,11 @@ export const slotRegistry: Record<string, SlotMeta> = {
   Progress: { displayName: "Progress", activeUIKey: "progress" },
   Volume: { displayName: "Volume", activeUIKey: "volume" },
   SortablePlayList: { displayName: "PlayList", activeUIKey: "playList" },
-  PlayButton: { displayName: "PlayButton", activeUIKey: "playButton" },
+  TransportControls: {
+    displayName: "TransportControls",
+    activeUIKey: "playButton",
+  },
+  PlayButton: { displayName: "TransportControls", activeUIKey: "playButton" },
   RepeatTypeBtn: { displayName: "RepeatButton", activeUIKey: "repeatType" },
   Artwork: { displayName: "Artwork", activeUIKey: "artwork" },
   TrackInfo: { displayName: "TrackInfo", activeUIKey: "trackInfo" },

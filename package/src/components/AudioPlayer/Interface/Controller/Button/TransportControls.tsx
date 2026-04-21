@@ -6,12 +6,15 @@ import { PlayBtn } from "./PlayBtn";
 import { PrevBtn } from "./PrevBtn";
 import { NextBtn } from "./NextBtn";
 
-export interface PlayButtonProps {
+export interface TransportControlsProps {
   gridArea?: string;
   visible?: boolean;
 }
 
-export const PlayButton: FC<PlayButtonProps> = ({ gridArea, visible }) => {
+export const TransportControls: FC<TransportControlsProps> = ({
+  gridArea,
+  visible,
+}) => {
   const { activeUI, interfacePlacement } = useUIContext();
   const isPrevNextVisible = Boolean(activeUI.prevNnext ?? activeUI.all);
 
@@ -23,7 +26,11 @@ export const PlayButton: FC<PlayButtonProps> = ({ gridArea, visible }) => {
 
   return (
     <Grid.Item gridArea={resolvedGridArea} visible={visible ?? true}>
-      <div className="rmap-ctrl-btn-wrapper">
+      <div
+        className="rmap-ctrl-btn-wrapper"
+        role="group"
+        aria-label="Playback controls"
+      >
         <PrevBtn isVisible={isPrevNextVisible} />
         <PlayBtn />
         <NextBtn isVisible={isPrevNextVisible} />
