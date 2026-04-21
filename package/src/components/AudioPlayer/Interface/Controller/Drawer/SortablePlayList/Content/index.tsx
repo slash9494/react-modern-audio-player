@@ -39,7 +39,7 @@ export const PlayList: FC = () => {
           {/** //TODO : change props event to context  */}
           {playList.map((data, index) => (
             <SortableList.Item
-              key={`sortable-item-${index}`}
+              key={data.id}
               index={index}
               listData={playList}
               onClick={() => onClickItem(index)}

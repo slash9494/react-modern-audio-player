@@ -29,7 +29,9 @@ const Drawer: FC<PropsWithChildren<DrawerProps>> = ({
 }) => {
   const drawerRef = useRef<HTMLDivElement>(null);
   const [trigger, content] = React.Children.toArray(children);
-  const [isOpen, setIsOpen] = useState(initialOpen ?? false);
+  const [isOpen, setIsOpen] = useState(
+    isOpenProp !== undefined ? isOpenProp : initialOpen ?? false
+  );
   const drawerId = useId();
 
   useClickOutside(drawerRef, () => {

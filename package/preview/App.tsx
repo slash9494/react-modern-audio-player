@@ -174,7 +174,11 @@ function App() {
                 ...t,
                 id: t.id + 100,
               }))}
-              audioInitialState={{ curPlayId: 103, volume: 0.6, muted: true }}
+              audioInitialState={{
+                curPlayId: playList[2].id + 100,
+                volume: 0.6,
+                muted: true,
+              }}
               activeUI={{ all: true, progress: "waveform" }}
               colorScheme="dark"
               rootContainerProps={{ style: { width: "100%" } }}
