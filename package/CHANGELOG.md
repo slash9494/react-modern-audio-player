@@ -22,6 +22,7 @@
   | `AudioPlayer.Progress` | progress bar / waveform |
   | `AudioPlayer.Volume` | volume trigger + slider |
   | `AudioPlayer.PlayList` | sortable playlist drawer |
+  | `AudioPlayer.PlayListEmpty` | fallback rendered inside the playlist drawer when `playList` is empty |
   | `AudioPlayer.TransportControls` | Play + Prev + Next group |
   | `AudioPlayer.PlayButton` | **deprecated** alias for `TransportControls` |
   | `AudioPlayer.RepeatButton` | repeat-type button |
@@ -45,6 +46,16 @@
   Each compound accepts `gridArea?` and `visible?` (defaults to `true`) plus its own domain props. Original internal components (`PlayBtn`, `PrevBtn`, `NextBtn`, etc.) remain exported for users who want fully custom layouts.
 
   In development, a `console.warn` is emitted when a compound slot is rendered while its preset counterpart is still active, pointing to the `activeUI` flag that resolves the duplication.
+
+- **Custom empty-playlist UI** via `AudioPlayer.PlayListEmpty`: when `playList` is empty the drawer previously rendered nothing; consumers can now opt into a custom fallback by passing children to the slot. Omitting the slot preserves the previous default.
+
+  ```tsx
+  <AudioPlayer playList={[]}>
+    <AudioPlayer.PlayListEmpty>
+      <div className="my-empty">재생 목록이 비어 있어요</div>
+    </AudioPlayer.PlayListEmpty>
+  </AudioPlayer>
+  ```
 
 - **`audioInitialState.playListExpanded`** (Fixes [#21](https://github.com/slash9494/react-modern-audio-player/issues/21)): the playlist drawer can now start in the expanded state without user interaction.
 

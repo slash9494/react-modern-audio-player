@@ -3,7 +3,8 @@ import { CssTransition } from "@/ui/CssTransition";
 import SortableList from "@/components/SortableList";
 import { useNonNullableContext } from "@/hooks/context/useNonNullableContext";
 import { useTrackContext } from "@/hooks/context/useTrackContext";
-import { playListPortalContext } from "@/components/AudioPlayer/Interface/playListPortalContext";
+import { usePlayListPortalContext } from "@/components/AudioPlayer/Interface/playListPortalContext";
+import { playListEmptyContext } from "@/components/AudioPlayer/Interface/playListEmptyContext";
 import { FC, useContext } from "react";
 import ReactDOM from "react-dom";
 import { PlayListItem } from "./PlayListItem";
@@ -13,7 +14,8 @@ import "./PlayList.css";
 export const PlayList: FC = () => {
   const { playList } = useTrackContext();
   const { isOpen, setIsOpen } = useNonNullableContext(drawerContext);
-  const portalNode = useContext(playListPortalContext);
+  const { node: portalNode } = usePlayListPortalContext();
+  const emptyNode = useContext(playListEmptyContext);
   const { cssTransitionEventProps, sortableItemEventProps } = usePlayList({
     setIsOpen,
   });
@@ -23,7 +25,9 @@ export const PlayList: FC = () => {
     ...otherSortableItemEventProps
   } = sortableItemEventProps;
 
-  if (playList.length === 0 || !portalNode) return <></>;
+  if (!portalNode) return <></>;
+  const isEmpty = playList.length === 0;
+  if (isEmpty && !emptyNode) return <></>;
 
   return ReactDOM.createPortal(
     <CssTransition
@@ -35,21 +39,25 @@ export const PlayList: FC = () => {
       {...cssTransitionEventProps}
     >
       <div className="rmap-playlist-container">
-        <SortableList>
-          {/** //TODO : change props event to context  */}
-          {playList.map((data, index) => (
-            <SortableList.Item
-              key={data.id}
-              index={index}
-              listData={playList}
-              onClick={() => onClickItem(index)}
-              onDragStart={() => onDragStartItem(index)}
-              {...otherSortableItemEventProps}
-            >
-              <PlayListItem data={data} />
-            </SortableList.Item>
-          ))}
-        </SortableList>
+        {isEmpty ? (
+          emptyNode
+        ) : (
+          <SortableList>
+            {/** //TODO : change props event to context  */}
+            {playList.map((data, index) => (
+              <SortableList.Item
+                key={data.id}
+                index={index}
+                listData={playList}
+                onClick={() => onClickItem(index)}
+                onDragStart={() => onDragStartItem(index)}
+                {...otherSortableItemEventProps}
+              >
+                <PlayListItem data={data} />
+              </SortableList.Item>
+            ))}
+          </SortableList>
+        )}
       </div>
     </CssTransition>,
     portalNode

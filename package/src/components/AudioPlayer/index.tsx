@@ -7,6 +7,7 @@ import "@/styles/vars.css";
 import "@/styles/GlobalStyle.css";
 import { defaultInterfacePlacementMaxLength } from "./Context";
 import { CustomComponent } from "./Interface/CustomComponent";
+import { PlayListEmpty } from "./Interface/PlayListEmpty";
 import { AudioPlayer, AudioPlayerProps } from "./Player";
 import { Progress } from "./Interface/Controller/Input";
 import { Volume } from "./Interface/Controller/Tooltip";
@@ -44,6 +45,7 @@ type AudioPlayerComponent = typeof AudioPlayerWithProviders & {
   Progress: typeof Progress;
   Volume: typeof Volume;
   PlayList: typeof SortablePlayList;
+  PlayListEmpty: typeof PlayListEmpty;
   TransportControls: typeof TransportControls;
   /** @deprecated Use `TransportControls` instead. Will be removed in the next major version. */
   PlayButton: typeof TransportControls;
@@ -58,6 +60,7 @@ const AudioPlayerCompound = Object.assign(AudioPlayerWithProviders, {
   Progress,
   Volume,
   PlayList: SortablePlayList,
+  PlayListEmpty,
   TransportControls,
   /** @deprecated Use `TransportControls` instead. Will be removed in the next major version. */
   PlayButton: TransportControls,

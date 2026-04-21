@@ -611,6 +611,7 @@ const CustomComponent = () => {
 | `AudioPlayer.Progress` | progress bar / waveform |
 | `AudioPlayer.Volume` | volume trigger + slider |
 | `AudioPlayer.PlayList` | sortable playlist drawer (accepts `initialExpanded?`) |
+| `AudioPlayer.PlayListEmpty` | fallback rendered inside the playlist drawer when `playList` is empty |
 | `AudioPlayer.TransportControls` | Play + Prev + Next group |
 | `AudioPlayer.PlayButton` | Play + Prev + Next group — **deprecated**, use `AudioPlayer.TransportControls` |
 | `AudioPlayer.RepeatButton` | repeat-type button |
@@ -639,6 +640,20 @@ The two layers are orthogonal. Compound children render **additively** alongside
 ```
 
 In development, a `console.warn` is emitted when a compound slot is rendered while its preset counterpart is still active, so silent duplication is easy to catch.
+
+## Custom empty-playlist UI
+
+Pass children to `AudioPlayer.PlayListEmpty` to render a custom node inside the playlist drawer when `playList` is empty. Omit the slot to keep the default (drawer content renders nothing).
+
+```tsx
+<AudioPlayer playList={[]}>
+  <AudioPlayer.PlayListEmpty>
+    <div className="my-empty">재생 목록이 비어 있어요</div>
+  </AudioPlayer.PlayListEmpty>
+</AudioPlayer>
+```
+
+`PlayListEmpty` is a marker slot; its children are consumed by the drawer via context and the component itself does not render in-place.
 
 # **Accessibility**
 

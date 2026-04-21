@@ -2,11 +2,16 @@ import { ReactElement, useEffect } from "react";
 import { ActiveUI } from "@/components/AudioPlayer/Context/StateContext";
 import { isPresetActive, resolveSlotKey, slotRegistry } from "./slotRegistry";
 
-export function useDuplicateSlotWarning(
-  children: ReactElement[],
-  activeUI: ActiveUI
-): void {
-  const compoundSignature = children
+export interface DuplicateSlotWarningArgs {
+  compoundChildren: ReactElement[];
+  activeUI: ActiveUI;
+}
+
+export function useDuplicateSlotWarning({
+  compoundChildren,
+  activeUI,
+}: DuplicateSlotWarningArgs): void {
+  const compoundSignature = compoundChildren
     .map(resolveSlotKey)
     .filter((key): key is string => Boolean(key && slotRegistry[key]))
     .sort()
