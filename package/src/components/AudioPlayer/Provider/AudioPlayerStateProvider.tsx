@@ -165,8 +165,6 @@ export const AudioPlayerStateProvider = <
     ]
   );
 
-  // Sourced from the audioInitialState prop reference (not reducer state)
-  // so per-tick SET_AUDIO_STATE dispatches never invalidate this object.
   const audioNativeAttrsValue = useMemo<AudioAttrsContext>(() => {
     if (!audioInitialState) return {};
     const {

@@ -67,8 +67,6 @@ export const useAudio = (): HTMLAttributes<HTMLAudioElement> => {
     [audioPlayerDispatch, playbackVolume]
   );
 
-  // Skip the very first audioResetKey effect run so the freshly-mounted
-  // <audio> element keeps any consumer-set initial currentTime.
   const hasSkippedInitialResetRef = useRef(false);
   useEffect(() => {
     if (!elementRefs?.audioEl) return;

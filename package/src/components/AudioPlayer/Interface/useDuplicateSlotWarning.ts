@@ -6,7 +6,6 @@ export function useDuplicateSlotWarning(
   children: ReactElement[],
   activeUI: ActiveUI
 ): void {
-  // Stable signature string so the effect dep is value-compared, not ref-compared.
   const compoundSignature = children
     .map(resolveSlotKey)
     .filter((key): key is string => Boolean(key && slotRegistry[key]))
