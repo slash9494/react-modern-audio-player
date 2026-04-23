@@ -8,7 +8,7 @@ export interface SlotMeta {
   activeUIKey: ActiveUIKey;
 }
 
-export const slotRegistry: Record<string, SlotMeta> = {
+export const compoundSlotPresetMap: Record<string, SlotMeta> = {
   Progress: { displayName: "Progress", activeUIKey: "progress" },
   Volume: { displayName: "Volume", activeUIKey: "volume" },
   SortablePlayList: { displayName: "PlayList", activeUIKey: "playList" },

@@ -10,7 +10,7 @@ import { useDuplicateSlotWarning } from "./useDuplicateSlotWarning";
 import { playListPortalContext } from "./playListPortalContext";
 import { playListEmptyContext } from "./playListEmptyContext";
 import { useCompoundSlots } from "./useCompoundSlots";
-import { useEffectiveActiveUI } from "./useEffectiveActiveUI";
+import { useGridTemplateActiveUI } from "./useGridTemplateActiveUI";
 import { usePlayListPortal } from "./usePlayListPortal";
 import "./Interface.css";
 
@@ -24,10 +24,13 @@ export const Interface: FC<InterfaceProps> = ({ children }) => {
   const { compoundChildren, playListEmptyNode } = useCompoundSlots(children);
   useDuplicateSlotWarning({ compoundChildren, activeUI });
 
-  const effectiveActiveUI = useEffectiveActiveUI(compoundChildren, activeUI);
+  const gridTemplateActiveUI = useGridTemplateActiveUI(
+    compoundChildren,
+    activeUI
+  );
 
   const [gridAreas, gridColumns] = useGridTemplate(
-    effectiveActiveUI,
+    gridTemplateActiveUI,
     interfacePlacement?.templateArea,
     interfacePlacement?.customComponentsArea
   );

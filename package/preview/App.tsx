@@ -170,6 +170,9 @@ function App() {
           </div>
           <div data-testid="multi-instance-b">
             <AudioPlayerWithProviders
+              // +100 offset keeps instance B's track IDs disjoint from
+              // instance A so the multi-instance demo can address each
+              // player's tracks without collisions.
               playList={playList.slice(2).map((t) => ({
                 ...t,
                 id: t.id + 100,

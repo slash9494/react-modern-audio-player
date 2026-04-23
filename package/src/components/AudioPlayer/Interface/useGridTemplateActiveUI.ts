@@ -1,20 +1,24 @@
 import { ReactElement, useMemo } from "react";
 import { ActiveUI } from "@/components/AudioPlayer/Context/StateContext";
-import { isPresetActive, resolveSlotKey, slotRegistry } from "./slotRegistry";
+import {
+  isPresetActive,
+  resolveSlotKey,
+  compoundSlotPresetMap,
+} from "./compoundSlotPresetMap";
 
 const COMPOUND_FORCE_VALUES: Partial<Record<keyof ActiveUI, unknown>> = {
   progress: "bar",
   playList: "sortable",
 };
 
-export function useEffectiveActiveUI(
+export function useGridTemplateActiveUI(
   compoundChildren: ReactElement[],
   activeUI: ActiveUI
 ): ActiveUI {
   const inactivePresetSignature = compoundChildren
     .map(resolveSlotKey)
     .map((slotKey) =>
-      slotKey ? slotRegistry[slotKey]?.activeUIKey : undefined
+      slotKey ? compoundSlotPresetMap[slotKey]?.activeUIKey : undefined
     )
     .filter(
       (activeUIKey): activeUIKey is keyof ActiveUI =>
