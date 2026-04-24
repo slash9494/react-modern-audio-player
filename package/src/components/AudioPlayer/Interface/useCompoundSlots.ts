@@ -1,6 +1,6 @@
 import React, { ReactElement, ReactNode, isValidElement, useMemo } from "react";
 import { PLAYLIST_EMPTY_SLOT, PlayListEmptyProps } from "./PlayListEmpty";
-import { resolveSlotKey } from "./compoundSlotPresetMap";
+import { resolveSlotKey } from "./compoundSlotMetaMap";
 
 export interface CompoundSlots {
   compoundChildren: ReactElement[];

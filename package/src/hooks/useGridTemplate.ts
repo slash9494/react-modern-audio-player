@@ -3,19 +3,36 @@ import {
   defaultInterfacePlacement,
   InterfacePlacement,
 } from "@/components/AudioPlayer/Context";
+import {
+  compoundSlotMetaMap,
+  resolveSlotKey,
+} from "@/components/AudioPlayer/Interface/compoundSlotMetaMap";
 import { isBrowser } from "@/utils/ssr";
-import { useCallback, useState } from "react";
+import { ReactElement, useCallback, useState } from "react";
 
 export const useGridTemplate = (
   activeUI: ActiveUI,
   templateArea: InterfacePlacement["templateArea"] | undefined,
-  customComponentsArea?: InterfacePlacement["customComponentsArea"]
+  customComponentsArea?: InterfacePlacement["customComponentsArea"],
+  compoundChildren?: ReactElement[]
 ) => {
+  const compoundActiveKeys = (compoundChildren ?? [])
+    .map(resolveSlotKey)
+    .map((slotKey) =>
+      slotKey ? compoundSlotMetaMap[slotKey]?.activeUIKey : undefined
+    )
+    .filter((key): key is keyof ActiveUI => key !== undefined);
+
+  const compoundKeySignature = [...compoundActiveKeys].sort().join(",");
+
   const generateGridTemplateValues = useCallback(
     (
       activeUi: ActiveUI,
-      templatePlacement?: InterfacePlacement["templateArea"],
-      customComponentsPlacement?: InterfacePlacement["customComponentsArea"]
+      templatePlacement: InterfacePlacement["templateArea"] | undefined,
+      customComponentsPlacement:
+        | InterfacePlacement["customComponentsArea"]
+        | undefined,
+      compoundKeys: (keyof ActiveUI)[]
     ) => {
       const activeUIAllKeys = Object.keys(
         defaultInterfacePlacement.templateArea
@@ -38,6 +55,10 @@ export const useGridTemplate = (
         : Object.entries(activeUi)
             .filter(([, value]) => value)
             .map(([key]) => key);
+
+      for (const key of compoundKeys) {
+        if (!activeUIKeysArr.includes(key)) activeUIKeysArr.push(key);
+      }
 
       const renameTrackTime = () => {
         if (activeUIKeysArr.find((key) => key === "trackTime")) {
@@ -170,6 +191,8 @@ export const useGridTemplate = (
   );
 
   const [curActiveUI, setCurActiveUI] = useState(activeUI);
+  const [curCompoundKeySig, setCurCompoundKeySig] =
+    useState(compoundKeySignature);
   const [curPlacementArea, setCurPlacementArea] = useState({
     templateArea,
     customComponentsArea,
@@ -183,7 +206,8 @@ export const useGridTemplate = (
     const { gridAreas, gridColumns } = generateGridTemplateValues(
       curActiveUI,
       curPlacementArea.templateArea,
-      curPlacementArea.customComponentsArea
+      curPlacementArea.customComponentsArea,
+      compoundActiveKeys
     );
     setCurPlacementAreaValues({ gridAreas, gridColumns });
     return [gridAreas, gridColumns] as const;
@@ -191,16 +215,19 @@ export const useGridTemplate = (
 
   if (
     curActiveUI !== activeUI ||
+    curCompoundKeySig !== compoundKeySignature ||
     curPlacementArea.templateArea !== templateArea ||
     curPlacementArea.customComponentsArea !== customComponentsArea
   ) {
     setCurActiveUI(activeUI);
+    setCurCompoundKeySig(compoundKeySignature);
     setCurPlacementArea({ templateArea, customComponentsArea });
 
     const { gridAreas, gridColumns } = generateGridTemplateValues(
       activeUI,
       templateArea,
-      customComponentsArea
+      customComponentsArea,
+      compoundActiveKeys
     );
     setCurPlacementAreaValues({ gridAreas, gridColumns });
   }

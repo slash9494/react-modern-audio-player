@@ -1,6 +1,6 @@
 import { CSSProperties, HTMLAttributes, forwardRef } from "react";
 
-export interface GridItemProps extends HTMLAttributes<HTMLDivElement> {
+export interface GridItemLayoutProps {
   gridArea?: string;
   width?: CSSProperties["width"];
   visible?: boolean;
@@ -8,6 +8,9 @@ export interface GridItemProps extends HTMLAttributes<HTMLDivElement> {
   justifySelf?: CSSProperties["justifySelf"];
   padding?: CSSProperties["padding"];
 }
+
+export type GridItemProps = GridItemLayoutProps &
+  HTMLAttributes<HTMLDivElement>;
 
 export const GridItem = forwardRef<HTMLDivElement, GridItemProps>(
   (

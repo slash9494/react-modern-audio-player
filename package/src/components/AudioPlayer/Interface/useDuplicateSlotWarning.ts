@@ -3,8 +3,8 @@ import { ActiveUI } from "@/components/AudioPlayer/Context/StateContext";
 import {
   isPresetActive,
   resolveSlotKey,
-  compoundSlotPresetMap,
-} from "./compoundSlotPresetMap";
+  compoundSlotMetaMap,
+} from "./compoundSlotMetaMap";
 
 export interface DuplicateSlotWarningArgs {
   compoundChildren: ReactElement[];
@@ -17,7 +17,7 @@ export function useDuplicateSlotWarning({
 }: DuplicateSlotWarningArgs): void {
   const compoundSignature = compoundChildren
     .map(resolveSlotKey)
-    .filter((key): key is string => Boolean(key && compoundSlotPresetMap[key]))
+    .filter((key): key is string => Boolean(key && compoundSlotMetaMap[key]))
     .sort()
     .join(",");
 
@@ -27,7 +27,7 @@ export function useDuplicateSlotWarning({
 
     const seen = new Set<string>();
     for (const key of compoundSignature.split(",")) {
-      const meta = compoundSlotPresetMap[key];
+      const meta = compoundSlotMetaMap[key];
       if (!meta) continue;
       if (seen.has(meta.displayName)) continue;
       if (!isPresetActive(activeUI, meta.activeUIKey)) continue;

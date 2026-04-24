@@ -2,14 +2,11 @@ import { useTrackContext } from "@/hooks/context/useTrackContext";
 import { useResourceContext } from "@/hooks/context/useResourceContext";
 import { useUIContext } from "@/hooks/context/useUIContext";
 import { FC, memo } from "react";
-import Grid from "@/components/Grid";
+import Grid, { GridItemLayoutProps } from "@/components/Grid";
 import { defaultInterfacePlacement } from "@/components/AudioPlayer/Context/StateContext";
 import "./Artwork.css";
 
-export interface ArtworkProps {
-  gridArea?: string;
-  visible?: boolean;
-}
+export type ArtworkProps = GridItemLayoutProps;
 
 export const Artwork: FC<ArtworkProps> = memo(function Artwork({
   gridArea,

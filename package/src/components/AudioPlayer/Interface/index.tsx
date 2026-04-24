@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, useState } from "react";
 import { Controller } from "./Controller";
 import { Information } from "./Information";
 
@@ -10,8 +10,6 @@ import { useDuplicateSlotWarning } from "./useDuplicateSlotWarning";
 import { playListPortalContext } from "./playListPortalContext";
 import { playListEmptyContext } from "./playListEmptyContext";
 import { useCompoundSlots } from "./useCompoundSlots";
-import { useGridTemplateActiveUI } from "./useGridTemplateActiveUI";
-import { usePlayListPortal } from "./usePlayListPortal";
 import "./Interface.css";
 
 interface InterfaceProps {
@@ -24,18 +22,14 @@ export const Interface: FC<InterfaceProps> = ({ children }) => {
   const { compoundChildren, playListEmptyNode } = useCompoundSlots(children);
   useDuplicateSlotWarning({ compoundChildren, activeUI });
 
-  const gridTemplateActiveUI = useGridTemplateActiveUI(
-    compoundChildren,
-    activeUI
-  );
-
   const [gridAreas, gridColumns] = useGridTemplate(
-    gridTemplateActiveUI,
+    activeUI,
     interfacePlacement?.templateArea,
-    interfacePlacement?.customComponentsArea
+    interfacePlacement?.customComponentsArea,
+    compoundChildren
   );
 
-  const { value: portalValue, setNode: setPortalNode } = usePlayListPortal();
+  const [portalNode, setPortalNode] = useState<HTMLDivElement | null>(null);
 
   return (
     <div
@@ -44,7 +38,7 @@ export const Interface: FC<InterfaceProps> = ({ children }) => {
       role="region"
       aria-label="Audio player"
     >
-      <playListPortalContext.Provider value={portalValue}>
+      <playListPortalContext.Provider value={portalNode}>
         <playListEmptyContext.Provider value={playListEmptyNode}>
           {playListPlacement === "top" && (
             <div ref={setPortalNode} className="rmap-sortable-playlist" />

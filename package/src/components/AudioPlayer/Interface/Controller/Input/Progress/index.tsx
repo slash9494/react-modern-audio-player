@@ -1,5 +1,5 @@
 import { useUIContext } from "@/hooks/context/useUIContext";
-import Grid from "@/components/Grid";
+import Grid, { GridItemLayoutProps } from "@/components/Grid";
 import { defaultInterfacePlacement } from "@/components/AudioPlayer/Context/StateContext";
 import { FC, useEffect, useState } from "react";
 import { BarProgress } from "./BarProgress";
@@ -8,9 +8,7 @@ import "./Progress.css";
 
 export type ProgressType = "bar" | "waveform";
 
-export interface ProgressProps {
-  gridArea?: string;
-  visible?: boolean;
+export interface ProgressProps extends GridItemLayoutProps {
   /**
    * Override which progress renderer to show. When omitted, falls back to
    * `activeUI.progress`. Used when the preset is disabled but the compound

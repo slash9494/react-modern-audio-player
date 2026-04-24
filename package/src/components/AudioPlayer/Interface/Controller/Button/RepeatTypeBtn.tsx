@@ -9,7 +9,7 @@ import {
   defaultInterfacePlacement,
 } from "@/components/AudioPlayer/Context/StateContext";
 import { StyledBtn } from "@/ui/StyledBtn";
-import Grid from "@/components/Grid";
+import Grid, { GridItemLayoutProps } from "@/components/Grid";
 import {
   TbRepeatOff,
   TbRepeatOnce,
@@ -33,10 +33,7 @@ const NEXT_REPEAT_TYPE: Record<RepeatType, RepeatType> = {
   SHUFFLE: "ALL",
 };
 
-export interface RepeatTypeBtnProps {
-  gridArea?: string;
-  visible?: boolean;
-}
+export type RepeatTypeBtnProps = GridItemLayoutProps;
 
 export const RepeatTypeBtn: FC<RepeatTypeBtnProps> = memo(
   function RepeatTypeBtn({ gridArea, visible }) {

@@ -1,15 +1,13 @@
 import { FC } from "react";
 import Drawer from "@/components/Drawer";
-import Grid from "@/components/Grid";
+import Grid, { GridItemLayoutProps } from "@/components/Grid";
 import { useUIContext } from "@/hooks/context/useUIContext";
 import { defaultInterfacePlacement } from "@/components/AudioPlayer/Context/StateContext";
 import { PlayList } from "./Content";
 import { PlayListIcon } from "./PlayListIcon";
 
-export interface SortablePlayListProps {
+export interface SortablePlayListProps extends GridItemLayoutProps {
   initialExpanded?: boolean;
-  gridArea?: string;
-  visible?: boolean;
 }
 
 export const SortablePlayList: FC<SortablePlayListProps> = ({

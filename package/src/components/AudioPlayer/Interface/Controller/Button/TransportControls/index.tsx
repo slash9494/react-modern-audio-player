@@ -1,15 +1,12 @@
 import { FC } from "react";
-import Grid from "@/components/Grid";
+import Grid, { GridItemLayoutProps } from "@/components/Grid";
 import { useUIContext } from "@/hooks/context/useUIContext";
 import { defaultInterfacePlacement } from "@/components/AudioPlayer/Context/StateContext";
 import { PlayBtn } from "./PlayBtn";
 import { PrevBtn } from "./PrevBtn";
 import { NextBtn } from "./NextBtn";
 
-export interface TransportControlsProps {
-  gridArea?: string;
-  visible?: boolean;
-}
+export type TransportControlsProps = GridItemLayoutProps;
 
 export const TransportControls: FC<TransportControlsProps> = ({
   gridArea,

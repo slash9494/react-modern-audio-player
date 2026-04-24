@@ -3,7 +3,7 @@ import { CssTransition } from "@/ui/CssTransition";
 import SortableList from "@/components/SortableList";
 import { useNonNullableContext } from "@/hooks/context/useNonNullableContext";
 import { useTrackContext } from "@/hooks/context/useTrackContext";
-import { usePlayListPortalContext } from "@/components/AudioPlayer/Interface/playListPortalContext";
+import { playListPortalContext } from "@/components/AudioPlayer/Interface/playListPortalContext";
 import { playListEmptyContext } from "@/components/AudioPlayer/Interface/playListEmptyContext";
 import { FC, useContext } from "react";
 import ReactDOM from "react-dom";
@@ -14,7 +14,7 @@ import "./PlayList.css";
 export const PlayList: FC = () => {
   const { playList } = useTrackContext();
   const { isOpen, setIsOpen } = useNonNullableContext(drawerContext);
-  const { node: portalNode } = usePlayListPortalContext();
+  const portalNode = useContext(playListPortalContext);
   const emptyNode = useContext(playListEmptyContext);
   const { cssTransitionEventProps, sortableItemEventProps } = usePlayList({
     setIsOpen,

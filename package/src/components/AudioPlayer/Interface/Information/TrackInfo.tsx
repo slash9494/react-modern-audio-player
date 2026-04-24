@@ -1,14 +1,11 @@
 import { useTrackContext } from "@/hooks/context/useTrackContext";
 import { useUIContext } from "@/hooks/context/useUIContext";
 import { FC, memo } from "react";
-import Grid from "@/components/Grid";
+import Grid, { GridItemLayoutProps } from "@/components/Grid";
 import { defaultInterfacePlacement } from "@/components/AudioPlayer/Context/StateContext";
 import "./TrackInfo.css";
 
-export interface TrackInfoProps {
-  gridArea?: string;
-  visible?: boolean;
-}
+export type TrackInfoProps = GridItemLayoutProps;
 
 export const TrackInfo: FC<TrackInfoProps> = memo(function TrackInfo({
   gridArea,

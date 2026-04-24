@@ -1,14 +1,12 @@
 import { defaultInterfacePlacement } from "@/components/AudioPlayer/Context";
-import Grid from "@/components/Grid";
+import Grid, { GridItemLayoutProps } from "@/components/Grid";
 import { useUIContext } from "@/hooks/context/useUIContext";
 import { FC, useCallback } from "react";
 import { Current } from "./Current";
 import { Duration } from "./Duration";
 import { TrackTimePosition } from "./Types";
 
-export interface TrackTimeProps {
-  visible?: boolean;
-}
+export type TrackTimeProps = Pick<GridItemLayoutProps, "visible">;
 
 export const TrackTime: FC<TrackTimeProps> = ({ visible }) => {
   const { interfacePlacement } = useUIContext();
