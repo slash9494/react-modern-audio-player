@@ -47,7 +47,7 @@
   ```tsx
   <AudioPlayer playList={[]}>
     <AudioPlayer.PlayListEmpty>
-      <div className="my-empty">재생 목록이 비어 있어요</div>
+      <div className="my-empty">Playlist is empty</div>
     </AudioPlayer.PlayListEmpty>
   </AudioPlayer>
   ```
