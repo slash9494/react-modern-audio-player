@@ -85,6 +85,8 @@ Examples: `v1.5.0`, `v2.0.0`, `v2.1.3`
 
 - [ ] version bumped correctly in package.json
 - [ ] CHANGELOG.md updated
+- [ ] README.md reviewed — updated if public API / props / user-facing behavior changed, explicit verification if not
+- [ ] `.claude/docs/repo-analysis/` reviewed — updated if module structure, top-level exports, public API, context/hook organization, patterns, or conventions changed, explicit verification if not
 - [ ] build passes
 - [ ] all tests pass
 - [ ] CI green on release branch
