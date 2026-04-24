@@ -41,13 +41,16 @@ function AudioPlayerWithProviders<
 
 AudioPlayerWithProviders.displayName = "AudioPlayerWithProviders";
 
+// Public compound slot name `PlayButton` maps to the internal `TransportControls`
+// component. The internal name reflects the role (prev + play + next group);
+// the public name preserves backward compatibility with the existing
+// `activeUI.playButton` flag. See `.claude/docs/v3-deferred.md` for the
+// planned public rename to `TransportControls` in v3.
 type AudioPlayerComponent = typeof AudioPlayerWithProviders & {
   Progress: typeof Progress;
   Volume: typeof Volume;
   PlayList: typeof SortablePlayList;
   PlayListEmpty: typeof PlayListEmpty;
-  TransportControls: typeof TransportControls;
-  /** @deprecated Use `TransportControls` instead. Will be removed in the next major version. */
   PlayButton: typeof TransportControls;
   RepeatButton: typeof RepeatTypeBtn;
   Artwork: typeof Artwork;
@@ -61,8 +64,6 @@ const AudioPlayerCompound = Object.assign(AudioPlayerWithProviders, {
   Volume,
   PlayList: SortablePlayList,
   PlayListEmpty,
-  TransportControls,
-  /** @deprecated Use `TransportControls` instead. Will be removed in the next major version. */
   PlayButton: TransportControls,
   RepeatButton: RepeatTypeBtn,
   Artwork,

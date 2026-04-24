@@ -4,7 +4,7 @@ import { audioPlayerDispatchContext } from "@/components/AudioPlayer/Context/dis
 import { useResourceContext } from "@/hooks/context/useResourceContext";
 import { StyledBtn } from "@/ui/StyledBtn";
 import { ImNext } from "@/components/icons";
-import { Icon } from "../Icon";
+import { Icon } from "../../Icon";
 
 interface NextBtnProps {
   isVisible: boolean;

@@ -118,11 +118,7 @@ describe("compound slots (additive)", () => {
     expect(AudioPlayerWithProviders.Volume).toBeDefined();
     expect(AudioPlayerWithProviders.PlayList).toBeDefined();
     expect(AudioPlayerWithProviders.PlayListEmpty).toBeDefined();
-    expect(AudioPlayerWithProviders.TransportControls).toBeDefined();
     expect(AudioPlayerWithProviders.PlayButton).toBeDefined();
-    expect(AudioPlayerWithProviders.TransportControls).toBe(
-      AudioPlayerWithProviders.PlayButton
-    );
     expect(AudioPlayerWithProviders.RepeatButton).toBeDefined();
     expect(AudioPlayerWithProviders.Artwork).toBeDefined();
     expect(AudioPlayerWithProviders.TrackInfo).toBeDefined();

@@ -612,8 +612,7 @@ const CustomComponent = () => {
 | `AudioPlayer.Volume` | volume trigger + slider |
 | `AudioPlayer.PlayList` | sortable playlist drawer (accepts `initialExpanded?`) |
 | `AudioPlayer.PlayListEmpty` | fallback rendered inside the playlist drawer when `playList` is empty |
-| `AudioPlayer.TransportControls` | Play + Prev + Next group |
-| `AudioPlayer.PlayButton` | Play + Prev + Next group — **deprecated**, use `AudioPlayer.TransportControls` |
+| `AudioPlayer.PlayButton` | Play + Prev + Next group (Prev/Next visibility follows `activeUI.prevNnext`) |
 | `AudioPlayer.RepeatButton` | repeat-type button |
 | `AudioPlayer.Artwork` | track artwork |
 | `AudioPlayer.TrackInfo` | track title / writer |

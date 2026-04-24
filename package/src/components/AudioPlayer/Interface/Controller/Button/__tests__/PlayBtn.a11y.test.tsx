@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
 import { axe } from "vitest-axe";
-import { PlayBtn } from "../PlayBtn";
+import { PlayBtn } from "../TransportControls/PlayBtn";
 import { playbackContext } from "@/components/AudioPlayer/Context/PlaybackContext";
 import { resourceContext } from "@/components/AudioPlayer/Context/ResourceContext";
 import { audioPlayerDispatchContext } from "@/components/AudioPlayer/Context/dispatchContext";

@@ -2,17 +2,6 @@
 
 ## v2.2.0 (Unreleased)
 
-### ⚠️ Deprecations
-
-- **`AudioPlayer.PlayButton` → `AudioPlayer.TransportControls`**: the compound wrapper around `Prev` / `Play` / `Next` has been renamed to reflect its role (transport = play/pause/prev/next group, the standard audio/video term). The old `PlayButton` export and static member are kept as a `@deprecated` alias pointing at the same component for one minor version; they will be removed in the next major version. The raw play/pause button `PlayBtn` is unaffected.
-
-  ```tsx
-  // Before
-  <AudioPlayer.PlayButton />
-  // After
-  <AudioPlayer.TransportControls />
-  ```
-
 ### ✨ New Features
 
 - **Compound slots on `AudioPlayer`**: the default export now exposes the built-in controls as static members that can be rendered as children alongside the preset:
@@ -23,8 +12,7 @@
   | `AudioPlayer.Volume` | volume trigger + slider |
   | `AudioPlayer.PlayList` | sortable playlist drawer |
   | `AudioPlayer.PlayListEmpty` | fallback rendered inside the playlist drawer when `playList` is empty |
-  | `AudioPlayer.TransportControls` | Play + Prev + Next group |
-  | `AudioPlayer.PlayButton` | **deprecated** alias for `TransportControls` |
+  | `AudioPlayer.PlayButton` | Play + Prev + Next group (Prev/Next visibility follows `activeUI.prevNnext`) |
   | `AudioPlayer.RepeatButton` | repeat-type button |
   | `AudioPlayer.Artwork` | track artwork |
   | `AudioPlayer.TrackInfo` | track title / writer |
@@ -47,6 +35,13 @@
 
   In development, a `console.warn` is emitted when a compound slot is rendered while its preset counterpart is still active, pointing to the `activeUI` flag that resolves the duplication.
 
+  **Why it matters**
+
+  - Move or re-skin individual controls (e.g. volume at the right edge, a waveform in place of the bar progress) without rebuilding the whole player from primitives.
+  - Drop specific built-in controls by toggling `activeUI` flags and keep everything else intact — no more choosing between "preset" and "fully custom".
+  - Fall back to the preset layout the moment you stop passing compound children — adopting the new API is zero-cost for existing consumers.
+  - Mix preset and compound in the same player when you need two of the same control (e.g. a secondary volume) without forking the component tree.
+
 - **Custom empty-playlist UI** via `AudioPlayer.PlayListEmpty`: when `playList` is empty the drawer previously rendered nothing; consumers can now opt into a custom fallback by passing children to the slot. Omitting the slot preserves the previous default.
 
   ```tsx
@@ -68,12 +63,7 @@
 
   Consistent with the rest of `audioInitialState`: read once at mount, not tracked in reducer state.
 
-- **Multi-instance playlist isolation** (Fixes [#11](https://github.com/slash9494/react-modern-audio-player/issues/11), [#15](https://github.com/slash9494/react-modern-audio-player/issues/15)): multiple `<AudioPlayer>` instances on the same page no longer leak playlist content into each other's drawer. Previously `PlayList` resolved its portal target through `document.querySelector(".rmap-sortable-playlist")`, which matched the first target in document order — every secondary player would render its playlist into the first player's drawer. `Interface` now publishes its own portal node through a new `playListPortalContext`, and each instance's drawer renders exclusively into its own target. Audio state (play/pause, volume, mute, current track) was already isolated per instance via the v2 provider split.
-
-### 🔧 Internal
-
-- `Grid.Item` wrapping moved from `Controller` / `Information` into each individual control (`Progress`, `Volume`, `SortablePlayList`, `RepeatTypeBtn`, `Artwork`, `TrackInfo`). The controls read their default `gridArea` from `interfacePlacement` via context, so preset behavior is unchanged; compound usage gets the same layout defaults for free.
-- New `TransportControls` wrapper in `Controller/Button` encapsulates the `div.rmap-ctrl-btn-wrapper` around Play / Prev / Next with `role="group"` and `aria-label="Playback controls"`. `PlayBtn`, `PrevBtn`, `NextBtn` stay exported for raw usage. A `PlayButton` deprecation alias preserves the previous name.
+- **Multi-instance playlist isolation** (Fixes [#11](https://github.com/slash9494/react-modern-audio-player/issues/11), [#15](https://github.com/slash9494/react-modern-audio-player/issues/15)): multiple `<AudioPlayer>` instances on the same page no longer leak playlist content into each other's drawer. Previously `PlayList` resolved its portal target through `document.querySelector(".rmap-sortable-playlist")`, which matched the first target in document order — every secondary player would render its playlist into the first player's drawer. `Interface` now publishes its own portal node per instance, and each drawer renders exclusively into its own target. Audio state (play/pause, volume, mute, current track) was already isolated per instance via the v2 provider split.
 
 ## v2.1.0 (2026-04-14)
 
