@@ -390,6 +390,86 @@ describe("SET_MUTED", () => {
   });
 });
 
+describe("SET_PLAYBACK_RATE", () => {
+  it("sets playbackRate to the dispatched value", () => {
+    const next = audioPlayerReducer(makeBaseState(), {
+      type: "SET_PLAYBACK_RATE",
+      playbackRate: 1.5,
+    });
+    expect(next.curAudioState.playbackRate).toBe(1.5);
+  });
+
+  it("replaces an existing playbackRate", () => {
+    const base = makeBaseState();
+    const state = {
+      ...base,
+      curAudioState: { ...base.curAudioState, playbackRate: 1.5 },
+    };
+    const next = audioPlayerReducer(state, {
+      type: "SET_PLAYBACK_RATE",
+      playbackRate: 0.75,
+    });
+    expect(next.curAudioState.playbackRate).toBe(0.75);
+  });
+
+  // playbackRate is delegated to HTMLMediaElement, which both rejects
+  // unsupported rates and emits ratechange events. The reducer must NOT
+  // clamp — assert the stored value equals the input exactly across the
+  // supported range and beyond.
+  it.each([0, 0.0625, 2, 4, 16])(
+    "accepts edge value %s without clamping",
+    (rate) => {
+      const next = audioPlayerReducer(makeBaseState(), {
+        type: "SET_PLAYBACK_RATE",
+        playbackRate: rate,
+      });
+      expect(next.curAudioState.playbackRate).toBe(rate);
+    }
+  );
+
+  it("does not mutate other curAudioState slices", () => {
+    const base = makeBaseState();
+    const state = {
+      ...base,
+      curAudioState: {
+        ...base.curAudioState,
+        isPlaying: true,
+        volume: 0.42,
+        muted: true,
+        repeatType: "ONE" as const,
+        currentTime: 17,
+      },
+    };
+    const next = audioPlayerReducer(state, {
+      type: "SET_PLAYBACK_RATE",
+      playbackRate: 1.25,
+    });
+    expect(next.curAudioState.playbackRate).toBe(1.25);
+    expect(next.curAudioState.isPlaying).toBe(true);
+    expect(next.curAudioState.volume).toBe(0.42);
+    expect(next.curAudioState.muted).toBe(true);
+    expect(next.curAudioState.repeatType).toBe("ONE");
+    expect(next.curAudioState.currentTime).toBe(17);
+  });
+
+  it("does not mutate sibling state slices (playList/curIdx/seekRequestKey/audioResetKey)", () => {
+    const state = {
+      ...makeBaseState(),
+      audioResetKey: 7,
+      seekRequestKey: 3,
+    };
+    const next = audioPlayerReducer(state, {
+      type: "SET_PLAYBACK_RATE",
+      playbackRate: 2,
+    });
+    expect(next.playList).toBe(state.playList);
+    expect(next.curIdx).toBe(state.curIdx);
+    expect(next.curPlayId).toBe(state.curPlayId);
+    expect(next.audioResetKey).toBe(7);
+    expect(next.seekRequestKey).toBe(3);
+  });
+});
+
 describe("SEEK", () => {
   it("sets curAudioState.currentTime to the payload time", () => {
     const next = audioPlayerReducer(makeBaseState(), {
