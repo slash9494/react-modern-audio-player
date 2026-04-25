@@ -4,7 +4,7 @@ import React, {
   PropsWithChildren,
   useMemo,
 } from "react";
-import { useUIContext } from "@/hooks/context/useUIContext";
+import { useUIContext } from "@/components/AudioPlayer/Context/hooks/useUIContext";
 import { PlayerPlacement } from "@/components/AudioPlayer/Context/StateContext";
 
 export interface AudioPlayerContainerProps {
@@ -20,11 +20,6 @@ const PLACEMENT_OFFSET_BASE: PlacementOffset = {
   left: "auto",
 };
 
-// Map of `playerPlacement` token → CSS offset overrides. Replaces the
-// previous useState + useEffect derived-state pattern with a pure lookup
-// that is computed during render. This eliminates the 1-frame stale render
-// (where `position: fixed` was applied before the offsets) and the
-// hydration mismatch risk on SSR.
 const PLACEMENT_OFFSET_MAP: Partial<Record<PlayerPlacement, PlacementOffset>> =
   {
     bottom: { ...PLACEMENT_OFFSET_BASE, bottom: 0 },

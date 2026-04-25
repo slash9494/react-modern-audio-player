@@ -1,10 +1,10 @@
 import { FC, memo } from "react";
-import { useNonNullableContext } from "@/hooks/context/useNonNullableContext";
+import { useNonNullableContext } from "@/hooks/useNonNullableContext";
 import { audioPlayerDispatchContext } from "@/components/AudioPlayer/Context/dispatchContext";
-import { useResourceContext } from "@/hooks/context/useResourceContext";
+import { useResourceContext } from "@/components/AudioPlayer/Context/hooks/useResourceContext";
 import { StyledBtn } from "@/ui/StyledBtn";
 import { ImNext } from "@/components/icons";
-import { Icon } from "../Icon";
+import { Icon } from "../../Icon";
 
 interface NextBtnProps {
   isVisible: boolean;

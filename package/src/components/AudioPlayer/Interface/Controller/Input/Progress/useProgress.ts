@@ -1,5 +1,5 @@
-import { usePlaybackContext } from "@/hooks/context/usePlaybackContext";
-import { useResourceContext } from "@/hooks/context/useResourceContext";
+import { usePlaybackContext } from "@/components/AudioPlayer/Context/hooks/usePlaybackContext";
+import { useResourceContext } from "@/components/AudioPlayer/Context/hooks/useResourceContext";
 import { safeRatio } from "@/utils/safeRatio";
 import {
   HTMLAttributes,
@@ -28,9 +28,6 @@ export const useProgress = (): HTMLAttributes<HTMLDivElement> => {
     [isLoadedMetaData, elementRefs?.audioEl]
   );
 
-  // Block native text selection while user is dragging the progress bar.
-  // Uses addEventListener with cleanup so we never leave a stale global
-  // handler attached to `document` after unmount or when dragging ends.
   useEffect(() => {
     if (!isTimeChangeActive) return;
     const preventSelection = (event: Event) => event.preventDefault();

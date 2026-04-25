@@ -17,12 +17,12 @@ import {
   audioPlayerDispatchContext,
   AudioContextAction,
 } from "@/components/AudioPlayer/Context/dispatchContext";
-import { useNonNullableContext } from "@/hooks/context/useNonNullableContext";
-import { usePlaybackContext } from "@/hooks/context/usePlaybackContext";
-import { useTimeContext } from "@/hooks/context/useTimeContext";
-import { useTrackContext } from "@/hooks/context/useTrackContext";
-import { useUIContext } from "@/hooks/context/useUIContext";
-import { useResourceContext } from "@/hooks/context/useResourceContext";
+import { useNonNullableContext } from "@/hooks/useNonNullableContext";
+import { usePlaybackContext } from "@/components/AudioPlayer/Context/hooks/usePlaybackContext";
+import { useTimeContext } from "@/components/AudioPlayer/Context/hooks/useTimeContext";
+import { useTrackContext } from "@/components/AudioPlayer/Context/hooks/useTrackContext";
+import { useUIContext } from "@/components/AudioPlayer/Context/hooks/useUIContext";
+import { useResourceContext } from "@/components/AudioPlayer/Context/hooks/useResourceContext";
 
 const basePlayList = [
   { id: 1, src: "a.mp3" },

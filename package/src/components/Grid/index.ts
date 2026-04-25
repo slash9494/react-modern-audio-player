@@ -10,4 +10,5 @@ Grid.Item = GridItem;
 
 export type { NativeGridProps };
 export type { NativeGridProps as GridProps };
+export type { GridItemProps, GridItemLayoutProps } from "./Item";
 export default Grid;

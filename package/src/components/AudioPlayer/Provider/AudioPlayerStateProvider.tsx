@@ -16,7 +16,7 @@ import {
   resourceContext,
   AudioPlayerStateProviderProps,
 } from "@/components/AudioPlayer/Context";
-import { clampVolume } from "@/utils/clampVolume";
+import { clampVolume } from "@/components/AudioPlayer/utils/clampVolume";
 import { PropsWithChildren, useMemo, useReducer } from "react";
 
 function createInitialState<T extends number>(
@@ -141,6 +141,9 @@ export const AudioPlayerStateProvider = <
     [state.playList, state.curPlayId, state.curIdx]
   );
 
+  const { audioInitialState } = initProps;
+  const playListExpanded = audioInitialState?.playListExpanded;
+
   const uiValue = useMemo(
     () => ({
       activeUI: state.activeUI,
@@ -149,6 +152,7 @@ export const AudioPlayerStateProvider = <
       interfacePlacement: state.interfacePlacement,
       volumeSliderPlacement: state.volumeSliderPlacement,
       colorScheme,
+      playListExpanded,
     }),
     [
       state.activeUI,
@@ -157,13 +161,10 @@ export const AudioPlayerStateProvider = <
       state.interfacePlacement,
       state.volumeSliderPlacement,
       colorScheme,
+      playListExpanded,
     ]
   );
 
-  const { audioInitialState } = initProps;
-
-  // Sourced from the audioInitialState prop reference (not reducer state)
-  // so per-tick SET_AUDIO_STATE dispatches never invalidate this object.
   const audioNativeAttrsValue = useMemo<AudioAttrsContext>(() => {
     if (!audioInitialState) return {};
     const {
@@ -175,6 +176,7 @@ export const AudioPlayerStateProvider = <
       volume: _volume,
       muted: _muted,
       curPlayId: _curPlayId,
+      playListExpanded: _playListExpanded,
       ...nativeAttrs
     } = audioInitialState;
 

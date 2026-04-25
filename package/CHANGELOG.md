@@ -1,5 +1,72 @@
 # React-modern-audio-player
 
+## v2.2.0 (Unreleased)
+
+### ✨ New Features
+
+- **Compound slots on `AudioPlayer`**: the default export now exposes the built-in controls as static members that can be rendered as children alongside the preset:
+
+  | Static member | Wraps |
+  | --- | --- |
+  | `AudioPlayer.Progress` | progress bar / waveform |
+  | `AudioPlayer.Volume` | volume trigger + slider |
+  | `AudioPlayer.PlayList` | sortable playlist drawer |
+  | `AudioPlayer.PlayListEmpty` | fallback rendered inside the playlist drawer when `playList` is empty |
+  | `AudioPlayer.PlayButton` | Play + Prev + Next group (Prev/Next visibility follows `activeUI.prevNnext`) |
+  | `AudioPlayer.RepeatButton` | repeat-type button |
+  | `AudioPlayer.Artwork` | track artwork |
+  | `AudioPlayer.TrackInfo` | track title / writer |
+  | `AudioPlayer.TrackTime` | current + duration time |
+  | `AudioPlayer.CustomComponent` | user-defined slot (existing) |
+
+  Compound children render **additively** alongside the preset — they do not replace the default layout by themselves. To replace a preset control, disable the corresponding slot in `activeUI` and render the compound counterpart with a custom `gridArea`:
+
+  ```tsx
+  // Hide the preset volume and re-place a custom volume at the right edge
+  <AudioPlayer
+    playList={list}
+    activeUI={{ all: true, volume: false }}
+  >
+    <AudioPlayer.Volume gridArea="1 / 5 / 1 / 6" />
+  </AudioPlayer>
+  ```
+
+  Each compound accepts the full `GridItemLayoutProps` set — `gridArea?`, `visible?` (defaults to `true`), `width?`, `padding?`, `justifySelf?`, `UNSAFE_className?` — plus its own domain props. `AudioPlayer.TrackTime` is the exception: it only exposes `visible?` because the slot maps to two grid areas internally.
+
+  Native HTML attributes (`className`, `style`, `onClick`, `data-*`, etc.) are **not** forwarded by compound slots. The original internal components (`PlayBtn`, `PrevBtn`, `NextBtn`, etc.) remain exported for users who want fully custom layouts with full DOM control; headless support with native attribute pass-through is planned for v3.
+
+  In development, a `console.warn` is emitted when a compound slot is rendered while its preset counterpart is still active, pointing to the `activeUI` flag that resolves the duplication.
+
+  **Why it matters**
+
+  - Move or re-skin individual controls (e.g. volume at the right edge, a waveform in place of the bar progress) without rebuilding the whole player from primitives.
+  - Drop specific built-in controls by toggling `activeUI` flags and keep everything else intact — no more choosing between "preset" and "fully custom".
+  - Fall back to the preset layout the moment you stop passing compound children — adopting the new API is zero-cost for existing consumers.
+  - Mix preset and compound in the same player when you need two of the same control (e.g. a secondary volume) without forking the component tree.
+
+- **Custom empty-playlist UI** via `AudioPlayer.PlayListEmpty`: when `playList` is empty the drawer previously rendered nothing; consumers can now opt into a custom fallback by passing children to the slot. Omitting the slot preserves the previous default.
+
+  ```tsx
+  <AudioPlayer playList={[]}>
+    <AudioPlayer.PlayListEmpty>
+      <div className="my-empty">Playlist is empty</div>
+    </AudioPlayer.PlayListEmpty>
+  </AudioPlayer>
+  ```
+
+- **`audioInitialState.playListExpanded`** (Fixes [#21](https://github.com/slash9494/react-modern-audio-player/issues/21)): the playlist drawer can now start in the expanded state without user interaction.
+
+  ```tsx
+  <AudioPlayer
+    playList={list}
+    audioInitialState={{ curPlayId: 1, playListExpanded: true }}
+  />
+  ```
+
+  Consistent with the rest of `audioInitialState`: read once at mount, not tracked in reducer state.
+
+- **Multi-instance playlist isolation** (Fixes [#11](https://github.com/slash9494/react-modern-audio-player/issues/11), [#15](https://github.com/slash9494/react-modern-audio-player/issues/15)): multiple `<AudioPlayer>` instances on the same page no longer leak playlist content into each other's drawer. Previously `PlayList` resolved its portal target through `document.querySelector(".rmap-sortable-playlist")`, which matched the first target in document order — every secondary player would render its playlist into the first player's drawer. `Interface` now publishes its own portal node per instance, and each drawer renders exclusively into its own target. Audio state (play/pause, volume, mute, current track) was already isolated per instance via the v2 provider split.
+
 ## v2.1.0 (2026-04-14)
 
 ### ♿ Accessibility

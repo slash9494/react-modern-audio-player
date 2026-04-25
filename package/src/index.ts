@@ -1,10 +1,8 @@
 "use client";
 
-import AudioPlayerWithProviders from "./components/AudioPlayer";
-import { CustomComponent } from "./components/AudioPlayer/Interface/CustomComponent";
+import AudioPlayer from "./components/AudioPlayer";
 
-export default AudioPlayerWithProviders;
-AudioPlayerWithProviders.CustomComponent = CustomComponent;
+export default AudioPlayer;
 
 export * from "./components/AudioPlayer";
 export * from "./components/AudioPlayer/Context";

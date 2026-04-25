@@ -1,5 +1,4 @@
-export * from "./context/useNonNullableContext";
+export * from "./useNonNullableContext";
 export * from "./useVariableColor";
 export * from "./useClickOutside";
 export * from "./useRefsDispatch";
-export * from "./context";

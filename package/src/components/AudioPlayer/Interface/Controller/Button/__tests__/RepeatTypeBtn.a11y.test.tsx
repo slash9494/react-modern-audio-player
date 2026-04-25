@@ -4,6 +4,7 @@ import { axe } from "vitest-axe";
 import { RepeatTypeBtn } from "../RepeatTypeBtn";
 import { playbackContext } from "@/components/AudioPlayer/Context/PlaybackContext";
 import { resourceContext } from "@/components/AudioPlayer/Context/ResourceContext";
+import { uiContext } from "@/components/AudioPlayer/Context/UIContext";
 import { audioPlayerDispatchContext } from "@/components/AudioPlayer/Context/dispatchContext";
 import { RepeatType } from "@/components/AudioPlayer/Context/StateContext";
 
@@ -18,15 +19,22 @@ const makePlaybackValue = (repeatType: RepeatType) => ({
   audioResetKey: 0,
 });
 
+const uiValue = {
+  activeUI: { all: true },
+  playListPlacement: "bottom" as const,
+};
+
 const renderRepeatBtn = (repeatType: RepeatType) =>
   render(
-    <playbackContext.Provider value={makePlaybackValue(repeatType)}>
-      <resourceContext.Provider value={{}}>
-        <audioPlayerDispatchContext.Provider value={mockDispatch}>
-          <RepeatTypeBtn />
-        </audioPlayerDispatchContext.Provider>
-      </resourceContext.Provider>
-    </playbackContext.Provider>
+    <uiContext.Provider value={uiValue}>
+      <playbackContext.Provider value={makePlaybackValue(repeatType)}>
+        <resourceContext.Provider value={{}}>
+          <audioPlayerDispatchContext.Provider value={mockDispatch}>
+            <RepeatTypeBtn />
+          </audioPlayerDispatchContext.Provider>
+        </resourceContext.Provider>
+      </playbackContext.Provider>
+    </uiContext.Provider>
   );
 
 describe("RepeatTypeBtn accessibility", () => {

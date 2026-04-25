@@ -1,7 +1,7 @@
 import { memo } from "react";
 import { AudioData } from "@/components/AudioPlayer/Context";
-import { useTrackContext } from "@/hooks/context/useTrackContext";
-import { useResourceContext } from "@/hooks/context/useResourceContext";
+import { useTrackContext } from "@/components/AudioPlayer/Context/hooks/useTrackContext";
+import { useResourceContext } from "@/components/AudioPlayer/Context/hooks/useResourceContext";
 import "./PlayListItem.css";
 
 export const PlayListItem = memo(function PlayListItem({
