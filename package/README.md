@@ -612,7 +612,7 @@ const CustomComponent = () => {
 | `AudioPlayer.Volume` | volume trigger + slider |
 | `AudioPlayer.PlayList` | sortable playlist drawer (accepts `initialExpanded?`) |
 | `AudioPlayer.PlayListEmpty` | fallback rendered inside the playlist drawer when `playList` is empty |
-| `AudioPlayer.PlayButton` | Play + Prev + Next group (Prev/Next visibility follows `activeUI.prevNnext`) |
+| [`AudioPlayer.PlayButton`](#audioplayerplaybutton-and-activeuiprevnnext) | Play + Prev + Next group (Prev/Next visibility follows `activeUI.prevNnext`) |
 | `AudioPlayer.RepeatButton` | repeat-type button |
 | `AudioPlayer.Artwork` | track artwork |
 | `AudioPlayer.TrackInfo` | track title / writer |
@@ -644,7 +644,11 @@ In development, a `console.warn` is emitted when a compound slot is rendered whi
 
 ## `AudioPlayer.PlayButton` and `activeUI.prevNnext`
 
-`AudioPlayer.PlayButton` is a single slot that renders the **Play + Prev + Next** group. Whether Prev / Next render inside the group is driven by `activeUI.prevNnext` (which defaults to `activeUI.all`):
+`AudioPlayer.PlayButton` is a single slot that renders the **Play + Prev + Next** group as one unit. There is no separate `AudioPlayer.PrevButton` / `AudioPlayer.NextButton` compound slot — Prev / Next are part of the `PlayButton` compound, and there are two ways to render them.
+
+### Method 1 — `AudioPlayer.PlayButton` compound (group)
+
+Place the whole group at a custom grid area; Prev / Next visibility inside the group follows `activeUI.prevNnext` (which defaults to `activeUI.all`):
 
 ```tsx
 // Re-place the full Play + Prev + Next group at a custom area
@@ -664,7 +668,35 @@ In development, a `console.warn` is emitted when a compound slot is rendered whi
 </AudioPlayer>
 ```
 
-There is no separate `AudioPlayer.PrevButton` / `AudioPlayer.NextButton` slot — toggle `activeUI.prevNnext` on the group instead. For a fully custom transport layout, compose the underlying `PlayBtn`, `PrevBtn`, and `NextBtn` primitives directly (still exported from the package).
+### Method 2 — primitives via `AudioPlayer.CustomComponent`
+
+When you need finer control — placing Prev / Play / Next in different grid cells, applying custom wrappers, or attaching native HTML attributes — drop down to the `PlayBtn`, `PrevBtn`, and `NextBtn` primitives (still exported) and render them inside `AudioPlayer.CustomComponent`:
+
+```tsx
+import AudioPlayer, {
+  PrevBtn,
+  PlayBtn,
+  NextBtn,
+} from "react-modern-audio-player";
+
+<AudioPlayer
+  playList={playList}
+  activeUI={{ all: true, playButton: false }} // hide the preset transport
+  placement={{
+    interface: { customComponentsArea: { "custom-transport": "row1-3" } },
+  }}
+>
+  <AudioPlayer.CustomComponent id="custom-transport">
+    <div className="my-transport">
+      <PrevBtn isVisible />
+      <PlayBtn />
+      <NextBtn isVisible />
+    </div>
+  </AudioPlayer.CustomComponent>
+</AudioPlayer>;
+```
+
+`PrevBtn` / `NextBtn` accept an `isVisible` boolean for symmetry with the compound group's visibility logic; pass `false` to omit them. Use Method 2 when Method 1's group placement and `activeUI.prevNnext` toggle aren't enough.
 
 ## Custom empty-playlist UI
 
