@@ -1,5 +1,40 @@
 # React-modern-audio-player
 
+## v2.3.0 (Unreleased)
+
+### ✨ New Features
+
+- **Playback speed support** (Closes [#3](https://github.com/slash9494/react-modern-audio-player/issues/3)): the player now supports per-track playback speed via three new public surfaces.
+
+  **1. `AudioPlayer.SpeedSelector` compound slot** — a Dropdown-based UI that displays the current rate as a clickable label (e.g. `1×`, `1.5×`) and opens a menu of selectable rates. Defaults to `[0.5, 0.75, 1, 1.25, 1.5, 1.75, 2]`. Mounts automatically alongside the preset when `activeUI.playbackRate` is `true` (or `activeUI.all` is `true`); accepts `options?: number[]` and `formatRate?: (rate: number) => string` for customization.
+
+      ```tsx
+      <AudioPlayer playList={list} activeUI={{ all: true, playbackRate: true }} />
+
+      // or as a compound child with custom rate options
+      <AudioPlayer playList={list} activeUI={{ all: true, playbackRate: false }}>
+        <AudioPlayer.SpeedSelector
+          options={[1, 1.5, 2, 3]}
+          formatRate={(r) => `${r}x`}
+          gridArea="1 / 10 / 1 / 11"
+        />
+      </AudioPlayer>
+      ```
+
+      The dropdown menu uses `role="menu"` + `role="menuitemradio"` with `aria-checked` reflecting the active rate (WAI-ARIA APG menu pattern, matches video.js / Vidstack).
+
+  - **2. `useAudioPlayer().playbackRate` + `setPlaybackRate(rate)`** — the imperative API exposes the current rate and a setter. Available on the facade and on `useAudioPlayerPlayback` for fine-grained subscriptions.
+
+      ```tsx
+      const { playbackRate, setPlaybackRate } = useAudioPlayer();
+      // ... later
+      setPlaybackRate(1.5);
+      ```
+
+  - **3. `audioInitialState.playbackRate`** — initial rate at mount, defaults to `1`. No clamping is applied at any layer; the browser enforces HTML5 `playbackRate` bounds.
+
+  Implementation notes: the new `SET_PLAYBACK_RATE` reducer action is the single write path; `useAudio` mirrors the rate to `audioEl.playbackRate` via an effect that mirrors the existing `volume` sync. Internal-only `defaultInterfacePlacementMaxLength` was bumped from `10` to `11` to accommodate `playbackRate: "row1-10"` in the default template area; consumers passing an explicit `interfacePlacement` length parameter are unaffected.
+
 ## v2.2.0 (2026-04-25)
 
 ### ✨ New Features

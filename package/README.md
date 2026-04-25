@@ -262,6 +262,7 @@ type ActiveUI = {
   trackInfo: boolean;
   artwork: boolean;
   progress: ProgressUI;
+  playbackRate: boolean;
 };
 type ProgressUI = "waveform" | "bar" | false;
 type PlayListUI = "sortable" | "unSortable" | false;
@@ -352,6 +353,7 @@ const defaultInterfacePlacement = {
     volume: "row1-7",
     playButton: "row1-8",
     playList: "row1-9",
+    playbackRate: "row1-10",
   },
 };
 ```
@@ -491,6 +493,8 @@ function App() {
 | `setVolume(vol)`  | `(volume: number) => void` | Set volume (0–1, clamped) |
 | `toggleMute()`    | `() => void`               | Toggle mute on/off        |
 | `setTrack(index)` | `(index: number) => void`  | Jump to playlist index    |
+| `playbackRate`           | `number`                   | Current playback rate (`1` = normal). Default `1`. |
+| `setPlaybackRate(rate)`  | `(rate: number) => void`   | Set playback rate. No clamping; browser enforces HTML5 bounds. |
 
 ## Sub-Hooks
 
@@ -524,7 +528,7 @@ function TimeDisplay() {
 
 | Hook                     | Returns                                                                         |
 | ------------------------ | ------------------------------------------------------------------------------- |
-| `useAudioPlayerPlayback` | `{ isPlaying, repeatType, play, pause, togglePlay }`                            |
+| `useAudioPlayerPlayback` | `{ isPlaying, repeatType, playbackRate, play, pause, togglePlay, setPlaybackRate }` |
 | `useAudioPlayerTrack`    | `{ currentPlayId, currentIndex, playList, currentTrack, setTrack, next, prev }` |
 | `useAudioPlayerVolume`   | `{ volume, muted, setVolume, toggleMute }`                                      |
 | `useAudioPlayerTime`     | `{ currentTime, duration, seek }`                                               |
@@ -614,6 +618,7 @@ const CustomComponent = () => {
 | `AudioPlayer.PlayListEmpty` | fallback rendered inside the playlist drawer when `playList` is empty |
 | [`AudioPlayer.PlayButton`](#audioplayerplaybutton-and-activeuiprevnnext) | Play + Prev + Next group (Prev/Next visibility follows `activeUI.prevNnext`) |
 | `AudioPlayer.RepeatButton` | repeat-type button |
+| `AudioPlayer.SpeedSelector` | playback rate dropdown (accepts `options?`, `formatRate?`) |
 | `AudioPlayer.Artwork` | track artwork |
 | `AudioPlayer.TrackInfo` | track title / writer |
 | `AudioPlayer.TrackTime` | current + duration time |
