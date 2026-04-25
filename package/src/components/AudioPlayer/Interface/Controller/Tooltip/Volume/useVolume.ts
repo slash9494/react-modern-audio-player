@@ -1,5 +1,5 @@
 import { VolumeSliderPlacement } from "@/components/AudioPlayer/Context";
-import { useUIContext } from "@/hooks/context/useUIContext";
+import { useUIContext } from "@/components/AudioPlayer/Context/hooks/useUIContext";
 import { useState, useEffect } from "react";
 
 export const useVolumeSliderPlacement = ({

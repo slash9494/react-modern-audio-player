@@ -32,6 +32,7 @@ export interface AudioPlayerStateContext {
 
 export type InitialStates = Partial<AudioState> & {
   curPlayId: number;
+  playListExpanded?: boolean;
 };
 
 export * from "./audio";

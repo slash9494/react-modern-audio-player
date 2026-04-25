@@ -1,4 +1,4 @@
-import { useNonNullableContext } from "@/hooks/context/useNonNullableContext";
+import { useNonNullableContext } from "@/hooks/useNonNullableContext";
 import { useDidUpdateEffect } from "@/hooks/useDidUpdateEffect";
 import { AudioPlayerProps } from ".";
 import {

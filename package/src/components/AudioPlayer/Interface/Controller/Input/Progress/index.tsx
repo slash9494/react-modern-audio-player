@@ -1,12 +1,33 @@
-import { useUIContext } from "@/hooks/context/useUIContext";
+import { useUIContext } from "@/components/AudioPlayer/Context/hooks/useUIContext";
+import Grid, { GridItemLayoutProps } from "@/components/Grid";
 import { FC, useEffect, useState } from "react";
 import { BarProgress } from "./BarProgress";
 import { WaveformProgress } from "./WaveformProgress";
+import { useResolvedGridArea } from "../../../hooks/useResolvedGridArea";
 import "./Progress.css";
 
-export const Progress: FC = () => {
+export type ProgressType = "bar" | "waveform";
+
+export interface ProgressProps extends GridItemLayoutProps {
+  /**
+   * Override which progress renderer to show. When omitted, falls back to
+   * `activeUI.progress`. Used when the preset is disabled but the compound
+   * `<AudioPlayer.Progress />` is still placed explicitly — without this,
+   * the component would render an empty grid slot.
+   */
+  type?: ProgressType;
+}
+
+export const Progress: FC<ProgressProps> = ({
+  gridArea,
+  visible,
+  type,
+  width,
+  ...rest
+}) => {
   const { activeUI } = useUIContext();
-  const progressType = activeUI.progress ?? (activeUI.all ? "bar" : false);
+  const progressType: ProgressType =
+    type ?? (activeUI.progress === "waveform" ? "waveform" : "bar");
   const isWaveform = progressType === "waveform";
   const isBar = progressType === "bar";
   const [waveformMounted, setWaveformMounted] = useState(isWaveform);
@@ -15,10 +36,19 @@ export const Progress: FC = () => {
     if (isWaveform && !waveformMounted) setWaveformMounted(true);
   }, [isWaveform, waveformMounted]);
 
+  const resolvedGridArea = useResolvedGridArea("progress", gridArea);
+
   return (
-    <div className="rmap-progress-container">
-      {waveformMounted && <WaveformProgress isActive={isWaveform} />}
-      {isBar && <BarProgress />}
-    </div>
+    <Grid.Item
+      gridArea={resolvedGridArea}
+      width={width ?? "100%"}
+      visible={visible ?? true}
+      {...rest}
+    >
+      <div className="rmap-progress-container">
+        {waveformMounted && <WaveformProgress isActive={isWaveform} />}
+        {isBar && <BarProgress />}
+      </div>
+    </Grid.Item>
   );
 };

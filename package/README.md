@@ -15,7 +15,7 @@
   <a href="https://www.npmjs.com/package/react-modern-audio-player">
     <img src="https://img.shields.io/npm/dt/react-modern-audio-player" alt="Download">
   </a>
-  <a href="https://bundlephobia.com/package/react-modern-audio-player@2.0.0">
+  <a href="https://bundlephobia.com/package/react-modern-audio-player">
     <img src="https://img.shields.io/bundlephobia/minzip/react-modern-audio-player" alt="BundleSize">
   </a>
   <a href="https://github.com/slash9494/react-modern-audio-player/actions/workflows/integration.yml">
@@ -29,6 +29,8 @@
 - **Waveform** progress bar powered by `wavesurfer.js`
 - **Playlist** with drag-and-drop reorder, repeat, shuffle
 - **Fully customizable** — swap any sub-component, CSS variable theming, light & dark themes
+- **Compound slots** — `AudioPlayer.Volume`, `AudioPlayer.Progress`, `AudioPlayer.PlayList`, etc. for partial customization without losing the preset
+- **Multi-instance playlist** — render multiple players on the same page with isolated playlist drawers and fully independent audio state
 - **Accessible** — WAI-ARIA patterns, full keyboard navigation, axe-tested
 - **TypeScript-first** — typed props and hooks (`useAudioPlayer`, sub-hooks)
 - **SSR-friendly** — works with Next.js App Router / Server Components
@@ -154,7 +156,7 @@ export default function PlayerPage() {
 | **Props**            | [PlayList](#playlist) · [InitialStates](#initialstates) · [ActiveUI](#activeui) · [Placement](#placement) · [RootContainerProps](#rootcontainerprops) |
 | **Override & Style** | [CustomIcons](#customicons) · [CoverImgsCss](#coverimgscss) · [Theme mode](#theme-mode-dark-mode) · [ID & Classnames](#id--classnames)                |
 | **Player Hook API**  | [useAudioPlayer](#useaudioplayer) · [AudioPlayerControls](#audioplayercontrols) · [Sub-Hooks](#sub-hooks)                                             |
-| **Custom Component** | [Custom Component](#custom-component)                                                                                                                 |
+| **Custom Component** | [Custom Component](#custom-component) · [Compound Slots](#compound-slots)                                                                             |
 | **Accessibility**    | [Keyboard support](#keyboard-support)                                                                                                                 |
 | **Gotchas**          | [Gotchas](#gotchas)                                                                                                                                   |
 | **Example**          | [Example](#example)                                                                                                                                   |
@@ -239,8 +241,11 @@ type InitialStates = Omit<
   currentTime?: number;
   duration?: number;
   curPlayId: number;
+  playListExpanded?: boolean;
 };
 ```
+
+> `playListExpanded: true` opens the playlist drawer on mount. Consistent with the other fields on `audioInitialState`, this is read once at mount and is not tracked in reducer state.
 
 ## ActiveUI
 
@@ -379,6 +384,12 @@ const defaultInterfacePlacement = {
 ### root ID
 
 - rm-audio-player
+
+> **Multi-instance note**: when multiple `<AudioPlayer>` instances share a
+> page the root `id` is duplicated across them. Playlist and audio state are
+> still isolated per instance (each player has its own React provider tree
+> and its own `<audio>` DOM node). If you need per-instance selectors, target
+> via the class names below rather than the id.
 
 ### root ClassName
 
@@ -590,6 +601,58 @@ const CustomComponent = () => {
   </AudioPlayer.CustomComponent>
 </AudioPlayer>;
 ```
+
+# Compound Slots
+
+`AudioPlayer` exposes its built-in controls as static members so you can re-place or augment individual pieces without rebuilding the whole layout.
+
+| Member | Renders |
+| --- | --- |
+| `AudioPlayer.Progress` | progress bar / waveform |
+| `AudioPlayer.Volume` | volume trigger + slider |
+| `AudioPlayer.PlayList` | sortable playlist drawer (accepts `initialExpanded?`) |
+| `AudioPlayer.PlayListEmpty` | fallback rendered inside the playlist drawer when `playList` is empty |
+| `AudioPlayer.PlayButton` | Play + Prev + Next group (Prev/Next visibility follows `activeUI.prevNnext`) |
+| `AudioPlayer.RepeatButton` | repeat-type button |
+| `AudioPlayer.Artwork` | track artwork |
+| `AudioPlayer.TrackInfo` | track title / writer |
+| `AudioPlayer.TrackTime` | current + duration time |
+| `AudioPlayer.CustomComponent` | user-defined slot |
+
+Each slot accepts `gridArea?` and `visible?` plus its own domain props.
+
+## Mental model — `activeUI` vs compound children
+
+- **`activeUI`** governs the **preset** (default layout) — which built-in controls are shown.
+- **Compound children** are **explicit placements** that always render (`visible` defaults to `true`).
+
+The two layers are orthogonal. Compound children render **additively** alongside the preset. To truly replace a preset control, disable it in `activeUI` and render the compound counterpart:
+
+```tsx
+// Remove the default volume, re-place it with a custom gridArea
+<AudioPlayer
+  playList={playList}
+  activeUI={{ all: true, volume: false }}
+>
+  <AudioPlayer.Volume gridArea="1 / 5 / 1 / 6" />
+</AudioPlayer>
+```
+
+In development, a `console.warn` is emitted when a compound slot is rendered while its preset counterpart is still active, so silent duplication is easy to catch.
+
+## Custom empty-playlist UI
+
+Pass children to `AudioPlayer.PlayListEmpty` to render a custom node inside the playlist drawer when `playList` is empty. Omit the slot to keep the default (drawer content renders nothing).
+
+```tsx
+<AudioPlayer playList={[]}>
+  <AudioPlayer.PlayListEmpty>
+    <div className="my-empty">Playlist is empty</div>
+  </AudioPlayer.PlayListEmpty>
+</AudioPlayer>
+```
+
+`PlayListEmpty` is a marker slot; its children are consumed by the drawer via context and the component itself does not render in-place.
 
 # **Accessibility**
 

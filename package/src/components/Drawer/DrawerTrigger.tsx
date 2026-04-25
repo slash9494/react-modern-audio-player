@@ -1,4 +1,4 @@
-import { useNonNullableContext } from "@/hooks/context/useNonNullableContext";
+import { useNonNullableContext } from "@/hooks/useNonNullableContext";
 import { StyledBtn } from "@/ui/StyledBtn";
 import { FC, PropsWithChildren, useCallback } from "react";
 import { drawerContext } from "./DrawerContext";

@@ -1,10 +1,10 @@
-import { useNonNullableContext } from "@/hooks/context/useNonNullableContext";
+import { useNonNullableContext } from "@/hooks/useNonNullableContext";
 import { useVariableColor } from "@/hooks/useVariableColor";
 import { audioPlayerDispatchContext } from "@/components/AudioPlayer/Context/dispatchContext";
-import { usePlaybackContext } from "@/hooks/context/usePlaybackContext";
-import { useTrackContext } from "@/hooks/context/useTrackContext";
-import { useResourceContext } from "@/hooks/context/useResourceContext";
-import { useUIContext } from "@/hooks/context/useUIContext";
+import { usePlaybackContext } from "@/components/AudioPlayer/Context/hooks/usePlaybackContext";
+import { useTrackContext } from "@/components/AudioPlayer/Context/hooks/useTrackContext";
+import { useResourceContext } from "@/components/AudioPlayer/Context/hooks/useResourceContext";
+import { useUIContext } from "@/components/AudioPlayer/Context/hooks/useUIContext";
 import { useEffect, useRef } from "react";
 import type WaveSurfer from "wavesurfer.js";
 
@@ -115,8 +115,6 @@ export const useWaveSurfer = (waveformRef: React.RefObject<HTMLElement>) => {
     prevPlayIdRef.current = curPlayId;
 
     const savedTime = isTrackChange ? 0 : audioEl.currentTime;
-    // Captured non-reactively so play/pause toggles don't re-run this effect
-    // and force a full waveform reload on every transition.
     const wasPlaying = isPlaybackActive;
 
     detachStaleBackendListeners(waveform);
@@ -137,7 +135,6 @@ export const useWaveSurfer = (waveformRef: React.RefObject<HTMLElement>) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [curPlayId, elementRefs?.audioEl, elementRefs?.waveformInst]);
 
-  // wavesurfer's drawBuffer is not responsive — manually redraw on container resize.
   useEffect(() => {
     if (!waveformRef.current || !elementRefs?.waveformInst) return;
 
@@ -169,9 +166,8 @@ export const useWaveSurfer = (waveformRef: React.RefObject<HTMLElement>) => {
   );
 
   // Canvas wave/progress colors are baked into <canvas> fillStyle and must be
-  // re-pushed on theme flip. Cursor color is passed as a raw CSS var and
-  // auto-follows via the drawer's border style. In-place update avoids the
-  // destroy+recreate cycle that makes the upstream listener leak crash-visible.
+  // re-pushed on theme flip. In-place update avoids the destroy+recreate cycle
+  // that triggers the upstream MediaElement listener leak.
   const applyWaveformColors = () => {
     const waveform = waveformInstRef.current;
     // setWaveColor/setProgressColor → drawBuffer() → backend.getDuration(),
@@ -187,15 +183,11 @@ export const useWaveSurfer = (waveformRef: React.RefObject<HTMLElement>) => {
 
   const prevColorSchemeRef = useRef(colorScheme);
   useEffect(() => {
-    // Skip first run — WaveSurfer.create() already seeded the colors.
     if (prevColorSchemeRef.current === colorScheme) return;
     prevColorSchemeRef.current = colorScheme;
     applyWaveformColorsRef.current();
   }, [colorScheme, elementRefs?.waveformInst]);
 
-  // useVariableColor subscribes to the same media query in a layout effect,
-  // which fires before this useEffect listener — so colorsRef is already
-  // refreshed when the handler runs.
   useEffect(() => {
     const handler = () => applyWaveformColorsRef.current();
     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");

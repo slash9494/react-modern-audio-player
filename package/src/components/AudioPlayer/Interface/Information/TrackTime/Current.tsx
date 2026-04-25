@@ -1,7 +1,7 @@
 import { FC } from "react";
 import { TrackTimeContainer } from "./TrackTimeContainer";
 import { TrackTimeChildrenProps } from "./Types";
-import { useTimeContext } from "@/hooks/context/useTimeContext";
+import { useTimeContext } from "@/components/AudioPlayer/Context/hooks/useTimeContext";
 import { getTimeWithPadStart } from "@/utils/getTime";
 
 export const Current: FC<TrackTimeChildrenProps> = ({ position }) => {

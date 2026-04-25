@@ -51,6 +51,13 @@ const CustomComponent = () => {
 };
 
 function App() {
+  const query =
+    typeof window !== "undefined"
+      ? new URLSearchParams(window.location.search)
+      : new URLSearchParams();
+  const compoundDemo = query.get("compound") === "1";
+  const multiDemo = query.get("multi") === "1";
+
   const [progressType, setProgressType] = useState<ProgressUI>("waveform");
   const [playerPlacement, setPlayerPlacement] =
     useState<PlayerPlacement>("bottom-left");
@@ -117,6 +124,71 @@ function App() {
           <Agentation endpoint="http://localhost:4747" />
         )} */}
       </div>
+
+      {compoundDemo && (
+        <div
+          data-testid="compound-demo"
+          style={{ width: "100%", marginTop: "2rem" }}
+        >
+          <h4 style={{ margin: "0 0 0.5rem" }}>Compound mode demo</h4>
+          <AudioPlayerWithProviders
+            playList={playList}
+            audioInitialState={{ curPlayId: 1, playListExpanded: true }}
+            activeUI={{ all: true, volume: false, progress: "bar" }}
+            rootContainerProps={{ style: { width: "100%" } }}
+          >
+            <AudioPlayerWithProviders.Volume />
+          </AudioPlayerWithProviders>
+        </div>
+      )}
+
+      {multiDemo && (
+        <div
+          data-testid="multi-demo"
+          style={{
+            width: "100%",
+            marginTop: "2rem",
+            display: "flex",
+            flexDirection: "column",
+            gap: "1rem",
+          }}
+        >
+          <h4 style={{ margin: 0 }}>Multi-instance demo</h4>
+          <p style={{ margin: 0, color: "#666", fontSize: "0.9rem" }}>
+            Two independent players. Pause one — the other keeps playing. Each
+            has its own DOM id (derived from <code>useId()</code>), playlist
+            state, volume, and theme.
+          </p>
+          <div data-testid="multi-instance-a">
+            <AudioPlayerWithProviders
+              playList={playList.slice(0, 3)}
+              audioInitialState={{ curPlayId: 1, volume: 0.3, muted: true }}
+              activeUI={{ all: true, progress: "bar" }}
+              colorScheme="light"
+              rootContainerProps={{ style: { width: "100%" } }}
+            />
+          </div>
+          <div data-testid="multi-instance-b">
+            <AudioPlayerWithProviders
+              // +100 offset keeps instance B's track IDs disjoint from
+              // instance A so the multi-instance demo can address each
+              // player's tracks without collisions.
+              playList={playList.slice(2).map((t) => ({
+                ...t,
+                id: t.id + 100,
+              }))}
+              audioInitialState={{
+                curPlayId: playList[2].id + 100,
+                volume: 0.6,
+                muted: true,
+              }}
+              activeUI={{ all: true, progress: "waveform" }}
+              colorScheme="dark"
+              rootContainerProps={{ style: { width: "100%" } }}
+            />
+          </div>
+        </div>
+      )}
 
       <Editor
         setProgressType={setProgressType}

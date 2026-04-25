@@ -1,4 +1,4 @@
-import { useNonNullableContext } from "@/hooks/context/useNonNullableContext";
+import { useNonNullableContext } from "@/hooks/useNonNullableContext";
 import {
   HTMLAttributes,
   SyntheticEvent,
@@ -8,9 +8,9 @@ import {
 } from "react";
 import { flushSync } from "react-dom";
 import { audioPlayerDispatchContext } from "../Context";
-import { usePlaybackContext } from "@/hooks/context/usePlaybackContext";
-import { useResourceContext } from "@/hooks/context/useResourceContext";
-import { useTimeContext } from "@/hooks/context/useTimeContext";
+import { usePlaybackContext } from "@/components/AudioPlayer/Context/hooks/usePlaybackContext";
+import { useResourceContext } from "@/components/AudioPlayer/Context/hooks/useResourceContext";
+import { useTimeContext } from "@/components/AudioPlayer/Context/hooks/useTimeContext";
 
 export const useAudio = (): HTMLAttributes<HTMLAudioElement> => {
   const {
@@ -67,8 +67,6 @@ export const useAudio = (): HTMLAttributes<HTMLAudioElement> => {
     [audioPlayerDispatch, playbackVolume]
   );
 
-  // Skip the very first audioResetKey effect run so the freshly-mounted
-  // <audio> element keeps any consumer-set initial currentTime.
   const hasSkippedInitialResetRef = useRef(false);
   useEffect(() => {
     if (!elementRefs?.audioEl) return;

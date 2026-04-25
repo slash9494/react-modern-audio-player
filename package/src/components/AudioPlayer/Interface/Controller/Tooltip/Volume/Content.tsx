@@ -1,8 +1,8 @@
-import { useNonNullableContext } from "@/hooks/context/useNonNullableContext";
+import { useNonNullableContext } from "@/hooks/useNonNullableContext";
 import { audioPlayerDispatchContext } from "@/components/AudioPlayer/Context/dispatchContext";
 import { VolumeSliderPlacement } from "@/components/AudioPlayer/Context/StateContext";
-import { usePlaybackContext } from "@/hooks/context/usePlaybackContext";
-import { useResourceContext } from "@/hooks/context/useResourceContext";
+import { usePlaybackContext } from "@/components/AudioPlayer/Context/hooks/usePlaybackContext";
+import { useResourceContext } from "@/components/AudioPlayer/Context/hooks/useResourceContext";
 import { ChangeEvent, FC, useCallback, useMemo, useRef } from "react";
 import "./Content.css";
 

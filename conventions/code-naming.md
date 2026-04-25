@@ -98,6 +98,20 @@ Use the same word for the same domain concept throughout the codebase.
 
 ---
 
+## Consumer-Scoped Derived Values
+
+When a hook or variable produces a value used by exactly one downstream consumer, name it after that consumer — not after the generic concept. This prevents the value from being misread as the "canonical" or "final" form that should propagate elsewhere.
+
+| Good | Bad | Why |
+| --- | --- | --- |
+| `useGridTemplateActiveUI` | `useEffectiveActiveUI` | Only `useGridTemplate` reads it; "effective" suggests it replaces the base everywhere |
+| `gridTemplateActiveUI` (local) | `finalActiveUI`, `mergedActiveUI` | Name binds the value to its single caller |
+| `audioElementId` | `finalId` | `finalId` implies resolution across multiple producers |
+
+Rule of thumb: if renaming the consumer would also require renaming the value, the name is correctly scoped. If the value keeps making sense when shown in an unrelated caller, it's probably too generic.
+
+---
+
 ## Comments
 
 Comments are a **last resort**, not a default. Before writing any comment — inline, block, or JSDoc — ask: *can this be expressed through naming or code structure instead?* If yes, rewrite the code and drop the comment.

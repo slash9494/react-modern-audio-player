@@ -1,10 +1,10 @@
 import Grid from "@/components/Grid";
 import { GridItemProps } from "@/components/Grid/Item";
-import { usePlaybackContext } from "@/hooks/context/usePlaybackContext";
-import { useTimeContext } from "@/hooks/context/useTimeContext";
-import { useTrackContext } from "@/hooks/context/useTrackContext";
-import { useUIContext } from "@/hooks/context/useUIContext";
-import { useResourceContext } from "@/hooks/context/useResourceContext";
+import { usePlaybackContext } from "@/components/AudioPlayer/Context/hooks/usePlaybackContext";
+import { useTimeContext } from "@/components/AudioPlayer/Context/hooks/useTimeContext";
+import { useTrackContext } from "@/components/AudioPlayer/Context/hooks/useTrackContext";
+import { useUIContext } from "@/components/AudioPlayer/Context/hooks/useUIContext";
+import { useResourceContext } from "@/components/AudioPlayer/Context/hooks/useResourceContext";
 import React, { FC } from "react";
 
 // TODO : apply collection component

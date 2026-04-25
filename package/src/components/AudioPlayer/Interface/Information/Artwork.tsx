@@ -1,9 +1,17 @@
-import { useTrackContext } from "@/hooks/context/useTrackContext";
-import { useResourceContext } from "@/hooks/context/useResourceContext";
+import { useTrackContext } from "@/components/AudioPlayer/Context/hooks/useTrackContext";
+import { useResourceContext } from "@/components/AudioPlayer/Context/hooks/useResourceContext";
 import { FC, memo } from "react";
+import Grid, { GridItemLayoutProps } from "@/components/Grid";
+import { useResolvedGridArea } from "../hooks/useResolvedGridArea";
 import "./Artwork.css";
 
-export const Artwork: FC = memo(function Artwork() {
+export type ArtworkProps = GridItemLayoutProps;
+
+export const Artwork: FC<ArtworkProps> = memo(function Artwork({
+  gridArea,
+  visible,
+  ...rest
+}) {
   const { playList, curIdx } = useTrackContext();
   const { coverImgsCss } = useResourceContext();
 
@@ -11,20 +19,24 @@ export const Artwork: FC = memo(function Artwork() {
   const altText =
     [track?.writer, track?.name].filter(Boolean).join(" - ") || "Album artwork";
 
+  const resolvedGridArea = useResolvedGridArea("artwork", gridArea);
+
   return (
-    <div className="rmap-artwork-container">
-      {track?.img ? (
-        <img src={track.img} alt={altText} style={coverImgsCss?.artwork} />
-      ) : (
-        <div
-          className="rmap-artwork-fallback"
-          role="img"
-          aria-label={altText}
-          style={coverImgsCss?.artwork}
-        >
-          {track?.name || "♪"}
-        </div>
-      )}
-    </div>
+    <Grid.Item gridArea={resolvedGridArea} visible={visible ?? true} {...rest}>
+      <div className="rmap-artwork-container">
+        {track?.img ? (
+          <img src={track.img} alt={altText} style={coverImgsCss?.artwork} />
+        ) : (
+          <div
+            className="rmap-artwork-fallback"
+            role="img"
+            aria-label={altText}
+            style={coverImgsCss?.artwork}
+          >
+            {track?.name || "♪"}
+          </div>
+        )}
+      </div>
+    </Grid.Item>
   );
 });

@@ -1,8 +1,8 @@
-import { useNonNullableContext } from "@/hooks/context/useNonNullableContext";
+import { useNonNullableContext } from "@/hooks/useNonNullableContext";
 import { audioPlayerDispatchContext } from "@/components/AudioPlayer/Context/dispatchContext";
-import { useAudioAttrsContext } from "@/hooks/context/useAudioAttrsContext";
-import { usePlaybackContext } from "@/hooks/context/usePlaybackContext";
-import { useTrackContext } from "@/hooks/context/useTrackContext";
+import { useAudioAttrsContext } from "@/components/AudioPlayer/Context/hooks/useAudioAttrsContext";
+import { usePlaybackContext } from "@/components/AudioPlayer/Context/hooks/usePlaybackContext";
+import { useTrackContext } from "@/components/AudioPlayer/Context/hooks/useTrackContext";
 import React, { useEffect, useRef } from "react";
 import { useAudio } from "./useAudio";
 
