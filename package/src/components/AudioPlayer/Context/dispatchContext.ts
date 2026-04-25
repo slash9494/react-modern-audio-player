@@ -32,6 +32,7 @@ export type AudioContextAction<
   | { type: "SET_REPEAT_TYPE"; repeatType: RepeatType }
   | { type: "SET_VOLUME"; volume: number }
   | { type: "SET_MUTED"; muted: boolean }
+  | { type: "SET_PLAYBACK_RATE"; playbackRate: number }
   | { type: "SET_ACTIVE_UI"; activeUI: ActiveUI }
   | { type: "SET_ELEMENT_REFS"; elementRefs: ElementRefs }
   | { type: "SET_CUSTOM_ICONS"; customIcons: CustomIcons }

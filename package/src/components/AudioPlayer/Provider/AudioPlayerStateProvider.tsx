@@ -39,11 +39,13 @@ function createInitialState<T extends number>(
         ? clampVolume(audioInitialState.volume)
         : DEFAULT_AUDIO_STATE.volume,
     muted: audioInitialState?.muted ?? DEFAULT_AUDIO_STATE.muted,
+    playbackRate:
+      audioInitialState?.playbackRate ?? DEFAULT_AUDIO_STATE.playbackRate,
   };
 
   const activeUI = activeUIProp || { playButton: true };
 
-  const placement: Placements<T | 10> = {
+  const placement: Placements<T | 11> = {
     playerPlacement: placementProp?.player,
     playListPlacement: placementProp?.playList || "bottom",
     interfacePlacement: placementProp?.interface || {
@@ -73,7 +75,7 @@ function createInitialState<T extends number>(
     activeUI,
     audioResetKey: 0,
     seekRequestKey: 0,
-    ...(placement as Placements<10>),
+    ...(placement as Placements<11>),
     customIcons,
     coverImgsCss,
   };
@@ -121,6 +123,8 @@ export const AudioPlayerStateProvider = <
       repeatType: state.curAudioState.repeatType,
       isLoadedMetaData: state.curAudioState.isLoadedMetaData,
       audioResetKey: state.audioResetKey,
+      playbackRate:
+        state.curAudioState.playbackRate ?? DEFAULT_AUDIO_STATE.playbackRate,
     }),
     [
       state.curAudioState.isPlaying,
@@ -128,6 +132,7 @@ export const AudioPlayerStateProvider = <
       state.curAudioState.volume,
       state.curAudioState.muted,
       state.curAudioState.repeatType,
+      state.curAudioState.playbackRate,
       state.audioResetKey,
     ]
   );
@@ -175,6 +180,7 @@ export const AudioPlayerStateProvider = <
       duration: _duration,
       volume: _volume,
       muted: _muted,
+      playbackRate: _playbackRate,
       curPlayId: _curPlayId,
       playListExpanded: _playListExpanded,
       ...nativeAttrs

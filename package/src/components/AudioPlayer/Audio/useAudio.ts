@@ -18,6 +18,7 @@ export const useAudio = (): HTMLAttributes<HTMLAudioElement> => {
     volume: playbackVolume,
     repeatType,
     audioResetKey,
+    playbackRate,
   } = usePlaybackContext();
   const { currentTime: playbackCurrentTime, seekRequestKey } = useTimeContext();
   const { elementRefs } = useResourceContext();
@@ -95,6 +96,11 @@ export const useAudio = (): HTMLAttributes<HTMLAudioElement> => {
     if (!elementRefs?.audioEl || playbackVolume == null) return;
     elementRefs.audioEl.volume = playbackVolume;
   }, [elementRefs?.audioEl, playbackVolume]);
+
+  useEffect(() => {
+    if (!elementRefs?.audioEl || playbackRate == null) return;
+    elementRefs.audioEl.playbackRate = playbackRate;
+  }, [elementRefs?.audioEl, playbackRate]);
 
   // Apply seeks explicitly signaled by a SEEK dispatch. Keyed on
   // seekRequestKey so ordinary onTimeUpdate echoes (which change

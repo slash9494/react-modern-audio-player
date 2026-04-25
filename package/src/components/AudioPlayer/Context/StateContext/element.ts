@@ -17,6 +17,7 @@ export type ActiveUI = Partial<{
   trackInfo: boolean;
   artwork: boolean;
   progress: ProgressUI;
+  playbackRate: boolean;
 }>;
 
 export type CustomIcons = Partial<{
