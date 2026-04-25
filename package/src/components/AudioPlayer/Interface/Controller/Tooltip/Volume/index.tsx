@@ -8,7 +8,7 @@ import { useVolumeSliderPlacement } from "./useVolume";
 import { usePlaybackContext } from "@/components/AudioPlayer/Context/hooks/usePlaybackContext";
 import { useNonNullableContext } from "@/hooks/useNonNullableContext";
 import { audioPlayerDispatchContext } from "@/components/AudioPlayer/Context/dispatchContext";
-import { useResolvedGridArea } from "../../../useResolvedGridArea";
+import { useResolvedGridArea } from "../../../hooks/useResolvedGridArea";
 
 export type VolumeProps = GridItemLayoutProps;
 

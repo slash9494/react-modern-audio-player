@@ -2,7 +2,7 @@ import { useTrackContext } from "@/components/AudioPlayer/Context/hooks/useTrack
 import { useResourceContext } from "@/components/AudioPlayer/Context/hooks/useResourceContext";
 import { FC, memo } from "react";
 import Grid, { GridItemLayoutProps } from "@/components/Grid";
-import { useResolvedGridArea } from "../useResolvedGridArea";
+import { useResolvedGridArea } from "../hooks/useResolvedGridArea";
 import "./Artwork.css";
 
 export type ArtworkProps = GridItemLayoutProps;

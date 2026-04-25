@@ -13,7 +13,7 @@ import {
   TbArrowsShuffle,
 } from "@/components/icons";
 import { Icon } from "../Icon";
-import { useResolvedGridArea } from "../../useResolvedGridArea";
+import { useResolvedGridArea } from "../../hooks/useResolvedGridArea";
 
 const repeatAriaLabels: Record<RepeatType, string> = {
   ALL: "Repeat: All tracks",

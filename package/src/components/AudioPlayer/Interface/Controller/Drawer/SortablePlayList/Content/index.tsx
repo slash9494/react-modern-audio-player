@@ -3,8 +3,10 @@ import { CssTransition } from "@/ui/CssTransition";
 import SortableList from "@/components/SortableList";
 import { useNonNullableContext } from "@/hooks/useNonNullableContext";
 import { useTrackContext } from "@/components/AudioPlayer/Context/hooks/useTrackContext";
-import { playListPortalContext } from "@/components/AudioPlayer/Interface/playListPortalContext";
-import { playListEmptyContext } from "@/components/AudioPlayer/Interface/playListEmptyContext";
+import {
+  playListPortalContext,
+  playListEmptyContext,
+} from "@/components/AudioPlayer/Interface/contexts";
 import { FC, useContext } from "react";
 import ReactDOM from "react-dom";
 import { PlayListItem } from "./PlayListItem";

@@ -3,7 +3,7 @@ import { FC, useCallback } from "react";
 import { Current } from "./Current";
 import { Duration } from "./Duration";
 import { TrackTimePosition } from "./Types";
-import { useResolvedGridArea } from "../../useResolvedGridArea";
+import { useResolvedGridArea } from "../../hooks/useResolvedGridArea";
 
 export type TrackTimeProps = Pick<GridItemLayoutProps, "visible">;
 

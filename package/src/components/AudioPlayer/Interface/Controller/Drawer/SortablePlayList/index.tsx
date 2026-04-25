@@ -2,7 +2,7 @@ import { FC } from "react";
 import Drawer from "@/components/Drawer";
 import Grid, { GridItemLayoutProps } from "@/components/Grid";
 import { useUIContext } from "@/components/AudioPlayer/Context/hooks/useUIContext";
-import { useResolvedGridArea } from "../../../useResolvedGridArea";
+import { useResolvedGridArea } from "../../../hooks/useResolvedGridArea";
 import { PlayList } from "./Content";
 import { PlayListIcon } from "./PlayListIcon";
 
