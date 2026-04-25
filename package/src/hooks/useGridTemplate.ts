@@ -8,7 +8,7 @@ import {
   resolveSlotKey,
 } from "@/components/AudioPlayer/Interface/compoundSlotMetaMap";
 import { isBrowser } from "@/utils/ssr";
-import { ReactElement, useCallback, useState } from "react";
+import { ReactElement, useCallback, useMemo, useState } from "react";
 
 export const useGridTemplate = (
   activeUI: ActiveUI,
@@ -16,14 +16,21 @@ export const useGridTemplate = (
   customComponentsArea?: InterfacePlacement["customComponentsArea"],
   compoundChildren?: ReactElement[]
 ) => {
-  const compoundActiveKeys = (compoundChildren ?? [])
-    .map(resolveSlotKey)
-    .map((slotKey) =>
-      slotKey ? compoundSlotMetaMap[slotKey]?.activeUIKey : undefined
-    )
-    .filter((key): key is keyof ActiveUI => key !== undefined);
+  const compoundActiveKeys = useMemo(
+    () =>
+      (compoundChildren ?? [])
+        .map(resolveSlotKey)
+        .map((slotKey) =>
+          slotKey ? compoundSlotMetaMap[slotKey]?.activeUIKey : undefined
+        )
+        .filter((key): key is keyof ActiveUI => key !== undefined),
+    [compoundChildren]
+  );
 
-  const compoundKeySignature = [...compoundActiveKeys].sort().join(",");
+  const compoundKeySignature = useMemo(
+    () => [...compoundActiveKeys].sort().join(","),
+    [compoundActiveKeys]
+  );
 
   const generateGridTemplateValues = useCallback(
     (

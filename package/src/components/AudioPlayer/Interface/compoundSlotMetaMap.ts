@@ -28,7 +28,7 @@ export function isPresetActive(activeUI: ActiveUI, key: ActiveUIKey): boolean {
 
 // Unwrap one layer of memo/forwardRef — wrappers hide the inner `.name`.
 export function resolveSlotKey(child: ReactElement): string | undefined {
-  const outer = child?.type as
+  const outer = child.type as
     | {
         name?: string;
         displayName?: string;

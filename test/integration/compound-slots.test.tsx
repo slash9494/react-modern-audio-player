@@ -15,16 +15,6 @@ function createPortalTarget(): HTMLDivElement {
 }
 
 describe("multi-instance playlist portal isolation", () => {
-  let portalTarget: HTMLDivElement;
-
-  beforeEach(() => {
-    portalTarget = createPortalTarget();
-  });
-
-  afterEach(() => {
-    portalTarget.remove();
-  });
-
   it("renders two independent <audio> elements for two player instances", () => {
     const { container } = render(
       <>
@@ -276,7 +266,7 @@ describe("PlayListEmpty compound slot", () => {
   });
 
   it("does not render anything inline — the slot is a marker", () => {
-    const { container } = render(
+    render(
       <AudioPlayerWithProviders
         playList={basePlayList.map((track) => ({ ...track }))}
         activeUI={{ all: true }}
@@ -288,8 +278,6 @@ describe("PlayListEmpty compound slot", () => {
     );
     // playList is non-empty, so fallback is not shown anywhere
     expect(screen.queryByTestId("inline-marker")).not.toBeInTheDocument();
-    // grid has no leftover marker div either
-    expect(container.querySelector('[data-testid="inline-marker"]')).toBeNull();
   });
 
   it("keeps the default empty behavior (no fallback rendered) when the slot is omitted", () => {
