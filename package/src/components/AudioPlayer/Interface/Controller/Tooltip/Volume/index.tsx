@@ -8,7 +8,7 @@ import { useVolumeSliderPlacement } from "./useVolume";
 import { usePlaybackContext } from "@/components/AudioPlayer/Context/hooks/usePlaybackContext";
 import { useNonNullableContext } from "@/hooks/useNonNullableContext";
 import { audioPlayerDispatchContext } from "@/components/AudioPlayer/Context/dispatchContext";
-import { usePlacedGridArea } from "../../../usePlacedGridArea";
+import { useResolvedGridArea } from "../../../useResolvedGridArea";
 
 export type VolumeProps = GridItemLayoutProps;
 
@@ -29,7 +29,7 @@ export const Volume: FC<VolumeProps> = ({ gridArea, visible, ...rest }) => {
     initialState: "bottom",
   });
 
-  const resolvedGridArea = usePlacedGridArea("volume", gridArea);
+  const resolvedGridArea = useResolvedGridArea("volume", gridArea);
 
   return (
     <Grid.Item gridArea={resolvedGridArea} visible={visible ?? true} {...rest}>

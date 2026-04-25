@@ -3,7 +3,7 @@ import Grid, { GridItemLayoutProps } from "@/components/Grid";
 import { FC, useEffect, useState } from "react";
 import { BarProgress } from "./BarProgress";
 import { WaveformProgress } from "./WaveformProgress";
-import { usePlacedGridArea } from "../../../usePlacedGridArea";
+import { useResolvedGridArea } from "../../../useResolvedGridArea";
 import "./Progress.css";
 
 export type ProgressType = "bar" | "waveform";
@@ -36,7 +36,7 @@ export const Progress: FC<ProgressProps> = ({
     if (isWaveform && !waveformMounted) setWaveformMounted(true);
   }, [isWaveform, waveformMounted]);
 
-  const resolvedGridArea = usePlacedGridArea("progress", gridArea);
+  const resolvedGridArea = useResolvedGridArea("progress", gridArea);
 
   return (
     <Grid.Item

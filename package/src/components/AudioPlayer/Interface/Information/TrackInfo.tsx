@@ -1,7 +1,7 @@
 import { useTrackContext } from "@/components/AudioPlayer/Context/hooks/useTrackContext";
 import { FC, memo } from "react";
 import Grid, { GridItemLayoutProps } from "@/components/Grid";
-import { usePlacedGridArea } from "../usePlacedGridArea";
+import { useResolvedGridArea } from "../useResolvedGridArea";
 import "./TrackInfo.css";
 
 export type TrackInfoProps = GridItemLayoutProps;
@@ -14,7 +14,7 @@ export const TrackInfo: FC<TrackInfoProps> = memo(function TrackInfo({
   const { playList, curIdx } = useTrackContext();
   const curPlayData = playList[curIdx];
 
-  const resolvedGridArea = usePlacedGridArea("trackInfo", gridArea);
+  const resolvedGridArea = useResolvedGridArea("trackInfo", gridArea);
 
   return (
     <Grid.Item gridArea={resolvedGridArea} visible={visible ?? true} {...rest}>

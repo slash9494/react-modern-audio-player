@@ -2,7 +2,7 @@ import { useTrackContext } from "@/components/AudioPlayer/Context/hooks/useTrack
 import { useResourceContext } from "@/components/AudioPlayer/Context/hooks/useResourceContext";
 import { FC, memo } from "react";
 import Grid, { GridItemLayoutProps } from "@/components/Grid";
-import { usePlacedGridArea } from "../usePlacedGridArea";
+import { useResolvedGridArea } from "../useResolvedGridArea";
 import "./Artwork.css";
 
 export type ArtworkProps = GridItemLayoutProps;
@@ -19,7 +19,7 @@ export const Artwork: FC<ArtworkProps> = memo(function Artwork({
   const altText =
     [track?.writer, track?.name].filter(Boolean).join(" - ") || "Album artwork";
 
-  const resolvedGridArea = usePlacedGridArea("artwork", gridArea);
+  const resolvedGridArea = useResolvedGridArea("artwork", gridArea);
 
   return (
     <Grid.Item gridArea={resolvedGridArea} visible={visible ?? true} {...rest}>

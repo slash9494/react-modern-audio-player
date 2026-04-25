@@ -3,13 +3,13 @@ import { FC, useCallback } from "react";
 import { Current } from "./Current";
 import { Duration } from "./Duration";
 import { TrackTimePosition } from "./Types";
-import { usePlacedGridArea } from "../../usePlacedGridArea";
+import { useResolvedGridArea } from "../../useResolvedGridArea";
 
 export type TrackTimeProps = Pick<GridItemLayoutProps, "visible">;
 
 export const TrackTime: FC<TrackTimeProps> = ({ visible }) => {
-  const currentGridArea = usePlacedGridArea("trackTimeCurrent");
-  const durationGridArea = usePlacedGridArea("trackTimeDuration");
+  const currentGridArea = useResolvedGridArea("trackTimeCurrent");
+  const durationGridArea = useResolvedGridArea("trackTimeDuration");
 
   const parsePosition = useCallback(
     (str: string) => +str.split(/[^\d]/).join(""),

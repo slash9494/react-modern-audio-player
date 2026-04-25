@@ -4,7 +4,7 @@ import {
 } from "@/components/AudioPlayer/Context/StateContext";
 import { useUIContext } from "@/components/AudioPlayer/Context/hooks/useUIContext";
 
-export function usePlacedGridArea(
+export function useResolvedGridArea(
   slotKey: InterfacePlacementKey,
   override?: string
 ): string {

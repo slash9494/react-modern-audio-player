@@ -13,7 +13,7 @@ import {
   TbArrowsShuffle,
 } from "@/components/icons";
 import { Icon } from "../Icon";
-import { usePlacedGridArea } from "../../usePlacedGridArea";
+import { useResolvedGridArea } from "../../useResolvedGridArea";
 
 const repeatAriaLabels: Record<RepeatType, string> = {
   ALL: "Repeat: All tracks",
@@ -46,7 +46,7 @@ export const RepeatTypeBtn: FC<RepeatTypeBtnProps> = memo(
       });
     };
 
-    const resolvedGridArea = usePlacedGridArea("repeatType", gridArea);
+    const resolvedGridArea = useResolvedGridArea("repeatType", gridArea);
 
     return (
       <Grid.Item

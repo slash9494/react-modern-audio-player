@@ -2,7 +2,7 @@ import { FC } from "react";
 import Drawer from "@/components/Drawer";
 import Grid, { GridItemLayoutProps } from "@/components/Grid";
 import { useUIContext } from "@/components/AudioPlayer/Context/hooks/useUIContext";
-import { usePlacedGridArea } from "../../../usePlacedGridArea";
+import { useResolvedGridArea } from "../../../useResolvedGridArea";
 import { PlayList } from "./Content";
 import { PlayListIcon } from "./PlayListIcon";
 
@@ -18,7 +18,7 @@ export const SortablePlayList: FC<SortablePlayListProps> = ({
 }) => {
   const { playListExpanded } = useUIContext();
   const initialOpen = initialExpanded ?? playListExpanded;
-  const resolvedGridArea = usePlacedGridArea("playList", gridArea);
+  const resolvedGridArea = useResolvedGridArea("playList", gridArea);
   return (
     <Grid.Item gridArea={resolvedGridArea} visible={visible ?? true} {...rest}>
       <Drawer initialOpen={initialOpen}>

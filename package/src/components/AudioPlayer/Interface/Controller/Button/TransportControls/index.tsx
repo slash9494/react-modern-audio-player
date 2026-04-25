@@ -1,7 +1,7 @@
 import { FC } from "react";
 import Grid, { GridItemLayoutProps } from "@/components/Grid";
 import { useUIContext } from "@/components/AudioPlayer/Context/hooks/useUIContext";
-import { usePlacedGridArea } from "../../../usePlacedGridArea";
+import { useResolvedGridArea } from "../../../useResolvedGridArea";
 import { PlayBtn } from "./PlayBtn";
 import { PrevBtn } from "./PrevBtn";
 import { NextBtn } from "./NextBtn";
@@ -16,7 +16,7 @@ export const TransportControls: FC<TransportControlsProps> = ({
   const { activeUI } = useUIContext();
   const isPrevNextVisible = Boolean(activeUI.prevNnext ?? activeUI.all);
 
-  const resolvedGridArea = usePlacedGridArea("playButton", gridArea);
+  const resolvedGridArea = useResolvedGridArea("playButton", gridArea);
 
   return (
     <Grid.Item gridArea={resolvedGridArea} visible={visible ?? true} {...rest}>
