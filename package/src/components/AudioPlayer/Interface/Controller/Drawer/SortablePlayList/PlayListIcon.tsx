@@ -1,4 +1,4 @@
-import { useResourceContext } from "@/hooks/context/useResourceContext";
+import { useResourceContext } from "@/components/AudioPlayer/Context/hooks/useResourceContext";
 import { FC } from "react";
 import { MdPlaylistPlay } from "@/components/icons";
 import { Icon } from "../../Icon";

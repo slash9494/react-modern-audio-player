@@ -1,4 +1,4 @@
-import { useResourceContext } from "@/hooks/context/useResourceContext";
+import { useResourceContext } from "@/components/AudioPlayer/Context/hooks/useResourceContext";
 import type { ElementRefs } from "@/components/AudioPlayer/Context/StateContext";
 
 export interface AudioPlayerElementControls {

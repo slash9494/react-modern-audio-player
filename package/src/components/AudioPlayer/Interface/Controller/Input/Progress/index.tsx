@@ -1,4 +1,4 @@
-import { useUIContext } from "@/hooks/context/useUIContext";
+import { useUIContext } from "@/components/AudioPlayer/Context/hooks/useUIContext";
 import Grid, { GridItemLayoutProps } from "@/components/Grid";
 import { FC, useEffect, useState } from "react";
 import { BarProgress } from "./BarProgress";

@@ -3,10 +3,10 @@ import { VolumeSlider } from "./Content";
 import Dropdown from "@/components/Dropdown";
 import Grid, { GridItemLayoutProps } from "@/components/Grid";
 import { VolumeIcon } from "../../Button";
-import { useUIContext } from "@/hooks/context/useUIContext";
+import { useUIContext } from "@/components/AudioPlayer/Context/hooks/useUIContext";
 import { useVolumeSliderPlacement } from "./useVolume";
-import { usePlaybackContext } from "@/hooks/context/usePlaybackContext";
-import { useNonNullableContext } from "@/hooks/context/useNonNullableContext";
+import { usePlaybackContext } from "@/components/AudioPlayer/Context/hooks/usePlaybackContext";
+import { useNonNullableContext } from "@/hooks/useNonNullableContext";
 import { audioPlayerDispatchContext } from "@/components/AudioPlayer/Context/dispatchContext";
 import { usePlacedGridArea } from "../../../usePlacedGridArea";
 

@@ -4,7 +4,7 @@ import { Information } from "./Information";
 
 import Grid from "@/components/Grid";
 
-import { useUIContext } from "@/hooks/context/useUIContext";
+import { useUIContext } from "@/components/AudioPlayer/Context/hooks/useUIContext";
 import { useGridTemplate } from "@/hooks/useGridTemplate";
 import { useDuplicateSlotWarning } from "./useDuplicateSlotWarning";
 import { playListPortalContext } from "./playListPortalContext";

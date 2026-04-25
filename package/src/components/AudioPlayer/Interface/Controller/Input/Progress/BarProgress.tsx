@@ -1,4 +1,4 @@
-import { useTimeContext } from "@/hooks/context/useTimeContext";
+import { useTimeContext } from "@/components/AudioPlayer/Context/hooks/useTimeContext";
 import { getTimeWithPadStart } from "@/utils/getTime";
 import { safeRatio } from "@/utils/safeRatio";
 import { FC, useEffect, useRef, useState } from "react";

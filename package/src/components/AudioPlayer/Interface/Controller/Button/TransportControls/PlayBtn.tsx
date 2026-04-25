@@ -1,9 +1,9 @@
 import { FC, memo } from "react";
 import "./PlayBtn.css";
-import { useNonNullableContext } from "@/hooks/context/useNonNullableContext";
+import { useNonNullableContext } from "@/hooks/useNonNullableContext";
 import { audioPlayerDispatchContext } from "@/components/AudioPlayer/Context/dispatchContext";
-import { usePlaybackContext } from "@/hooks/context/usePlaybackContext";
-import { useResourceContext } from "@/hooks/context/useResourceContext";
+import { usePlaybackContext } from "@/components/AudioPlayer/Context/hooks/usePlaybackContext";
+import { useResourceContext } from "@/components/AudioPlayer/Context/hooks/useResourceContext";
 import { StyledBtn } from "@/ui/StyledBtn";
 import { MdPauseCircleFilled, MdPlayCircleFilled } from "@/components/icons";
 import { Icon } from "../../Icon";

@@ -5,9 +5,9 @@ import type { AudioPlayerContainerProps } from "@/components/AudioPlayer/Contain
 import type { UIContext } from "@/components/AudioPlayer/Context/UIContext";
 import type { PlayerPlacement } from "@/components/AudioPlayer/Context/StateContext";
 
-vi.mock("@/hooks/context/useUIContext");
+vi.mock("@/components/AudioPlayer/Context/hooks/useUIContext");
 
-import { useUIContext } from "@/hooks/context/useUIContext";
+import { useUIContext } from "@/components/AudioPlayer/Context/hooks/useUIContext";
 
 const baseUIContext: UIContext = {
   activeUI: {},

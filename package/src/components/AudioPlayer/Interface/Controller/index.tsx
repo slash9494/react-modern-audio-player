@@ -1,6 +1,6 @@
 import { FC } from "react";
 import "./Controller.css";
-import { useUIContext } from "@/hooks/context/useUIContext";
+import { useUIContext } from "@/components/AudioPlayer/Context/hooks/useUIContext";
 import { TransportControls, RepeatTypeBtn } from "./Button";
 import { SortablePlayList } from "./Drawer";
 import { Progress } from "./Input";

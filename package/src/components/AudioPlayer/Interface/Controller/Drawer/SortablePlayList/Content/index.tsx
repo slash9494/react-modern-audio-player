@@ -1,8 +1,8 @@
 import { drawerContext } from "@/components/Drawer/DrawerContext";
 import { CssTransition } from "@/ui/CssTransition";
 import SortableList from "@/components/SortableList";
-import { useNonNullableContext } from "@/hooks/context/useNonNullableContext";
-import { useTrackContext } from "@/hooks/context/useTrackContext";
+import { useNonNullableContext } from "@/hooks/useNonNullableContext";
+import { useTrackContext } from "@/components/AudioPlayer/Context/hooks/useTrackContext";
 import { playListPortalContext } from "@/components/AudioPlayer/Interface/playListPortalContext";
 import { playListEmptyContext } from "@/components/AudioPlayer/Interface/playListEmptyContext";
 import { FC, useContext } from "react";

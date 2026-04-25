@@ -4,7 +4,7 @@ import React, {
   PropsWithChildren,
   useMemo,
 } from "react";
-import { useUIContext } from "@/hooks/context/useUIContext";
+import { useUIContext } from "@/components/AudioPlayer/Context/hooks/useUIContext";
 import { PlayerPlacement } from "@/components/AudioPlayer/Context/StateContext";
 
 export interface AudioPlayerContainerProps {

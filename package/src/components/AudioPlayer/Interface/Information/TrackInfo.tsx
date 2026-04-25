@@ -1,4 +1,4 @@
-import { useTrackContext } from "@/hooks/context/useTrackContext";
+import { useTrackContext } from "@/components/AudioPlayer/Context/hooks/useTrackContext";
 import { FC, memo } from "react";
 import Grid, { GridItemLayoutProps } from "@/components/Grid";
 import { usePlacedGridArea } from "../usePlacedGridArea";

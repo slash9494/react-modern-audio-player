@@ -2,7 +2,7 @@ import {
   InterfacePlacementKey,
   defaultInterfacePlacement,
 } from "@/components/AudioPlayer/Context/StateContext";
-import { useUIContext } from "@/hooks/context/useUIContext";
+import { useUIContext } from "@/components/AudioPlayer/Context/hooks/useUIContext";
 
 export function usePlacedGridArea(
   slotKey: InterfacePlacementKey,

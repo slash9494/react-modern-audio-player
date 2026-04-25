@@ -1,5 +1,5 @@
-import { useTrackContext } from "@/hooks/context/useTrackContext";
-import { useUIContext } from "@/hooks/context/useUIContext";
+import { useTrackContext } from "@/components/AudioPlayer/Context/hooks/useTrackContext";
+import { useUIContext } from "@/components/AudioPlayer/Context/hooks/useUIContext";
 import { FC } from "react";
 import { Artwork } from "./Artwork";
 import { TrackInfo } from "./TrackInfo";
