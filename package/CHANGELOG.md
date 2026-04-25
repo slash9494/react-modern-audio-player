@@ -31,7 +31,9 @@
   </AudioPlayer>
   ```
 
-  Each compound accepts `gridArea?` and `visible?` (defaults to `true`) plus its own domain props. Original internal components (`PlayBtn`, `PrevBtn`, `NextBtn`, etc.) remain exported for users who want fully custom layouts.
+  Each compound accepts the full `GridItemLayoutProps` set — `gridArea?`, `visible?` (defaults to `true`), `width?`, `padding?`, `justifySelf?`, `UNSAFE_className?` — plus its own domain props. `AudioPlayer.TrackTime` is the exception: it only exposes `visible?` because the slot maps to two grid areas internally.
+
+  Native HTML attributes (`className`, `style`, `onClick`, `data-*`, etc.) are **not** forwarded by compound slots. The original internal components (`PlayBtn`, `PrevBtn`, `NextBtn`, etc.) remain exported for users who want fully custom layouts with full DOM control; headless support with native attribute pass-through is planned for v3.
 
   In development, a `console.warn` is emitted when a compound slot is rendered while its preset counterpart is still active, pointing to the `activeUI` flag that resolves the duplication.
 

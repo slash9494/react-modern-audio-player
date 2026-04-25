@@ -619,7 +619,9 @@ const CustomComponent = () => {
 | `AudioPlayer.TrackTime` | current + duration time |
 | `AudioPlayer.CustomComponent` | user-defined slot |
 
-Each slot accepts `gridArea?` and `visible?` plus its own domain props.
+Each slot accepts the full `GridItemLayoutProps` set — `gridArea?`, `visible?`, `width?`, `padding?`, `justifySelf?`, `UNSAFE_className?` — plus its own domain props. `AudioPlayer.TrackTime` is the exception: it only exposes `visible?` because the slot maps to two grid areas internally.
+
+Native HTML attributes (`className`, `style`, `onClick`, `data-*`, etc.) are **not** forwarded by compound slots. Compose the underlying primitives (`PlayBtn`, `PrevBtn`, `NextBtn`, etc., still exported) when full DOM control is needed; headless support with native attribute pass-through is planned for v3.
 
 ## Mental model — `activeUI` vs compound children
 
@@ -680,6 +682,7 @@ Common integration mistakes to avoid:
 - **Set the `InterfacePlacement` generic when placing `customComponentsArea` beyond row 9.** TypeScript rejects values past the default range, so use `InterfacePlacement<N>` where `N` is `(max row length + 1)` — e.g. `InterfacePlacement<11>` for `"row1-10"` (see [Custom Component](#custom-component)).
 - **`AudioPlayer.CustomComponent` accepts a single React element child.** It uses `React.cloneElement` internally, so passing multiple children or a primitive (string, number) will throw.
 - **Volume is `0..1`, not `0..100`.** `setVolume` clamps out-of-range values, so `setVolume(50)` silently becomes `setVolume(1)`.
+- **Compound slots don't forward native HTML attributes.** `<AudioPlayer.Volume className="...">` is rejected by TypeScript — only `GridItemLayoutProps` (layout) pass through. Compose the underlying primitives (`PlayBtn`, `PrevBtn`, `NextBtn`, etc., still exported) when you need `className`, `style`, `onClick`, or `data-*`. Full headless support is planned for v3.
 - **`id: 0` is a valid track id.** The reducer uses nullish checks, so tracks with `id: 0` are handled correctly — don't filter them out of `playList` on the assumption that zero is falsy.
 - **Don't import the CSS manually.** Styles are auto-injected via `sideEffects: ["*.css"]`; `import "react-modern-audio-player/dist/index.css"` will 404 or double-load.
 - **Multiple mounted `<AudioPlayer>` instances don't share React state, but they do share the user's speakers.** Each instance has its own provider and its own `<audio>` element, so the state is isolated — but if two instances both play, the user hears both tracks simultaneously. Coordinate playback yourself (e.g. pause the others when one `play()` fires).
