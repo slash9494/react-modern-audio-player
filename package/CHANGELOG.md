@@ -67,6 +67,10 @@
 
 - **Multi-instance playlist isolation** (Fixes [#11](https://github.com/slash9494/react-modern-audio-player/issues/11), [#15](https://github.com/slash9494/react-modern-audio-player/issues/15)): multiple `<AudioPlayer>` instances on the same page no longer leak playlist content into each other's drawer. Previously `PlayList` resolved its portal target through `document.querySelector(".rmap-sortable-playlist")`, which matched the first target in document order — every secondary player would render its playlist into the first player's drawer. `Interface` now publishes its own portal node per instance, and each drawer renders exclusively into its own target. Audio state (play/pause, volume, mute, current track) was already isolated per instance via the v2 provider split.
 
+### 🐛 Bug Fixes
+
+- **Compound slots silently dropped layout props**: each compound slot (`AudioPlayer.Volume`, `AudioPlayer.Progress`, `AudioPlayer.Artwork`, `AudioPlayer.TrackInfo`, `AudioPlayer.RepeatButton`, `AudioPlayer.PlayList`, `AudioPlayer.PlayButton`) advertised the full `GridItemLayoutProps` set in its TypeScript surface but the implementation only forwarded `gridArea` and `visible` to the underlying `Grid.Item`, so `width`, `padding`, `justifySelf`, and `UNSAFE_className` were silently ignored at runtime. The slots now spread the rest of `GridItemLayoutProps` onto `Grid.Item`, and `AudioPlayer.Progress` treats its previous hard-coded `width="100%"` as a default (`width ?? "100%"`) so consumers can override.
+
 ## v2.1.0 (2026-04-14)
 
 ### ♿ Accessibility

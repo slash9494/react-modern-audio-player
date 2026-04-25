@@ -642,6 +642,30 @@ The two layers are orthogonal. Compound children render **additively** alongside
 
 In development, a `console.warn` is emitted when a compound slot is rendered while its preset counterpart is still active, so silent duplication is easy to catch.
 
+## `AudioPlayer.PlayButton` and `activeUI.prevNnext`
+
+`AudioPlayer.PlayButton` is a single slot that renders the **Play + Prev + Next** group. Whether Prev / Next render inside the group is driven by `activeUI.prevNnext` (which defaults to `activeUI.all`):
+
+```tsx
+// Re-place the full Play + Prev + Next group at a custom area
+<AudioPlayer
+  playList={playList}
+  activeUI={{ all: true, playButton: false }} // hide the preset transport
+>
+  <AudioPlayer.PlayButton gridArea="row1-3" />
+</AudioPlayer>
+
+// Same compound, but render Play only — Prev / Next hidden by activeUI.prevNnext
+<AudioPlayer
+  playList={playList}
+  activeUI={{ all: true, playButton: false, prevNnext: false }}
+>
+  <AudioPlayer.PlayButton gridArea="row1-3" />
+</AudioPlayer>
+```
+
+There is no separate `AudioPlayer.PrevButton` / `AudioPlayer.NextButton` slot — toggle `activeUI.prevNnext` on the group instead. For a fully custom transport layout, compose the underlying `PlayBtn`, `PrevBtn`, and `NextBtn` primitives directly (still exported from the package).
+
 ## Custom empty-playlist UI
 
 Pass children to `AudioPlayer.PlayListEmpty` to render a custom node inside the playlist drawer when `playList` is empty. Omit the slot to keep the default (drawer content renders nothing).
