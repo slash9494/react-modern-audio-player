@@ -27,7 +27,13 @@ function resolveProgressType(
   return "bar";
 }
 
-export const Progress: FC<ProgressProps> = ({ gridArea, visible, type }) => {
+export const Progress: FC<ProgressProps> = ({
+  gridArea,
+  visible,
+  type,
+  width,
+  ...rest
+}) => {
   const { activeUI, interfacePlacement } = useUIContext();
   const progressType = resolveProgressType(type, activeUI.progress);
   const isWaveform = progressType === "waveform";
@@ -47,8 +53,9 @@ export const Progress: FC<ProgressProps> = ({ gridArea, visible, type }) => {
   return (
     <Grid.Item
       gridArea={resolvedGridArea}
-      width="100%"
+      width={width ?? "100%"}
       visible={visible ?? true}
+      {...rest}
     >
       <div className="rmap-progress-container">
         {waveformMounted && <WaveformProgress isActive={isWaveform} />}

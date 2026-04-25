@@ -11,6 +11,7 @@ export type ArtworkProps = GridItemLayoutProps;
 export const Artwork: FC<ArtworkProps> = memo(function Artwork({
   gridArea,
   visible,
+  ...rest
 }) {
   const { playList, curIdx } = useTrackContext();
   const { coverImgsCss } = useResourceContext();
@@ -27,7 +28,7 @@ export const Artwork: FC<ArtworkProps> = memo(function Artwork({
     defaultInterfacePlacement.templateArea.artwork;
 
   return (
-    <Grid.Item gridArea={resolvedGridArea} visible={visible ?? true}>
+    <Grid.Item gridArea={resolvedGridArea} visible={visible ?? true} {...rest}>
       <div className="rmap-artwork-container">
         {track?.img ? (
           <img src={track.img} alt={altText} style={coverImgsCss?.artwork} />

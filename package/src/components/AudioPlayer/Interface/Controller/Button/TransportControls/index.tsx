@@ -11,6 +11,7 @@ export type TransportControlsProps = GridItemLayoutProps;
 export const TransportControls: FC<TransportControlsProps> = ({
   gridArea,
   visible,
+  ...rest
 }) => {
   const { activeUI, interfacePlacement } = useUIContext();
   const isPrevNextVisible = Boolean(activeUI.prevNnext ?? activeUI.all);
@@ -22,7 +23,7 @@ export const TransportControls: FC<TransportControlsProps> = ({
     defaultInterfacePlacement.templateArea.playButton;
 
   return (
-    <Grid.Item gridArea={resolvedGridArea} visible={visible ?? true}>
+    <Grid.Item gridArea={resolvedGridArea} visible={visible ?? true} {...rest}>
       <div
         className="rmap-ctrl-btn-wrapper"
         role="group"

@@ -10,6 +10,7 @@ export type TrackInfoProps = GridItemLayoutProps;
 export const TrackInfo: FC<TrackInfoProps> = memo(function TrackInfo({
   gridArea,
   visible,
+  ...rest
 }) {
   const { playList, curIdx } = useTrackContext();
   const { interfacePlacement } = useUIContext();
@@ -22,7 +23,7 @@ export const TrackInfo: FC<TrackInfoProps> = memo(function TrackInfo({
     defaultInterfacePlacement.templateArea.trackInfo;
 
   return (
-    <Grid.Item gridArea={resolvedGridArea} visible={visible ?? true}>
+    <Grid.Item gridArea={resolvedGridArea} visible={visible ?? true} {...rest}>
       <div className="rmap-track-info-container">
         {curPlayData?.customTrackInfo ? (
           curPlayData.customTrackInfo

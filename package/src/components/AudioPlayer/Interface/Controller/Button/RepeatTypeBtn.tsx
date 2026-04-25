@@ -36,7 +36,7 @@ const NEXT_REPEAT_TYPE: Record<RepeatType, RepeatType> = {
 export type RepeatTypeBtnProps = GridItemLayoutProps;
 
 export const RepeatTypeBtn: FC<RepeatTypeBtnProps> = memo(
-  function RepeatTypeBtn({ gridArea, visible }) {
+  function RepeatTypeBtn({ gridArea, visible, ...rest }) {
     const { repeatType } = usePlaybackContext();
     const { customIcons } = useResourceContext();
     const { interfacePlacement } = useUIContext();
@@ -57,7 +57,11 @@ export const RepeatTypeBtn: FC<RepeatTypeBtnProps> = memo(
       defaultInterfacePlacement.templateArea.repeatType;
 
     return (
-      <Grid.Item gridArea={resolvedGridArea} visible={visible ?? true}>
+      <Grid.Item
+        gridArea={resolvedGridArea}
+        visible={visible ?? true}
+        {...rest}
+      >
         <StyledBtn
           type="button"
           aria-label={repeatAriaLabels[repeatType]}

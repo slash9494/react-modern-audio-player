@@ -14,6 +14,7 @@ export const SortablePlayList: FC<SortablePlayListProps> = ({
   initialExpanded,
   gridArea,
   visible,
+  ...rest
 }) => {
   const { playListExpanded, interfacePlacement } = useUIContext();
   const initialOpen = initialExpanded ?? playListExpanded;
@@ -23,7 +24,7 @@ export const SortablePlayList: FC<SortablePlayListProps> = ({
     interfacePlacement?.templateArea?.playList ??
     defaultInterfacePlacement.templateArea.playList;
   return (
-    <Grid.Item gridArea={resolvedGridArea} visible={visible ?? true}>
+    <Grid.Item gridArea={resolvedGridArea} visible={visible ?? true} {...rest}>
       <Drawer initialOpen={initialOpen}>
         <Drawer.Trigger
           aria-label="Playlist"

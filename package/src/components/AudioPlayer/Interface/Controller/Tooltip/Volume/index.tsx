@@ -12,7 +12,7 @@ import { defaultInterfacePlacement } from "@/components/AudioPlayer/Context/Stat
 
 export type VolumeProps = GridItemLayoutProps;
 
-export const Volume: FC<VolumeProps> = ({ gridArea, visible }) => {
+export const Volume: FC<VolumeProps> = ({ gridArea, visible, ...rest }) => {
   const triggerRef = useRef<HTMLButtonElement>(null);
   const { muted } = usePlaybackContext();
   const audioPlayerDispatch = useNonNullableContext(audioPlayerDispatchContext);
@@ -37,7 +37,7 @@ export const Volume: FC<VolumeProps> = ({ gridArea, visible }) => {
     defaultInterfacePlacement.templateArea.volume;
 
   return (
-    <Grid.Item gridArea={resolvedGridArea} visible={visible ?? true}>
+    <Grid.Item gridArea={resolvedGridArea} visible={visible ?? true} {...rest}>
       <Dropdown
         placement={contextVolumePlacement || volumeSliderPlacement}
         triggerType="hover"
