@@ -1,4 +1,4 @@
-import { clampVolume } from "@/utils/clampVolume";
+import { clampVolume } from "@/components/AudioPlayer/utils/clampVolume";
 import { getRandomNumber } from "@/utils/getRandomNumber";
 import { AudioContextAction } from "./dispatchContext";
 import { AudioPlayerStateContext } from "./StateContext";

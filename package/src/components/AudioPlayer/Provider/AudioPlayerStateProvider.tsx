@@ -16,7 +16,7 @@ import {
   resourceContext,
   AudioPlayerStateProviderProps,
 } from "@/components/AudioPlayer/Context";
-import { clampVolume } from "@/utils/clampVolume";
+import { clampVolume } from "@/components/AudioPlayer/utils/clampVolume";
 import { PropsWithChildren, useMemo, useReducer } from "react";
 
 function createInitialState<T extends number>(
