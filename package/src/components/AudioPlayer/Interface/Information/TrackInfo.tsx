@@ -43,3 +43,5 @@ export const TrackInfo: FC<TrackInfoProps> = memo(function TrackInfo({
     </Grid.Item>
   );
 });
+
+TrackInfo.displayName = "TrackInfo";
