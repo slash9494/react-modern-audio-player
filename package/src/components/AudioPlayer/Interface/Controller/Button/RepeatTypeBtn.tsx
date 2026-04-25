@@ -3,11 +3,7 @@ import { useNonNullableContext } from "@/hooks/context/useNonNullableContext";
 import { audioPlayerDispatchContext } from "@/components/AudioPlayer/Context/dispatchContext";
 import { usePlaybackContext } from "@/hooks/context/usePlaybackContext";
 import { useResourceContext } from "@/hooks/context/useResourceContext";
-import { useUIContext } from "@/hooks/context/useUIContext";
-import {
-  RepeatType,
-  defaultInterfacePlacement,
-} from "@/components/AudioPlayer/Context/StateContext";
+import { RepeatType } from "@/components/AudioPlayer/Context/StateContext";
 import { StyledBtn } from "@/ui/StyledBtn";
 import Grid, { GridItemLayoutProps } from "@/components/Grid";
 import {
@@ -17,6 +13,7 @@ import {
   TbArrowsShuffle,
 } from "@/components/icons";
 import { Icon } from "../Icon";
+import { usePlacedGridArea } from "../../usePlacedGridArea";
 
 const repeatAriaLabels: Record<RepeatType, string> = {
   ALL: "Repeat: All tracks",
@@ -39,7 +36,6 @@ export const RepeatTypeBtn: FC<RepeatTypeBtnProps> = memo(
   function RepeatTypeBtn({ gridArea, visible, ...rest }) {
     const { repeatType } = usePlaybackContext();
     const { customIcons } = useResourceContext();
-    const { interfacePlacement } = useUIContext();
     const audioPlayerDispatch = useNonNullableContext(
       audioPlayerDispatchContext
     );
@@ -50,11 +46,7 @@ export const RepeatTypeBtn: FC<RepeatTypeBtnProps> = memo(
       });
     };
 
-    const resolvedGridArea =
-      gridArea ??
-      interfacePlacement?.itemCustomArea?.repeatType ??
-      interfacePlacement?.templateArea?.repeatType ??
-      defaultInterfacePlacement.templateArea.repeatType;
+    const resolvedGridArea = usePlacedGridArea("repeatType", gridArea);
 
     return (
       <Grid.Item

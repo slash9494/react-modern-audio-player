@@ -1,9 +1,8 @@
 import { useTrackContext } from "@/hooks/context/useTrackContext";
 import { useResourceContext } from "@/hooks/context/useResourceContext";
-import { useUIContext } from "@/hooks/context/useUIContext";
 import { FC, memo } from "react";
 import Grid, { GridItemLayoutProps } from "@/components/Grid";
-import { defaultInterfacePlacement } from "@/components/AudioPlayer/Context/StateContext";
+import { usePlacedGridArea } from "../usePlacedGridArea";
 import "./Artwork.css";
 
 export type ArtworkProps = GridItemLayoutProps;
@@ -15,17 +14,12 @@ export const Artwork: FC<ArtworkProps> = memo(function Artwork({
 }) {
   const { playList, curIdx } = useTrackContext();
   const { coverImgsCss } = useResourceContext();
-  const { interfacePlacement } = useUIContext();
 
   const track = playList[curIdx];
   const altText =
     [track?.writer, track?.name].filter(Boolean).join(" - ") || "Album artwork";
 
-  const resolvedGridArea =
-    gridArea ??
-    interfacePlacement?.itemCustomArea?.artwork ??
-    interfacePlacement?.templateArea?.artwork ??
-    defaultInterfacePlacement.templateArea.artwork;
+  const resolvedGridArea = usePlacedGridArea("artwork", gridArea);
 
   return (
     <Grid.Item gridArea={resolvedGridArea} visible={visible ?? true} {...rest}>

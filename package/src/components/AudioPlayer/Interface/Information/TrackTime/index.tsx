@@ -1,30 +1,22 @@
-import { defaultInterfacePlacement } from "@/components/AudioPlayer/Context";
 import Grid, { GridItemLayoutProps } from "@/components/Grid";
-import { useUIContext } from "@/hooks/context/useUIContext";
 import { FC, useCallback } from "react";
 import { Current } from "./Current";
 import { Duration } from "./Duration";
 import { TrackTimePosition } from "./Types";
+import { usePlacedGridArea } from "../../usePlacedGridArea";
 
 export type TrackTimeProps = Pick<GridItemLayoutProps, "visible">;
 
 export const TrackTime: FC<TrackTimeProps> = ({ visible }) => {
-  const { interfacePlacement } = useUIContext();
+  const currentGridArea = usePlacedGridArea("trackTimeCurrent");
+  const durationGridArea = usePlacedGridArea("trackTimeDuration");
 
   const parsePosition = useCallback(
     (str: string) => +str.split(/[^\d]/).join(""),
     []
   );
-  const currentTimePosition = parsePosition(
-    interfacePlacement?.itemCustomArea?.trackTimeCurrent ||
-      interfacePlacement?.templateArea?.trackTimeCurrent ||
-      defaultInterfacePlacement.templateArea.trackTimeCurrent
-  );
-  const durationTimePosition = parsePosition(
-    interfacePlacement?.itemCustomArea?.trackTimeDuration ||
-      interfacePlacement?.templateArea?.trackTimeDuration ||
-      defaultInterfacePlacement.templateArea.trackTimeDuration
-  );
+  const currentTimePosition = parsePosition(currentGridArea);
+  const durationTimePosition = parsePosition(durationGridArea);
 
   const getPosition = useCallback(
     (positionNumber: number): TrackTimePosition => {
@@ -48,24 +40,10 @@ export const TrackTime: FC<TrackTimeProps> = ({ visible }) => {
 
   return (
     <>
-      <Grid.Item
-        gridArea={
-          interfacePlacement?.itemCustomArea?.trackTimeCurrent ||
-          interfacePlacement?.templateArea?.trackTimeCurrent ||
-          defaultInterfacePlacement.templateArea.trackTimeCurrent
-        }
-        visible={resolvedVisible}
-      >
+      <Grid.Item gridArea={currentGridArea} visible={resolvedVisible}>
         <Current position={positions.current} />
       </Grid.Item>
-      <Grid.Item
-        gridArea={
-          interfacePlacement?.itemCustomArea?.trackTimeDuration ||
-          interfacePlacement?.templateArea?.trackTimeDuration ||
-          defaultInterfacePlacement.templateArea.trackTimeDuration
-        }
-        visible={resolvedVisible}
-      >
+      <Grid.Item gridArea={durationGridArea} visible={resolvedVisible}>
         <Duration position={positions.duration} />
       </Grid.Item>
     </>

@@ -1,9 +1,9 @@
 import { useUIContext } from "@/hooks/context/useUIContext";
 import Grid, { GridItemLayoutProps } from "@/components/Grid";
-import { defaultInterfacePlacement } from "@/components/AudioPlayer/Context/StateContext";
 import { FC, useEffect, useState } from "react";
 import { BarProgress } from "./BarProgress";
 import { WaveformProgress } from "./WaveformProgress";
+import { usePlacedGridArea } from "../../../usePlacedGridArea";
 import "./Progress.css";
 
 export type ProgressType = "bar" | "waveform";
@@ -18,15 +18,6 @@ export interface ProgressProps extends GridItemLayoutProps {
   type?: ProgressType;
 }
 
-function resolveProgressType(
-  override: ProgressType | undefined,
-  activeProgress: "bar" | "waveform" | false | undefined
-): ProgressType {
-  if (override) return override;
-  if (activeProgress === "waveform") return "waveform";
-  return "bar";
-}
-
 export const Progress: FC<ProgressProps> = ({
   gridArea,
   visible,
@@ -34,8 +25,9 @@ export const Progress: FC<ProgressProps> = ({
   width,
   ...rest
 }) => {
-  const { activeUI, interfacePlacement } = useUIContext();
-  const progressType = resolveProgressType(type, activeUI.progress);
+  const { activeUI } = useUIContext();
+  const progressType: ProgressType =
+    type ?? (activeUI.progress === "waveform" ? "waveform" : "bar");
   const isWaveform = progressType === "waveform";
   const isBar = progressType === "bar";
   const [waveformMounted, setWaveformMounted] = useState(isWaveform);
@@ -44,11 +36,7 @@ export const Progress: FC<ProgressProps> = ({
     if (isWaveform && !waveformMounted) setWaveformMounted(true);
   }, [isWaveform, waveformMounted]);
 
-  const resolvedGridArea =
-    gridArea ??
-    interfacePlacement?.itemCustomArea?.progress ??
-    interfacePlacement?.templateArea?.progress ??
-    defaultInterfacePlacement.templateArea.progress;
+  const resolvedGridArea = usePlacedGridArea("progress", gridArea);
 
   return (
     <Grid.Item
