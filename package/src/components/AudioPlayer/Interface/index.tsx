@@ -6,10 +6,9 @@ import Grid from "@/components/Grid";
 
 import { useUIContext } from "@/components/AudioPlayer/Context/hooks/useUIContext";
 import { useGridTemplate } from "@/hooks/useGridTemplate";
-import { useDuplicateSlotWarning } from "./useDuplicateSlotWarning";
+import { useCompoundSlots, useDuplicateSlotWarning } from "./compound";
 import { playListPortalContext } from "./playListPortalContext";
 import { playListEmptyContext } from "./playListEmptyContext";
-import { useCompoundSlots } from "./useCompoundSlots";
 import "./Interface.css";
 
 interface InterfaceProps {

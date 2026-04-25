@@ -4,7 +4,7 @@ import {
   isPresetActive,
   resolveSlotKey,
   compoundSlotMetaMap,
-} from "./compoundSlotMetaMap";
+} from "./slotMetaMap";
 
 export interface DuplicateSlotWarningArgs {
   compoundChildren: ReactElement[];

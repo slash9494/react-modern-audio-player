@@ -6,7 +6,7 @@ import {
 import {
   compoundSlotMetaMap,
   resolveSlotKey,
-} from "@/components/AudioPlayer/Interface/compoundSlotMetaMap";
+} from "@/components/AudioPlayer/Interface/compound/slotMetaMap";
 import { isBrowser } from "@/utils/ssr";
 import { ReactElement, useCallback, useMemo, useState } from "react";
 
