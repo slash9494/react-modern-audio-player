@@ -1,33 +1,75 @@
+import { AudioPlayerStateProvider } from "@/components/AudioPlayer/Provider";
 import {
-  AudioPlayerProvider,
-  SpectrumProvider,
-  SpectrumProviderProps,
-} from "@/components/Provider";
-import { GlobalStyle } from "../../styles/GlobalStyle";
+  AudioPlayerContainer,
+  AudioPlayerContainerProps,
+} from "@/components/AudioPlayer/Container";
+import "@/styles/vars.css";
+import "@/styles/GlobalStyle.css";
 import { defaultInterfacePlacementMaxLength } from "./Context";
 import { CustomComponent } from "./Interface/CustomComponent";
+import { PlayListEmpty } from "./Interface/PlayListEmpty";
 import { AudioPlayer, AudioPlayerProps } from "./Player";
+import { Progress } from "./Interface/Controller/Input";
+import { Volume } from "./Interface/Controller/Tooltip";
+import { SortablePlayList } from "./Interface/Controller/Drawer";
+import {
+  TransportControls,
+  RepeatTypeBtn,
+} from "./Interface/Controller/Button";
+import { Artwork } from "./Interface/Information/Artwork";
+import { TrackInfo } from "./Interface/Information/TrackInfo";
+import { TrackTime } from "./Interface/Information/TrackTime";
 
 export type RMAudioPlayerProps<
   TInterfacePlacementLength extends number = typeof defaultInterfacePlacementMaxLength
-> = AudioPlayerProps<TInterfacePlacementLength> & SpectrumProviderProps;
+> = AudioPlayerProps<TInterfacePlacementLength> & AudioPlayerContainerProps;
 
-const AudioPlayerWithProviders = <TInterfacePlacementLength extends number>({
+function AudioPlayerWithProviders<
+  TInterfacePlacementLength extends number = typeof defaultInterfacePlacementMaxLength
+>({
   rootContainerProps,
   ...audioPlayProps
-}: RMAudioPlayerProps<TInterfacePlacementLength>) => {
+}: RMAudioPlayerProps<TInterfacePlacementLength>) {
   return (
-    <AudioPlayerProvider {...audioPlayProps}>
-      <SpectrumProvider rootContainerProps={rootContainerProps}>
+    <AudioPlayerStateProvider {...audioPlayProps}>
+      <AudioPlayerContainer rootContainerProps={rootContainerProps}>
         <AudioPlayer {...audioPlayProps} />
-        <GlobalStyle />
-      </SpectrumProvider>
-    </AudioPlayerProvider>
+      </AudioPlayerContainer>
+    </AudioPlayerStateProvider>
   );
-};
+}
 
+AudioPlayerWithProviders.displayName = "AudioPlayerWithProviders";
+
+// Public compound slot name `PlayButton` maps to the internal `TransportControls`
+// component. The internal name reflects the role (prev + play + next group);
+// the public name preserves backward compatibility with the existing
+// `activeUI.playButton` flag. See `.claude/docs/v3-deferred.md` for the
+// planned public rename to `TransportControls` in v3.
 type AudioPlayerComponent = typeof AudioPlayerWithProviders & {
+  Progress: typeof Progress;
+  Volume: typeof Volume;
+  PlayList: typeof SortablePlayList;
+  PlayListEmpty: typeof PlayListEmpty;
+  PlayButton: typeof TransportControls;
+  RepeatButton: typeof RepeatTypeBtn;
+  Artwork: typeof Artwork;
+  TrackInfo: typeof TrackInfo;
+  TrackTime: typeof TrackTime;
   CustomComponent: typeof CustomComponent;
 };
 
-export default AudioPlayerWithProviders as AudioPlayerComponent;
+const AudioPlayerCompound = Object.assign(AudioPlayerWithProviders, {
+  Progress,
+  Volume,
+  PlayList: SortablePlayList,
+  PlayListEmpty,
+  PlayButton: TransportControls,
+  RepeatButton: RepeatTypeBtn,
+  Artwork,
+  TrackInfo,
+  TrackTime,
+  CustomComponent,
+}) as AudioPlayerComponent;
+
+export default AudioPlayerCompound;

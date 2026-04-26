@@ -1,38 +1,24 @@
 import { useNonNullableContext } from "@/hooks/useNonNullableContext";
 import { audioPlayerDispatchContext } from "@/components/AudioPlayer/Context/dispatchContext";
-import {
-  audioPlayerStateContext,
-  AudioNativeProps,
-} from "@/components/AudioPlayer/Context/StateContext";
-import React, { FC, useEffect, useRef } from "react";
+import { useAudioAttrsContext } from "@/components/AudioPlayer/Context/hooks/useAudioAttrsContext";
+import { usePlaybackContext } from "@/components/AudioPlayer/Context/hooks/usePlaybackContext";
+import { useTrackContext } from "@/components/AudioPlayer/Context/hooks/useTrackContext";
+import React, { useEffect, useRef } from "react";
 import { useAudio } from "./useAudio";
 
 // TODO : optimize large audio files
 
-export const Audio: FC<{
+export const Audio = React.memo<{
   audioRef?: React.MutableRefObject<HTMLAudioElement>;
-}> = ({ audioRef: propsAudioRef }) => {
+}>(({ audioRef: propsAudioRef }) => {
   const audioRef = useRef<HTMLAudioElement>(null);
-  const { curAudioState, curPlayId, playList } = useNonNullableContext(
-    audioPlayerStateContext
-  );
+  const { muted } = usePlaybackContext();
+  const { curPlayId, playList } = useTrackContext();
+  const nativeAudioAttrs = useAudioAttrsContext();
   const audioPlayerDispatch = useNonNullableContext(audioPlayerDispatchContext);
 
   const curPlayedAudioData = playList.find(
     (audioData) => audioData.id === curPlayId
-  );
-  const audioNativeStates: AudioNativeProps = Object.fromEntries(
-    Object.entries(curAudioState).filter((state) => {
-      if (
-        state[0] === "isPlaying" ||
-        state[0] === "repeatType" ||
-        state[0] === "curPlayId" ||
-        state[0] === "isLoadedMetaData"
-      ) {
-        return false;
-      }
-      return true;
-    })
   );
 
   const useAudioEventProps = useAudio();
@@ -53,11 +39,13 @@ export const Audio: FC<{
   return (
     <audio
       id="rm-audio-player-audio"
-      autoPlay={curAudioState.isPlaying}
+      {...nativeAudioAttrs}
+      muted={muted}
       ref={audioRef}
       src={curPlayedAudioData?.src}
       {...useAudioEventProps}
-      {...audioNativeStates}
     ></audio>
   );
-};
+});
+
+Audio.displayName = "Audio";

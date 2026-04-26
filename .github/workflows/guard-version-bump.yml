@@ -1,0 +1,43 @@
+name: Guard version bump
+
+# Block package.json "version" changes in pull requests targeting any branch
+# other than `main`. Version bumps must be committed as dedicated release
+# commits on `main` only — this prevents feature branches from silently
+# shipping a bump alongside unrelated work.
+
+on:
+  pull_request:
+    branches-ignore:
+      - main
+    paths:
+      - "package/package.json"
+
+jobs:
+  check:
+    name: Block version bump on non-main PRs
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout PR with full history
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect version field diff
+        run: |
+          BASE="origin/${{ github.base_ref }}"
+          if ! git rev-parse --verify "$BASE" >/dev/null 2>&1; then
+            echo "::error::Base ref $BASE not found in history."
+            exit 1
+          fi
+
+          DIFF=$(git diff "$BASE"...HEAD -- package/package.json || true)
+          if echo "$DIFF" | grep -qE '^[+-][[:space:]]*"version":'; then
+            echo "::error::package.json \"version\" changed in PR #${{ github.event.pull_request.number }} targeting ${{ github.base_ref }}."
+            echo "::error::Version bumps are allowed only on 'main'. Remove the version change from this PR, merge the feature first, then bump on main as a dedicated release commit."
+            echo ""
+            echo "Offending diff (package/package.json version field):"
+            echo "$DIFF" | grep -E '^[+-][[:space:]]*"version":' || true
+            exit 1
+          fi
+
+          echo "✅ package/package.json version field unchanged against $BASE."

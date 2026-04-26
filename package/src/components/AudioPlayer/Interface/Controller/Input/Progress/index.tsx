@@ -1,21 +1,54 @@
-import { useNonNullableContext } from "@/hooks/useNonNullableContext";
-import { audioPlayerStateContext } from "@/components/AudioPlayer/Context/StateContext";
-import { FC } from "react";
-import styled from "styled-components";
+import { useUIContext } from "@/components/AudioPlayer/Context/hooks/useUIContext";
+import Grid, { GridItemLayoutProps } from "@/components/Grid";
+import { FC, useEffect, useState } from "react";
 import { BarProgress } from "./BarProgress";
 import { WaveformProgress } from "./WaveformProgress";
+import { useResolvedGridArea } from "../../../hooks/useResolvedGridArea";
+import "./Progress.css";
 
-const ProgressContainer = styled.div`
-  min-width: 100px;
-`;
+export type ProgressType = "bar" | "waveform";
 
-export const Progress: FC = () => {
-  const { activeUI } = useNonNullableContext(audioPlayerStateContext);
+export interface ProgressProps extends GridItemLayoutProps {
+  /**
+   * Override which progress renderer to show. When omitted, falls back to
+   * `activeUI.progress`. Used when the preset is disabled but the compound
+   * `<AudioPlayer.Progress />` is still placed explicitly — without this,
+   * the component would render an empty grid slot.
+   */
+  type?: ProgressType;
+}
+
+export const Progress: FC<ProgressProps> = ({
+  gridArea,
+  visible,
+  type,
+  width,
+  ...rest
+}) => {
+  const { activeUI } = useUIContext();
+  const progressType: ProgressType =
+    type ?? (activeUI.progress === "waveform" ? "waveform" : "bar");
+  const isWaveform = progressType === "waveform";
+  const isBar = progressType === "bar";
+  const [waveformMounted, setWaveformMounted] = useState(isWaveform);
+
+  useEffect(() => {
+    if (isWaveform && !waveformMounted) setWaveformMounted(true);
+  }, [isWaveform, waveformMounted]);
+
+  const resolvedGridArea = useResolvedGridArea("progress", gridArea);
 
   return (
-    <ProgressContainer className="progress-container">
-      <WaveformProgress isActive={activeUI.progress === "waveform"} />
-      <BarProgress isActive={activeUI.progress !== "waveform"} />
-    </ProgressContainer>
+    <Grid.Item
+      gridArea={resolvedGridArea}
+      width={width ?? "100%"}
+      visible={visible ?? true}
+      {...rest}
+    >
+      <div className="rmap-progress-container">
+        {waveformMounted && <WaveformProgress isActive={isWaveform} />}
+        {isBar && <BarProgress />}
+      </div>
+    </Grid.Item>
   );
 };

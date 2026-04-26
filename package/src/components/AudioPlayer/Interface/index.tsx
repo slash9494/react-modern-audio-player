@@ -1,60 +1,64 @@
-import React, { FC } from "react";
-import styled from "styled-components";
+import React, { FC, useState } from "react";
 import { Controller } from "./Controller";
 import { Information } from "./Information";
 
-import { audioPlayerStateContext } from "@/components/AudioPlayer/Context/StateContext";
 import Grid from "@/components/Grid";
 
-import { useNonNullableContext } from "@/hooks/useNonNullableContext";
-import { useGridTemplate } from "@/hooks/useGridTemplate";
+import { useUIContext } from "@/components/AudioPlayer/Context/hooks/useUIContext";
+import { useGridTemplate } from "./hooks";
+import { useCompoundSlots, useDuplicateSlotWarning } from "./compound";
+import { playListPortalContext, playListEmptyContext } from "./contexts";
+import "./Interface.css";
 
 interface InterfaceProps {
   children: React.ReactNode;
 }
 
 export const Interface: FC<InterfaceProps> = ({ children }) => {
-  const { interfacePlacement, activeUI, playListPlacement } =
-    useNonNullableContext(audioPlayerStateContext);
+  const { interfacePlacement, activeUI, playListPlacement } = useUIContext();
 
-  const CustomComponents = React.Children.toArray(children);
+  const { compoundChildren, playListEmptyNode } = useCompoundSlots(children);
+  useDuplicateSlotWarning({ compoundChildren, activeUI });
 
   const [gridAreas, gridColumns] = useGridTemplate(
     activeUI,
     interfacePlacement?.templateArea,
-    interfacePlacement?.customComponentsArea
+    interfacePlacement?.customComponentsArea,
+    compoundChildren
   );
+
+  const [portalNode, setPortalNode] = useState<HTMLDivElement | null>(null);
 
   return (
-    <InterfaceContainer className="interface-container">
-      {playListPlacement === "top" && <div className="sortable-play-list" />}
-      <Grid
-        alignItems={"center"}
-        justifyContent={"center"}
-        areas={gridAreas}
-        minHeight={"30px"}
-        columns={gridColumns}
-        UNSAFE_className="interface-grid"
-      >
-        <Information />
-        <Controller />
+    <div
+      className="rmap-interface-container"
+      data-testid="audio-player"
+      role="region"
+      aria-label="Audio player"
+    >
+      <playListPortalContext.Provider value={portalNode}>
+        <playListEmptyContext.Provider value={playListEmptyNode}>
+          {playListPlacement === "top" && (
+            <div ref={setPortalNode} className="rmap-sortable-playlist" />
+          )}
+          <Grid
+            alignItems="center"
+            justifyContent="center"
+            areas={gridAreas}
+            minHeight="30px"
+            columns={gridColumns}
+            UNSAFE_className="rmap-interface-grid"
+          >
+            <Information />
+            <Controller />
 
-        {CustomComponents}
-      </Grid>
-      {playListPlacement === "bottom" && <div className="sortable-play-list" />}
-    </InterfaceContainer>
+            {compoundChildren}
+          </Grid>
+          {playListPlacement === "bottom" && (
+            <div ref={setPortalNode} className="rmap-sortable-playlist" />
+          )}
+        </playListEmptyContext.Provider>
+      </playListPortalContext.Provider>
+    </div>
   );
 };
-
-const InterfaceContainer = styled.div`
-  .interface-grid {
-    background: var(--rm-audio-player-interface-container);
-  }
-  .interface-grid {
-    padding: 0.5rem 10px;
-  }
-  .sortable-play-list {
-    background: var(--rm-audio-player-sortable-list);
-    box-shadow: -5px 2px 4px 0px rgb(0 0 0 / 4%) inset;
-  }
-`;

@@ -17,9 +17,22 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+# Yarn Berry
+.yarn/install-state.gz
+
 *.drawio
 releaseNote.md
 
+# Agent instructions
 .claude
-.cursor
-.docs
+.coderabbit
+.agents
+
+# Test coverage
+package/coverage/
+test-results/
+.playwright-mcp/
+
+# Yarn PnP
+.pnp.cjs
+.pnp.loader.mjs

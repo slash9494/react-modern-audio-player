@@ -1,20 +1,23 @@
-import { audioPlayerStateContext } from "@/components/AudioPlayer/Context";
-import { CssTransition } from "@/components/CssTransition";
+import { drawerContext } from "@/components/Drawer/DrawerContext";
+import { CssTransition } from "@/ui/CssTransition";
 import SortableList from "@/components/SortableList";
 import { useNonNullableContext } from "@/hooks/useNonNullableContext";
-import { FC } from "react";
+import { useTrackContext } from "@/components/AudioPlayer/Context/hooks/useTrackContext";
+import {
+  playListPortalContext,
+  playListEmptyContext,
+} from "@/components/AudioPlayer/Interface/contexts";
+import { FC, useContext } from "react";
 import ReactDOM from "react-dom";
-import styled from "styled-components";
 import { PlayListItem } from "./PlayListItem";
 import { usePlayList } from "./usePlayList";
+import "./PlayList.css";
 
-export interface SortablePlayListProps {
-  isOpen: boolean;
-  setIsOpen: (isOpen: boolean) => void;
-}
-
-export const PlayList: FC<SortablePlayListProps> = ({ isOpen, setIsOpen }) => {
-  const { playList } = useNonNullableContext(audioPlayerStateContext);
+export const PlayList: FC = () => {
+  const { playList } = useTrackContext();
+  const { isOpen, setIsOpen } = useNonNullableContext(drawerContext);
+  const portalNode = useContext(playListPortalContext);
+  const emptyNode = useContext(playListEmptyContext);
   const { cssTransitionEventProps, sortableItemEventProps } = usePlayList({
     setIsOpen,
   });
@@ -24,22 +27,28 @@ export const PlayList: FC<SortablePlayListProps> = ({ isOpen, setIsOpen }) => {
     ...otherSortableItemEventProps
   } = sortableItemEventProps;
 
-  return playList.length !== 0 ? (
-    ReactDOM.createPortal(
-      <CssTransition
-        visible={isOpen}
-        name={"playlist-content"}
-        enterTime={20}
-        leaveTime={20}
-        clearTime={300}
-        {...cssTransitionEventProps}
-      >
-        <PlayListContainer className="play-list-container">
+  if (!portalNode) return <></>;
+  const isEmpty = playList.length === 0;
+  if (isEmpty && !emptyNode) return <></>;
+
+  return ReactDOM.createPortal(
+    <CssTransition
+      visible={isOpen}
+      name={"rmap-playlist-content"}
+      enterTime={20}
+      leaveTime={20}
+      clearTime={300}
+      {...cssTransitionEventProps}
+    >
+      <div className="rmap-playlist-container">
+        {isEmpty ? (
+          emptyNode
+        ) : (
           <SortableList>
             {/** //TODO : change props event to context  */}
             {playList.map((data, index) => (
               <SortableList.Item
-                key={`sortable-item-${index}`}
+                key={data.id}
                 index={index}
                 listData={playList}
                 onClick={() => onClickItem(index)}
@@ -50,38 +59,9 @@ export const PlayList: FC<SortablePlayListProps> = ({ isOpen, setIsOpen }) => {
               </SortableList.Item>
             ))}
           </SortableList>
-        </PlayListContainer>
-      </CssTransition>,
-      document.querySelector(".sortable-play-list") as HTMLDivElement
-    )
-  ) : (
-    <></>
+        )}
+      </div>
+    </CssTransition>,
+    portalNode
   );
 };
-
-const PlayListContainer = styled.div`
-  transition-property: max-height, opacity;
-  overflow-x: hidden;
-  overflow-y: auto;
-
-  &.playlist-content-enter {
-    opacity: 0;
-    max-height: 0;
-  }
-  &.playlist-content-enter-active {
-    opacity: 1;
-    max-height: 20vh;
-    transition-duration: 0.5s;
-    transition-timing-function: cubic-bezier(0, 0, 0, 1.2);
-  }
-  &.playlist-content-leave {
-    opacity: 1;
-    max-height: 20vh;
-  }
-  &.playlist-content-leave-active {
-    opacity: 0;
-    max-height: 0;
-    transition-duration: 0.25s;
-    transition-timing-function: 0.2s cubic-bezier(0.66, -0.41, 1, 1);
-  }
-`;

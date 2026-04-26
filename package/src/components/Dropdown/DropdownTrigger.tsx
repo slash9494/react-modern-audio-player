@@ -1,7 +1,34 @@
-import { FC, PropsWithChildren } from "react";
+import { ButtonHTMLAttributes, forwardRef } from "react";
+import { useNonNullableContext } from "@/hooks/useNonNullableContext";
+import { dropdownContext } from "./DropdownContext";
+import { StyledBtn } from "@/ui/StyledBtn";
 
-export const DropdownTrigger: FC<PropsWithChildren<unknown>> = ({
-  children,
-}) => {
-  return <div className={"dropdown-trigger-wrapper"}>{children}</div>;
-};
+type DropdownTriggerProps = Omit<
+  ButtonHTMLAttributes<HTMLButtonElement>,
+  "type"
+>;
+
+export const DropdownTrigger = forwardRef<
+  HTMLButtonElement,
+  DropdownTriggerProps
+>(({ children, className, ...props }, ref) => {
+  const { isOpen, dropdownId } = useNonNullableContext(dropdownContext);
+  const mergedClassName = className
+    ? `rmap-dropdown-trigger ${className}`
+    : "rmap-dropdown-trigger";
+
+  return (
+    <StyledBtn
+      className={mergedClassName}
+      type="button"
+      {...props}
+      aria-haspopup="true"
+      aria-expanded={isOpen}
+      aria-controls={dropdownId}
+      ref={ref}
+    >
+      {children}
+    </StyledBtn>
+  );
+});
+DropdownTrigger.displayName = "DropdownTrigger";

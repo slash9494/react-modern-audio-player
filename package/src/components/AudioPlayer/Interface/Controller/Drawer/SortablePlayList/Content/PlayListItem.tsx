@@ -1,70 +1,45 @@
-import {
-  AudioData,
-  audioPlayerStateContext,
-} from "@/components/AudioPlayer/Context";
-import { useNonNullableContext } from "@/hooks/useNonNullableContext";
-import classNames from "classnames";
-import styled from "styled-components";
+import { memo } from "react";
+import { AudioData } from "@/components/AudioPlayer/Context";
+import { useTrackContext } from "@/components/AudioPlayer/Context/hooks/useTrackContext";
+import { useResourceContext } from "@/components/AudioPlayer/Context/hooks/useResourceContext";
+import "./PlayListItem.css";
 
-export const PlayListItem = ({ data }: { data: AudioData }) => {
-  const { curPlayId, coverImgsCss } = useNonNullableContext(
-    audioPlayerStateContext
-  );
+export const PlayListItem = memo(function PlayListItem({
+  data,
+}: {
+  data: AudioData;
+}) {
+  const { curPlayId } = useTrackContext();
+  const { coverImgsCss } = useResourceContext();
+  const isCurrentId = curPlayId === data.id;
   return (
-    <ListItemContainer
-      className={classNames("list-item-container", {
-        curPlayed: curPlayId === data.id,
-      })}
+    <div
+      className={`rmap-playlist-item${isCurrentId ? " rmap-cur-played" : ""}`}
+      data-testid="playlist-item"
+      aria-current={isCurrentId ? "true" : undefined}
     >
-      <div className="list-item-contents-wrapper">
-        <div className="album-cover-wrapper">
-          <img src={data.img} alt="" style={coverImgsCss?.listThumbnail} />
+      <div className="rmap-playlist-item-contents">
+        <div className="rmap-playlist-album-cover">
+          {data.img && (
+            <img
+              src={data.img}
+              alt={data.name || "Album thumbnail"}
+              style={coverImgsCss?.listThumbnail}
+            />
+          )}
         </div>
-        <div className="album-info-wrapper">
-          {data.writer && <span className="writer">{data.writer}</span>}
-          {data.name && <span className="title">{data.name}</span>}
+        <div className="rmap-playlist-album-info">
+          {data.writer && (
+            <span className="rmap-playlist-writer">{data.writer}</span>
+          )}
+          {data.name && (
+            <span className="rmap-playlist-title">{data.name}</span>
+          )}
           {data.description && (
-            <div className="description">{data.description}</div>
+            <div className="rmap-playlist-description">{data.description}</div>
           )}
         </div>
       </div>
-    </ListItemContainer>
+    </div>
   );
-};
-
-const ListItemContainer = styled.div`
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  padding: 10px 20px;
-  &.curPlayed {
-    background: var(--rm-audio-player-selected-list-item-background);
-  }
-  .list-item-contents-wrapper {
-    width: 100%;
-    display: flex;
-    gap: 10px;
-  }
-  .album-cover-wrapper {
-    display: flex;
-    align-items: center;
-    img {
-      width: 35px;
-      height: 35px;
-    }
-  }
-  .album-info-wrapper {
-    display: grid;
-    min-width: 10px;
-    font-size: 13px;
-    margin-right: 1.5rem;
-    padding: 2px 0%;
-    span {
-      align-self: center;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      overflow: hidden;
-    }
-  }
-`;
+});

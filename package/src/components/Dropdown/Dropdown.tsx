@@ -2,16 +2,17 @@ import React, {
   PropsWithChildren,
   useRef,
   FC,
-  useLayoutEffect,
+  useEffect,
+  useId,
+  useMemo,
   useState,
 } from "react";
-import styled from "styled-components";
 import { DropdownContext, dropdownContext } from "./DropdownContext";
 import { DropdownTrigger } from "./DropdownTrigger";
 import { DropdownContent } from "./DropdownContent";
-import { appearanceIn, appearanceOut } from "../CssTransition";
 import useClickOutside from "@/hooks/useClickOutside";
 import { useDropdown } from "./useDropdown";
+import "./Dropdown.css";
 
 export interface DropdownProps
   extends Omit<Partial<DropdownContext>, "setIsOpen"> {
@@ -19,6 +20,7 @@ export interface DropdownProps
   outboundClickActive?: boolean;
   placement?: DropdownContext["placement"];
   disabled?: boolean;
+  "data-testid"?: string;
 }
 
 const Dropdown: FC<PropsWithChildren<DropdownProps>> = ({
@@ -29,6 +31,7 @@ const Dropdown: FC<PropsWithChildren<DropdownProps>> = ({
   placement = "bottom",
   disabled = false,
   onOpenChange,
+  "data-testid": testId,
 }) => {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [trigger, content] = React.Children.toArray(children);
@@ -40,27 +43,40 @@ const Dropdown: FC<PropsWithChildren<DropdownProps>> = ({
     clickArea: "root",
   });
 
+  const dropdownId = useId();
+
   useClickOutside(dropdownRef, () => outboundClickActive && setIsOpen(false));
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (isOpenProp !== undefined) {
       setIsOpen(isOpenProp);
     }
   }, [isOpenProp]);
 
+  const contextValue = useMemo(
+    () => ({
+      dropdownRef,
+      placement,
+      isOpen,
+      setIsOpen,
+      onOpenChange,
+      dropdownId,
+    }),
+    [placement, isOpen, onOpenChange, dropdownId]
+  );
+
   return (
-    <dropdownContext.Provider
-      value={{ dropdownRef, placement, isOpen, setIsOpen, onOpenChange }}
-    >
-      <DropdownContainer
-        className="dropdown-container"
+    <dropdownContext.Provider value={contextValue}>
+      <div
+        className="rmap-dropdown-container"
         ref={dropdownRef}
+        data-testid={testId}
         {...dropdownEventProps}
       >
         <>
           {trigger}
           {!disabled && content}
         </>
-      </DropdownContainer>
+      </div>
     </dropdownContext.Provider>
   );
 };
@@ -71,31 +87,3 @@ type DropdownComponent = typeof Dropdown & {
 };
 
 export default Dropdown as DropdownComponent;
-
-export const DropdownContainer = styled.div`
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 20px;
-  min-height: 20px;
-  .dropdown-trigger-wrapper {
-    width: 100%;
-    height: 100%;
-    cursor: pointer;
-    position: absolute;
-    display: flex;
-  }
-
-  .dropdown-content-wrapper {
-    transform-origin: center top;
-  }
-
-  .dropdown-content-wrapper-enter {
-    animation: ${appearanceIn} 0.25s ease-out normal forwards;
-  }
-
-  .dropdown-content-wrapper-leave {
-    animation: ${appearanceOut} 0.1s ease-in forwards;
-  }
-`;

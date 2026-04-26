@@ -1,0 +1,39 @@
+.rmap-player-provider * {
+  box-sizing: border-box;
+  font: inherit;
+  font-size: 100%;
+}
+
+.rmap-player-provider ol,
+.rmap-player-provider ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.rmap-player-provider blockquote,
+.rmap-player-provider q {
+  quotes: none;
+}
+
+.rmap-player-provider blockquote:before,
+.rmap-player-provider blockquote:after,
+.rmap-player-provider q:before,
+.rmap-player-provider q:after {
+  content: none;
+}
+
+.rmap-player-provider table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+.rmap-player-provider button {
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  vertical-align: baseline;
+  border: 0;
+}

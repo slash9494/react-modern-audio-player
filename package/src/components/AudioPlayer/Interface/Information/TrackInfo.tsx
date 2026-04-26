@@ -1,43 +1,41 @@
-import { useNonNullableContext } from "@/hooks/useNonNullableContext";
-import { audioPlayerStateContext } from "@/components/AudioPlayer/Context/StateContext";
-import { FC } from "react";
-import styled from "styled-components";
+import { useTrackContext } from "@/components/AudioPlayer/Context/hooks/useTrackContext";
+import { FC, memo } from "react";
+import Grid, { GridItemLayoutProps } from "@/components/Grid";
+import { useResolvedGridArea } from "../hooks/useResolvedGridArea";
+import "./TrackInfo.css";
 
-const TrackInfoContainer = styled.div`
-  display: grid;
-  align-items: center;
-  row-gap: 5px;
-  width: 200px;
-  span {
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;
-  }
-  .title {
-    font-size: 16px;
-  }
-  .writer {
-    font-size: 12px;
-  }
-`;
+export type TrackInfoProps = GridItemLayoutProps;
 
-export const TrackInfo: FC = () => {
-  const { playList, curIdx } = useNonNullableContext(audioPlayerStateContext);
+export const TrackInfo: FC<TrackInfoProps> = memo(function TrackInfo({
+  gridArea,
+  visible,
+  ...rest
+}) {
+  const { playList, curIdx } = useTrackContext();
   const curPlayData = playList[curIdx];
+
+  const resolvedGridArea = useResolvedGridArea("trackInfo", gridArea);
+
   return (
-    <TrackInfoContainer className="track-info-container">
-      {curPlayData?.customTrackInfo ? (
-        curPlayData.customTrackInfo
-      ) : (
-        <>
-          {curPlayData?.name && (
-            <span className="title">{curPlayData.name}</span>
-          )}
-          {curPlayData?.writer && (
-            <span className="writer">{curPlayData.writer}</span>
-          )}
-        </>
-      )}
-    </TrackInfoContainer>
+    <Grid.Item gridArea={resolvedGridArea} visible={visible ?? true} {...rest}>
+      <div className="rmap-track-info-container">
+        {curPlayData?.customTrackInfo ? (
+          curPlayData.customTrackInfo
+        ) : (
+          <>
+            {curPlayData?.name && (
+              <span className="title" data-testid="track-title">
+                {curPlayData.name}
+              </span>
+            )}
+            {curPlayData?.writer && (
+              <span className="writer">{curPlayData.writer}</span>
+            )}
+          </>
+        )}
+      </div>
+    </Grid.Item>
   );
-};
+});
+
+TrackInfo.displayName = "TrackInfo";

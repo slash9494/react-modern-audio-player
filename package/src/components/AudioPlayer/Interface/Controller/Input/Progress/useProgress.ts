@@ -1,31 +1,41 @@
-import { audioPlayerStateContext } from "@/components/AudioPlayer/Context";
-import { useNonNullableContext } from "@/hooks/useNonNullableContext";
-import { HTMLAttributes, useCallback, useState, MouseEvent } from "react";
+import { usePlaybackContext } from "@/components/AudioPlayer/Context/hooks/usePlaybackContext";
+import { useResourceContext } from "@/components/AudioPlayer/Context/hooks/useResourceContext";
+import { safeRatio } from "@/utils/safeRatio";
+import {
+  HTMLAttributes,
+  useCallback,
+  useEffect,
+  useState,
+  MouseEvent,
+} from "react";
 
 export const useProgress = (): HTMLAttributes<HTMLDivElement> => {
-  const { elementRefs, curAudioState } = useNonNullableContext(
-    audioPlayerStateContext
-  );
+  const { isLoadedMetaData } = usePlaybackContext();
+  const { elementRefs } = useResourceContext();
   const [isTimeChangeActive, setTimeChangeActive] = useState(false);
 
   const moveAudioTime = useCallback(
     (e: MouseEvent<HTMLDivElement>) => {
-      if (!elementRefs?.audioEl || !curAudioState?.isLoadedMetaData) return;
+      if (!elementRefs?.audioEl || !isLoadedMetaData) return;
       const { clientX } = e;
       const { clientWidth } = e.currentTarget;
       const boundingRect = e.currentTarget.getBoundingClientRect();
       const curPositionX = clientX - boundingRect.x;
-      const curPositionPercent = curPositionX / clientWidth;
-      const curPositionTime = curPositionPercent * elementRefs.audioEl.duration;
+      const curPositionTime =
+        safeRatio(curPositionX, clientWidth) * elementRefs.audioEl.duration;
       elementRefs.audioEl.currentTime = curPositionTime;
     },
-    [curAudioState?.isLoadedMetaData, elementRefs?.audioEl]
+    [isLoadedMetaData, elementRefs?.audioEl]
   );
 
-  const setSelectStartActive = useCallback(
-    (state: boolean) => (document.onselectstart = () => state),
-    []
-  );
+  useEffect(() => {
+    if (!isTimeChangeActive) return;
+    const preventSelection = (event: Event) => event.preventDefault();
+    document.addEventListener("selectstart", preventSelection);
+    return () => {
+      document.removeEventListener("selectstart", preventSelection);
+    };
+  }, [isTimeChangeActive]);
 
   return {
     onMouseDown: () => setTimeChangeActive(true),
@@ -33,7 +43,5 @@ export const useProgress = (): HTMLAttributes<HTMLDivElement> => {
     onMouseLeave: () => setTimeChangeActive(false),
     onMouseMove: isTimeChangeActive ? moveAudioTime : undefined,
     onClick: moveAudioTime,
-    onMouseOver: () => setSelectStartActive(false),
-    onMouseOut: () => isTimeChangeActive && setSelectStartActive(true),
   };
 };

@@ -1,10 +1,39 @@
-import { Grid as SpectrumGrid } from "@react-spectrum/layout";
-import { GridItem } from "./Item";
+import { CSSProperties, FC, ReactNode } from "react";
 
-export const Grid = SpectrumGrid;
+export interface NativeGridProps {
+  areas?: string[];
+  columns?: string[];
+  alignItems?: CSSProperties["alignItems"];
+  justifyContent?: CSSProperties["justifyContent"];
+  minHeight?: CSSProperties["minHeight"];
+  UNSAFE_className?: string;
+  children?: ReactNode;
+}
 
-type GridComponent = typeof SpectrumGrid & {
-  Item: typeof GridItem;
+const NativeGrid: FC<NativeGridProps> = ({
+  areas,
+  columns,
+  alignItems,
+  justifyContent,
+  minHeight,
+  UNSAFE_className,
+  children,
+}) => {
+  const style: CSSProperties = {
+    display: "grid",
+    gridTemplateAreas: areas?.map((row) => `"${row}"`).join(" "),
+    gridTemplateColumns: columns?.join(" "),
+    alignItems,
+    justifyContent,
+    minHeight,
+  };
+  return (
+    <div className={UNSAFE_className} style={style}>
+      {children}
+    </div>
+  );
 };
 
-export default Grid as GridComponent;
+export const Grid = NativeGrid;
+
+export default Grid;

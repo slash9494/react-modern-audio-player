@@ -1,8 +1,8 @@
 import { FC, ReactElement, ReactNode } from "react";
-import { IconType } from "react-icons/lib";
+import { SvgIconProps } from "@/components/icons";
 
 interface _IconProps {
-  render: ReactElement<IconType>;
+  render: ReactElement<SvgIconProps>;
   customIcon?: ReactNode;
 }
 

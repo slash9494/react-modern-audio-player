@@ -1,85 +1,131 @@
 import { useNonNullableContext } from "@/hooks/useNonNullableContext";
-import { getTimeWithPadStart } from "@/utils/getTime";
-import { resetAudioValues } from "@/utils/resetAudioValues";
-import { HTMLAttributes, SyntheticEvent, useCallback, useEffect } from "react";
 import {
-  audioPlayerStateContext,
-  audioPlayerDispatchContext,
-} from "../Context";
+  HTMLAttributes,
+  SyntheticEvent,
+  useCallback,
+  useEffect,
+  useRef,
+} from "react";
+import { flushSync } from "react-dom";
+import { audioPlayerDispatchContext } from "../Context";
+import { usePlaybackContext } from "@/components/AudioPlayer/Context/hooks/usePlaybackContext";
+import { useResourceContext } from "@/components/AudioPlayer/Context/hooks/useResourceContext";
+import { useTimeContext } from "@/components/AudioPlayer/Context/hooks/useTimeContext";
 
 export const useAudio = (): HTMLAttributes<HTMLAudioElement> => {
-  const { curAudioState, elementRefs } = useNonNullableContext(
-    audioPlayerStateContext
-  );
+  const {
+    isPlaying,
+    volume: playbackVolume,
+    repeatType,
+    audioResetKey,
+  } = usePlaybackContext();
+  const { currentTime: playbackCurrentTime, seekRequestKey } = useTimeContext();
+  const { elementRefs } = useResourceContext();
   const audioPlayerDispatch = useNonNullableContext(audioPlayerDispatchContext);
 
-  // TODO : refactor dependency by exporting
   const onTimeUpdate = useCallback(
     (event: SyntheticEvent<HTMLAudioElement>) => {
-      if (event.currentTarget.readyState === 0 || !elementRefs) return;
+      if (event.currentTarget.readyState === 0) return;
       const currentTime = event.currentTarget.currentTime;
-      const duration = event.currentTarget.duration;
-
-      const {
-        trackCurTimeEl,
-        progressBarEl,
-        progressValueEl,
-        progressHandleEl,
-      } = elementRefs;
-      if (trackCurTimeEl) {
-        trackCurTimeEl.innerText = getTimeWithPadStart(currentTime);
-      }
-
-      if (progressBarEl && progressValueEl && progressHandleEl) {
-        const progressBarWidth = progressBarEl.clientWidth;
-        const progressHandlePosition =
-          (currentTime / duration) * progressBarWidth;
-
-        progressValueEl.style.transform = `scaleX(${currentTime / duration})`;
-        progressHandleEl.style.transform = `translateX(${progressHandlePosition}px)`;
-      }
+      audioPlayerDispatch({
+        type: "SET_AUDIO_STATE",
+        audioState: { currentTime },
+      });
     },
-    [elementRefs]
+    [audioPlayerDispatch]
   );
+
   const onEnded = useCallback(() => {
     if (!elementRefs?.audioEl) return;
-    if (curAudioState.repeatType === "ONE") {
-      elementRefs.audioEl.currentTime = 0;
+    if (repeatType === "ONE") {
+      // flushSync forces the seek sync effect to write audioEl.currentTime
+      // = 0 before play() runs, so the restart starts from 0 and a pending
+      // onTimeUpdate at ~end cannot resurrect the stale position.
+      flushSync(() => {
+        audioPlayerDispatch({ type: "SEEK", time: 0 });
+      });
       elementRefs.audioEl.play();
       return;
     }
     audioPlayerDispatch({ type: "NEXT_AUDIO" });
-  }, [audioPlayerDispatch, curAudioState.repeatType, elementRefs?.audioEl]);
+  }, [audioPlayerDispatch, repeatType, elementRefs?.audioEl]);
+
   const onLoadedMetadata = useCallback(
     (e: SyntheticEvent<HTMLAudioElement, Event>) => {
-      if (!elementRefs) return;
-
       const { duration } = e.currentTarget;
-      resetAudioValues(elementRefs, duration);
-
+      // Browsers reset audioEl.volume to 1 when loading a new source.
+      // Re-apply the state-driven volume so the initial/current value
+      // survives the source change.
+      if (playbackVolume != null) {
+        e.currentTarget.volume = playbackVolume;
+      }
       audioPlayerDispatch({
         type: "SET_AUDIO_STATE",
-        audioState: { isLoadedMetaData: true },
+        audioState: { isLoadedMetaData: true, duration },
       });
     },
-    [elementRefs]
+    [audioPlayerDispatch, playbackVolume]
   );
 
-  /** play */
+  const hasSkippedInitialResetRef = useRef(false);
   useEffect(() => {
     if (!elementRefs?.audioEl) return;
-    if (curAudioState.isPlaying) {
-      elementRefs?.audioEl.play();
-    } else {
-      elementRefs?.audioEl.pause();
+    if (!hasSkippedInitialResetRef.current) {
+      hasSkippedInitialResetRef.current = true;
+      return;
     }
-  }, [elementRefs?.audioEl, curAudioState.isPlaying, audioPlayerDispatch]);
+    elementRefs.audioEl.currentTime = 0;
+  }, [audioResetKey, elementRefs?.audioEl]);
 
-  /** volume */
   useEffect(() => {
-    if (!elementRefs?.audioEl || !curAudioState.volume) return;
-    elementRefs.audioEl.volume = curAudioState.volume;
-  }, [elementRefs?.audioEl, curAudioState.volume]);
+    if (!elementRefs?.audioEl) return;
+    if (isPlaying) {
+      void elementRefs.audioEl.play().catch(() => {
+        audioPlayerDispatch({
+          type: "SET_AUDIO_STATE",
+          audioState: { isPlaying: false },
+        });
+      });
+    } else {
+      elementRefs.audioEl.pause();
+    }
+  }, [elementRefs?.audioEl, isPlaying, audioPlayerDispatch]);
+
+  useEffect(() => {
+    if (!elementRefs?.audioEl || playbackVolume == null) return;
+    elementRefs.audioEl.volume = playbackVolume;
+  }, [elementRefs?.audioEl, playbackVolume]);
+
+  // Apply seeks explicitly signaled by a SEEK dispatch. Keyed on
+  // seekRequestKey so ordinary onTimeUpdate echoes (which change
+  // playbackCurrentTime) never reach the DOM write path and cannot
+  // pull audio backwards when React commits land later than the
+  // browser's real playback position.
+  const lastAppliedSeekKeyRef = useRef(0);
+  useEffect(() => {
+    if (seekRequestKey === lastAppliedSeekKeyRef.current) return;
+    lastAppliedSeekKeyRef.current = seekRequestKey;
+
+    const audioEl = elementRefs?.audioEl;
+    if (!audioEl || playbackCurrentTime == null) return;
+
+    audioEl.currentTime = playbackCurrentTime;
+
+    const waveform = elementRefs?.waveformInst;
+    const trackDuration = audioEl.duration;
+    const isTrackDurationReady =
+      Number.isFinite(trackDuration) && trackDuration > 0;
+    if (!waveform || !isTrackDurationReady) return;
+
+    const rawRatio = playbackCurrentTime / trackDuration;
+    const clampedRatio = Math.min(1, Math.max(0, rawRatio));
+    waveform.seekTo(clampedRatio);
+  }, [
+    seekRequestKey,
+    playbackCurrentTime,
+    elementRefs?.audioEl,
+    elementRefs?.waveformInst,
+  ]);
 
   return {
     onTimeUpdate,

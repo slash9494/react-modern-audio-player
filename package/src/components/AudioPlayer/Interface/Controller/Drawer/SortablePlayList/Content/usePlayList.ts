@@ -1,13 +1,13 @@
 import {
   AudioData,
   audioPlayerDispatchContext,
-  audioPlayerStateContext,
 } from "@/components/AudioPlayer/Context";
-import { CssTransitionProps } from "@/components/CssTransition";
+import { CssTransitionProps } from "@/ui/CssTransition";
 import { UseSortableListItemProps } from "@/components/SortableList/useSortableListItem";
 import { useNonNullableContext } from "@/hooks/useNonNullableContext";
+import { useTrackContext } from "@/components/AudioPlayer/Context/hooks/useTrackContext";
+import { useUIContext } from "@/components/AudioPlayer/Context/hooks/useUIContext";
 import { useCallback, useState } from "react";
-import { SortablePlayListProps } from ".";
 
 interface UsePlayListReturn {
   cssTransitionEventProps: Partial<CssTransitionProps>;
@@ -23,9 +23,10 @@ interface UsePlayListReturn {
 export const usePlayList = ({
   setIsOpen,
 }: {
-  setIsOpen: SortablePlayListProps["setIsOpen"];
+  setIsOpen: (isOpen: boolean) => void;
 }): UsePlayListReturn => {
-  const { playList, activeUI } = useNonNullableContext(audioPlayerStateContext);
+  const { playList } = useTrackContext();
+  const { activeUI } = useUIContext();
   const audioPlayerDispatch = useNonNullableContext(audioPlayerDispatchContext);
 
   const [dragStartIdx, setDragStartIdx] = useState<number>(0);
@@ -46,10 +47,15 @@ export const usePlayList = ({
       onEntered: () => setIsOpen(true),
     },
     sortableItemEventProps: {
-      draggable: activeUI.playList !== "unSortable" ?? true,
+      draggable: activeUI.playList !== "unSortable",
       dragStartIdx,
       onDragStart: (index) => setDragStartIdx(index),
-      onDrop: (e, newPlayList) =>
+      onDrop: (_, newPlayList) =>
+        audioPlayerDispatch({
+          type: "UPDATE_PLAY_LIST",
+          playList: newPlayList,
+        }),
+      onReorder: (newPlayList) =>
         audioPlayerDispatch({
           type: "UPDATE_PLAY_LIST",
           playList: newPlayList,

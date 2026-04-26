@@ -1,33 +1,22 @@
-import {
-  audioPlayerStateContext,
-  defaultInterfacePlacement,
-} from "@/components/AudioPlayer/Context";
-import Grid from "@/components/Grid";
-import { useNonNullableContext } from "@/hooks/useNonNullableContext";
+import Grid, { GridItemLayoutProps } from "@/components/Grid";
 import { FC, useCallback } from "react";
 import { Current } from "./Current";
 import { Duration } from "./Duration";
 import { TrackTimePosition } from "./Types";
+import { useResolvedGridArea } from "../../hooks/useResolvedGridArea";
 
-export const TrackTime: FC = () => {
-  const { interfacePlacement, activeUI } = useNonNullableContext(
-    audioPlayerStateContext
-  );
+export type TrackTimeProps = Pick<GridItemLayoutProps, "visible">;
+
+export const TrackTime: FC<TrackTimeProps> = ({ visible }) => {
+  const currentGridArea = useResolvedGridArea("trackTimeCurrent");
+  const durationGridArea = useResolvedGridArea("trackTimeDuration");
 
   const parsePosition = useCallback(
     (str: string) => +str.split(/[^\d]/).join(""),
     []
   );
-  const currentTimePosition = parsePosition(
-    interfacePlacement?.itemCustomArea?.trackTimeCurrent ||
-      interfacePlacement?.templateArea?.trackTimeCurrent ||
-      defaultInterfacePlacement.templateArea.trackTimeCurrent
-  );
-  const durationTimePosition = parsePosition(
-    interfacePlacement?.itemCustomArea?.trackTimeDuration ||
-      interfacePlacement?.templateArea?.trackTimeDuration ||
-      defaultInterfacePlacement.templateArea.trackTimeDuration
-  );
+  const currentTimePosition = parsePosition(currentGridArea);
+  const durationTimePosition = parsePosition(durationGridArea);
 
   const getPosition = useCallback(
     (positionNumber: number): TrackTimePosition => {
@@ -47,26 +36,14 @@ export const TrackTime: FC = () => {
     duration: getPosition(durationTimePosition - currentTimePosition),
   };
 
+  const resolvedVisible = visible ?? true;
+
   return (
     <>
-      <Grid.Item
-        gridArea={
-          interfacePlacement?.itemCustomArea?.trackTimeCurrent ||
-          interfacePlacement?.templateArea?.trackTimeCurrent ||
-          defaultInterfacePlacement.templateArea.trackTimeCurrent
-        }
-        visible={Boolean(activeUI.trackTime ?? activeUI.all)}
-      >
+      <Grid.Item gridArea={currentGridArea} visible={resolvedVisible}>
         <Current position={positions.current} />
       </Grid.Item>
-      <Grid.Item
-        gridArea={
-          interfacePlacement?.itemCustomArea?.trackTimeDuration ||
-          interfacePlacement?.templateArea?.trackTimeDuration ||
-          defaultInterfacePlacement.templateArea.trackTimeDuration
-        }
-        visible={Boolean(activeUI.trackTime ?? activeUI.all)}
-      >
+      <Grid.Item gridArea={durationGridArea} visible={resolvedVisible}>
         <Duration position={positions.duration} />
       </Grid.Item>
     </>

@@ -18,10 +18,15 @@ export type AudioContextAction<
   TInterfacePlacementLength extends number = typeof defaultInterfacePlacementMaxLength
 > =
   | { type: "NEXT_AUDIO" }
-  | { type: "PREV_AUDIO" }
+  | { type: "PREV_AUDIO"; currentTime: number }
+  | { type: "SEEK"; time: number }
   | { type: "UPDATE_PLAY_LIST"; playList: PlayList }
-  | { type: "SET_AUDIO_STATE"; audioState: AudioState }
-  | { type: "SET_INITIAL_STATES"; audioState: AudioState; curPlayId: number }
+  | { type: "SET_AUDIO_STATE"; audioState: Partial<AudioState> }
+  | {
+      type: "SET_INITIAL_STATES";
+      audioState: Partial<AudioState>;
+      curPlayId: number;
+    }
   | { type: "CHANGE_PLAYING_STATE"; state?: boolean }
   | { type: "SET_CURRENT_AUDIO"; currentIndex: number; currentAudioId: number }
   | { type: "SET_REPEAT_TYPE"; repeatType: RepeatType }
@@ -42,3 +47,4 @@ export type AudioPlayerDispatchContext = Dispatch<AudioContextAction>;
 
 export const audioPlayerDispatchContext =
   createContext<AudioPlayerDispatchContext | null>(null);
+audioPlayerDispatchContext.displayName = "AudioPlayerDispatchContext";

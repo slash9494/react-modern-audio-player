@@ -1,0 +1,13 @@
+{
+  "extends": "../package/tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "*": [
+        "../package/node_modules/@types/*",
+        "../package/node_modules/*"
+      ]
+    }
+  },
+  "include": ["."]
+}

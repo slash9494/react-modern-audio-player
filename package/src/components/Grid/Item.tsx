@@ -1,25 +1,46 @@
-import { View, ViewProps } from "@react-spectrum/view";
-import { forwardRef } from "react";
-import { DOMRefValue } from "@react-types/shared";
+import { CSSProperties, HTMLAttributes, forwardRef } from "react";
 
-export interface GridItemProps extends Omit<ViewProps, "children"> {
+export interface GridItemLayoutProps {
+  gridArea?: string;
+  width?: CSSProperties["width"];
   visible?: boolean;
-  children: React.ReactNode;
+  UNSAFE_className?: string;
+  justifySelf?: CSSProperties["justifySelf"];
+  padding?: CSSProperties["padding"];
 }
 
-export const GridItem = forwardRef<
-  React.RefAttributes<DOMRefValue<HTMLElement>>,
-  GridItemProps
->(({ children, visible = true, ...viewProps }, ref) => {
-  return (
-    <View
-      justifySelf={"center"}
-      padding={visible ? "0 5px" : undefined}
-      ref={ref as any}
-      {...viewProps}
-    >
-      {visible && children}
-    </View>
-  );
-});
+export type GridItemProps = GridItemLayoutProps &
+  HTMLAttributes<HTMLDivElement>;
+
+export const GridItem = forwardRef<HTMLDivElement, GridItemProps>(
+  (
+    {
+      children,
+      visible = true,
+      gridArea,
+      width,
+      justifySelf = "center",
+      padding,
+      UNSAFE_className,
+      style: styleProp,
+      ...rest
+    },
+    ref
+  ) => {
+    if (!visible) return null;
+
+    const style: CSSProperties = {
+      gridArea,
+      width,
+      justifySelf,
+      padding: padding ?? "0 5px",
+      ...styleProp,
+    };
+    return (
+      <div ref={ref} className={UNSAFE_className} style={style} {...rest}>
+        {children}
+      </div>
+    );
+  }
+);
 GridItem.displayName = "GridItem";
