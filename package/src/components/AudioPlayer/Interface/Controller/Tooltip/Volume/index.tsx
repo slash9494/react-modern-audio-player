@@ -1,8 +1,9 @@
 import { FC, useCallback, useRef } from "react";
 import { VolumeSlider } from "./Content";
-import Dropdown, { DropdownContentPlacement } from "@/components/Dropdown";
+import Dropdown from "@/components/Dropdown";
 import Grid, { GridItemLayoutProps } from "@/components/Grid";
 import { VolumeIcon } from "../../Button";
+import { VolumeSliderPlacement } from "@/components/AudioPlayer/Context/StateContext";
 import { useUIContext } from "@/components/AudioPlayer/Context/hooks/useUIContext";
 import { useVolumeSliderPlacement } from "./useVolume";
 import { usePlaybackContext } from "@/components/AudioPlayer/Context/hooks/usePlaybackContext";
@@ -12,7 +13,7 @@ import { useResolvedGridArea } from "../../../hooks/useResolvedGridArea";
 
 export interface VolumeProps extends GridItemLayoutProps {
   triggerType?: "click" | "hover";
-  placement?: DropdownContentPlacement;
+  placement?: VolumeSliderPlacement;
 }
 
 export const Volume: FC<VolumeProps> = ({

@@ -1,7 +1,8 @@
 import { FC, memo, useCallback } from "react";
 import "./SpeedSelector.css";
-import Dropdown, { DropdownContentPlacement } from "@/components/Dropdown";
+import Dropdown from "@/components/Dropdown";
 import Grid, { GridItemLayoutProps } from "@/components/Grid";
+import { SpeedSelectorPlacement } from "@/components/AudioPlayer/Context/StateContext";
 import { useNonNullableContext } from "@/hooks/useNonNullableContext";
 import { audioPlayerDispatchContext } from "@/components/AudioPlayer/Context/dispatchContext";
 import { usePlaybackContext } from "@/components/AudioPlayer/Context/hooks/usePlaybackContext";
@@ -18,7 +19,7 @@ export interface SpeedSelectorProps extends GridItemLayoutProps {
   options?: number[];
   formatRate?: (rate: number) => string;
   triggerType?: "click" | "hover";
-  placement?: DropdownContentPlacement;
+  placement?: SpeedSelectorPlacement;
 }
 
 export const SpeedSelector: FC<SpeedSelectorProps> = memo(
