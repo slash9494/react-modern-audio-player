@@ -408,6 +408,53 @@ describe("resourceContext isolation", () => {
   });
 });
 
+describe("placement provider props", () => {
+  /**
+   * Provider-level `placement.speedSelector` must flow through
+   * createInitialState → state.speedSelectorPlacement → uiContext.
+   * Without an isolated assertion here, the only coverage of this wire
+   * would be indirect (via SpeedSelector's UIContext fallback path).
+   */
+  it("placement.speedSelector flows from provider props into uiContext.speedSelectorPlacement", () => {
+    let captured: string | undefined = "<<unset>>";
+    const Capture: FC = () => {
+      captured = useUIContext().speedSelectorPlacement;
+      return null;
+    };
+
+    render(
+      <AudioPlayerStateProvider
+        playList={basePlayList}
+        audioInitialState={{ curPlayId: 1 } as InitialStates}
+        placement={{ speedSelector: "right" }}
+      >
+        <Capture />
+      </AudioPlayerStateProvider>
+    );
+
+    expect(captured).toBe("right");
+  });
+
+  it("omitting placement.speedSelector leaves uiContext.speedSelectorPlacement undefined (so SpeedSelector falls back to its own default)", () => {
+    let captured: string | undefined = "<<unset>>";
+    const Capture: FC = () => {
+      captured = useUIContext().speedSelectorPlacement;
+      return null;
+    };
+
+    render(
+      <AudioPlayerStateProvider
+        playList={basePlayList}
+        audioInitialState={{ curPlayId: 1 } as InitialStates}
+      >
+        <Capture />
+      </AudioPlayerStateProvider>
+    );
+
+    expect(captured).toBeUndefined();
+  });
+});
+
 describe("cross-context actions — intentional multi-slice updates", () => {
   /**
    * PREV_AUDIO navigates to the previous track AND resets isLoadedMetaData.

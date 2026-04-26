@@ -1,10 +1,11 @@
 import { FC, memo, useCallback } from "react";
 import "./SpeedSelector.css";
-import Dropdown from "@/components/Dropdown";
+import Dropdown, { DropdownContentPlacement } from "@/components/Dropdown";
 import Grid, { GridItemLayoutProps } from "@/components/Grid";
 import { useNonNullableContext } from "@/hooks/useNonNullableContext";
 import { audioPlayerDispatchContext } from "@/components/AudioPlayer/Context/dispatchContext";
 import { usePlaybackContext } from "@/components/AudioPlayer/Context/hooks/usePlaybackContext";
+import { useUIContext } from "@/components/AudioPlayer/Context/hooks/useUIContext";
 import { useResolvedGridArea } from "../../hooks/useResolvedGridArea";
 
 const DEFAULT_PLAYBACK_RATE_OPTIONS = [
@@ -16,18 +17,35 @@ const formatPlaybackRate = (rate: number): string => `${rate}×`;
 export interface SpeedSelectorProps extends GridItemLayoutProps {
   options?: number[];
   formatRate?: (rate: number) => string;
+  triggerType?: "click" | "hover";
+  placement?: DropdownContentPlacement;
 }
 
 export const SpeedSelector: FC<SpeedSelectorProps> = memo(
-  function SpeedSelector({ gridArea, visible, options, formatRate, ...rest }) {
+  function SpeedSelector({
+    gridArea,
+    visible,
+    options,
+    formatRate,
+    triggerType,
+    placement,
+    ...rest
+  }) {
     const { playbackRate } = usePlaybackContext();
     const audioPlayerDispatch = useNonNullableContext(
       audioPlayerDispatchContext
     );
+    const { speedSelectorPlacement: contextSpeedSelectorPlacement } =
+      useUIContext();
 
     const resolvedGridArea = useResolvedGridArea("playbackRate", gridArea);
     const rateOptions = options ?? DEFAULT_PLAYBACK_RATE_OPTIONS;
     const formatRateLabel = formatRate ?? formatPlaybackRate;
+
+    // Resolution: compound prop > UIContext > "top" default.
+    const resolvedTriggerType = triggerType ?? "click";
+    const resolvedPlacement =
+      placement ?? contextSpeedSelectorPlacement ?? "top";
 
     const handleSelectRate = useCallback(
       (rate: number) => {
@@ -43,8 +61,8 @@ export const SpeedSelector: FC<SpeedSelectorProps> = memo(
         {...rest}
       >
         <Dropdown
-          triggerType="click"
-          placement="top"
+          triggerType={resolvedTriggerType}
+          placement={resolvedPlacement}
           data-testid="speed-selector-dropdown"
         >
           <Dropdown.Trigger

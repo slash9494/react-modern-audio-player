@@ -4,8 +4,12 @@ import { axe } from "vitest-axe";
 import { SpeedSelector } from "../SpeedSelector";
 import { playbackContext } from "@/components/AudioPlayer/Context/PlaybackContext";
 import { resourceContext } from "@/components/AudioPlayer/Context/ResourceContext";
-import { uiContext } from "@/components/AudioPlayer/Context/UIContext";
+import {
+  uiContext,
+  UIContext,
+} from "@/components/AudioPlayer/Context/UIContext";
 import { audioPlayerDispatchContext } from "@/components/AudioPlayer/Context/dispatchContext";
+import type { DropdownContentPlacement } from "@/components/Dropdown";
 
 const mockDispatch = vi.fn();
 
@@ -19,7 +23,7 @@ const makePlaybackValue = (playbackRate = 1) => ({
   playbackRate,
 });
 
-const uiValue = {
+const baseUIValue: UIContext = {
   activeUI: { all: true, playbackRate: true },
   playListPlacement: "bottom" as const,
 };
@@ -28,24 +32,41 @@ interface RenderOptions {
   playbackRate?: number;
   options?: number[];
   formatRate?: (rate: number) => string;
+  // Compound (per-instance) props for the SpeedSelector slot.
+  triggerType?: "click" | "hover";
+  placement?: DropdownContentPlacement;
+  // UIContext-level placement override (provider-level fallback).
+  speedSelectorPlacement?: DropdownContentPlacement;
 }
 
 const renderSpeedSelector = ({
   playbackRate = 1,
   options,
   formatRate,
-}: RenderOptions = {}) =>
-  render(
+  triggerType,
+  placement,
+  speedSelectorPlacement,
+}: RenderOptions = {}) => {
+  const uiValue: UIContext = speedSelectorPlacement
+    ? { ...baseUIValue, speedSelectorPlacement }
+    : baseUIValue;
+  return render(
     <uiContext.Provider value={uiValue}>
       <playbackContext.Provider value={makePlaybackValue(playbackRate)}>
         <resourceContext.Provider value={{}}>
           <audioPlayerDispatchContext.Provider value={mockDispatch}>
-            <SpeedSelector options={options} formatRate={formatRate} />
+            <SpeedSelector
+              options={options}
+              formatRate={formatRate}
+              triggerType={triggerType}
+              placement={placement}
+            />
           </audioPlayerDispatchContext.Provider>
         </resourceContext.Provider>
       </playbackContext.Provider>
     </uiContext.Provider>
   );
+};
 
 // Opening the Dropdown content traverses two timer layers:
 // (1) DropdownContent computes dropdownSize on mount via useEffect, then
@@ -58,6 +79,22 @@ const openMenuByClickingTrigger = () => {
     fireEvent.click(trigger);
   });
   // Flush dropdownSize effect → CssTransition layout effect → enter timer.
+  act(() => vi.runAllTimers());
+  act(() => vi.runAllTimers());
+};
+
+// Hover-mode open path adds one more timer layer up front:
+// useDropdown's lazyChangeVisible defers setIsOpen by 100ms before the
+// DropdownContent dropdownSize / CssTransition timers run.
+const openMenuByHoveringTrigger = () => {
+  const dropdown = screen.getByTestId("speed-selector-dropdown");
+  act(() => {
+    fireEvent.mouseEnter(dropdown);
+  });
+  // 1) lazyChangeVisible 100ms → setIsOpen(true)
+  // 2) dropdownSize useEffect commit
+  // 3) CssTransition enterTime 20ms → renderable=true
+  act(() => vi.runAllTimers());
   act(() => vi.runAllTimers());
   act(() => vi.runAllTimers());
 };
@@ -255,5 +292,96 @@ describe("SpeedSelector accessibility", () => {
     // in vitest config zeros mockDispatch between each `it` already, but
     // assert here explicitly to document the expectation).
     expect(mockDispatch.mock.calls).toHaveLength(1);
+  });
+
+  // --- triggerType prop ---------------------------------------------------
+
+  it('triggerType="hover" opens the menu on mouseEnter', () => {
+    renderSpeedSelector({ playbackRate: 1, triggerType: "hover" });
+    expect(screen.queryByRole("menu")).toBeNull();
+
+    openMenuByHoveringTrigger();
+
+    expect(
+      screen.getByRole("menu", { name: "Playback speed" })
+    ).toBeInTheDocument();
+  });
+
+  it('triggerType="hover" ignores trigger clicks (useDropdown.click handler short-circuits in non-click mode)', () => {
+    // useDropdown.ts:39 — `if (triggerType !== "click") return;` — the
+    // click handler is a no-op when the dropdown is in hover mode. Verify
+    // empirically: clicking the trigger neither opens the menu nor schedules
+    // any deferred opener.
+    renderSpeedSelector({ playbackRate: 1, triggerType: "hover" });
+
+    const trigger = screen.getByTestId("speed-selector-trigger");
+    act(() => {
+      fireEvent.click(trigger);
+    });
+    act(() => vi.runAllTimers());
+    act(() => vi.runAllTimers());
+
+    expect(screen.queryByRole("menu")).toBeNull();
+  });
+
+  // --- placement prop & UIContext fallback --------------------------------
+
+  // Observable choice: DropdownContent renders inline `style` (top/bottom/
+  // left/right) computed by useDropdownPlacementStyle from `placement`. The
+  // `<ul role="menu">` is a direct child of that styled <div>, so reading
+  // `menu.parentElement.style` reflects the resolved placement deterministically.
+  const getMenuPlacementStyle = (): CSSStyleDeclaration => {
+    const menu = screen.getByRole("menu", { name: "Playback speed" });
+    const contentEl = menu.parentElement;
+    if (!contentEl) throw new Error("expected menu to have a content parent");
+    return contentEl.style;
+  };
+
+  it('compound placement="bottom" forwards to Dropdown.Content inline style (top + marginTop set)', () => {
+    renderSpeedSelector({ playbackRate: 1, placement: "bottom" });
+    openMenuByClickingTrigger();
+
+    const style = getMenuPlacementStyle();
+    // useDropdownPlacementStyle: placement="bottom" → top:`${height}px`,
+    // marginTop:"5px"; bottom/left/right unset.
+    expect(style.top).not.toBe("");
+    expect(style.marginTop).toBe("5px");
+    expect(style.bottom).toBe("");
+    expect(style.left).toBe("");
+    expect(style.right).toBe("");
+  });
+
+  it('UIContext speedSelectorPlacement="bottom" propagates when no compound placement prop is given', () => {
+    renderSpeedSelector({
+      playbackRate: 1,
+      speedSelectorPlacement: "bottom",
+    });
+    openMenuByClickingTrigger();
+
+    const style = getMenuPlacementStyle();
+    // Same observable as the previous test — the ONLY way "bottom"
+    // could win here is via UIContext, since no compound prop was passed.
+    expect(style.top).not.toBe("");
+    expect(style.marginTop).toBe("5px");
+    expect(style.bottom).toBe("");
+  });
+
+  it('compound placement="left" wins over UIContext speedSelectorPlacement="right"', () => {
+    renderSpeedSelector({
+      playbackRate: 1,
+      placement: "left",
+      speedSelectorPlacement: "right",
+    });
+    openMenuByClickingTrigger();
+
+    const style = getMenuPlacementStyle();
+    // useDropdownPlacementStyle: placement="left" → right:`${width}px`
+    // (and left unset). placement="right" would set left and unset right —
+    // so reading `style.right`/`style.left` cleanly disambiguates which one
+    // resolved.
+    expect(style.right).not.toBe("");
+    expect(style.left).toBe("");
+    expect(style.top).toBe("");
+    expect(style.bottom).toBe("");
   });
 });

@@ -176,6 +176,7 @@ interface AudioPlayerProps {
     playList?: PlayListPlacement;
     interface?: InterfacePlacement;
     volumeSlider?: VolumeSliderPlacement;
+    speedSelector?: SpeedSelectorPlacement;
   };
   rootContainerProps?: RootContainerProps;
   colorScheme?: "light" | "dark";
@@ -613,12 +614,12 @@ const CustomComponent = () => {
 | Member | Renders |
 | --- | --- |
 | `AudioPlayer.Progress` | progress bar / waveform |
-| `AudioPlayer.Volume` | volume trigger + slider |
+| `AudioPlayer.Volume` | volume trigger + slider (accepts `triggerType?: "click" \| "hover"`, `placement?: DropdownContentPlacement`) |
 | `AudioPlayer.PlayList` | sortable playlist drawer (accepts `initialExpanded?`) |
 | `AudioPlayer.PlayListEmpty` | fallback rendered inside the playlist drawer when `playList` is empty |
 | [`AudioPlayer.PlayButton`](#audioplayerplaybutton-and-activeuiprevnnext) | Play + Prev + Next group (Prev/Next visibility follows `activeUI.prevNnext`) |
 | `AudioPlayer.RepeatButton` | repeat-type button |
-| `AudioPlayer.SpeedSelector` | playback rate dropdown (accepts `options?`, `formatRate?`) |
+| `AudioPlayer.SpeedSelector` | playback rate dropdown (accepts `options?`, `formatRate?`, `triggerType?: "click" \| "hover"`, `placement?: DropdownContentPlacement`) |
 | `AudioPlayer.Artwork` | track artwork |
 | `AudioPlayer.TrackInfo` | track title / writer |
 | `AudioPlayer.TrackTime` | current + duration time |

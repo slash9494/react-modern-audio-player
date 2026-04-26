@@ -3,6 +3,7 @@ import { NumbersToUnionNum } from "@/utils/generateUnionNumType";
 import { ActiveUI } from "./element";
 
 export type VolumeSliderPlacement = DropdownContentPlacement;
+export type SpeedSelectorPlacement = DropdownContentPlacement;
 export type PlayListPlacement = "bottom" | "top";
 export type PlayerPlacement =
   | "bottom"
@@ -75,5 +76,6 @@ export interface Placements<
   playListPlacement: PlayListPlacement;
   interfacePlacement: InterfacePlacement<TInterfacePlacementLength>;
   volumeSliderPlacement: VolumeSliderPlacement | undefined;
+  speedSelectorPlacement: SpeedSelectorPlacement | undefined;
   playerPlacement: PlayerPlacement | undefined;
 }

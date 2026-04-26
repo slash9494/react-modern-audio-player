@@ -1,6 +1,6 @@
 import { FC, useCallback, useRef } from "react";
 import { VolumeSlider } from "./Content";
-import Dropdown from "@/components/Dropdown";
+import Dropdown, { DropdownContentPlacement } from "@/components/Dropdown";
 import Grid, { GridItemLayoutProps } from "@/components/Grid";
 import { VolumeIcon } from "../../Button";
 import { useUIContext } from "@/components/AudioPlayer/Context/hooks/useUIContext";
@@ -10,9 +10,18 @@ import { useNonNullableContext } from "@/hooks/useNonNullableContext";
 import { audioPlayerDispatchContext } from "@/components/AudioPlayer/Context/dispatchContext";
 import { useResolvedGridArea } from "../../../hooks/useResolvedGridArea";
 
-export type VolumeProps = GridItemLayoutProps;
+export interface VolumeProps extends GridItemLayoutProps {
+  triggerType?: "click" | "hover";
+  placement?: DropdownContentPlacement;
+}
 
-export const Volume: FC<VolumeProps> = ({ gridArea, visible, ...rest }) => {
+export const Volume: FC<VolumeProps> = ({
+  gridArea,
+  visible,
+  triggerType,
+  placement,
+  ...rest
+}) => {
   const triggerRef = useRef<HTMLButtonElement>(null);
   const { muted } = usePlaybackContext();
   const audioPlayerDispatch = useNonNullableContext(audioPlayerDispatchContext);
@@ -31,11 +40,18 @@ export const Volume: FC<VolumeProps> = ({ gridArea, visible, ...rest }) => {
 
   const resolvedGridArea = useResolvedGridArea("volume", gridArea);
 
+  // Resolution: compound prop > UIContext > auto-compute fallback.
+  const resolvedTriggerType = triggerType ?? "hover";
+  const resolvedPlacement =
+    placement ?? contextVolumePlacement ?? volumeSliderPlacement;
+  // tooltip role is wrong for click-opened interactive panels; use dialog there.
+  const contentRole = resolvedTriggerType === "hover" ? "tooltip" : "dialog";
+
   return (
     <Grid.Item gridArea={resolvedGridArea} visible={visible ?? true} {...rest}>
       <Dropdown
-        placement={contextVolumePlacement || volumeSliderPlacement}
-        triggerType="hover"
+        placement={resolvedPlacement}
+        triggerType={resolvedTriggerType}
         disabled={volumeSliderEl === false}
         data-testid="volume-dropdown"
       >
@@ -50,10 +66,8 @@ export const Volume: FC<VolumeProps> = ({ gridArea, visible, ...rest }) => {
         >
           <VolumeIcon />
         </Dropdown.Trigger>
-        <Dropdown.Content role="tooltip">
-          <VolumeSlider
-            placement={contextVolumePlacement || volumeSliderPlacement}
-          />
+        <Dropdown.Content role={contentRole}>
+          <VolumeSlider placement={resolvedPlacement} />
         </Dropdown.Content>
       </Dropdown>
     </Grid.Item>

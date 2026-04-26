@@ -35,6 +35,21 @@
 
   Implementation notes: the new `SET_PLAYBACK_RATE` reducer action is the single write path; `useAudio` mirrors the rate to `audioEl.playbackRate` via a sync effect plus a re-apply inside `onLoadedMetadata` (the browser resets the DOM `playbackRate` to `1` on `src` change, mirroring the existing `volume` re-apply pattern). Internal-only `defaultInterfacePlacementMaxLength` was bumped from `10` to `11` to accommodate `playbackRate: "row1-10"` in the default template area; consumers passing an explicit `interfacePlacement` length parameter are unaffected.
 
+- **Volume and SpeedSelector dropdown customization**: both compound slots now expose `triggerType?: "click" \| "hover"` and `placement?: DropdownContentPlacement` props for per-instance configuration. `AudioPlayer.SpeedSelector` also gains a top-level `placement.speedSelector?: DropdownContentPlacement` provider option that mirrors the existing `placement.volumeSlider`. Resolution order (both knobs, both components): **compound prop > UIContext > component default**. Defaults are unchanged — `Volume` stays on `triggerType="hover"` with viewport-aware auto-placement, `SpeedSelector` stays on `triggerType="click"` with `placement="top"`.
+
+  ```tsx
+  // Switch Volume to a click-opened panel and force the menu below the trigger
+  <AudioPlayer.Volume triggerType="click" placement="bottom" />
+
+  // Per-instance SpeedSelector placement
+  <AudioPlayer.SpeedSelector placement="bottom" triggerType="hover" />
+
+  // Or set a default for every SpeedSelector mounted under this provider
+  <AudioPlayer playList={list} placement={{ speedSelector: "bottom" }} />
+  ```
+
+  Implementation note: when `Volume` resolves to `triggerType="click"`, the inner `<Dropdown.Content>` `role` switches from `"tooltip"` to `"dialog"` for semantic correctness — `tooltip` semantics are reserved for non-interactive informational popovers and don't fit a click-opened slider panel. SpeedSelector keeps `role="menu"` regardless of `triggerType` (the menu pattern allows either trigger style).
+
 ### 💥 Breaking Changes
 
 - **`row1-10` grid slot now occupied by default `playbackRate` control**: The new default `playbackRate` placement at `row1-10` will collide with any existing `customComponentsArea` or `templateArea` entry that targets the same cell. Two ways to resolve:
