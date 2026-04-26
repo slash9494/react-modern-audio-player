@@ -89,9 +89,10 @@ describe("Volume compound triggerType prop", () => {
 
     openMenuByClickingTrigger();
 
-    // Volume/index.tsx:48 — `contentRole = resolvedTriggerType === "hover"
-    // ? "tooltip" : "dialog"`. Click mode must yield dialog semantics
-    // (interactive popover), and the tooltip role must NOT be present.
+    // When `resolvedTriggerType === "click"`, Volume sets
+    // `contentRole = "dialog"` (vs. `"tooltip"` for hover). Click mode must
+    // yield dialog semantics (interactive popover), and the tooltip role
+    // must NOT be present.
     expect(screen.getByRole("dialog")).toBeInTheDocument();
     expect(screen.queryByRole("tooltip")).toBeNull();
     // Sanity: the slider itself is rendered under the dialog.
@@ -121,7 +122,7 @@ describe("Volume compound triggerType prop", () => {
       type: "SET_MUTED",
       muted: true,
     });
-    expect(mockDispatch.mock.calls).toHaveLength(1);
+    expect(mockDispatch).toHaveBeenCalledTimes(1);
   });
 
   it("default (no triggerType): hover-open exposes role=tooltip on the panel", () => {

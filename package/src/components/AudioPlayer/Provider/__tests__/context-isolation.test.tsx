@@ -415,12 +415,17 @@ describe("placement provider props", () => {
    * Without an isolated assertion here, the only coverage of this wire
    * would be indirect (via SpeedSelector's UIContext fallback path).
    */
-  it("placement.speedSelector flows from provider props into uiContext.speedSelectorPlacement", () => {
+  function makePlacementCapture() {
     let captured: string | undefined = "<<unset>>";
     const Capture: FC = () => {
       captured = useUIContext().speedSelectorPlacement;
       return null;
     };
+    return { Capture, getCaptured: () => captured };
+  }
+
+  it("placement.speedSelector flows from provider props into uiContext.speedSelectorPlacement", () => {
+    const { Capture, getCaptured } = makePlacementCapture();
 
     render(
       <AudioPlayerStateProvider
@@ -432,15 +437,11 @@ describe("placement provider props", () => {
       </AudioPlayerStateProvider>
     );
 
-    expect(captured).toBe("right");
+    expect(getCaptured()).toBe("right");
   });
 
   it("omitting placement.speedSelector leaves uiContext.speedSelectorPlacement undefined (so SpeedSelector falls back to its own default)", () => {
-    let captured: string | undefined = "<<unset>>";
-    const Capture: FC = () => {
-      captured = useUIContext().speedSelectorPlacement;
-      return null;
-    };
+    const { Capture, getCaptured } = makePlacementCapture();
 
     render(
       <AudioPlayerStateProvider
@@ -451,7 +452,7 @@ describe("placement provider props", () => {
       </AudioPlayerStateProvider>
     );
 
-    expect(captured).toBeUndefined();
+    expect(getCaptured()).toBeUndefined();
   });
 });
 

@@ -58,6 +58,8 @@
 
   No collision warning is emitted at runtime — the symptom is overlapping cells in the rendered grid.
 
+- **`AudioPlayer.Volume` role attribute change with `triggerType="click"`**: When `Volume` resolves to `triggerType="click"` (via the compound prop, the `placement.volumeSlider` provider option, or direct usage), the inner `<Dropdown.Content>` `role` switches from `"tooltip"` to `"dialog"`. Consumers asserting `role="tooltip"` in tests, targeting `[role="tooltip"]` in CSS, or relying on tooltip semantics in accessibility tooling must update those expectations. Hover mode (the default) is unchanged.
+
 ## v2.2.0 (2026-04-25)
 
 ### ✨ New Features
