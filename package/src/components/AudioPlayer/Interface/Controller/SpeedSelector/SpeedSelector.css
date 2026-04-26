@@ -4,7 +4,6 @@
   width: auto;
   min-width: 36px;
   height: 100%;
-  padding: 2px 10px;
   align-items: center;
   justify-content: center;
   font: inherit;
@@ -12,6 +11,11 @@
   line-height: 1;
   color: var(--rm-audio-player-text-color);
   border-radius: 4px;
+}
+
+.rmap-dropdown-container .rmap-dropdown-trigger.rmap-speed-selector-trigger {
+  position: static;
+  inset: auto;
 }
 
 .styled-btn.rmap-speed-selector-trigger:hover {
@@ -39,20 +43,18 @@
   flex-direction: column;
 }
 
-/* Menu item (button) — full-width, left-aligned text row. */
+/* Menu item (button) — full-width, centered text row. */
 .rmap-speed-selector-option {
   width: 100%;
-  padding: 6px 10px 6px 22px;
   background: none;
   border: none;
   cursor: pointer;
-  text-align: left;
+  text-align: center;
   font: inherit;
   font-variant-numeric: tabular-nums;
   line-height: 1.2;
   color: var(--rm-audio-player-text-color);
   border-radius: 3px;
-  position: relative;
   transition: background-color 0.15s ease-out, color 0.15s ease-out;
 }
 
@@ -67,21 +69,13 @@
   outline-offset: -2px;
 }
 
-/* Active modifier — accent color + leading check indicator via pseudo-element
-   so the component DOM stays untouched. */
+/* Active modifier — accent color + bold weight; aria-checked carries the
+   semantic state for assistive tech. */
 .rmap-speed-selector-option.rmap-speed-selector-option--active {
   color: var(--rm-audio-player-track-current-time);
   font-weight: 600;
 }
 
-.rmap-speed-selector-option.rmap-speed-selector-option--active::before {
-  content: "";
-  position: absolute;
-  left: 8px;
-  top: 50%;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background-color: var(--rm-audio-player-track-current-time);
-  transform: translateY(-50%);
+.rmap-speed-selector-menu .rmap-speed-selector-option {
+  padding: 6px 12px;
 }
