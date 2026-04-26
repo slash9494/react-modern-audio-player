@@ -45,7 +45,7 @@ function createInitialState<T extends number>(
 
   const activeUI = activeUIProp || { playButton: true };
 
-  const placement: Placements<T | 11> = {
+  const placement: Placements<T | typeof defaultInterfacePlacementMaxLength> = {
     playerPlacement: placementProp?.player,
     playListPlacement: placementProp?.playList || "bottom",
     interfacePlacement: placementProp?.interface || {
@@ -75,7 +75,7 @@ function createInitialState<T extends number>(
     activeUI,
     audioResetKey: 0,
     seekRequestKey: 0,
-    ...(placement as Placements<11>),
+    ...(placement as Placements<typeof defaultInterfacePlacementMaxLength>),
     customIcons,
     coverImgsCss,
   };

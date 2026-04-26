@@ -6,7 +6,7 @@
 
 - **Playback speed support** (Closes [#3](https://github.com/slash9494/react-modern-audio-player/issues/3)): the player now supports per-track playback speed via three new public surfaces.
 
-  **1. `AudioPlayer.SpeedSelector` compound slot** — a Dropdown-based UI that displays the current rate as a clickable label (e.g. `1×`, `1.5×`) and opens a menu of selectable rates. Defaults to `[0.5, 0.75, 1, 1.25, 1.5, 1.75, 2]`. Mounts automatically alongside the preset when `activeUI.playbackRate` is `true` (or `activeUI.all` is `true`); accepts `options?: number[]` and `formatRate?: (rate: number) => string` for customization.
+  - **1. `AudioPlayer.SpeedSelector` compound slot** — a Dropdown-based UI that displays the current rate as a clickable label (e.g. `1×`, `1.5×`) and opens a menu of selectable rates. Defaults to `[0.5, 0.75, 1, 1.25, 1.5, 1.75, 2]`. Mounts automatically alongside the preset when `activeUI.playbackRate` is `true` (or `activeUI.all` is `true`); accepts `options?: number[]` and `formatRate?: (rate: number) => string` for customization.
 
       ```tsx
       <AudioPlayer playList={list} activeUI={{ all: true, playbackRate: true }} />

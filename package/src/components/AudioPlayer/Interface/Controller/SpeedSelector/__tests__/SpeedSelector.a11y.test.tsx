@@ -209,6 +209,11 @@ describe("SpeedSelector accessibility", () => {
     // Drop fake timers so vitest-axe's internal awaits run on the real
     // microtask queue. axe never schedules wall-clock timers, so this
     // is purely a hygiene step that keeps the assertion deterministic.
+    // Flush any pending fake timers first to avoid leaking scheduled work
+    // across the timer-mode boundary.
+    act(() => {
+      vi.runOnlyPendingTimers();
+    });
     vi.useRealTimers();
     expect(await axe(container)).toHaveNoViolations();
   });
@@ -218,6 +223,11 @@ describe("SpeedSelector accessibility", () => {
     openMenuByClickingTrigger();
     // Confirm the menu is committed before scanning.
     expect(screen.getByRole("menu")).toBeInTheDocument();
+    // Flush any pending fake timers first to avoid leaking scheduled work
+    // across the timer-mode boundary.
+    act(() => {
+      vi.runOnlyPendingTimers();
+    });
     vi.useRealTimers();
     expect(await axe(container)).toHaveNoViolations();
   });
