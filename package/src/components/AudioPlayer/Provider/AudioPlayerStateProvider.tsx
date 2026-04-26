@@ -54,7 +54,7 @@ function createInitialState<T extends number>(
       },
     },
     volumeSliderPlacement: placementProp?.volumeSlider,
-    speedSelectorPlacement: placementProp?.speedSelector,
+    playbackRatePlacement: placementProp?.playbackRate,
   };
 
   const isEmpty = playList.length === 0;
@@ -157,7 +157,7 @@ export const AudioPlayerStateProvider = <
       playerPlacement: state.playerPlacement,
       interfacePlacement: state.interfacePlacement,
       volumeSliderPlacement: state.volumeSliderPlacement,
-      speedSelectorPlacement: state.speedSelectorPlacement,
+      playbackRatePlacement: state.playbackRatePlacement,
       colorScheme,
       playListExpanded,
     }),
@@ -167,7 +167,7 @@ export const AudioPlayerStateProvider = <
       state.playerPlacement,
       state.interfacePlacement,
       state.volumeSliderPlacement,
-      state.speedSelectorPlacement,
+      state.playbackRatePlacement,
       colorScheme,
       playListExpanded,
     ]

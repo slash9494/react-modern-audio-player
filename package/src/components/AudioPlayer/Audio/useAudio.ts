@@ -51,27 +51,28 @@ export const useAudio = (): HTMLAttributes<HTMLAudioElement> => {
     audioPlayerDispatch({ type: "NEXT_AUDIO" });
   }, [audioPlayerDispatch, repeatType, elementRefs?.audioEl]);
 
+  // Browsers reset audioEl.volume and audioEl.playbackRate to their defaults
+  // on src change, and the standalone sync effects don't re-fire (same audioEl
+  // ref, same React values). Re-apply here so state-driven values survive a
+  // track swap.
+  const reapplyAfterSrcChange = useCallback(
+    (audioEl: HTMLAudioElement) => {
+      if (playbackVolume != null) audioEl.volume = playbackVolume;
+      if (playbackRate != null) audioEl.playbackRate = playbackRate;
+    },
+    [playbackVolume, playbackRate]
+  );
+
   const onLoadedMetadata = useCallback(
     (e: SyntheticEvent<HTMLAudioElement, Event>) => {
       const { duration } = e.currentTarget;
-      // Browsers reset audioEl.volume to 1 when loading a new source.
-      // Re-apply the state-driven volume so the initial/current value
-      // survives the source change.
-      if (playbackVolume != null) {
-        e.currentTarget.volume = playbackVolume;
-      }
-      // Browsers also reset audioEl.playbackRate to 1 on src change; the
-      // standalone sync effect won't re-fire (same audioEl ref, same React
-      // value), so re-apply here to keep the rate after a track swap.
-      if (playbackRate != null) {
-        e.currentTarget.playbackRate = playbackRate;
-      }
+      reapplyAfterSrcChange(e.currentTarget);
       audioPlayerDispatch({
         type: "SET_AUDIO_STATE",
         audioState: { isLoadedMetaData: true, duration },
       });
     },
-    [audioPlayerDispatch, playbackVolume, playbackRate]
+    [audioPlayerDispatch, reapplyAfterSrcChange]
   );
 
   const hasSkippedInitialResetRef = useRef(false);

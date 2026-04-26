@@ -176,7 +176,7 @@ interface AudioPlayerProps {
     playList?: PlayListPlacement;
     interface?: InterfacePlacement;
     volumeSlider?: VolumeSliderPlacement;
-    speedSelector?: SpeedSelectorPlacement;
+    playbackRate?: PlaybackRatePlacement;
   };
   rootContainerProps?: RootContainerProps;
   colorScheme?: "light" | "dark";
@@ -310,7 +310,7 @@ type PlayerPlacement =
 
 type VolumeSliderPlacement = "bottom" | "top" | "left" | "right";
 
-type SpeedSelectorPlacement = "bottom" | "top" | "left" | "right";
+type PlaybackRatePlacement = "bottom" | "top" | "left" | "right";
 
 type PlayListPlacement = "bottom" | "top";
 
@@ -621,7 +621,7 @@ const CustomComponent = () => {
 | `AudioPlayer.PlayListEmpty` | fallback rendered inside the playlist drawer when `playList` is empty |
 | [`AudioPlayer.PlayButton`](#audioplayerplaybutton-and-activeuiprevnnext) | Play + Prev + Next group (Prev/Next visibility follows `activeUI.prevNnext`) |
 | `AudioPlayer.RepeatButton` | repeat-type button |
-| `AudioPlayer.SpeedSelector` | playback rate dropdown (accepts `options?`, `formatRate?`, `triggerType?: "click" \| "hover"`, `placement?: SpeedSelectorPlacement`) |
+| `AudioPlayer.SpeedSelector` | playback rate dropdown (accepts `options?`, `formatRate?`, `triggerType?: "click" \| "hover"`, `placement?: PlaybackRatePlacement`) |
 | `AudioPlayer.Artwork` | track artwork |
 | `AudioPlayer.TrackInfo` | track title / writer |
 | `AudioPlayer.TrackTime` | current + duration time |

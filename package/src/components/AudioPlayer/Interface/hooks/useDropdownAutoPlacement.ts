@@ -1,21 +1,21 @@
-import { VolumeSliderPlacement } from "@/components/AudioPlayer/Context";
+import { DropdownContentPlacement } from "@/components/Dropdown";
 import { useUIContext } from "@/components/AudioPlayer/Context/hooks/useUIContext";
 import { useState, useEffect } from "react";
 
-export const useVolumeSliderPlacement = ({
+export const useDropdownAutoPlacement = ({
   triggerRef,
   initialState,
 }: {
   triggerRef: React.RefObject<HTMLElement>;
-  initialState: VolumeSliderPlacement;
+  initialState: DropdownContentPlacement;
 }) => {
   const { playerPlacement } = useUIContext();
-  const [volumeSliderPlacement, setVolumeSliderPlacement] =
-    useState<VolumeSliderPlacement>(initialState);
+  const [autoPlacement, setAutoPlacement] =
+    useState<DropdownContentPlacement>(initialState);
 
   useEffect(() => {
     if (triggerRef.current) {
-      const placementValidation = () => {
+      const placementValidation = (): DropdownContentPlacement => {
         if (
           triggerRef.current!.getBoundingClientRect().top <
           window.innerHeight / 2
@@ -25,13 +25,13 @@ export const useVolumeSliderPlacement = ({
         return "top";
       };
 
-      const volumeSliderPlacementTimeout = setTimeout(() => {
-        setVolumeSliderPlacement(placementValidation());
+      const autoPlacementTimeout = setTimeout(() => {
+        setAutoPlacement(placementValidation());
       }, 0);
       return () => {
-        clearTimeout(volumeSliderPlacementTimeout);
+        clearTimeout(autoPlacementTimeout);
       };
     }
   }, [playerPlacement, triggerRef]);
-  return volumeSliderPlacement;
+  return autoPlacement;
 };

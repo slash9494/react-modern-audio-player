@@ -1,10 +1,10 @@
-import type { DropdownContentPlacement } from "@/components/Dropdown";
 import type {
   ActiveUI,
   CoverImgsCss,
   CustomIcons,
   InitialStates,
   InterfacePlacement,
+  PlaybackRatePlacement,
   PlayList,
   PlayListPlacement,
   PlayerPlacement,
@@ -24,6 +24,6 @@ export interface AudioPlayerStateProviderProps<
     playList?: PlayListPlacement;
     interface?: InterfacePlacement<TInterfacePlacementLength>;
     volumeSlider?: VolumeSliderPlacement;
-    speedSelector?: DropdownContentPlacement;
+    playbackRate?: PlaybackRatePlacement;
   };
 }

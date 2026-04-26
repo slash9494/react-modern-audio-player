@@ -1,13 +1,14 @@
-import { FC, memo, useCallback } from "react";
+import { FC, memo, useCallback, useRef } from "react";
 import "./SpeedSelector.css";
 import Dropdown from "@/components/Dropdown";
 import Grid, { GridItemLayoutProps } from "@/components/Grid";
-import { SpeedSelectorPlacement } from "@/components/AudioPlayer/Context/StateContext";
+import { PlaybackRatePlacement } from "@/components/AudioPlayer/Context/StateContext";
 import { useNonNullableContext } from "@/hooks/useNonNullableContext";
 import { audioPlayerDispatchContext } from "@/components/AudioPlayer/Context/dispatchContext";
 import { usePlaybackContext } from "@/components/AudioPlayer/Context/hooks/usePlaybackContext";
 import { useUIContext } from "@/components/AudioPlayer/Context/hooks/useUIContext";
 import { useResolvedGridArea } from "../../hooks/useResolvedGridArea";
+import { useResolvedDropdownProps } from "../../hooks/useResolvedDropdownProps";
 
 const DEFAULT_PLAYBACK_RATE_OPTIONS = [
   0.5, 0.75, 1, 1.25, 1.5, 1.75, 2,
@@ -19,7 +20,7 @@ export interface SpeedSelectorProps extends GridItemLayoutProps {
   options?: number[];
   formatRate?: (rate: number) => string;
   triggerType?: "click" | "hover";
-  placement?: SpeedSelectorPlacement;
+  placement?: PlaybackRatePlacement;
 }
 
 export const SpeedSelector: FC<SpeedSelectorProps> = memo(
@@ -32,21 +33,26 @@ export const SpeedSelector: FC<SpeedSelectorProps> = memo(
     placement,
     ...rest
   }) {
+    const triggerRef = useRef<HTMLButtonElement>(null);
     const { playbackRate } = usePlaybackContext();
     const audioPlayerDispatch = useNonNullableContext(
       audioPlayerDispatchContext
     );
-    const { speedSelectorPlacement: contextSpeedSelectorPlacement } =
+    const { playbackRatePlacement: contextPlaybackRatePlacement } =
       useUIContext();
 
     const resolvedGridArea = useResolvedGridArea("playbackRate", gridArea);
     const rateOptions = options ?? DEFAULT_PLAYBACK_RATE_OPTIONS;
     const formatRateLabel = formatRate ?? formatPlaybackRate;
 
-    // Resolution: compound prop > UIContext > "top" default.
-    const resolvedTriggerType = triggerType ?? "click";
-    const resolvedPlacement =
-      placement ?? contextSpeedSelectorPlacement ?? "top";
+    const { triggerType: resolvedTriggerType, placement: resolvedPlacement } =
+      useResolvedDropdownProps({
+        triggerType,
+        placement,
+        contextPlacement: contextPlaybackRatePlacement,
+        triggerRef,
+        defaults: { triggerType: "click", placement: "top" },
+      });
 
     const handleSelectRate = useCallback(
       (rate: number) => {
@@ -67,6 +73,7 @@ export const SpeedSelector: FC<SpeedSelectorProps> = memo(
           data-testid="speed-selector-dropdown"
         >
           <Dropdown.Trigger
+            ref={triggerRef}
             aria-label={`Playback speed, currently ${formatRateLabel(
               playbackRate
             )}`}
