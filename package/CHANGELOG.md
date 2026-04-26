@@ -33,7 +33,13 @@
 
   - **3. `audioInitialState.playbackRate`** — initial rate at mount, defaults to `1`. No clamping is applied at any layer; the browser enforces HTML5 `playbackRate` bounds.
 
-  Implementation notes: the new `SET_PLAYBACK_RATE` reducer action is the single write path; `useAudio` mirrors the rate to `audioEl.playbackRate` via an effect that mirrors the existing `volume` sync. Internal-only `defaultInterfacePlacementMaxLength` was bumped from `10` to `11` to accommodate `playbackRate: "row1-10"` in the default template area; consumers passing an explicit `interfacePlacement` length parameter are unaffected.
+  Implementation notes: the new `SET_PLAYBACK_RATE` reducer action is the single write path; `useAudio` mirrors the rate to `audioEl.playbackRate` via a sync effect plus a re-apply inside `onLoadedMetadata` (the browser resets the DOM `playbackRate` to `1` on `src` change, mirroring the existing `volume` re-apply pattern). Internal-only `defaultInterfacePlacementMaxLength` was bumped from `10` to `11` to accommodate `playbackRate: "row1-10"` in the default template area; consumers passing an explicit `interfacePlacement` length parameter are unaffected.
+
+  **Migration note — `row1-10` slot now occupied**: the new default `playbackRate` placement at `row1-10` will collide with any existing `customComponentsArea` or `templateArea` entry that targets the same cell. Two ways to resolve:
+  - Move the conflicting custom area to a different cell (e.g. `row1-11`)
+  - Disable the new slot by setting `activeUI={{ ..., playbackRate: false }}`
+
+  No collision warning is emitted at runtime — the symptom is overlapping cells in the rendered grid.
 
 ## v2.2.0 (2026-04-25)
 

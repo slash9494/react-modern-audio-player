@@ -9,7 +9,7 @@ import {
 export type CustomComponentsArea = Record<string, string>;
 
 export const defaultCustomComponentsArea: CustomComponentsArea = {
-  test1: "row1-10",
+  test1: "row1-11",
 };
 
 export const playerMode: Record<
@@ -38,7 +38,7 @@ export const playerMode: Record<
     },
     playListPlacement: "bottom",
     progressType: "waveform",
-    customComponentsArea: { test1: "row1-10" },
+    customComponentsArea: { test1: "row1-11" },
   },
   1: {
     interfacePlacement: {
@@ -50,7 +50,7 @@ export const playerMode: Record<
     },
     playListPlacement: "bottom",
     progressType: "bar",
-    customComponentsArea: { test1: "row1-10" },
+    customComponentsArea: { test1: "row1-11" },
   },
   2: {
     interfacePlacement: {
