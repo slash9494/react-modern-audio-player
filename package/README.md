@@ -644,7 +644,7 @@ The two layers are orthogonal. Compound children render **additively** alongside
   playList={playList}
   activeUI={{ all: true, volume: false }}
 >
-  <AudioPlayer.Volume gridArea="1 / 5 / 1 / 6" />
+  <AudioPlayer.Volume gridArea="row1-5" />
 </AudioPlayer>
 ```
 
