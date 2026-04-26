@@ -515,4 +515,62 @@ describe("useAudio playbackRate sync effect", () => {
       render(<PlaybackRateHarness audioEl={undefined} playbackRate={1.5} />);
     }).not.toThrow();
   });
+
+  it("re-applies playbackRate on loadedmetadata after a track change", () => {
+    // Browsers reset audioEl.playbackRate to 1 when a new source loads.
+    // The standalone sync effect can't catch this (same audioEl ref + same
+    // React playbackRate value, so deps are unchanged), so onLoadedMetadata
+    // must re-apply the state-driven rate to survive a track swap.
+    const audioEl = makeAudioEl(0, TRACK_DURATION_SEC);
+    const setter = installPlaybackRateSpy(audioEl);
+
+    const dispatch = vi.fn();
+    const wrapper: FC<{ children: ReactNode }> = ({ children }) => (
+      <timeContext.Provider
+        value={{
+          currentTime: 0,
+          duration: TRACK_DURATION_SEC,
+          seekRequestKey: 0,
+        }}
+      >
+        <playbackContext.Provider value={makePlaybackValue("ALL", 1.5)}>
+          <resourceContext.Provider
+            value={{
+              elementRefs: { audioEl, waveformInst: undefined as never },
+            }}
+          >
+            <audioPlayerDispatchContext.Provider value={dispatch}>
+              {children}
+            </audioPlayerDispatchContext.Provider>
+          </resourceContext.Provider>
+        </playbackContext.Provider>
+      </timeContext.Provider>
+    );
+
+    const { result } = renderHook(() => useAudio(), { wrapper });
+
+    // Initial mount commits the standalone effect once.
+    expect(setter).toHaveBeenCalledTimes(1);
+    expect(setter).toHaveBeenLastCalledWith(1.5);
+    expect(audioEl.playbackRate).toBe(1.5);
+
+    // Simulate the browser resetting playbackRate to 1 on a src swap.
+    audioEl.playbackRate = 1;
+    expect(setter).toHaveBeenCalledTimes(2);
+    expect(audioEl.playbackRate).toBe(1);
+
+    // Fire the loadedmetadata callback the way React would after the new
+    // source is parsed. The callback only reads currentTarget.duration and
+    // writes currentTarget.volume / currentTarget.playbackRate, so a
+    // minimal stub event is sufficient.
+    act(() => {
+      result.current.onLoadedMetadata?.({
+        currentTarget: audioEl,
+      } as unknown as SyntheticEvent<HTMLAudioElement, Event>);
+    });
+
+    expect(setter).toHaveBeenCalledTimes(3);
+    expect(setter).toHaveBeenLastCalledWith(1.5);
+    expect(audioEl.playbackRate).toBe(1.5);
+  });
 });

@@ -60,12 +60,18 @@ export const useAudio = (): HTMLAttributes<HTMLAudioElement> => {
       if (playbackVolume != null) {
         e.currentTarget.volume = playbackVolume;
       }
+      // Browsers also reset audioEl.playbackRate to 1 on src change; the
+      // standalone sync effect won't re-fire (same audioEl ref, same React
+      // value), so re-apply here to keep the rate after a track swap.
+      if (playbackRate != null) {
+        e.currentTarget.playbackRate = playbackRate;
+      }
       audioPlayerDispatch({
         type: "SET_AUDIO_STATE",
         audioState: { isLoadedMetaData: true, duration },
       });
     },
-    [audioPlayerDispatch, playbackVolume]
+    [audioPlayerDispatch, playbackVolume, playbackRate]
   );
 
   const hasSkippedInitialResetRef = useRef(false);
