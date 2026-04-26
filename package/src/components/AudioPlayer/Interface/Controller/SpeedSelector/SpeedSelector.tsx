@@ -26,7 +26,7 @@ export const SpeedSelector: FC<SpeedSelectorProps> = memo(
     );
 
     const resolvedGridArea = useResolvedGridArea("playbackRate", gridArea);
-    const rateOptions = options ?? [...DEFAULT_PLAYBACK_RATE_OPTIONS];
+    const rateOptions = options ?? DEFAULT_PLAYBACK_RATE_OPTIONS;
     const formatRateLabel = formatRate ?? formatPlaybackRate;
 
     const handleSelectRate = useCallback(

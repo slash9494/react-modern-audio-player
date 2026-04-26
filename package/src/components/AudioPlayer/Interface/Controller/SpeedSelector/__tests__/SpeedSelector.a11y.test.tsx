@@ -1,13 +1,5 @@
 import { render, screen, act, fireEvent } from "@testing-library/react";
-import {
-  describe,
-  it,
-  expect,
-  vi,
-  beforeEach,
-  afterEach,
-  type Mock,
-} from "vitest";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { axe } from "vitest-axe";
 import { SpeedSelector } from "../SpeedSelector";
 import { playbackContext } from "@/components/AudioPlayer/Context/PlaybackContext";
@@ -252,6 +244,6 @@ describe("SpeedSelector accessibility", () => {
     // Confirm setter spy interactions are not retained (clearMocks: true
     // in vitest config zeros mockDispatch between each `it` already, but
     // assert here explicitly to document the expectation).
-    expect((mockDispatch as Mock).mock.calls.length).toBe(1);
+    expect(mockDispatch.mock.calls).toHaveLength(1);
   });
 });
