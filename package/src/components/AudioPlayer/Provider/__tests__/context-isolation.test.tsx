@@ -410,28 +410,28 @@ describe("resourceContext isolation", () => {
 
 describe("placement provider props", () => {
   /**
-   * Provider-level `placement.playbackRate` must flow through
-   * createInitialState → state.playbackRatePlacement → uiContext.
+   * Provider-level `placement.speedSelector` must flow through
+   * createInitialState → state.speedSelectorPlacement → uiContext.
    * Without an isolated assertion here, the only coverage of this wire
    * would be indirect (via SpeedSelector's UIContext fallback path).
    */
   function makePlacementCapture() {
     let captured: string | undefined = "<<unset>>";
     const Capture: FC = () => {
-      captured = useUIContext().playbackRatePlacement;
+      captured = useUIContext().speedSelectorPlacement;
       return null;
     };
     return { Capture, getCaptured: () => captured };
   }
 
-  it("placement.playbackRate flows from provider props into uiContext.playbackRatePlacement", () => {
+  it("placement.speedSelector flows from provider props into uiContext.speedSelectorPlacement", () => {
     const { Capture, getCaptured } = makePlacementCapture();
 
     render(
       <AudioPlayerStateProvider
         playList={basePlayList}
         audioInitialState={{ curPlayId: 1 } as InitialStates}
-        placement={{ playbackRate: "right" }}
+        placement={{ speedSelector: "right" }}
       >
         <Capture />
       </AudioPlayerStateProvider>
@@ -440,7 +440,7 @@ describe("placement provider props", () => {
     expect(getCaptured()).toBe("right");
   });
 
-  it("omitting placement.playbackRate leaves uiContext.playbackRatePlacement undefined (so SpeedSelector falls back to its own default)", () => {
+  it("omitting placement.speedSelector leaves uiContext.speedSelectorPlacement undefined (so SpeedSelector falls back to its own default)", () => {
     const { Capture, getCaptured } = makePlacementCapture();
 
     render(

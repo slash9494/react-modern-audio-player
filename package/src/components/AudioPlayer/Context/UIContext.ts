@@ -4,7 +4,7 @@ import {
   InterfacePlacement,
   PlayListPlacement,
   PlayerPlacement,
-  PlaybackRatePlacement,
+  SpeedSelectorPlacement,
   VolumeSliderPlacement,
 } from "./StateContext";
 
@@ -16,7 +16,7 @@ export interface UIContext {
   playerPlacement?: PlayerPlacement;
   interfacePlacement?: InterfacePlacement;
   volumeSliderPlacement?: VolumeSliderPlacement;
-  playbackRatePlacement?: PlaybackRatePlacement;
+  speedSelectorPlacement?: SpeedSelectorPlacement;
   colorScheme?: ColorScheme;
   playListExpanded?: boolean;
 }

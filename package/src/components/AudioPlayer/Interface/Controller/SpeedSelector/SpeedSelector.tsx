@@ -2,7 +2,7 @@ import { FC, memo, useCallback, useRef } from "react";
 import "./SpeedSelector.css";
 import Dropdown from "@/components/Dropdown";
 import Grid, { GridItemLayoutProps } from "@/components/Grid";
-import { PlaybackRatePlacement } from "@/components/AudioPlayer/Context/StateContext";
+import { SpeedSelectorPlacement } from "@/components/AudioPlayer/Context/StateContext";
 import { useNonNullableContext } from "@/hooks/useNonNullableContext";
 import { audioPlayerDispatchContext } from "@/components/AudioPlayer/Context/dispatchContext";
 import { usePlaybackContext } from "@/components/AudioPlayer/Context/hooks/usePlaybackContext";
@@ -20,7 +20,7 @@ export interface SpeedSelectorProps extends GridItemLayoutProps {
   options?: number[];
   formatRate?: (rate: number) => string;
   triggerType?: "click" | "hover";
-  placement?: PlaybackRatePlacement;
+  placement?: SpeedSelectorPlacement;
 }
 
 export const SpeedSelector: FC<SpeedSelectorProps> = memo(
@@ -38,7 +38,7 @@ export const SpeedSelector: FC<SpeedSelectorProps> = memo(
     const audioPlayerDispatch = useNonNullableContext(
       audioPlayerDispatchContext
     );
-    const { playbackRatePlacement: contextPlaybackRatePlacement } =
+    const { speedSelectorPlacement: contextSpeedSelectorPlacement } =
       useUIContext();
 
     const resolvedGridArea = useResolvedGridArea("playbackRate", gridArea);
@@ -49,7 +49,7 @@ export const SpeedSelector: FC<SpeedSelectorProps> = memo(
       useResolvedDropdownProps({
         triggerType,
         placement,
-        contextPlacement: contextPlaybackRatePlacement,
+        contextPlacement: contextSpeedSelectorPlacement,
         triggerRef,
         defaults: { triggerType: "click", placement: "top" },
       });

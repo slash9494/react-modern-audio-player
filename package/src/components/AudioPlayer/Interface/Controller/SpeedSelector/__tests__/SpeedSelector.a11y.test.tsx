@@ -36,7 +36,7 @@ interface RenderOptions {
   triggerType?: "click" | "hover";
   placement?: DropdownContentPlacement;
   // UIContext-level placement override (provider-level fallback).
-  playbackRatePlacement?: DropdownContentPlacement;
+  speedSelectorPlacement?: DropdownContentPlacement;
 }
 
 const renderSpeedSelector = ({
@@ -45,10 +45,10 @@ const renderSpeedSelector = ({
   formatRate,
   triggerType,
   placement,
-  playbackRatePlacement,
+  speedSelectorPlacement,
 }: RenderOptions = {}) => {
-  const uiValue: UIContext = playbackRatePlacement
-    ? { ...baseUIValue, playbackRatePlacement }
+  const uiValue: UIContext = speedSelectorPlacement
+    ? { ...baseUIValue, speedSelectorPlacement }
     : baseUIValue;
   return render(
     <uiContext.Provider value={uiValue}>
@@ -351,10 +351,10 @@ describe("SpeedSelector accessibility", () => {
     expect(style.right).toBe("");
   });
 
-  it('UIContext playbackRatePlacement="bottom" propagates when no compound placement prop is given', () => {
+  it('UIContext speedSelectorPlacement="bottom" propagates when no compound placement prop is given', () => {
     renderSpeedSelector({
       playbackRate: 1,
-      playbackRatePlacement: "bottom",
+      speedSelectorPlacement: "bottom",
     });
     openMenuByClickingTrigger();
 
@@ -366,11 +366,11 @@ describe("SpeedSelector accessibility", () => {
     expect(style.bottom).toBe("");
   });
 
-  it('compound placement="left" wins over UIContext playbackRatePlacement="right"', () => {
+  it('compound placement="left" wins over UIContext speedSelectorPlacement="right"', () => {
     renderSpeedSelector({
       playbackRate: 1,
       placement: "left",
-      playbackRatePlacement: "right",
+      speedSelectorPlacement: "right",
     });
     openMenuByClickingTrigger();
 

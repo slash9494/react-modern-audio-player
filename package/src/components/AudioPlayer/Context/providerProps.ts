@@ -4,10 +4,10 @@ import type {
   CustomIcons,
   InitialStates,
   InterfacePlacement,
-  PlaybackRatePlacement,
   PlayList,
   PlayListPlacement,
   PlayerPlacement,
+  SpeedSelectorPlacement,
   VolumeSliderPlacement,
 } from "./StateContext";
 
@@ -24,6 +24,6 @@ export interface AudioPlayerStateProviderProps<
     playList?: PlayListPlacement;
     interface?: InterfacePlacement<TInterfacePlacementLength>;
     volumeSlider?: VolumeSliderPlacement;
-    playbackRate?: PlaybackRatePlacement;
+    speedSelector?: SpeedSelectorPlacement;
   };
 }

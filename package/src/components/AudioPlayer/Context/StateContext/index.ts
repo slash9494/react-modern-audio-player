@@ -10,7 +10,7 @@ import {
   PlayListPlacement,
   InterfacePlacement,
   PlayerPlacement,
-  PlaybackRatePlacement,
+  SpeedSelectorPlacement,
   VolumeSliderPlacement,
 } from "./placement";
 
@@ -24,7 +24,7 @@ export interface AudioPlayerStateContext {
   playerPlacement?: PlayerPlacement;
   interfacePlacement?: InterfacePlacement;
   volumeSliderPlacement?: VolumeSliderPlacement;
-  playbackRatePlacement?: PlaybackRatePlacement;
+  speedSelectorPlacement?: SpeedSelectorPlacement;
   elementRefs?: ElementRefs;
   customIcons?: CustomIcons;
   coverImgsCss?: CoverImgsCss;
