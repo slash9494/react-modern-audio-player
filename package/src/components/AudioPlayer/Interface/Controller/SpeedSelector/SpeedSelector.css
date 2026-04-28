@@ -29,7 +29,6 @@
   transform: scale(0.95);
 }
 
-/* Menu (ul) — popover surface that mirrors the volume panel visual language. */
 .rmap-speed-selector-menu {
   list-style: none;
   margin: 0;
@@ -43,7 +42,6 @@
   flex-direction: column;
 }
 
-/* Menu item (button) — full-width, centered text row. */
 .rmap-speed-selector-option {
   width: 100%;
   background: none;
@@ -59,8 +57,6 @@
 }
 
 .rmap-speed-selector-option:hover {
-  /* Derive hover background from the existing shadow token (theme-aware
-     RGB triplet) so we don't introduce a hardcoded color. */
   background-color: rgb(var(--rm-audio-player-shadow, 0 0 0) / 8%);
 }
 
@@ -69,8 +65,6 @@
   outline-offset: -2px;
 }
 
-/* Active modifier — accent color + bold weight; aria-checked carries the
-   semantic state for assistive tech. */
 .rmap-speed-selector-option.rmap-speed-selector-option--active {
   color: var(--rm-audio-player-track-current-time);
   font-weight: 600;
