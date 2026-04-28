@@ -3,6 +3,7 @@ import { NumbersToUnionNum } from "@/utils/generateUnionNumType";
 import { ActiveUI } from "./element";
 
 export type VolumeSliderPlacement = DropdownContentPlacement;
+export type SpeedSelectorPlacement = DropdownContentPlacement;
 export type PlayListPlacement = "bottom" | "top";
 export type PlayerPlacement =
   | "bottom"
@@ -14,7 +15,7 @@ export type PlayerPlacement =
   | "static";
 
 //TODO : declare dynamic length type depending on the number of activeUI;
-export const defaultInterfacePlacementMaxLength = 10; // plus 1 for deleted number 0;
+export const defaultInterfacePlacementMaxLength = 11; // plus 1 for deleted number 0;
 
 export type InterfacePlacementKey =
   | Exclude<keyof ActiveUI, "all" | "prevNnext" | "trackTime" | "volumeSlider">
@@ -65,6 +66,7 @@ export const defaultInterfacePlacement: {
     volume: "row1-7",
     playButton: "row1-8",
     playList: "row1-9",
+    playbackRate: "row1-10",
   },
 };
 
@@ -74,5 +76,6 @@ export interface Placements<
   playListPlacement: PlayListPlacement;
   interfacePlacement: InterfacePlacement<TInterfacePlacementLength>;
   volumeSliderPlacement: VolumeSliderPlacement | undefined;
+  speedSelectorPlacement: SpeedSelectorPlacement | undefined;
   playerPlacement: PlayerPlacement | undefined;
 }

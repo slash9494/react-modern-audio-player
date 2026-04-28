@@ -1,0 +1,75 @@
+/* Trigger button — chained with .styled-btn to override the 20px default
+   width and to swap the icon-button shape for a compact text label. */
+.styled-btn.rmap-speed-selector-trigger {
+  width: auto;
+  min-width: 36px;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  font: inherit;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  color: var(--rm-audio-player-text-color);
+  border-radius: 4px;
+}
+
+.rmap-dropdown-container .rmap-dropdown-trigger.rmap-speed-selector-trigger {
+  position: static;
+  inset: auto;
+}
+
+.styled-btn.rmap-speed-selector-trigger:hover {
+  /* Subtle text emphasis instead of the default scale(1.1) — text labels
+     look better with a color shift than with a transform. */
+  transform: none;
+  color: var(--rm-audio-player-track-current-time);
+}
+
+.styled-btn.rmap-speed-selector-trigger:active {
+  transform: scale(0.95);
+}
+
+.rmap-speed-selector-menu {
+  list-style: none;
+  margin: 0;
+  padding: 4px;
+  min-width: 64px;
+  background-color: var(--rm-audio-player-volume-panel-background);
+  border: 1px solid var(--rm-audio-player-volume-panel-border);
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgb(var(--rm-audio-player-shadow, 0 0 0) / 10%);
+  display: flex;
+  flex-direction: column;
+}
+
+.rmap-speed-selector-option {
+  width: 100%;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: center;
+  font: inherit;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.2;
+  color: var(--rm-audio-player-text-color);
+  border-radius: 3px;
+  transition: background-color 0.15s ease-out, color 0.15s ease-out;
+}
+
+.rmap-speed-selector-option:hover {
+  background-color: rgb(var(--rm-audio-player-shadow, 0 0 0) / 8%);
+}
+
+.rmap-speed-selector-option:focus-visible {
+  outline: 2px solid var(--rm-audio-player-progress-bar, #0072f5);
+  outline-offset: -2px;
+}
+
+.rmap-speed-selector-option.rmap-speed-selector-option--active {
+  color: var(--rm-audio-player-track-current-time);
+  font-weight: 600;
+}
+
+.rmap-speed-selector-menu .rmap-speed-selector-option {
+  padding: 6px 12px;
+}

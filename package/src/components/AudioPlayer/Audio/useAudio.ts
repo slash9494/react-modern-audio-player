@@ -18,6 +18,7 @@ export const useAudio = (): HTMLAttributes<HTMLAudioElement> => {
     volume: playbackVolume,
     repeatType,
     audioResetKey,
+    playbackRate,
   } = usePlaybackContext();
   const { currentTime: playbackCurrentTime, seekRequestKey } = useTimeContext();
   const { elementRefs } = useResourceContext();
@@ -50,21 +51,28 @@ export const useAudio = (): HTMLAttributes<HTMLAudioElement> => {
     audioPlayerDispatch({ type: "NEXT_AUDIO" });
   }, [audioPlayerDispatch, repeatType, elementRefs?.audioEl]);
 
+  // Browsers reset audioEl.volume and audioEl.playbackRate to their defaults
+  // on src change, and the standalone sync effects don't re-fire (same audioEl
+  // ref, same React values). Re-apply here so state-driven values survive a
+  // track swap.
+  const reapplyAfterSrcChange = useCallback(
+    (audioEl: HTMLAudioElement) => {
+      if (playbackVolume != null) audioEl.volume = playbackVolume;
+      if (playbackRate != null) audioEl.playbackRate = playbackRate;
+    },
+    [playbackVolume, playbackRate]
+  );
+
   const onLoadedMetadata = useCallback(
     (e: SyntheticEvent<HTMLAudioElement, Event>) => {
       const { duration } = e.currentTarget;
-      // Browsers reset audioEl.volume to 1 when loading a new source.
-      // Re-apply the state-driven volume so the initial/current value
-      // survives the source change.
-      if (playbackVolume != null) {
-        e.currentTarget.volume = playbackVolume;
-      }
+      reapplyAfterSrcChange(e.currentTarget);
       audioPlayerDispatch({
         type: "SET_AUDIO_STATE",
         audioState: { isLoadedMetaData: true, duration },
       });
     },
-    [audioPlayerDispatch, playbackVolume]
+    [audioPlayerDispatch, reapplyAfterSrcChange]
   );
 
   const hasSkippedInitialResetRef = useRef(false);
@@ -95,6 +103,11 @@ export const useAudio = (): HTMLAttributes<HTMLAudioElement> => {
     if (!elementRefs?.audioEl || playbackVolume == null) return;
     elementRefs.audioEl.volume = playbackVolume;
   }, [elementRefs?.audioEl, playbackVolume]);
+
+  useEffect(() => {
+    if (!elementRefs?.audioEl || playbackRate == null) return;
+    elementRefs.audioEl.playbackRate = playbackRate;
+  }, [elementRefs?.audioEl, playbackRate]);
 
   // Apply seeks explicitly signaled by a SEEK dispatch. Keyed on
   // seekRequestKey so ordinary onTimeUpdate echoes (which change

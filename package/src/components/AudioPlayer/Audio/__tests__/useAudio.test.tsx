@@ -16,13 +16,17 @@ import { audioPlayerDispatchContext } from "@/components/AudioPlayer/Context/dis
 
 const TRACK_DURATION_SEC = 180;
 
-const makePlaybackValue = (repeatType: RepeatType = "ALL") => ({
+const makePlaybackValue = (
+  repeatType: RepeatType = "ALL",
+  playbackRate = 1
+) => ({
   isPlaying: false,
   volume: 0.5,
   muted: false,
   repeatType,
   isLoadedMetaData: true,
   audioResetKey: 0,
+  playbackRate,
 });
 
 interface HarnessOptions {
@@ -406,5 +410,167 @@ describe("useAudio onEnded handler", () => {
 
     expect(audioEl.currentTime).toBe(178);
     expect(dispatch).toHaveBeenCalledWith({ type: "NEXT_AUDIO" });
+  });
+});
+
+// useAudio's playbackRate sync effect mirrors the volume effect — when the
+// PlaybackContext value changes, the next render writes audioEl.playbackRate.
+// Effect deps are [audioEl, playbackRate], so unchanged playbackRate must
+// not trigger a redundant DOM write, and a missing audioEl must be a no-op.
+describe("useAudio playbackRate sync effect", () => {
+  // Replace the prototype getter/setter with a vi.fn() so we can both
+  // read the value back and count writes deterministically. This avoids
+  // any reliance on jsdom's playbackRate behavior, which has historically
+  // varied across versions.
+  const installPlaybackRateSpy = (audioEl: HTMLAudioElement) => {
+    let internalRate = 1;
+    const setter = vi.fn((value: number) => {
+      internalRate = value;
+    });
+    Object.defineProperty(audioEl, "playbackRate", {
+      configurable: true,
+      get: () => internalRate,
+      set: setter,
+    });
+    return setter;
+  };
+
+  const HookHost: FC = () => {
+    useAudio();
+    return null;
+  };
+
+  const PlaybackRateHarness: FC<{
+    audioEl: HTMLAudioElement | undefined;
+    playbackRate: number;
+  }> = ({ audioEl, playbackRate }) => (
+    <timeContext.Provider
+      value={{
+        currentTime: 0,
+        duration: TRACK_DURATION_SEC,
+        seekRequestKey: 0,
+      }}
+    >
+      <playbackContext.Provider value={makePlaybackValue("ALL", playbackRate)}>
+        <resourceContext.Provider
+          value={{
+            elementRefs: audioEl
+              ? { audioEl, waveformInst: undefined as never }
+              : undefined,
+          }}
+        >
+          <audioPlayerDispatchContext.Provider value={vi.fn()}>
+            <HookHost />
+          </audioPlayerDispatchContext.Provider>
+        </resourceContext.Provider>
+      </playbackContext.Provider>
+    </timeContext.Provider>
+  );
+
+  it("writes audioEl.playbackRate on initial mount with a non-default rate", () => {
+    const audioEl = makeAudioEl(0, TRACK_DURATION_SEC);
+    const setter = installPlaybackRateSpy(audioEl);
+
+    render(<PlaybackRateHarness audioEl={audioEl} playbackRate={1.5} />);
+
+    expect(setter).toHaveBeenCalledTimes(1);
+    expect(setter).toHaveBeenLastCalledWith(1.5);
+    expect(audioEl.playbackRate).toBe(1.5);
+  });
+
+  it("writes audioEl.playbackRate when playbackRate changes between renders", () => {
+    const audioEl = makeAudioEl(0, TRACK_DURATION_SEC);
+    const setter = installPlaybackRateSpy(audioEl);
+
+    const { rerender } = render(
+      <PlaybackRateHarness audioEl={audioEl} playbackRate={1} />
+    );
+    // Initial commit applies once with the default rate.
+    expect(setter).toHaveBeenCalledTimes(1);
+    expect(setter).toHaveBeenLastCalledWith(1);
+
+    rerender(<PlaybackRateHarness audioEl={audioEl} playbackRate={2} />);
+    expect(setter).toHaveBeenCalledTimes(2);
+    expect(setter).toHaveBeenLastCalledWith(2);
+    expect(audioEl.playbackRate).toBe(2);
+  });
+
+  it("does NOT re-write audioEl.playbackRate when playbackRate is unchanged across renders", () => {
+    const audioEl = makeAudioEl(0, TRACK_DURATION_SEC);
+    const setter = installPlaybackRateSpy(audioEl);
+
+    const { rerender } = render(
+      <PlaybackRateHarness audioEl={audioEl} playbackRate={1.25} />
+    );
+    expect(setter).toHaveBeenCalledTimes(1);
+
+    // Re-render with the SAME playbackRate — useEffect deps are identity
+    // based on [audioEl, playbackRate], so the effect must not re-run.
+    rerender(<PlaybackRateHarness audioEl={audioEl} playbackRate={1.25} />);
+    expect(setter).toHaveBeenCalledTimes(1);
+  });
+
+  it("is a no-op when no audioEl is attached (does not throw)", () => {
+    expect(() => {
+      render(<PlaybackRateHarness audioEl={undefined} playbackRate={1.5} />);
+    }).not.toThrow();
+  });
+
+  it("re-applies playbackRate on loadedmetadata after a track change", () => {
+    // Browsers reset audioEl.playbackRate to 1 when a new source loads.
+    // The standalone sync effect can't catch this (same audioEl ref + same
+    // React playbackRate value, so deps are unchanged), so onLoadedMetadata
+    // must re-apply the state-driven rate to survive a track swap.
+    const audioEl = makeAudioEl(0, TRACK_DURATION_SEC);
+    const setter = installPlaybackRateSpy(audioEl);
+
+    const dispatch = vi.fn();
+    const wrapper: FC<{ children: ReactNode }> = ({ children }) => (
+      <timeContext.Provider
+        value={{
+          currentTime: 0,
+          duration: TRACK_DURATION_SEC,
+          seekRequestKey: 0,
+        }}
+      >
+        <playbackContext.Provider value={makePlaybackValue("ALL", 1.5)}>
+          <resourceContext.Provider
+            value={{
+              elementRefs: { audioEl, waveformInst: undefined as never },
+            }}
+          >
+            <audioPlayerDispatchContext.Provider value={dispatch}>
+              {children}
+            </audioPlayerDispatchContext.Provider>
+          </resourceContext.Provider>
+        </playbackContext.Provider>
+      </timeContext.Provider>
+    );
+
+    const { result } = renderHook(() => useAudio(), { wrapper });
+
+    // Initial mount commits the standalone effect once.
+    expect(setter).toHaveBeenCalledTimes(1);
+    expect(setter).toHaveBeenLastCalledWith(1.5);
+    expect(audioEl.playbackRate).toBe(1.5);
+
+    // Simulate the browser resetting playbackRate to 1 on a src swap.
+    audioEl.playbackRate = 1;
+    expect(setter).toHaveBeenCalledTimes(2);
+    expect(audioEl.playbackRate).toBe(1);
+
+    // Fire the loadedmetadata callback the way React would after the new
+    // source is parsed. The callback only reads currentTarget.duration and
+    // writes currentTarget.volume / currentTarget.playbackRate, so a
+    // minimal stub event is sufficient.
+    act(() => {
+      result.current.onLoadedMetadata?.({
+        currentTarget: audioEl,
+      } as unknown as SyntheticEvent<HTMLAudioElement, Event>);
+    });
+
+    expect(setter).toHaveBeenCalledTimes(3);
+    expect(setter).toHaveBeenLastCalledWith(1.5);
+    expect(audioEl.playbackRate).toBe(1.5);
   });
 });

@@ -17,6 +17,7 @@ export const compoundSlotMetaMap: Record<string, SlotMeta> = {
   Artwork: { displayName: "Artwork", activeUIKey: "artwork" },
   TrackInfo: { displayName: "TrackInfo", activeUIKey: "trackInfo" },
   TrackTime: { displayName: "TrackTime", activeUIKey: "trackTime" },
+  SpeedSelector: { displayName: "SpeedSelector", activeUIKey: "playbackRate" },
 };
 
 export function isPresetActive(activeUI: ActiveUI, key: ActiveUIKey): boolean {

@@ -174,6 +174,16 @@ export const audioPlayerReducer = (
           volume: clampVolume(action.volume),
         },
       };
+    // No clamping: HTMLMediaElement.playbackRate is delegated to the browser,
+    // which both rejects unsupported rates and emits ratechange events.
+    case "SET_PLAYBACK_RATE":
+      return {
+        ...state,
+        curAudioState: {
+          ...state.curAudioState,
+          playbackRate: action.playbackRate,
+        },
+      };
     case "SET_AUDIO_STATE":
       return {
         ...state,

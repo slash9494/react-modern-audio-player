@@ -14,6 +14,7 @@ export interface AudioPlayerControls {
   duration: number;
   repeatType: RepeatType;
   muted: boolean;
+  playbackRate: number;
   currentTrack: AudioData | null;
   currentIndex: number;
   playList: ReadonlyArray<AudioData>;
@@ -26,6 +27,7 @@ export interface AudioPlayerControls {
   setVolume: (volume: number) => void;
   toggleMute: () => void;
   setTrack: (index: number) => void;
+  setPlaybackRate: (rate: number) => void;
 }
 
 /**
@@ -46,6 +48,7 @@ export const useAudioPlayer = (): AudioPlayerControls => {
     duration: time.duration,
     repeatType: playback.repeatType,
     muted: vol.muted,
+    playbackRate: playback.playbackRate,
     currentTrack: track.currentTrack,
     currentIndex: track.currentIndex,
     playList: track.playList,
@@ -58,5 +61,6 @@ export const useAudioPlayer = (): AudioPlayerControls => {
     setVolume: vol.setVolume,
     toggleMute: vol.toggleMute,
     setTrack: track.setTrack,
+    setPlaybackRate: playback.setPlaybackRate,
   };
 };

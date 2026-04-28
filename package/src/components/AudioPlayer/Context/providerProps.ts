@@ -7,6 +7,7 @@ import type {
   PlayList,
   PlayListPlacement,
   PlayerPlacement,
+  SpeedSelectorPlacement,
   VolumeSliderPlacement,
 } from "./StateContext";
 
@@ -23,5 +24,6 @@ export interface AudioPlayerStateProviderProps<
     playList?: PlayListPlacement;
     interface?: InterfacePlacement<TInterfacePlacementLength>;
     volumeSlider?: VolumeSliderPlacement;
+    speedSelector?: SpeedSelectorPlacement;
   };
 }

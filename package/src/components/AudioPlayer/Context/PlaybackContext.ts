@@ -8,6 +8,7 @@ export interface PlaybackContext {
   repeatType: RepeatType;
   isLoadedMetaData: boolean | undefined;
   audioResetKey: number;
+  playbackRate: number;
 }
 
 export const playbackContext = createContext<PlaybackContext | null>(null);

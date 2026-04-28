@@ -13,6 +13,7 @@ export type AudioCustomProps = {
   volume?: number;
   currentTime?: number;
   duration?: number;
+  playbackRate?: number;
 };
 
 export const DEFAULT_AUDIO_STATE = {
@@ -22,6 +23,7 @@ export const DEFAULT_AUDIO_STATE = {
   repeatType: "ALL" as RepeatType,
   currentTime: 0,
   duration: 0,
+  playbackRate: 1,
 } as const;
 
 export type AudioData = {

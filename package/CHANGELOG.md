@@ -1,5 +1,65 @@
 # React-modern-audio-player
 
+## v2.3.0 (Unreleased)
+
+### ✨ New Features
+
+- **Playback speed support** (Closes [#3](https://github.com/slash9494/react-modern-audio-player/issues/3)): the player now supports per-track playback speed via three new public surfaces.
+
+  - **1. `AudioPlayer.SpeedSelector` compound slot** — a Dropdown-based UI that displays the current rate as a clickable label (e.g. `1×`, `1.5×`) and opens a menu of selectable rates. Defaults to `[0.5, 0.75, 1, 1.25, 1.5, 1.75, 2]`. Mounts automatically alongside the preset when `activeUI.playbackRate` is `true` (or `activeUI.all` is `true`); accepts `options?: number[]` and `formatRate?: (rate: number) => string` for customization.
+
+      ```tsx
+      <AudioPlayer playList={list} activeUI={{ all: true, playbackRate: true }} />
+
+      // or as a compound child with custom rate options
+      <AudioPlayer playList={list} activeUI={{ all: true, playbackRate: false }}>
+        <AudioPlayer.SpeedSelector
+          options={[1, 1.5, 2, 3]}
+          formatRate={(r) => `${r}x`}
+          gridArea="1 / 10 / 1 / 11"
+        />
+      </AudioPlayer>
+      ```
+
+      The dropdown menu uses `role="menu"` + `role="menuitemradio"` with `aria-checked` reflecting the active rate (WAI-ARIA APG menu pattern, matches video.js / Vidstack).
+
+  - **2. `useAudioPlayer().playbackRate` + `setPlaybackRate(rate)`** — the imperative API exposes the current rate and a setter. Available on the facade and on `useAudioPlayerPlayback` for fine-grained subscriptions.
+
+      ```tsx
+      const { playbackRate, setPlaybackRate } = useAudioPlayer();
+      // ... later
+      setPlaybackRate(1.5);
+      ```
+
+  - **3. `audioInitialState.playbackRate`** — initial rate at mount, defaults to `1`. No clamping is applied at any layer; the browser enforces HTML5 `playbackRate` bounds.
+
+  Implementation notes: the new `SET_PLAYBACK_RATE` reducer action is the single write path; `useAudio` mirrors the rate to `audioEl.playbackRate` via a sync effect plus a re-apply inside `onLoadedMetadata` (the browser resets the DOM `playbackRate` to `1` on `src` change, mirroring the existing `volume` re-apply pattern). Internal-only `defaultInterfacePlacementMaxLength` was bumped from `10` to `11` to accommodate `playbackRate: "row1-10"` in the default template area; consumers passing an explicit `interfacePlacement` length parameter are unaffected.
+
+- **Volume and SpeedSelector dropdown customization**: both compound slots now expose `triggerType?: "click" \| "hover"` and a `placement?` prop typed as the per-slot domain alias — `VolumeSliderPlacement` for `<AudioPlayer.Volume>` and `SpeedSelectorPlacement` for `<AudioPlayer.SpeedSelector>` (both currently resolve to `"top" \| "bottom" \| "left" \| "right"`). `AudioPlayer.SpeedSelector` also gains a top-level `placement.speedSelector?: SpeedSelectorPlacement` provider option that mirrors the existing `placement.volumeSlider`. Resolution order (both knobs, both components): **compound prop > UIContext > component default**. Defaults are unchanged — `Volume` stays on `triggerType="hover"` with viewport-aware auto-placement, `SpeedSelector` stays on `triggerType="click"` with `placement="top"`.
+
+  ```tsx
+  // Switch Volume to a click-opened panel and force the menu below the trigger
+  <AudioPlayer.Volume triggerType="click" placement="bottom" />
+
+  // Per-instance SpeedSelector placement
+  <AudioPlayer.SpeedSelector placement="bottom" triggerType="hover" />
+
+  // Or set a default for every SpeedSelector mounted under this provider
+  <AudioPlayer playList={list} placement={{ speedSelector: "bottom" }} />
+  ```
+
+  Implementation note: when `Volume` resolves to `triggerType="click"`, the inner `<Dropdown.Content>` `role` switches from `"tooltip"` to `"dialog"` for semantic correctness — `tooltip` semantics are reserved for non-interactive informational popovers and don't fit a click-opened slider panel. SpeedSelector keeps `role="menu"` regardless of `triggerType` (the menu pattern allows either trigger style).
+
+### 💥 Breaking Changes
+
+- **`row1-10` grid slot now occupied by default `playbackRate` control**: The new default `playbackRate` placement at `row1-10` will collide with any existing `customComponentsArea` or `templateArea` entry that targets the same cell. Two ways to resolve:
+  - Move the conflicting custom area to a different cell (e.g. `row1-11`)
+  - Disable the new slot by setting `activeUI={{ ..., playbackRate: false }}`
+
+  No collision warning is emitted at runtime — the symptom is overlapping cells in the rendered grid.
+
+- **`AudioPlayer.Volume` role attribute change with `triggerType="click"`**: When `Volume` resolves to `triggerType="click"` (via the compound prop, the `placement.volumeSlider` provider option, or direct usage), the inner `<Dropdown.Content>` `role` switches from `"tooltip"` to `"dialog"`. Consumers asserting `role="tooltip"` in tests, targeting `[role="tooltip"]` in CSS, or relying on tooltip semantics in accessibility tooling must update those expectations. Hover mode (the default) is unchanged.
+
 ## v2.2.0 (2026-04-25)
 
 ### ✨ New Features

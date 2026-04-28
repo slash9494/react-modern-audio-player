@@ -4,6 +4,7 @@ import { useUIContext } from "@/components/AudioPlayer/Context/hooks/useUIContex
 import { TransportControls, RepeatTypeBtn } from "./Button";
 import { SortablePlayList } from "./Drawer";
 import { Progress } from "./Input";
+import { SpeedSelector } from "./SpeedSelector";
 import { Volume } from "./Tooltip";
 
 export const Controller: FC = () => {
@@ -17,6 +18,7 @@ export const Controller: FC = () => {
       <RepeatTypeBtn visible={isVisible("repeatType")} />
       <TransportControls visible={isVisible("playButton")} />
       <Volume visible={isVisible("volume")} />
+      <SpeedSelector visible={isVisible("playbackRate")} />
       <SortablePlayList visible={isVisible("playList")} />
     </>
   );
