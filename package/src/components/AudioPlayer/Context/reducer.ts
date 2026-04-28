@@ -104,6 +104,7 @@ export const audioPlayerReducer = (
         );
         return {
           ...state,
+          audioResetKey: state.audioResetKey + 1,
           curPlayId: state.playList[randomIdx].id,
           curIdx: randomIdx,
           curAudioState: { ...state.curAudioState, currentTime: 0 },
@@ -113,6 +114,7 @@ export const audioPlayerReducer = (
         (state.curIdx - 1 + state.playList.length) % state.playList.length;
       return {
         ...state,
+        audioResetKey: state.audioResetKey + 1,
         curPlayId: state.playList[infiniteLoopPrevIdx].id,
         curIdx: infiniteLoopPrevIdx,
         curAudioState: {

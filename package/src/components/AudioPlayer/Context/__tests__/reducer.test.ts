@@ -128,6 +128,9 @@ describe("PREV_AUDIO", () => {
     });
     expect(next.curIdx).toBe(0);
     expect(next.curPlayId).toBe(1);
+    // audioResetKey bumps on every src-changing PREV branch so useAudio's
+    // play effect re-fires play() against the new track. Mirrors NEXT_AUDIO.
+    expect(next.audioResetKey).toBe(state.audioResetKey + 1);
   });
 
   it("wraps around to last track when at first (repeatType ALL)", () => {
@@ -138,6 +141,7 @@ describe("PREV_AUDIO", () => {
     });
     expect(next.curIdx).toBe(2);
     expect(next.curPlayId).toBe(3);
+    expect(next.audioResetKey).toBe(state.audioResetKey + 1);
   });
 
   it("resets current track (stays) when payload currentTime > 1", () => {
@@ -190,6 +194,9 @@ describe("PREV_AUDIO", () => {
     expect(nexts.every((s) => s.curIdx !== 1)).toBe(true);
     expect(
       nexts.every((s) => s.curPlayId === state.playList[s.curIdx].id)
+    ).toBe(true);
+    expect(
+      nexts.every((s) => s.audioResetKey === state.audioResetKey + 1)
     ).toBe(true);
   });
 

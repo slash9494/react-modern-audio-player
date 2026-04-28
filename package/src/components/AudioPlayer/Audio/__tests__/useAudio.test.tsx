@@ -356,6 +356,181 @@ describe("useAudio play effect — initial mount", () => {
     renderHook(() => useAudio(), { wrapper });
     expect(audioEl.play).toHaveBeenCalledTimes(1);
   });
+
+  // Regression for bar-only auto-next: when isPlaying stays true across a track
+  // swap (audioResetKey bump), the play effect must re-issue play() so the new
+  // src actually starts. Without this, the wavesurfer-mounted path was the only
+  // thing pulling the new track off the loaded-but-paused state.
+  it("re-calls audioEl.play() when audioResetKey bumps while isPlaying=true (track swap)", () => {
+    const audioEl = makeAudioEl(0, TRACK_DURATION_SEC);
+    const dispatch = vi.fn();
+    const Harness: FC = () => {
+      useAudio();
+      return null;
+    };
+    const Wrapper: FC<{ audioResetKey: number }> = ({ audioResetKey }) => (
+      <timeContext.Provider
+        value={{
+          currentTime: 0,
+          duration: TRACK_DURATION_SEC,
+          seekRequestKey: 0,
+        }}
+      >
+        <playbackContext.Provider
+          value={{ ...makePlaybackValue(), isPlaying: true, audioResetKey }}
+        >
+          <resourceContext.Provider
+            value={{
+              elementRefs: { audioEl, waveformInst: undefined as never },
+            }}
+          >
+            <audioPlayerDispatchContext.Provider value={dispatch}>
+              <Harness />
+            </audioPlayerDispatchContext.Provider>
+          </resourceContext.Provider>
+        </playbackContext.Provider>
+      </timeContext.Provider>
+    );
+
+    const { rerender } = render(<Wrapper audioResetKey={0} />);
+    expect(audioEl.play).toHaveBeenCalledTimes(1);
+
+    rerender(<Wrapper audioResetKey={1} />);
+    expect(audioEl.play).toHaveBeenCalledTimes(2);
+  });
+
+  it("does NOT re-call audioEl.play() on unrelated rerenders with stable deps", () => {
+    const audioEl = makeAudioEl(0, TRACK_DURATION_SEC);
+    const dispatch = vi.fn();
+    const Harness: FC = () => {
+      useAudio();
+      return null;
+    };
+    const Wrapper: FC<{ playbackCurrentTime: number }> = ({
+      playbackCurrentTime,
+    }) => (
+      <timeContext.Provider
+        value={{
+          currentTime: playbackCurrentTime,
+          duration: TRACK_DURATION_SEC,
+          seekRequestKey: 0,
+        }}
+      >
+        <playbackContext.Provider
+          value={{ ...makePlaybackValue(), isPlaying: true }}
+        >
+          <resourceContext.Provider
+            value={{
+              elementRefs: { audioEl, waveformInst: undefined as never },
+            }}
+          >
+            <audioPlayerDispatchContext.Provider value={dispatch}>
+              <Harness />
+            </audioPlayerDispatchContext.Provider>
+          </resourceContext.Provider>
+        </playbackContext.Provider>
+      </timeContext.Provider>
+    );
+
+    const { rerender } = render(<Wrapper playbackCurrentTime={0} />);
+    expect(audioEl.play).toHaveBeenCalledTimes(1);
+    rerender(<Wrapper playbackCurrentTime={5} />);
+    expect(audioEl.play).toHaveBeenCalledTimes(1);
+  });
+
+  // play() rejection handling: AbortError signals "another action interrupted
+  // me" (src swap mid-load, pause(), unmount) and the recovery happens via
+  // the next play effect run or wavesurfer onReady. Flipping isPlaying=false
+  // here would cancel that recovery. Real failures (autoplay denied, unsupported
+  // format) must still sync state back to "paused" so the UI matches reality.
+  it("does NOT dispatch isPlaying=false when play() rejects with AbortError", async () => {
+    window.HTMLMediaElement.prototype.play = vi
+      .fn()
+      .mockRejectedValue(
+        new DOMException("aborted by a new load request", "AbortError")
+      );
+    const audioEl = makeAudioEl(0, TRACK_DURATION_SEC);
+    const dispatch = vi.fn();
+    const wrapper: FC<{ children: ReactNode }> = ({ children }) => (
+      <timeContext.Provider
+        value={{
+          currentTime: 0,
+          duration: TRACK_DURATION_SEC,
+          seekRequestKey: 0,
+        }}
+      >
+        <playbackContext.Provider
+          value={{ ...makePlaybackValue(), isPlaying: true }}
+        >
+          <resourceContext.Provider
+            value={{
+              elementRefs: { audioEl, waveformInst: undefined as never },
+            }}
+          >
+            <audioPlayerDispatchContext.Provider value={dispatch}>
+              {children}
+            </audioPlayerDispatchContext.Provider>
+          </resourceContext.Provider>
+        </playbackContext.Provider>
+      </timeContext.Provider>
+    );
+    renderHook(() => useAudio(), { wrapper });
+
+    // Drain the rejected microtask before asserting on dispatch.
+    await Promise.resolve();
+    await Promise.resolve();
+
+    expect(audioEl.play).toHaveBeenCalledTimes(1);
+    expect(dispatch).not.toHaveBeenCalledWith(
+      expect.objectContaining({
+        type: "SET_AUDIO_STATE",
+        audioState: expect.objectContaining({ isPlaying: false }),
+      })
+    );
+  });
+
+  it("dispatches isPlaying=false when play() rejects with NotAllowedError (autoplay denied)", async () => {
+    window.HTMLMediaElement.prototype.play = vi
+      .fn()
+      .mockRejectedValue(
+        new DOMException("autoplay blocked", "NotAllowedError")
+      );
+    const audioEl = makeAudioEl(0, TRACK_DURATION_SEC);
+    const dispatch = vi.fn();
+    const wrapper: FC<{ children: ReactNode }> = ({ children }) => (
+      <timeContext.Provider
+        value={{
+          currentTime: 0,
+          duration: TRACK_DURATION_SEC,
+          seekRequestKey: 0,
+        }}
+      >
+        <playbackContext.Provider
+          value={{ ...makePlaybackValue(), isPlaying: true }}
+        >
+          <resourceContext.Provider
+            value={{
+              elementRefs: { audioEl, waveformInst: undefined as never },
+            }}
+          >
+            <audioPlayerDispatchContext.Provider value={dispatch}>
+              {children}
+            </audioPlayerDispatchContext.Provider>
+          </resourceContext.Provider>
+        </playbackContext.Provider>
+      </timeContext.Provider>
+    );
+    renderHook(() => useAudio(), { wrapper });
+
+    await Promise.resolve();
+    await Promise.resolve();
+
+    expect(audioEl.play).toHaveBeenCalledTimes(1);
+    expect(dispatch).toHaveBeenCalledWith({
+      type: "SET_AUDIO_STATE",
+      audioState: { isPlaying: false },
+    });
+  });
 });
 
 describe("useAudio onEnded handler", () => {

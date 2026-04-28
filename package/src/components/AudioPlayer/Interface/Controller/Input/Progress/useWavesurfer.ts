@@ -120,6 +120,11 @@ export const useWaveSurfer = (waveformRef: React.RefObject<HTMLElement>) => {
     detachStaleBackendListeners(waveform);
     waveform.load(audioEl);
 
+    // useAudio owns the primary track-change autoplay (deps include
+    // audioResetKey), but `waveform.load(audioEl)` re-attaches MediaElement
+    // listeners and can race with that play() call — the racing play() rejects
+    // with AbortError. This onReady fallback restarts playback once wavesurfer
+    // settles, so the waveform path stays alive even after that abort.
     const onReady = () => {
       if (!isTrackChange && savedTime > 0 && audioEl.duration) {
         audioEl.currentTime = savedTime;

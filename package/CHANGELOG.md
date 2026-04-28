@@ -68,6 +68,12 @@
 
 - **`AudioPlayer.Volume` role attribute change with `triggerType="click"`**: When `Volume` resolves to `triggerType="click"` (via the compound prop, the `placement.volumeSlider` provider option, or direct usage), the inner `<Dropdown.Content>` `role` switches from `"tooltip"` to `"dialog"`. Consumers asserting `role="tooltip"` in tests, targeting `[role="tooltip"]` in CSS, or relying on tooltip semantics in accessibility tooling must update those expectations. Hover mode (the default) is unchanged.
 
+### 🐛 Bug Fixes
+
+- **Auto-play after track swap on bar-progress players**: pressing next (or letting a track end) while playing now correctly continues into the new track when `activeUI.progress === "bar"`. Previously, only waveform-mounted players auto-played the next track — `useWavesurfer`'s `onReady` callback was the only path calling `audioEl.play()` after a `src` change, so bar-only players (and waveform players that had never been mounted) loaded the new track and sat silent while the play button still showed the "playing" icon. Fix moves the responsibility into `useAudio`'s play effect by adding `audioResetKey` to its deps; the wavesurfer `onReady` handler no longer calls `play()`, removing the duplicate path.
+
+- **PREV button silent on bar-progress players when crossing tracks**: the same root cause manifested on the previous-track path. The `PREV_AUDIO` reducer's track-change branches (SHUFFLE and the default infinite-loop wrap) used to skip the `audioResetKey` bump, so the play effect's new key-based dep wouldn't fire on those branches either. Both branches now bump `audioResetKey` to match `NEXT_AUDIO`, restoring playback continuity across all repeat modes.
+
 ## v2.2.0 (2026-04-25)
 
 ### ✨ New Features

@@ -85,10 +85,24 @@ export const useAudio = (): HTMLAttributes<HTMLAudioElement> => {
     elementRefs.audioEl.currentTime = 0;
   }, [audioResetKey, elementRefs?.audioEl]);
 
+  // Re-runs on audioResetKey bump so a track swap (NEXT_AUDIO, SET_CURRENT_AUDIO,
+  // SHUFFLE, etc.) re-issues play() against the new src. Without this, the
+  // browser pauses on src change, isPlaying stays true, and effect deps don't
+  // change — leaving the new track loaded but silent. Previously this worked
+  // only because the wavesurfer onReady path called play() as a side effect.
   useEffect(() => {
     if (!elementRefs?.audioEl) return;
     if (isPlaying) {
-      void elementRefs.audioEl.play().catch(() => {
+      elementRefs.audioEl.play().catch((err) => {
+        // AbortError = play() was interrupted (src swap mid-load,
+        // pause() called before resolve, element detached, etc.). The
+        // interrupting action is the source of truth for the next state,
+        // not this catch — flipping isPlaying=false here would cause the
+        // recovery path (next play effect run, or wavesurfer onReady)
+        // to be cancelled by the resulting pause(). Real failures
+        // (NotAllowedError, NotSupportedError, network errors) still need
+        // to sync state back to "paused" so the UI matches reality.
+        if ((err as DOMException | undefined)?.name === "AbortError") return;
         audioPlayerDispatch({
           type: "SET_AUDIO_STATE",
           audioState: { isPlaying: false },
@@ -97,7 +111,7 @@ export const useAudio = (): HTMLAttributes<HTMLAudioElement> => {
     } else {
       elementRefs.audioEl.pause();
     }
-  }, [elementRefs?.audioEl, isPlaying, audioPlayerDispatch]);
+  }, [elementRefs?.audioEl, isPlaying, audioPlayerDispatch, audioResetKey]);
 
   useEffect(() => {
     if (!elementRefs?.audioEl || playbackVolume == null) return;

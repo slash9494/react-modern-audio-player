@@ -132,3 +132,81 @@ test.describe("Track navigation", () => {
       .toBe("Track 1");
   });
 });
+
+// Autoplay continuity across a track swap is the player's headline behavior:
+// the new track must not just *load* but actually *keep playing*. The previous
+// auto-progression path silently depended on the wavesurfer onReady callback
+// calling audioEl.play() — bar-only players had no equivalent, and a
+// wavesurfer.load() race on the waveform path could abort the play() call
+// without anyone resuming it. These specs guard both modes against future
+// drift by checking the audio element's `paused` state on the new track,
+// not just the visible track title.
+for (const progressType of ["bar", "waveform"] as const) {
+  test.describe(`Track autoplay continuity — ${progressType} progress`, () => {
+    const audioPausedAfterIdle = (page: import("@playwright/test").Page) =>
+      page.evaluate(() => {
+        const audio = document.getElementById(
+          "rm-audio-player-audio"
+        ) as HTMLAudioElement | null;
+        return audio?.paused ?? true;
+      });
+
+    test(`3-7 [${progressType}]: clicking next-btn during playback keeps audio playing on the new track`, async ({
+      playerPageLazy,
+    }) => {
+      await playerPageLazy.gotoWithConfig({ progressType });
+      const { page, playBtn, nextBtn, trackTitle } = playerPageLazy;
+
+      await playBtn.click();
+      await expect
+        .poll(() => audioPausedAfterIdle(page), { timeout: 5000 })
+        .toBe(false);
+
+      const initialTitle = await trackTitle.textContent();
+
+      await nextBtn.click();
+
+      // Title swapped to the next track...
+      await expect
+        .poll(() => trackTitle.textContent(), { timeout: 3000 })
+        .not.toBe(initialTitle);
+      // ...AND the new src is actually playing — not stuck paused while the
+      // play button still shows the "playing" icon.
+      await expect
+        .poll(() => audioPausedAfterIdle(page), { timeout: 5000 })
+        .toBe(false);
+    });
+
+    test(`3-8 [${progressType}]: 'ended' event auto-progresses and keeps audio playing on the new track`, async ({
+      playerPageLazy,
+    }) => {
+      await playerPageLazy.gotoWithConfig({ progressType });
+      const { page, playBtn, trackTitle } = playerPageLazy;
+
+      await playBtn.click();
+      await expect
+        .poll(() => audioPausedAfterIdle(page), { timeout: 5000 })
+        .toBe(false);
+
+      const initialTitle = await trackTitle.textContent();
+
+      // Simulate end-of-track without waiting for the real ~3-minute audio.
+      // React attaches non-bubbling media handlers (including `ended`) directly
+      // to the element, so a plain dispatchEvent on the <audio> reaches the
+      // onEnded handler and triggers NEXT_AUDIO.
+      await page.evaluate(() => {
+        const audio = document.getElementById(
+          "rm-audio-player-audio"
+        ) as HTMLAudioElement | null;
+        audio?.dispatchEvent(new Event("ended"));
+      });
+
+      await expect
+        .poll(() => trackTitle.textContent(), { timeout: 3000 })
+        .not.toBe(initialTitle);
+      await expect
+        .poll(() => audioPausedAfterIdle(page), { timeout: 5000 })
+        .toBe(false);
+    });
+  });
+}
