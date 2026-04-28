@@ -8,28 +8,28 @@
 
   - **1. `AudioPlayer.SpeedSelector` compound slot** — a Dropdown-based UI that displays the current rate as a clickable label (e.g. `1×`, `1.5×`) and opens a menu of selectable rates. Defaults to `[0.5, 0.75, 1, 1.25, 1.5, 1.75, 2]`. Mounts automatically alongside the preset when `activeUI.playbackRate` is `true` (or `activeUI.all` is `true`); accepts `options?: number[]` and `formatRate?: (rate: number) => string` for customization.
 
-      ```tsx
-      <AudioPlayer playList={list} activeUI={{ all: true, playbackRate: true }} />
+    ```tsx
+    <AudioPlayer playList={list} activeUI={{ all: true, playbackRate: true }} />
 
-      // or as a compound child with custom rate options
-      <AudioPlayer playList={list} activeUI={{ all: true, playbackRate: false }}>
-        <AudioPlayer.SpeedSelector
-          options={[1, 1.5, 2, 3]}
-          formatRate={(r) => `${r}x`}
-          gridArea="1 / 10 / 1 / 11"
-        />
-      </AudioPlayer>
-      ```
+    // or as a compound child with custom rate options
+    <AudioPlayer playList={list} activeUI={{ all: true, playbackRate: false }}>
+      <AudioPlayer.SpeedSelector
+        options={[1, 1.5, 2, 3]}
+        formatRate={(r) => `${r}x`}
+        gridArea="row1-11"
+      />
+    </AudioPlayer>
+    ```
 
-      The dropdown menu uses `role="menu"` + `role="menuitemradio"` with `aria-checked` reflecting the active rate (WAI-ARIA APG menu pattern, matches video.js / Vidstack).
+    The dropdown menu uses `role="menu"` + `role="menuitemradio"` with `aria-checked` reflecting the active rate (WAI-ARIA APG menu pattern, matches video.js / Vidstack).
 
   - **2. `useAudioPlayer().playbackRate` + `setPlaybackRate(rate)`** — the imperative API exposes the current rate and a setter. Available on the facade and on `useAudioPlayerPlayback` for fine-grained subscriptions.
 
-      ```tsx
-      const { playbackRate, setPlaybackRate } = useAudioPlayer();
-      // ... later
-      setPlaybackRate(1.5);
-      ```
+    ```tsx
+    const { playbackRate, setPlaybackRate } = useAudioPlayer();
+    // ... later
+    setPlaybackRate(1.5);
+    ```
 
   - **3. `audioInitialState.playbackRate`** — initial rate at mount, defaults to `1`. No clamping is applied at any layer; the browser enforces HTML5 `playbackRate` bounds.
 
@@ -53,6 +53,7 @@
 ### 💥 Breaking Changes
 
 - **`row1-10` grid slot now occupied by default `playbackRate` control**: The new default `playbackRate` placement at `row1-10` will collide with any existing `customComponentsArea` or `templateArea` entry that targets the same cell. Two ways to resolve:
+
   - Move the conflicting custom area to a different cell (e.g. `row1-11`)
   - Disable the new slot by setting `activeUI={{ ..., playbackRate: false }}`
 
@@ -66,27 +67,24 @@
 
 - **Compound slots on `AudioPlayer`**: the default export now exposes the built-in controls as static members that can be rendered as children alongside the preset:
 
-  | Static member | Wraps |
-  | --- | --- |
-  | `AudioPlayer.Progress` | progress bar / waveform |
-  | `AudioPlayer.Volume` | volume trigger + slider |
-  | `AudioPlayer.PlayList` | sortable playlist drawer |
-  | `AudioPlayer.PlayListEmpty` | fallback rendered inside the playlist drawer when `playList` is empty |
-  | `AudioPlayer.PlayButton` | Play + Prev + Next group (Prev/Next visibility follows `activeUI.prevNnext`) |
-  | `AudioPlayer.RepeatButton` | repeat-type button |
-  | `AudioPlayer.Artwork` | track artwork |
-  | `AudioPlayer.TrackInfo` | track title / writer |
-  | `AudioPlayer.TrackTime` | current + duration time |
-  | `AudioPlayer.CustomComponent` | user-defined slot (existing) |
+  | Static member                 | Wraps                                                                        |
+  | ----------------------------- | ---------------------------------------------------------------------------- |
+  | `AudioPlayer.Progress`        | progress bar / waveform                                                      |
+  | `AudioPlayer.Volume`          | volume trigger + slider                                                      |
+  | `AudioPlayer.PlayList`        | sortable playlist drawer                                                     |
+  | `AudioPlayer.PlayListEmpty`   | fallback rendered inside the playlist drawer when `playList` is empty        |
+  | `AudioPlayer.PlayButton`      | Play + Prev + Next group (Prev/Next visibility follows `activeUI.prevNnext`) |
+  | `AudioPlayer.RepeatButton`    | repeat-type button                                                           |
+  | `AudioPlayer.Artwork`         | track artwork                                                                |
+  | `AudioPlayer.TrackInfo`       | track title / writer                                                         |
+  | `AudioPlayer.TrackTime`       | current + duration time                                                      |
+  | `AudioPlayer.CustomComponent` | user-defined slot (existing)                                                 |
 
   Compound children render **additively** alongside the preset — they do not replace the default layout by themselves. To replace a preset control, disable the corresponding slot in `activeUI` and render the compound counterpart with a custom `gridArea`:
 
   ```tsx
   // Hide the preset volume and re-place a custom volume at the right edge
-  <AudioPlayer
-    playList={list}
-    activeUI={{ all: true, volume: false }}
-  >
+  <AudioPlayer playList={list} activeUI={{ all: true, volume: false }}>
     <AudioPlayer.Volume gridArea="1 / 5 / 1 / 6" />
   </AudioPlayer>
   ```
@@ -137,12 +135,12 @@
 
 - **SortableList keyboard support**: playlist items are now focusable (`tabIndex=0`) and expose full keyboard control following the WAI-ARIA "Listbox with Rearrangeable Options" pattern:
 
-  | Key | Action |
-  | --- | --- |
-  | `Tab` | Move focus between controls |
-  | `ArrowUp` / `ArrowDown` | Move focus between playlist items |
-  | `Alt+ArrowUp` / `Alt+ArrowDown` | Reorder the focused item |
-  | `Enter` / `Space` | Select the focused track |
+  | Key                             | Action                            |
+  | ------------------------------- | --------------------------------- |
+  | `Tab`                           | Move focus between controls       |
+  | `ArrowUp` / `ArrowDown`         | Move focus between playlist items |
+  | `Alt+ArrowUp` / `Alt+ArrowDown` | Reorder the focused item          |
+  | `Enter` / `Space`               | Select the focused track          |
 
 - **Native `<button>` for Dropdown trigger**: replaced `<div role="button">` with a real `<button>` element. Enter/Space activation is now handled by the browser natively, and the trigger exposes `aria-haspopup="true"`, `aria-expanded`, and `aria-controls` wired to the dropdown id.
 - **Eliminated nested `<button>` anti-pattern in Volume control**: the volume tooltip trigger was rendering a `<button>` inside `Dropdown.Trigger` (itself a button). Refactored so the outer `Dropdown.Trigger` owns the button role and `VolumeIcon` renders only the icon — screen readers now announce a single control.
@@ -253,10 +251,10 @@
 
   ```ts
   import {
-    usePlaybackContext,   // isPlaying, repeatType, volume, muted
-    useTrackContext,      // playList, curIdx, curPlayId
-    useUIContext,         // activeUI, placements
-    useResourceContext,   // elementRefs, customIcons, coverImgsCss
+    usePlaybackContext, // isPlaying, repeatType, volume, muted
+    useTrackContext, // playList, curIdx, curPlayId
+    useUIContext, // activeUI, placements
+    useResourceContext, // elementRefs, customIcons, coverImgsCss
   } from "react-modern-audio-player";
   ```
 
