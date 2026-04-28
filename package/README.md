@@ -325,7 +325,7 @@ type InterfacePlacementKey =
   | "trackTimeCurrent"
   | "trackTimeDuration";
 
-type InterfacePlacementValue = "row1-1" | "row1-2" | "row1-3" | "row1-4" | ... more ... | "row9-9"
+type InterfacePlacementValue = "row1-1" | "row1-2" | "row1-3" | "row1-4" | ... more ... | "row10-10"
 /** if you apply custom components, values must be "row1-1" ~ any more */
 
 type InterfaceGridTemplateArea = Record<InterfacePlacementKey,InterfacePlacementValue>;
@@ -476,28 +476,28 @@ function App() {
 
 ## AudioPlayerControls
 
-| Property          | Type                       | Description               |
-| ----------------- | -------------------------- | ------------------------- |
-| `isPlaying`       | `boolean`                  | Current playback state    |
-| `volume`          | `number`                   | Current volume (0–1)      |
-| `currentTime`     | `number`                   | Elapsed time in seconds   |
-| `duration`        | `number`                   | Track duration in seconds |
-| `repeatType`      | `RepeatType`               | Current repeat mode       |
-| `muted`           | `boolean`                  | Whether audio is muted    |
-| `currentTrack`    | `AudioData \| null`        | Currently playing track   |
-| `currentIndex`    | `number`                   | Index in playlist         |
-| `playList`        | `PlayList`                 | Full playlist             |
-| `play()`          | `() => void`               | Start playback            |
-| `pause()`         | `() => void`               | Pause playback            |
-| `togglePlay()`    | `() => void`               | Toggle play/pause         |
-| `next()`          | `() => void`               | Skip to next track        |
-| `prev()`          | `() => void`               | Skip to previous track    |
-| `seek(time)`      | `(time: number) => void`   | Seek to time in seconds   |
-| `setVolume(vol)`  | `(volume: number) => void` | Set volume (0–1, clamped) |
-| `toggleMute()`    | `() => void`               | Toggle mute on/off        |
-| `setTrack(index)` | `(index: number) => void`  | Jump to playlist index    |
-| `playbackRate`           | `number`                   | Current playback rate (`1` = normal). Default `1`. |
-| `setPlaybackRate(rate)`  | `(rate: number) => void`   | Set playback rate. No clamping; browser enforces HTML5 bounds. |
+| Property                | Type                       | Description                                                    |
+| ----------------------- | -------------------------- | -------------------------------------------------------------- |
+| `isPlaying`             | `boolean`                  | Current playback state                                         |
+| `volume`                | `number`                   | Current volume (0–1)                                           |
+| `currentTime`           | `number`                   | Elapsed time in seconds                                        |
+| `duration`              | `number`                   | Track duration in seconds                                      |
+| `repeatType`            | `RepeatType`               | Current repeat mode                                            |
+| `muted`                 | `boolean`                  | Whether audio is muted                                         |
+| `currentTrack`          | `AudioData \| null`        | Currently playing track                                        |
+| `currentIndex`          | `number`                   | Index in playlist                                              |
+| `playList`              | `PlayList`                 | Full playlist                                                  |
+| `play()`                | `() => void`               | Start playback                                                 |
+| `pause()`               | `() => void`               | Pause playback                                                 |
+| `togglePlay()`          | `() => void`               | Toggle play/pause                                              |
+| `next()`                | `() => void`               | Skip to next track                                             |
+| `prev()`                | `() => void`               | Skip to previous track                                         |
+| `seek(time)`            | `(time: number) => void`   | Seek to time in seconds                                        |
+| `setVolume(vol)`        | `(volume: number) => void` | Set volume (0–1, clamped)                                      |
+| `toggleMute()`          | `() => void`               | Toggle mute on/off                                             |
+| `setTrack(index)`       | `(index: number) => void`  | Jump to playlist index                                         |
+| `playbackRate`          | `number`                   | Current playback rate (`1` = normal). Default `1`.             |
+| `setPlaybackRate(rate)` | `(rate: number) => void`   | Set playback rate. No clamping; browser enforces HTML5 bounds. |
 
 ## Sub-Hooks
 
@@ -529,13 +529,13 @@ function TimeDisplay() {
 }
 ```
 
-| Hook                     | Returns                                                                         |
-| ------------------------ | ------------------------------------------------------------------------------- |
+| Hook                     | Returns                                                                             |
+| ------------------------ | ----------------------------------------------------------------------------------- |
 | `useAudioPlayerPlayback` | `{ isPlaying, repeatType, playbackRate, play, pause, togglePlay, setPlaybackRate }` |
-| `useAudioPlayerTrack`    | `{ currentPlayId, currentIndex, playList, currentTrack, setTrack, next, prev }` |
-| `useAudioPlayerVolume`   | `{ volume, muted, setVolume, toggleMute }`                                      |
-| `useAudioPlayerTime`     | `{ currentTime, duration, seek }`                                               |
-| `useAudioPlayerElement`  | `{ audioEl, waveformInst }` (advanced)                                          |
+| `useAudioPlayerTrack`    | `{ currentPlayId, currentIndex, playList, currentTrack, setTrack, next, prev }`     |
+| `useAudioPlayerVolume`   | `{ volume, muted, setVolume, toggleMute }`                                          |
+| `useAudioPlayerTime`     | `{ currentTime, duration, seek }`                                                   |
+| `useAudioPlayerElement`  | `{ audioEl, waveformInst }` (advanced)                                              |
 
 # Context Hooks
 
@@ -570,21 +570,34 @@ You can place a custom component anywhere in the player interface using `AudioPl
 import AudioPlayer, {
   useAudioPlayer,
   InterfacePlacement,
+  DEFAULT_INTERFACE_GRID_BOUND,
 } from "react-modern-audio-player";
 
 const activeUI: ActiveUI = {
   all: true,
 };
 
+// `as 12` pins the literal type — TS arithmetic widens
+// `DEFAULT_INTERFACE_GRID_BOUND + 1` to `number`, which would erase grid-coord
+const TOTAL_INTERFACE_GRID_BOUND = (DEFAULT_INTERFACE_GRID_BOUND + 1) as 12;
+
+// `row1-${DEFAULT_INTERFACE_GRID_BOUND}` resolves to `"row1-11"` —
+// the first cell beyond the default template area (which fills 1..10).
+const customComponentGridArea = `row1-${DEFAULT_INTERFACE_GRID_BOUND}`;
+
 const placement = {
   interface: {
     customComponentsArea: {
-      playerCustomComponent: "row1-10",
+      playerCustomComponent: customComponentGridArea,
     },
-  } as InterfacePlacement<11>,
+  } as InterfacePlacement<typeof TOTAL_INTERFACE_GRID_BOUND>,
   /**
-   * set the generic value of InterfacePlacement to the max interface length + 1
-   * for correct "row1-10" autocompletion
+   * The generic on `InterfacePlacement<N>` is an exclusive upper bound on grid
+   * indices — usable cells are `1..(N - 1)`. Default is
+   * `DEFAULT_INTERFACE_GRID_BOUND` (= 11), giving cells `1..10` which the
+   * built-in template area already occupies (e.g. `playbackRate` at `row1-10`).
+   * To reserve an additional cell for the custom component, pass `<N + 1>` —
+   * here `<12>` makes `row1-11` a valid coordinate.
    */
 };
 
@@ -613,19 +626,19 @@ const CustomComponent = () => {
 
 `AudioPlayer` exposes its built-in controls as static members so you can re-place or augment individual pieces without rebuilding the whole layout.
 
-| Member | Renders |
-| --- | --- |
-| `AudioPlayer.Progress` | progress bar / waveform |
-| `AudioPlayer.Volume` | volume trigger + slider (accepts `triggerType?: "click" \| "hover"`, `placement?: VolumeSliderPlacement`) |
-| `AudioPlayer.PlayList` | sortable playlist drawer (accepts `initialExpanded?`) |
-| `AudioPlayer.PlayListEmpty` | fallback rendered inside the playlist drawer when `playList` is empty |
-| [`AudioPlayer.PlayButton`](#audioplayerplaybutton-and-activeuiprevnnext) | Play + Prev + Next group (Prev/Next visibility follows `activeUI.prevNnext`) |
-| `AudioPlayer.RepeatButton` | repeat-type button |
-| `AudioPlayer.SpeedSelector` | playback rate dropdown (accepts `options?`, `formatRate?`, `triggerType?: "click" \| "hover"`, `placement?: SpeedSelectorPlacement`) |
-| `AudioPlayer.Artwork` | track artwork |
-| `AudioPlayer.TrackInfo` | track title / writer |
-| `AudioPlayer.TrackTime` | current + duration time |
-| `AudioPlayer.CustomComponent` | user-defined slot |
+| Member                                                                   | Renders                                                                                                                              |
+| ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------ |
+| `AudioPlayer.Progress`                                                   | progress bar / waveform                                                                                                              |
+| `AudioPlayer.Volume`                                                     | volume trigger + slider (accepts `triggerType?: "click" \| "hover"`, `placement?: VolumeSliderPlacement`)                            |
+| `AudioPlayer.PlayList`                                                   | sortable playlist drawer (accepts `initialExpanded?`)                                                                                |
+| `AudioPlayer.PlayListEmpty`                                              | fallback rendered inside the playlist drawer when `playList` is empty                                                                |
+| [`AudioPlayer.PlayButton`](#audioplayerplaybutton-and-activeuiprevnnext) | Play + Prev + Next group (Prev/Next visibility follows `activeUI.prevNnext`)                                                         |
+| `AudioPlayer.RepeatButton`                                               | repeat-type button                                                                                                                   |
+| `AudioPlayer.SpeedSelector`                                              | playback rate dropdown (accepts `options?`, `formatRate?`, `triggerType?: "click" \| "hover"`, `placement?: SpeedSelectorPlacement`) |
+| `AudioPlayer.Artwork`                                                    | track artwork                                                                                                                        |
+| `AudioPlayer.TrackInfo`                                                  | track title / writer                                                                                                                 |
+| `AudioPlayer.TrackTime`                                                  | current + duration time                                                                                                              |
+| `AudioPlayer.CustomComponent`                                            | user-defined slot                                                                                                                    |
 
 Each slot accepts the full `GridItemLayoutProps` set — `gridArea?`, `visible?`, `width?`, `padding?`, `justifySelf?`, `UNSAFE_className?` — plus its own domain props. `AudioPlayer.TrackTime` is the exception: it only exposes `visible?` because the slot maps to two grid areas internally.
 
@@ -640,10 +653,7 @@ The two layers are orthogonal. Compound children render **additively** alongside
 
 ```tsx
 // Remove the default volume, re-place it with a custom gridArea
-<AudioPlayer
-  playList={playList}
-  activeUI={{ all: true, volume: false }}
->
+<AudioPlayer playList={playList} activeUI={{ all: true, volume: false }}>
   <AudioPlayer.Volume gridArea="row1-5" />
 </AudioPlayer>
 ```
@@ -728,13 +738,13 @@ The player follows WAI-ARIA patterns and is fully navigable by keyboard and scre
 
 All controls are reachable via `Tab` and respond to standard keyboard activation. The playlist uses the WAI-ARIA "Listbox with Rearrangeable Options" pattern:
 
-| Key | Action |
-| --- | --- |
-| `Tab` / `Shift+Tab` | Move focus between player controls |
-| `Space` / `Enter` | Activate the focused button (play/pause, prev/next, repeat, mute, playlist) |
-| `ArrowUp` / `ArrowDown` | Move focus between playlist items |
-| `Alt+ArrowUp` / `Alt+ArrowDown` | Reorder the focused playlist item |
-| `Enter` / `Space` on a playlist item | Select and play that track |
+| Key                                  | Action                                                                      |
+| ------------------------------------ | --------------------------------------------------------------------------- |
+| `Tab` / `Shift+Tab`                  | Move focus between player controls                                          |
+| `Space` / `Enter`                    | Activate the focused button (play/pause, prev/next, repeat, mute, playlist) |
+| `ArrowUp` / `ArrowDown`              | Move focus between playlist items                                           |
+| `Alt+ArrowUp` / `Alt+ArrowDown`      | Reorder the focused playlist item                                           |
+| `Enter` / `Space` on a playlist item | Select and play that track                                                  |
 
 Drag-and-drop reordering is preserved as an alternative — keyboard and mouse both call the same `onReorder` handler.
 

@@ -10,12 +10,12 @@ import {
   InterfacePlacement,
   CoverImgsCss,
   VolumeSliderPlacement,
-  defaultInterfacePlacementMaxLength,
+  DEFAULT_INTERFACE_GRID_BOUND,
   AudioState,
 } from "./StateContext";
 
 export type AudioContextAction<
-  TInterfacePlacementLength extends number = typeof defaultInterfacePlacementMaxLength
+  TInterfacePlacementLength extends number = typeof DEFAULT_INTERFACE_GRID_BOUND
 > =
   | { type: "NEXT_AUDIO" }
   | { type: "PREV_AUDIO"; currentTime: number }

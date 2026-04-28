@@ -5,7 +5,7 @@ import {
   AudioState,
   DEFAULT_AUDIO_STATE,
   defaultInterfacePlacement,
-  defaultInterfacePlacementMaxLength,
+  DEFAULT_INTERFACE_GRID_BOUND,
   Placements,
   playbackContext,
   AudioAttrsContext,
@@ -45,7 +45,7 @@ function createInitialState<T extends number>(
 
   const activeUI = activeUIProp || { playButton: true };
 
-  const placement: Placements<T | typeof defaultInterfacePlacementMaxLength> = {
+  const placement: Placements<T | typeof DEFAULT_INTERFACE_GRID_BOUND> = {
     playerPlacement: placementProp?.player,
     playListPlacement: placementProp?.playList || "bottom",
     interfacePlacement: placementProp?.interface || {
@@ -76,7 +76,7 @@ function createInitialState<T extends number>(
     activeUI,
     audioResetKey: 0,
     seekRequestKey: 0,
-    ...(placement as Placements<typeof defaultInterfacePlacementMaxLength>),
+    ...(placement as Placements<typeof DEFAULT_INTERFACE_GRID_BOUND>),
     customIcons,
     coverImgsCss,
   };
@@ -88,7 +88,7 @@ interface AudioPlayerStateProviderOwnProps<T extends number = number>
 }
 
 export const AudioPlayerStateProvider = <
-  TInterfacePlacementLength extends number = typeof defaultInterfacePlacementMaxLength
+  TInterfacePlacementLength extends number = typeof DEFAULT_INTERFACE_GRID_BOUND
 >({
   children,
   colorScheme,

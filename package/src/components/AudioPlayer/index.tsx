@@ -5,7 +5,7 @@ import {
 } from "@/components/AudioPlayer/Container";
 import "@/styles/vars.css";
 import "@/styles/GlobalStyle.css";
-import { defaultInterfacePlacementMaxLength } from "./Context";
+import { DEFAULT_INTERFACE_GRID_BOUND } from "./Context";
 import { CustomComponent } from "./Interface/CustomComponent";
 import { PlayListEmpty } from "./Interface/PlayListEmpty";
 import { AudioPlayer, AudioPlayerProps } from "./Player";
@@ -22,11 +22,11 @@ import { TrackInfo } from "./Interface/Information/TrackInfo";
 import { TrackTime } from "./Interface/Information/TrackTime";
 
 export type RMAudioPlayerProps<
-  TInterfacePlacementLength extends number = typeof defaultInterfacePlacementMaxLength
+  TInterfacePlacementLength extends number = typeof DEFAULT_INTERFACE_GRID_BOUND
 > = AudioPlayerProps<TInterfacePlacementLength> & AudioPlayerContainerProps;
 
 function AudioPlayerWithProviders<
-  TInterfacePlacementLength extends number = typeof defaultInterfacePlacementMaxLength
+  TInterfacePlacementLength extends number = typeof DEFAULT_INTERFACE_GRID_BOUND
 >({
   rootContainerProps,
   ...audioPlayProps

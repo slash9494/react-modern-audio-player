@@ -33,7 +33,7 @@
 
   - **3. `audioInitialState.playbackRate`** — initial rate at mount, defaults to `1`. No clamping is applied at any layer; the browser enforces HTML5 `playbackRate` bounds.
 
-  Implementation notes: the new `SET_PLAYBACK_RATE` reducer action is the single write path; `useAudio` mirrors the rate to `audioEl.playbackRate` via a sync effect plus a re-apply inside `onLoadedMetadata` (the browser resets the DOM `playbackRate` to `1` on `src` change, mirroring the existing `volume` re-apply pattern). Internal-only `defaultInterfacePlacementMaxLength` was bumped from `10` to `11` to accommodate `playbackRate: "row1-10"` in the default template area; consumers passing an explicit `interfacePlacement` length parameter are unaffected.
+  Implementation notes: the new `SET_PLAYBACK_RATE` reducer action is the single write path; `useAudio` mirrors the rate to `audioEl.playbackRate` via a sync effect plus a re-apply inside `onLoadedMetadata` (the browser resets the DOM `playbackRate` to `1` on `src` change, mirroring the existing `volume` re-apply pattern). `DEFAULT_INTERFACE_GRID_BOUND` (renamed from `defaultInterfacePlacementMaxLength` in this release — see Breaking Changes) was bumped from `10` to `11` to accommodate `playbackRate: "row1-10"` in the default template area; consumers passing an explicit `interfacePlacement` length parameter are unaffected.
 
 - **Volume and SpeedSelector dropdown customization**: both compound slots now expose `triggerType?: "click" \| "hover"` and a `placement?` prop typed as the per-slot domain alias — `VolumeSliderPlacement` for `<AudioPlayer.Volume>` and `SpeedSelectorPlacement` for `<AudioPlayer.SpeedSelector>` (both currently resolve to `"top" \| "bottom" \| "left" \| "right"`). `AudioPlayer.SpeedSelector` also gains a top-level `placement.speedSelector?: SpeedSelectorPlacement` provider option that mirrors the existing `placement.volumeSlider`. Resolution order (both knobs, both components): **compound prop > UIContext > component default**. Defaults are unchanged — `Volume` stays on `triggerType="hover"` with viewport-aware auto-placement, `SpeedSelector` stays on `triggerType="click"` with `placement="top"`.
 
@@ -58,6 +58,13 @@
   - Disable the new slot by setting `activeUI={{ ..., playbackRate: false }}`
 
   No collision warning is emitted at runtime — the symptom is overlapping cells in the rendered grid.
+
+- **`defaultInterfacePlacementMaxLength` renamed to `DEFAULT_INTERFACE_GRID_BOUND`**: the magic-number constant exported from the package barrel is renamed to follow the project's UPPER_SNAKE_CASE convention for enum-like constants and to clarify its semantics. The value (`11`) and behavior are unchanged — it is the **exclusive upper bound** on grid indices, so usable cells are `1..(DEFAULT_INTERFACE_GRID_BOUND - 1)` (i.e. `1..10` by default). Consumers importing the old name must update their import:
+
+  ```diff
+  - import { defaultInterfacePlacementMaxLength } from "react-modern-audio-player";
+  + import { DEFAULT_INTERFACE_GRID_BOUND } from "react-modern-audio-player";
+  ```
 
 - **`AudioPlayer.Volume` role attribute change with `triggerType="click"`**: When `Volume` resolves to `triggerType="click"` (via the compound prop, the `placement.volumeSlider` provider option, or direct usage), the inner `<Dropdown.Content>` `role` switches from `"tooltip"` to `"dialog"`. Consumers asserting `role="tooltip"` in tests, targeting `[role="tooltip"]` in CSS, or relying on tooltip semantics in accessibility tooling must update those expectations. Hover mode (the default) is unchanged.
 

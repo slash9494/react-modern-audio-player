@@ -15,7 +15,9 @@ export type PlayerPlacement =
   | "static";
 
 //TODO : declare dynamic length type depending on the number of activeUI;
-export const defaultInterfacePlacementMaxLength = 11; // plus 1 for deleted number 0;
+// Exclusive upper bound for the `InterfacePlacement<N>` generic — usable grid
+// indices are `1..(DEFAULT_INTERFACE_GRID_BOUND - 1)` (i.e. `1..10` by default).
+export const DEFAULT_INTERFACE_GRID_BOUND = 11;
 
 export type InterfacePlacementKey =
   | Exclude<keyof ActiveUI, "all" | "prevNnext" | "trackTime" | "volumeSlider">
@@ -23,7 +25,7 @@ export type InterfacePlacementKey =
   | "trackTimeDuration";
 
 export type InterfaceGridTemplateArea<
-  TMaxLength extends number = typeof defaultInterfacePlacementMaxLength
+  TMaxLength extends number = typeof DEFAULT_INTERFACE_GRID_BOUND
 > = Partial<
   Record<
     InterfacePlacementKey,
@@ -44,7 +46,7 @@ export type InterfaceGridItemArea = Partial<
 >;
 
 export type InterfacePlacement<
-  TMaxLength extends number = typeof defaultInterfacePlacementMaxLength
+  TMaxLength extends number = typeof DEFAULT_INTERFACE_GRID_BOUND
 > = {
   templateArea?: InterfaceGridTemplateArea<TMaxLength>;
   customComponentsArea?: InterfaceGridCustomComponentsArea<TMaxLength>;
@@ -53,7 +55,7 @@ export type InterfacePlacement<
 
 export const defaultInterfacePlacement: {
   templateArea: Required<
-    InterfaceGridTemplateArea<typeof defaultInterfacePlacementMaxLength>
+    InterfaceGridTemplateArea<typeof DEFAULT_INTERFACE_GRID_BOUND>
   >;
 } = {
   templateArea: {
@@ -71,7 +73,7 @@ export const defaultInterfacePlacement: {
 };
 
 export interface Placements<
-  TInterfacePlacementLength extends number = typeof defaultInterfacePlacementMaxLength
+  TInterfacePlacementLength extends number = typeof DEFAULT_INTERFACE_GRID_BOUND
 > {
   playListPlacement: PlayListPlacement;
   interfacePlacement: InterfacePlacement<TInterfacePlacementLength>;

@@ -1,6 +1,6 @@
 import {
   AudioPlayerStateProviderProps,
-  defaultInterfacePlacementMaxLength,
+  DEFAULT_INTERFACE_GRID_BOUND,
 } from "@/components/AudioPlayer/Context";
 import { Audio } from "../Audio";
 import { Interface } from "../Interface";
@@ -21,7 +21,7 @@ export interface AudioPlayerProps<TInterfacePlacementLength extends number>
 }
 
 export const AudioPlayer = <
-  TInterfacePlacementLength extends number = typeof defaultInterfacePlacementMaxLength
+  TInterfacePlacementLength extends number = typeof DEFAULT_INTERFACE_GRID_BOUND
 >({
   audioRef,
   children,
