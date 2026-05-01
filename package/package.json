@@ -1,6 +1,6 @@
 {
   "name": "react-modern-audio-player",
-  "version": "2.3.0",
+  "version": "2.3.1",
   "description": "Modern, customizable React audio player with waveform visualization, drag-and-drop playlist, WAI-ARIA accessibility, TypeScript-first API, and Next.js App Router (Server Components) support.",
   "author": {
     "name": "MAXX",

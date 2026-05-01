@@ -1,5 +1,17 @@
 # React-modern-audio-player
 
+## v2.3.1 (2026-05-01)
+
+### 🐛 Bug Fixes
+
+- **`AudioPlayer.SpeedSelector` trigger layout**: three visual issues with the v2.3.0 trigger button are corrected.
+
+  - **Box collapse**: `height: 100%` on the trigger resolved to `16px` because the inner `position: static` override broke percentage-height resolution against the dropdown container, leaving the button shorter than the surrounding `20px` icon row. Replaced with explicit `height: 20px` and `box-sizing: border-box` so the trigger matches the icon row exactly.
+  - **Optical alignment**: digit-only labels (`1×`, `0.75×`, `1.75×`) have no descenders, so their visible glyph mass concentrated in the upper part of the line box and the text appeared to float above the icon centerline. Added `padding-top: 2px` (consumed by the border-box `height: 20px`) to push the line box ~1px down so the visible text center now matches the icons.
+  - **Variable cell width**: the default rate options rendered at widths between `14.74px` (`1×`) and `38.55px` (`0.75×`), so the trigger reflowed every time the user picked a different rate. Bumped `min-width` from `36px` to `44px` so all default rates land in the same slot. Custom labels longer than `44px` still grow naturally via `width: auto`.
+
+- **`AudioPlayer.SpeedSelector` cell padding**: the SpeedSelector grid cell now defaults `padding="0"` instead of inheriting the global `0 5px`. The default is appropriate for icon controls but added disproportionate horizontal space around the text trigger, making it read as a separated chunk relative to neighbouring labels. Consumers can still pass `padding={...}` directly to `<AudioPlayer.SpeedSelector>` to override.
+
 ## v2.3.0 (2026-04-30)
 
 ### ✨ New Features
