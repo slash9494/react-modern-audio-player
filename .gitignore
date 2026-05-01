@@ -27,6 +27,7 @@ releaseNote.md
 .claude
 .coderabbit
 .agents
+.codex
 
 # Test coverage
 package/coverage/
