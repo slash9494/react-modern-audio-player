@@ -65,6 +65,7 @@ export const SpeedSelector: FC<SpeedSelectorProps> = memo(
       <Grid.Item
         gridArea={resolvedGridArea}
         visible={visible ?? true}
+        padding="0"
         {...rest}
       >
         <Dropdown

@@ -1,9 +1,27 @@
 /* Trigger button — chained with .styled-btn to override the 20px default
-   width and to swap the icon-button shape for a compact text label. */
+   width and to swap the icon-button shape for a compact text label.
+
+   Box: explicit 20px height (instead of `height: 100%`) because the
+   `position: static` override below breaks percentage-height resolution
+   against the dropdown container, which would otherwise collapse the
+   button to its line-box height (16px) and misalign it with the 20px
+   icon row.
+
+   Width: `min-width: 44px` reserves enough space for the widest default
+   rate label (`0.75×` measures ~39px in the demo font) so the trigger
+   does not reflow when the user switches between rates. Custom labels
+   from `formatRate` longer than 44px still grow via `width: auto`.
+
+   Glyph: `padding-top: 2px` with `box-sizing: border-box` shifts the
+   line box ~1px down to compensate for the upward optical-mass bias of
+   digit-only labels (`1×`, `1.75×` — no descenders), so the visible
+   text center aligns with the surrounding icons. */
 .styled-btn.rmap-speed-selector-trigger {
+  box-sizing: border-box;
   width: auto;
-  min-width: 36px;
-  height: 100%;
+  min-width: 44px;
+  height: 20px;
+  padding-top: 2px;
   align-items: center;
   justify-content: center;
   font: inherit;
