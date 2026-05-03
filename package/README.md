@@ -39,6 +39,10 @@
 
 <https://codesandbox.io/p/sandbox/basic-nfrpfq>
 
+or
+
+<https://stackblitz.com/edit/stackblitz-webcontainer-api-starter-k4uxhzjx?file=src%2FApp.tsx>
+
 # **Flexible and Customizable UI**
 
 ## Waveform progress with `wavesurfer.js`
