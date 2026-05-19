@@ -164,6 +164,7 @@ export default function PlayerPage() {
 | **Accessibility**    | [Keyboard support](#keyboard-support)                                                                                                                 |
 | **Gotchas**          | [Gotchas](#gotchas)                                                                                                                                   |
 | **Example**          | [Example](#example)                                                                                                                                   |
+| **Security**         | [Security & Trust Model](#security--trust-model)                                                                                                      |
 
 # Props
 
@@ -799,3 +800,19 @@ function App() {
   );
 }
 ```
+
+# **Security & Trust Model**
+
+A few props on this library are typed as `string | ReactNode` — most notably:
+
+- [`AudioData.description`](#playlist)
+- [`AudioData.customTrackInfo`](#mental-model--activeui-vs-compound-children)
+
+React's standard JSX rendering applies. **A plain string passed to one of these props is auto-escaped** by React — so `description: "<img src=x onerror=alert(1)>"` becomes harmless text. If, however, you construct the `ReactNode` yourself using `dangerouslySetInnerHTML`, React runs whatever HTML you put there. This is React's documented contract; see [_Dangerously setting the inner HTML_](https://react.dev/reference/react-dom/components/common#dangerously-setting-the-inner-html) on `react.dev`.
+
+When the content originates from **user-generated input**, the consumer is responsible for sanitizing it _before_ it is handed to this library:
+
+- Prefer passing a **plain string** — React's escape is sufficient.
+- If you must inject HTML (e.g. a Markdown preview), sanitize first with [DOMPurify](https://github.com/cure53/DOMPurify) or a vetted Markdown parser, then wrap the result in JSX.
+
+This library does **not** bundle a sanitizer because the trust boundary, allowed-tag policy, and rendering pipeline all depend on the consumer's data source — only the integrating application has that context. The same rule applies to any React component that accepts `ReactNode` (MUI, Ant Design, `react-h5-audio-player`, etc.).
