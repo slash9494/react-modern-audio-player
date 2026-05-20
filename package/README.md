@@ -815,4 +815,4 @@ When the content originates from **user-generated input**, the consumer is respo
 - Prefer passing a **plain string** — React's escape is sufficient.
 - If you must inject HTML (e.g. a Markdown preview), sanitize first with [DOMPurify](https://github.com/cure53/DOMPurify) or a vetted Markdown parser, then wrap the result in JSX.
 
-This library does **not** bundle a sanitizer because the trust boundary, allowed-tag policy, and rendering pipeline all depend on the consumer's data source — only the integrating application has that context. The same rule applies to any React component that accepts `ReactNode` (MUI, Ant Design, `react-h5-audio-player`, etc.).
+This library does **not** bundle a sanitizer because the trust boundary, allowed-tag policy, and rendering pipeline all depend on the consumer's data source — only the integrating application has that context.
