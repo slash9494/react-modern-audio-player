@@ -22,8 +22,10 @@ jobs:
       # ===== /TIER2 =====
 
       - uses: actions/checkout@v4 # pin to SHA via Dependabot
+        with:
+          fetch-depth: 0 # gitleaks needs parent commits for commit-range scan
 
-      # runner 기본 yarn 1은 berry lockfile을 못 읽음 — setup-node cache 탐색 전에 필요
+      # runner ships yarn 1, which cannot read the berry lockfile — must precede setup-node cache probe
       - name: Enable corepack (yarn berry)
         run: corepack enable
 
