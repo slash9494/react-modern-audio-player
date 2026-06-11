@@ -39,7 +39,7 @@ jobs:
         # npm consumers. Dev-tool advisories don't ship; Dependabot bumps those.
         run: yarn workspace react-modern-audio-player npm audit --environment production --severity high
       - name: Secret scan
-        uses: gitleaks/gitleaks-action@v2 # pin to SHA via Dependabot
+        uses: gitleaks/gitleaks-action@v3 # pin to SHA via Dependabot
       - name: Supply-chain hygiene
         uses: ossf/scorecard-action@v2 # pin to SHA via Dependabot
         with:
