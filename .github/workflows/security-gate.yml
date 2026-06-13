@@ -15,7 +15,7 @@ jobs:
   gate:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4 # pin to SHA via Dependabot
+      - uses: actions/checkout@v6 # pin to SHA via Dependabot
 
       # runner ships yarn 1, which cannot read the berry lockfile — must precede setup-node cache probe
       - name: Enable corepack (yarn berry)

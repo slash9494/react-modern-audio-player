@@ -13,7 +13,7 @@ jobs:
       contents: write   # create git tag and GitHub Release
       id-token: write   # npm publish --provenance (SLSA attestation)
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v4
 
       # yarn 1 hard-errors on the packageManager pin without corepack
       - name: Enable corepack (yarn berry)
