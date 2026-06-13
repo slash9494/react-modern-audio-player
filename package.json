@@ -1,6 +1,7 @@
 {
   "name": "react-modern-audio-player-root",
   "version": "0.0.1",
+  "packageManager": "yarn@4.13.0",
   "workspaces": [
     "package",
     "storybook"
