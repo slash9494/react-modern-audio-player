@@ -7,6 +7,7 @@ import { trackContext } from "@/components/AudioPlayer/Context/TrackContext";
 import { resourceContext } from "@/components/AudioPlayer/Context/ResourceContext";
 import { uiContext } from "@/components/AudioPlayer/Context/UIContext";
 import { audioPlayerDispatchContext } from "@/components/AudioPlayer/Context/dispatchContext";
+import { AudioData } from "@/components/AudioPlayer/Context";
 import { useWaveSurfer } from "../useWavesurfer";
 
 // useWaveSurfer's track-change effect registers a `ready` callback that, when
@@ -62,6 +63,7 @@ interface WrapperProps {
   isPlaying: boolean;
   audioEl: HTMLAudioElement;
   waveformInst: MockWaveSurfer;
+  playList?: AudioData[];
   children: ReactNode;
 }
 
@@ -70,12 +72,13 @@ const Wrapper: FC<WrapperProps> = ({
   isPlaying,
   audioEl,
   waveformInst,
+  playList = [],
   children,
 }) => (
   <uiContext.Provider
     value={{ activeUI: { progress: "waveform" }, playListPlacement: "bottom" }}
   >
-    <trackContext.Provider value={{ playList: [], curPlayId, curIdx: 0 }}>
+    <trackContext.Provider value={{ playList, curPlayId, curIdx: 0 }}>
       <timeContext.Provider
         value={{ currentTime: 0, duration: 180, seekRequestKey: 0 }}
       >
@@ -211,5 +214,105 @@ describe("useWaveSurfer onReady recovery", () => {
     // !isTrackChange + savedTime > 0 + duration > 0 → restore time and seek
     expect(audioEl.currentTime).toBe(45);
     expect(waveformInst.seekTo).toHaveBeenCalledWith(45 / 180);
+  });
+});
+
+const makeAudioData = (overrides: Partial<AudioData> = {}): AudioData => ({
+  src: "track1.mp3",
+  id: 1,
+  ...overrides,
+});
+
+describe("useWaveSurfer load gating by waveform mode", () => {
+  beforeEach(() => {
+    window.HTMLMediaElement.prototype.play = vi
+      .fn()
+      .mockResolvedValue(undefined);
+    window.HTMLMediaElement.prototype.pause = vi.fn();
+  });
+
+  it("does NOT call load for a live track", () => {
+    const audioEl = makeAudioEl();
+    const waveformInst = makeWaveformInst();
+    render(
+      <Wrapper
+        curPlayId={1}
+        isPlaying={false}
+        audioEl={audioEl}
+        waveformInst={waveformInst}
+        playList={[makeAudioData({ id: 1, isLive: true })]}
+      >
+        <Harness />
+      </Wrapper>
+    );
+
+    expect(waveformInst.load).not.toHaveBeenCalled();
+  });
+
+  it("does NOT call load for a large file without precomputed peaks", () => {
+    const audioEl = makeAudioEl(0, 7200);
+    const waveformInst = makeWaveformInst();
+    render(
+      <Wrapper
+        curPlayId={1}
+        isPlaying={false}
+        audioEl={audioEl}
+        waveformInst={waveformInst}
+        playList={[makeAudioData({ id: 1, duration: 7200 })]}
+      >
+        <Harness />
+      </Wrapper>
+    );
+
+    expect(waveformInst.load).not.toHaveBeenCalled();
+  });
+
+  it("calls load with peaks data, undefined preload, and duration when precomputed peaks are provided", () => {
+    const audioEl = makeAudioEl();
+    const waveformInst = makeWaveformInst();
+    const peaksData = [0.1, 0.5, 0.9];
+    render(
+      <Wrapper
+        curPlayId={1}
+        isPlaying={false}
+        audioEl={audioEl}
+        waveformInst={waveformInst}
+        playList={[
+          makeAudioData({
+            id: 1,
+            peaks: { data: peaksData },
+            duration: 7200,
+          }),
+        ]}
+      >
+        <Harness />
+      </Wrapper>
+    );
+
+    expect(waveformInst.load).toHaveBeenCalledWith(
+      audioEl,
+      peaksData,
+      undefined,
+      7200
+    );
+  });
+
+  it("calls load with the audio element alone for a small file without peaks (regression guard)", () => {
+    const audioEl = makeAudioEl();
+    const waveformInst = makeWaveformInst();
+    render(
+      <Wrapper
+        curPlayId={1}
+        isPlaying={false}
+        audioEl={audioEl}
+        waveformInst={waveformInst}
+        playList={[makeAudioData({ id: 1, duration: 180 })]}
+      >
+        <Harness />
+      </Wrapper>
+    );
+
+    expect(waveformInst.load).toHaveBeenCalledWith(audioEl);
+    expect(waveformInst.load).toHaveBeenCalledTimes(1);
   });
 });

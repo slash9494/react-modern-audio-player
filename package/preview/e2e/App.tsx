@@ -1,6 +1,7 @@
 import { ReactElement, useState } from "react";
 import AudioPlayerWithProviders, {
   ActiveUI,
+  AudioData,
   CustomIcons,
   InterfaceGridTemplateArea,
   InterfacePlacement,
@@ -40,6 +41,8 @@ interface TestConfig {
   volumeSliderPlacement?: VolumeSliderPlacement;
   playListPlacement?: PlayListPlacement;
   customIconTestIds?: Partial<Record<keyof CustomIcons, string>>;
+  curPlayId?: number;
+  trackOverrides?: Record<number, Partial<AudioData>>;
 }
 
 function parseTestConfig(): TestConfig {
@@ -85,11 +88,21 @@ function App() {
     ...(progressType !== undefined && { progress: progressType }),
   };
 
+  const mergedPlayList = playList.map((track) => ({
+    ...track,
+    ...(config.trackOverrides?.[track.id] ?? {}),
+  }));
+
+  const audioInitialState = {
+    ...initialState,
+    curPlayId: config.curPlayId ?? initialState.curPlayId,
+  };
+
   return (
     <div style={{ width: "100%", padding: "1rem", boxSizing: "border-box" }}>
       <AudioPlayerWithProviders
-        playList={playList}
-        audioInitialState={initialState}
+        playList={mergedPlayList}
+        audioInitialState={audioInitialState}
         activeUI={activeUI}
         customIcons={customIcons}
         placement={
