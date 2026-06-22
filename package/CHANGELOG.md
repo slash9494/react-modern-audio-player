@@ -1,5 +1,21 @@
 # React-modern-audio-player
 
+## v2.4.0 (Unreleased)
+
+### ✨ New Features
+
+- **Long-form & live stream stabilization**: large files and endless live streams no longer hang the waveform. Four optional `AudioData` fields opt a track out of full-file decode without any breaking change.
+
+  - **`isLive?: boolean`** — marks a live stream. The waveform skips decoding and renders a static placeholder, seeking is disabled, and the duration UI no longer leaks `Infinity`/`NaN`.
+  - **`duration?: number`** — the known total length in seconds. A track longer than 30 minutes with no `peaks` skips full-file decode and renders a lightweight placeholder instead of stalling. Also drives the new `H:MM:SS` display for multi-hour tracks.
+  - **`peaks?: { data: number[]; sampleRate?: number }`** — server-precomputed amplitude samples passed straight to the waveform, so the real waveform renders with no client-side decode (recommended for large files).
+  - **`preload?: "none" | "metadata" | "auto"`** — per-track override of the native `<audio preload>` attribute.
+
+### 🐛 Bug Fixes
+
+- **Time display no longer leaks non-finite values**: `getTimeWithPadStart` returns `--:--` for `Infinity`/`NaN`/negative input (previously rendered `Infinity:NaN`), and formats tracks of an hour or longer as `H:MM:SS` instead of overflowing the minutes field (e.g. `5:11:25` instead of `311:25`).
+- **Progress seeking guarded on live tracks**: clicking or dragging the progress bar on a live stream is now a no-op instead of writing a non-finite value into `audio.currentTime`.
+
 ## v2.3.1 (2026-05-01)
 
 ### 🐛 Bug Fixes
