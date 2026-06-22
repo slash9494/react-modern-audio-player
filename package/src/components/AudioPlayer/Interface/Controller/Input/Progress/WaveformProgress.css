@@ -20,3 +20,18 @@
   overflow-x: hidden !important;
 }
 /* stylelint-enable selector-type-no-unknown */
+
+.rmap-waveform-wrapper[data-waveform-mode="faux"] #rm-waveform,
+.rmap-waveform-wrapper[data-waveform-mode="live"] #rm-waveform {
+  height: 80px;
+  background-image: repeating-linear-gradient(
+    to right,
+    var(--rm-audio-player-waveform-bar) 0px,
+    var(--rm-audio-player-waveform-bar) 3px,
+    transparent 3px,
+    transparent 7px
+  );
+  background-size: 7px 100%;
+  background-repeat: repeat-x;
+  opacity: 0.35;
+}

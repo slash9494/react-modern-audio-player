@@ -6,8 +6,6 @@ import { useTrackContext } from "@/components/AudioPlayer/Context/hooks/useTrack
 import React, { useEffect, useRef } from "react";
 import { useAudio } from "./useAudio";
 
-// TODO : optimize large audio files
-
 export const Audio = React.memo<{
   audioRef?: React.MutableRefObject<HTMLAudioElement>;
 }>(({ audioRef: propsAudioRef }) => {

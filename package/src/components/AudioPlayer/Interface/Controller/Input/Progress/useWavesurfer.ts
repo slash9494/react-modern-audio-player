@@ -7,6 +7,7 @@ import { useResourceContext } from "@/components/AudioPlayer/Context/hooks/useRe
 import { useUIContext } from "@/components/AudioPlayer/Context/hooks/useUIContext";
 import { useEffect, useRef } from "react";
 import type WaveSurfer from "wavesurfer.js";
+import { useWaveformMode } from "./useWaveformMode";
 
 const waveformColors = {
   progressColor: "--rm-audio-player-waveform-bar",
@@ -35,13 +36,12 @@ const detachStaleBackendListeners = (waveform: WaveSurfer) => {
   }
 };
 
-// TODO : dynamic drawing form from large files
-
 export const useWaveSurfer = (waveformRef: React.RefObject<HTMLElement>) => {
   const audioPlayerDispatch = useNonNullableContext(audioPlayerDispatchContext);
   const { isPlaying: isPlaybackActive } = usePlaybackContext();
   const { curPlayId } = useTrackContext();
   const { elementRefs } = useResourceContext();
+  const { mode, curTrack } = useWaveformMode();
   const { colorScheme } = useUIContext();
   const colorsRef = useVariableColor(waveformColors, colorScheme);
   const waveformInstRef = useRef(elementRefs?.waveformInst);
@@ -117,8 +117,21 @@ export const useWaveSurfer = (waveformRef: React.RefObject<HTMLElement>) => {
     const savedTime = isTrackChange ? 0 : audioEl.currentTime;
     const wasPlaying = isPlaybackActive;
 
+    // Live streams and oversized files render a static placeholder instead of
+    // decoding the whole buffer, so skip load() entirely for those modes.
+    if (mode !== "normal") return;
+
     detachStaleBackendListeners(waveform);
-    waveform.load(audioEl);
+    if (curTrack?.peaks) {
+      waveform.load(
+        audioEl,
+        curTrack.peaks.data,
+        undefined,
+        curTrack.duration ?? undefined
+      );
+    } else {
+      waveform.load(audioEl);
+    }
 
     // useAudio owns the primary track-change autoplay (deps include
     // audioResetKey), but `waveform.load(audioEl)` re-attaches MediaElement
@@ -138,7 +151,13 @@ export const useWaveSurfer = (waveformRef: React.RefObject<HTMLElement>) => {
       waveform.un("ready", onReady);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [curPlayId, elementRefs?.audioEl, elementRefs?.waveformInst]);
+  }, [
+    curPlayId,
+    elementRefs?.audioEl,
+    elementRefs?.waveformInst,
+    mode,
+    curTrack,
+  ]);
 
   useEffect(() => {
     if (!waveformRef.current || !elementRefs?.waveformInst) return;

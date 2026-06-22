@@ -6,6 +6,7 @@ import { safeRatio } from "@/utils/safeRatio";
 import { useProgress } from "./useProgress";
 import { useProgressKeyDown } from "./useProgressKeyDown";
 import { useWaveSurfer } from "./useWavesurfer";
+import { useWaveformMode } from "./useWaveformMode";
 import "./WaveformProgress.css";
 
 export const WaveformProgress: FC<{ isActive: boolean }> = ({ isActive }) => {
@@ -14,6 +15,8 @@ export const WaveformProgress: FC<{ isActive: boolean }> = ({ isActive }) => {
   const { elementRefs } = useResourceContext();
 
   useWaveSurfer(waveformRef);
+
+  const { mode } = useWaveformMode();
 
   useEffect(() => {
     if (
@@ -50,7 +53,11 @@ export const WaveformProgress: FC<{ isActive: boolean }> = ({ isActive }) => {
   const handleKeyDown = useProgressKeyDown(onSeek);
 
   return (
-    <div className="rmap-waveform-wrapper" data-active={isActive}>
+    <div
+      className="rmap-waveform-wrapper"
+      data-active={isActive}
+      data-waveform-mode={mode}
+    >
       <div
         id="rm-waveform"
         ref={waveformRef}
@@ -60,9 +67,10 @@ export const WaveformProgress: FC<{ isActive: boolean }> = ({ isActive }) => {
         aria-valuemin={0}
         aria-valuemax={100}
         aria-valuenow={Math.round(
-          ((elementRefs?.audioEl?.currentTime ?? 0) /
-            (elementRefs?.audioEl?.duration || 1)) *
-            100
+          safeRatio(
+            elementRefs?.audioEl?.currentTime ?? 0,
+            elementRefs?.audioEl?.duration ?? 0
+          ) * 100
         )}
         aria-valuetext={`${getTimeWithPadStart(
           elementRefs?.audioEl?.currentTime ?? 0

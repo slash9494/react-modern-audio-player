@@ -34,6 +34,12 @@ export type AudioData = {
   img?: string;
   description?: string | ReactNode;
   customTrackInfo?: string | ReactNode;
+  // Precomputed amplitude samples passed straight to wavesurfer.load(); kept
+  // separate from any wavesurfer instance type so consumers don't import it.
+  peaks?: { data: number[]; sampleRate?: number };
+  isLive?: boolean;
+  preload?: "none" | "metadata" | "auto";
+  duration?: number;
 };
 
 export type AudioState = AudioNativeProps &

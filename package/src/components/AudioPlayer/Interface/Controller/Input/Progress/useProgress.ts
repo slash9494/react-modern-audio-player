@@ -1,5 +1,6 @@
 import { usePlaybackContext } from "@/components/AudioPlayer/Context/hooks/usePlaybackContext";
 import { useResourceContext } from "@/components/AudioPlayer/Context/hooks/useResourceContext";
+import { useTrackContext } from "@/components/AudioPlayer/Context/hooks/useTrackContext";
 import { safeRatio } from "@/utils/safeRatio";
 import {
   HTMLAttributes,
@@ -8,15 +9,19 @@ import {
   useState,
   MouseEvent,
 } from "react";
+import { isLiveTrack } from "./isLiveTrack";
 
 export const useProgress = (): HTMLAttributes<HTMLDivElement> => {
   const { isLoadedMetaData } = usePlaybackContext();
   const { elementRefs } = useResourceContext();
+  const { curPlayId, playList } = useTrackContext();
+  const curTrack = playList.find((audioData) => audioData.id === curPlayId);
   const [isTimeChangeActive, setTimeChangeActive] = useState(false);
 
   const moveAudioTime = useCallback(
     (e: MouseEvent<HTMLDivElement>) => {
       if (!elementRefs?.audioEl || !isLoadedMetaData) return;
+      if (isLiveTrack(curTrack, elementRefs.audioEl.duration)) return;
       const { clientX } = e;
       const { clientWidth } = e.currentTarget;
       const boundingRect = e.currentTarget.getBoundingClientRect();
@@ -25,7 +30,7 @@ export const useProgress = (): HTMLAttributes<HTMLDivElement> => {
         safeRatio(curPositionX, clientWidth) * elementRefs.audioEl.duration;
       elementRefs.audioEl.currentTime = curPositionTime;
     },
-    [isLoadedMetaData, elementRefs?.audioEl]
+    [isLoadedMetaData, elementRefs?.audioEl, curTrack]
   );
 
   useEffect(() => {
