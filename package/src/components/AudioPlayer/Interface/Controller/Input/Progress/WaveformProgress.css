@@ -1,6 +1,24 @@
 .rmap-waveform-wrapper {
   display: flex;
+  position: relative;
   width: 100%;
+}
+
+.rmap-waveform-progress {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  /* above wavesurfer's canvases (z-index 3) so the overlay shows in normal mode */
+  z-index: 4;
+  pointer-events: none;
+  /* scaleX (not width) so dragging updates on the compositor without a
+     per-frame layout/repaint — matches the BarProgress fill, stays smooth. */
+  transform-origin: left center;
+  background-color: var(--rm-audio-player-waveform-bar);
+  border-right: 2px solid var(--rm-audio-player-waveform-cursor);
+  opacity: 0.4;
 }
 
 .rmap-waveform-wrapper[data-active="false"] {
