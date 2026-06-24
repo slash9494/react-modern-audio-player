@@ -125,7 +125,7 @@ export const useWaveSurfer = (waveformRef: React.RefObject<HTMLElement>) => {
     if (curTrack?.peaks) {
       waveform.load(
         audioEl,
-        curTrack.peaks.data,
+        curTrack.peaks,
         undefined,
         curTrack.duration ?? undefined
       );

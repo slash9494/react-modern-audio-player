@@ -280,7 +280,7 @@ describe("useWaveSurfer load gating by waveform mode", () => {
         playList={[
           makeAudioData({
             id: 1,
-            peaks: { data: peaksData },
+            peaks: peaksData,
             duration: 7200,
           }),
         ]}

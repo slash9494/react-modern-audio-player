@@ -34,9 +34,9 @@ export type AudioData = {
   img?: string;
   description?: string | ReactNode;
   customTrackInfo?: string | ReactNode;
-  // Precomputed amplitude samples passed straight to wavesurfer.load(); kept
-  // separate from any wavesurfer instance type so consumers don't import it.
-  peaks?: { data: number[]; sampleRate?: number };
+  // Mirrors wavesurfer.js 6.6.4 Peaks shape; forwarded verbatim to waveform.load().
+  // TODO : v3 removes wavesurfer — redefine this for the canvas renderer.
+  peaks?: number[] | number[][];
   isLive?: boolean;
   preload?: "none" | "metadata" | "auto";
   duration?: number;

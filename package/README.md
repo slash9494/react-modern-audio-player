@@ -214,7 +214,7 @@ type AudioData = {
   // Long-form & streaming (all optional, opt-in)
   isLive?: boolean;
   duration?: number;
-  peaks?: { data: number[]; sampleRate?: number };
+  peaks?: number[] | number[][];
   preload?: "none" | "metadata" | "auto";
 };
 ```
@@ -230,7 +230,7 @@ breaking change:
 | ---------- | ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `isLive`   | `boolean`                                 | Marks the track as a live stream. The waveform skips decoding and shows a static placeholder, seeking is disabled, and the duration UI no longer leaks `Infinity`.                     |
 | `duration` | `number` (seconds)                        | The known total length. A track longer than 30 minutes with no `peaks` skips full-file decode and renders a lightweight placeholder instead of hanging. Also drives `H:MM:SS` display. |
-| `peaks`    | `{ data: number[]; sampleRate?: number }` | Server-precomputed amplitude samples. When provided, the real waveform renders with no client-side decode (recommended for large files).                                               |
+| `peaks`    | `number[] \| number[][]`                  | Server-precomputed, normalized amplitude samples (single array, or one per channel) — the same shape `wavesurfer.load()` accepts. When provided, the real waveform renders with no client-side decode (recommended for large files). |
 | `preload`  | `"none" \| "metadata" \| "auto"`          | Per-track override of the native `<audio preload>` attribute.                                                                                                                          |
 
 ```tsx

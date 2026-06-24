@@ -62,7 +62,7 @@ describe("getWaveformMode live mode", () => {
   it("prioritizes live over peaks when isLive is true", () => {
     expect(
       getWaveformMode(
-        makeAudioData({ isLive: true, peaks: { data: [0.1, 0.2] } }),
+        makeAudioData({ isLive: true, peaks: [0.1, 0.2] }),
         FINITE_DURATION
       )
     ).toBe("live");
@@ -78,17 +78,14 @@ describe("getWaveformMode live mode", () => {
 describe("getWaveformMode normal mode with peaks", () => {
   it("returns 'normal' when peaks are present", () => {
     expect(
-      getWaveformMode(
-        makeAudioData({ peaks: { data: [0.1, 0.2] } }),
-        FINITE_DURATION
-      )
+      getWaveformMode(makeAudioData({ peaks: [0.1, 0.2] }), FINITE_DURATION)
     ).toBe("normal");
   });
 
   it("prioritizes peaks over the large-file threshold", () => {
     expect(
       getWaveformMode(
-        makeAudioData({ peaks: { data: [0.1, 0.2] }, duration: 7200 }),
+        makeAudioData({ peaks: [0.1, 0.2], duration: 7200 }),
         7200
       )
     ).toBe("normal");
