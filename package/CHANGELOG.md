@@ -1,5 +1,11 @@
 # React-modern-audio-player
 
+## v2.3.2 (Unreleased)
+
+### ♿ Accessibility
+
+- **`AudioPlayer.SpeedSelector` menu semantics & close-on-select** (Closes [#59](https://github.com/slash9494/react-modern-audio-player/issues/59)): the speed dropdown now exposes its options as a labelled `role="group"` of `aria-pressed` toggle buttons instead of `role="menu"` / `role="menuitemradio"` + `aria-checked`, and selecting a rate now closes the dropdown. The original `role="menu"` contract implied full WAI-ARIA APG keyboard navigation (arrow keys, `Home`/`End`, `Esc`) that was never implemented; the toggle-button group is fully operable with native `Tab` + `Enter`/`Space` and carries no unmet keyboard expectation. This changes the rendered ARIA tree only — no public props, types, or runtime behavior (rate selection still dispatches `SET_PLAYBACK_RATE`) changed, so it is not a breaking API change.
+
 ## v2.3.1 (2026-05-01)
 
 ### 🐛 Bug Fixes
