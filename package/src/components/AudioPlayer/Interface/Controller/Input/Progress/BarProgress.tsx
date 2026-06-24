@@ -22,12 +22,12 @@ export const BarProgress: FC = () => {
     return () => ro.disconnect();
   }, []);
 
-  const progressRatio = safeRatio(currentTime, duration);
-
-  const eventProps = useProgress();
+  const { progressProps, previewRatio } = useProgress();
   const handleKeyDown = useProgressKeyDown();
 
-  const progressOffset = progressRatio * wrapperWidth;
+  const ratio = previewRatio ?? safeRatio(currentTime, duration);
+
+  const progressOffset = ratio * wrapperWidth;
 
   return (
     <div
@@ -39,17 +39,17 @@ export const BarProgress: FC = () => {
       aria-label="Seek"
       aria-valuemin={0}
       aria-valuemax={100}
-      aria-valuenow={Math.round(progressRatio * 100)}
+      aria-valuenow={Math.round(ratio * 100)}
       aria-valuetext={`${getTimeWithPadStart(
         currentTime
       )} of ${getTimeWithPadStart(duration)}`}
       onKeyDown={handleKeyDown}
-      {...eventProps}
+      {...progressProps}
     >
       <div className="rmap-progress-bar">
         <div
           className="rmap-progress-fill"
-          style={{ transform: `scaleX(${progressRatio})` }}
+          style={{ transform: `scaleX(${ratio})` }}
         />
       </div>
       <div

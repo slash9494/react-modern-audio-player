@@ -41,7 +41,7 @@ export const WaveformProgress: FC<{ isActive: boolean }> = ({ isActive }) => {
     isPlaying,
   ]);
 
-  const eventProps = useProgress();
+  const { progressProps, previewRatio } = useProgress();
 
   const onSeek = useCallback(
     (newTime: number, duration: number) => {
@@ -67,16 +67,17 @@ export const WaveformProgress: FC<{ isActive: boolean }> = ({ isActive }) => {
         aria-valuemin={0}
         aria-valuemax={100}
         aria-valuenow={Math.round(
-          safeRatio(
-            elementRefs?.audioEl?.currentTime ?? 0,
-            elementRefs?.audioEl?.duration ?? 0
-          ) * 100
+          (previewRatio ??
+            safeRatio(
+              elementRefs?.audioEl?.currentTime ?? 0,
+              elementRefs?.audioEl?.duration ?? 0
+            )) * 100
         )}
         aria-valuetext={`${getTimeWithPadStart(
           elementRefs?.audioEl?.currentTime ?? 0
         )} of ${getTimeWithPadStart(elementRefs?.audioEl?.duration ?? 0)}`}
         onKeyDown={handleKeyDown}
-        {...eventProps}
+        {...progressProps}
       />
     </div>
   );

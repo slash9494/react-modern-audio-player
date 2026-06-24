@@ -1,5 +1,5 @@
-import { renderHook } from "@testing-library/react";
-import { describe, it, expect } from "vitest";
+import { renderHook, act } from "@testing-library/react";
+import { describe, it, expect, vi, afterEach } from "vitest";
 import { FC, ReactNode, MouseEvent } from "react";
 import { playbackContext } from "@/components/AudioPlayer/Context/PlaybackContext";
 import { resourceContext } from "@/components/AudioPlayer/Context/ResourceContext";
@@ -17,6 +17,8 @@ import { useProgress } from "../useProgress";
 
 const PROGRESS_BAR_WIDTH = 200;
 const INITIAL_CURRENT_TIME = 30;
+// Mirrors the module-private SEEK_DEBOUNCE_MS in useProgress.ts (not exported).
+const SEEK_DEBOUNCE_MS = 120;
 
 const makeAudioEl = (duration: number) => {
   const audioEl = document.createElement("audio");
@@ -77,16 +79,16 @@ describe("useProgress moveAudioTime live-stream guard", () => {
     const audioEl = makeAudioEl(Infinity);
     const { result } = renderUseProgress(audioEl);
 
-    result.current.onClick?.(makeClickAt(PROGRESS_BAR_WIDTH / 2));
+    result.current.progressProps.onClick?.(makeClickAt(PROGRESS_BAR_WIDTH / 2));
 
     expect(audioEl.currentTime).toBe(INITIAL_CURRENT_TIME);
   });
 
-  it("does not change currentTime on move when duration is Infinity", () => {
+  it("does not change currentTime on click at a quarter position when duration is Infinity", () => {
     const audioEl = makeAudioEl(Infinity);
     const { result } = renderUseProgress(audioEl);
 
-    result.current.onClick?.(makeClickAt(PROGRESS_BAR_WIDTH / 4));
+    result.current.progressProps.onClick?.(makeClickAt(PROGRESS_BAR_WIDTH / 4));
 
     expect(audioEl.currentTime).toBe(INITIAL_CURRENT_TIME);
   });
@@ -96,7 +98,7 @@ describe("useProgress moveAudioTime live-stream guard", () => {
     const audioEl = makeAudioEl(DURATION);
     const { result } = renderUseProgress(audioEl);
 
-    result.current.onClick?.(makeClickAt(PROGRESS_BAR_WIDTH / 2));
+    result.current.progressProps.onClick?.(makeClickAt(PROGRESS_BAR_WIDTH / 2));
 
     expect(audioEl.currentTime).toBe(DURATION / 2);
   });
@@ -105,8 +107,109 @@ describe("useProgress moveAudioTime live-stream guard", () => {
     const audioEl = makeAudioEl(120);
     const { result } = renderUseProgress(audioEl, { isLive: true });
 
-    result.current.onClick?.(makeClickAt(PROGRESS_BAR_WIDTH / 2));
+    result.current.progressProps.onClick?.(makeClickAt(PROGRESS_BAR_WIDTH / 2));
 
     expect(audioEl.currentTime).toBe(INITIAL_CURRENT_TIME);
+  });
+});
+
+describe("useProgress drag seek debounce", () => {
+  const DURATION = 200;
+  const ratioAt = (clientX: number) => clientX / PROGRESS_BAR_WIDTH;
+  const timeAt = (clientX: number) => ratioAt(clientX) * DURATION;
+
+  const startDrag = (
+    result: { current: ReturnType<typeof useProgress> },
+    clientX: number
+  ) => {
+    act(() => result.current.progressProps.onMouseDown?.(makeClickAt(clientX)));
+  };
+
+  const dragTo = (
+    result: { current: ReturnType<typeof useProgress> },
+    clientX: number
+  ) => {
+    act(() => result.current.progressProps.onMouseMove?.(makeClickAt(clientX)));
+  };
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it("sets previewRatio immediately on drag move before the debounce elapses", () => {
+    vi.useFakeTimers();
+    const audioEl = makeAudioEl(DURATION);
+    const { result } = renderUseProgress(audioEl);
+
+    startDrag(result, PROGRESS_BAR_WIDTH / 4);
+    dragTo(result, PROGRESS_BAR_WIDTH / 4);
+
+    expect(result.current.previewRatio).toBe(ratioAt(PROGRESS_BAR_WIDTH / 4));
+  });
+
+  it("does not seek audioEl.currentTime before the debounce window elapses", () => {
+    vi.useFakeTimers();
+    const audioEl = makeAudioEl(DURATION);
+    const { result } = renderUseProgress(audioEl);
+
+    startDrag(result, PROGRESS_BAR_WIDTH / 4);
+    dragTo(result, PROGRESS_BAR_WIDTH / 4);
+
+    expect(audioEl.currentTime).toBe(INITIAL_CURRENT_TIME);
+  });
+
+  it("seeks audioEl.currentTime after the debounce window elapses", async () => {
+    vi.useFakeTimers();
+    const audioEl = makeAudioEl(DURATION);
+    const { result } = renderUseProgress(audioEl);
+
+    startDrag(result, PROGRESS_BAR_WIDTH / 4);
+    dragTo(result, PROGRESS_BAR_WIDTH / 4);
+    await act(() => vi.advanceTimersByTimeAsync(SEEK_DEBOUNCE_MS));
+
+    expect(audioEl.currentTime).toBe(timeAt(PROGRESS_BAR_WIDTH / 4));
+  });
+
+  it("commits only the last position when several moves arrive within one window", async () => {
+    vi.useFakeTimers();
+    const audioEl = makeAudioEl(DURATION);
+    const { result } = renderUseProgress(audioEl);
+
+    startDrag(result, PROGRESS_BAR_WIDTH / 4);
+    dragTo(result, PROGRESS_BAR_WIDTH / 4);
+    dragTo(result, PROGRESS_BAR_WIDTH / 2);
+    dragTo(result, (PROGRESS_BAR_WIDTH * 3) / 4);
+    expect(audioEl.currentTime).toBe(INITIAL_CURRENT_TIME);
+
+    await act(() => vi.advanceTimersByTimeAsync(SEEK_DEBOUNCE_MS));
+
+    expect(audioEl.currentTime).toBe(timeAt((PROGRESS_BAR_WIDTH * 3) / 4));
+  });
+
+  it("flushes the pending seek and clears previewRatio on mouse up", () => {
+    vi.useFakeTimers();
+    const audioEl = makeAudioEl(DURATION);
+    const { result } = renderUseProgress(audioEl);
+
+    startDrag(result, PROGRESS_BAR_WIDTH / 4);
+    dragTo(result, (PROGRESS_BAR_WIDTH * 3) / 4);
+    act(() => result.current.progressProps.onMouseUp?.(makeClickAt(0)));
+
+    expect(audioEl.currentTime).toBe(timeAt((PROGRESS_BAR_WIDTH * 3) / 4));
+    expect(result.current.previewRatio).toBeNull();
+  });
+
+  it("commits immediately on click without waiting for the debounce window", () => {
+    vi.useFakeTimers();
+    const audioEl = makeAudioEl(DURATION);
+    const { result } = renderUseProgress(audioEl);
+
+    act(() =>
+      result.current.progressProps.onClick?.(
+        makeClickAt(PROGRESS_BAR_WIDTH / 2)
+      )
+    );
+
+    expect(audioEl.currentTime).toBe(DURATION / 2);
   });
 });
