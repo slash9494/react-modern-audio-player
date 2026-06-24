@@ -64,6 +64,7 @@ interface WrapperProps {
   audioEl: HTMLAudioElement;
   waveformInst: MockWaveSurfer;
   playList?: AudioData[];
+  isLoadedMetaData?: boolean;
   children: ReactNode;
 }
 
@@ -73,6 +74,7 @@ const Wrapper: FC<WrapperProps> = ({
   audioEl,
   waveformInst,
   playList = [],
+  isLoadedMetaData = true,
   children,
 }) => (
   <uiContext.Provider
@@ -88,7 +90,7 @@ const Wrapper: FC<WrapperProps> = ({
             repeatType: "ALL",
             muted: false,
             volume: 0.5,
-            isLoadedMetaData: true,
+            isLoadedMetaData,
             audioResetKey: 0,
           }}
         >
@@ -314,5 +316,52 @@ describe("useWaveSurfer load gating by waveform mode", () => {
 
     expect(waveformInst.load).toHaveBeenCalledWith(audioEl);
     expect(waveformInst.load).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe("useWaveSurfer load gating by metadata readiness", () => {
+  beforeEach(() => {
+    window.HTMLMediaElement.prototype.play = vi
+      .fn()
+      .mockResolvedValue(undefined);
+    window.HTMLMediaElement.prototype.pause = vi.fn();
+  });
+
+  it("does NOT call load before metadata is loaded", () => {
+    const audioEl = makeAudioEl();
+    const waveformInst = makeWaveformInst();
+    render(
+      <Wrapper
+        curPlayId={1}
+        isPlaying={false}
+        audioEl={audioEl}
+        waveformInst={waveformInst}
+        isLoadedMetaData={false}
+        playList={[makeAudioData({ id: 1, duration: 180 })]}
+      >
+        <Harness />
+      </Wrapper>
+    );
+
+    expect(waveformInst.load).not.toHaveBeenCalled();
+  });
+
+  it("calls load once metadata is loaded for a normal-mode track", () => {
+    const audioEl = makeAudioEl();
+    const waveformInst = makeWaveformInst();
+    render(
+      <Wrapper
+        curPlayId={1}
+        isPlaying={false}
+        audioEl={audioEl}
+        waveformInst={waveformInst}
+        isLoadedMetaData={true}
+        playList={[makeAudioData({ id: 1, duration: 180 })]}
+      >
+        <Harness />
+      </Wrapper>
+    );
+
+    expect(waveformInst.load).toHaveBeenCalledWith(audioEl);
   });
 });

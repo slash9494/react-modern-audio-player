@@ -37,6 +37,7 @@ export const Audio = React.memo<{
   return (
     <audio
       id="rm-audio-player-audio"
+      preload="metadata"
       {...nativeAudioAttrs}
       muted={muted}
       ref={audioRef}

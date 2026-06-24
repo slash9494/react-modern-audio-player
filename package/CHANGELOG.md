@@ -11,6 +11,10 @@
   - **`peaks?: number[] | number[][]`** — server-precomputed, normalized amplitude samples (single array, or one per channel) matching the shape `wavesurfer.load()` accepts, so the real waveform renders with no client-side decode (recommended for large files).
   - **`preload?: "none" | "metadata" | "auto"`** — per-track override of the native `<audio preload>` attribute.
 
+- **Automatic long-form & live detection**: the large-file / live gate now reads the real `<audio>` duration from `loadedmetadata`, so the waveform's full-file decode is deferred until metadata arrives and skipped for tracks over 30 minutes (or live streams). `duration` / `isLive` become optional early hints rather than requirements — a plain `{ src, id }` long-form track is detected on its own. Small files still decode and render their real waveform as before.
+- **`preload="metadata"` default**: the `<audio>` element now defaults to `preload="metadata"` (consumers still override via native audio attrs), so only the header is fetched up front and playback streams progressively over HTTP range instead of waiting on a full download.
+- **Debounced progress scrubbing**: dragging the progress bar moves the handle immediately but commits the actual `audio.currentTime` seek on a 120 ms trailing debounce (and on pointer release), so fast back-and-forth scrubbing on a remote long-form track no longer fires a seek per pointer move.
+
 ### 🐛 Bug Fixes
 
 - **Time display no longer leaks non-finite values**: `getTimeWithPadStart` returns `--:--` for `Infinity`/`NaN`/negative input (previously rendered `Infinity:NaN`), and formats tracks of an hour or longer as `H:MM:SS` instead of overflowing the minutes field (e.g. `5:11:25` instead of `311:25`).

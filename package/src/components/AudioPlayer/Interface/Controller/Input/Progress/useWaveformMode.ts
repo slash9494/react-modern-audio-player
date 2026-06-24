@@ -15,9 +15,11 @@ export const getWaveformMode = (
 
   if (audioData?.peaks) return "normal";
 
+  const knownDuration = audioData?.duration ?? audioElDuration;
   const isLargeFile =
-    audioData?.duration != null &&
-    audioData.duration > LARGE_FILE_THRESHOLD_SEC;
+    knownDuration != null &&
+    Number.isFinite(knownDuration) &&
+    knownDuration > LARGE_FILE_THRESHOLD_SEC;
   if (isLargeFile) return "faux";
 
   return "normal";

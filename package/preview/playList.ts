@@ -36,4 +36,19 @@ export const playList: PlayList = [
     src: "https://cdn.pixabay.com/audio/2022/08/02/audio_884fe92c21.mp3",
     id: 5,
   },
+  {
+    name: "Live — SomaFM Groove Salad",
+    writer: "live stream (isLive)",
+    img: "https://cdn.pixabay.com/photo/2017/08/30/01/05/milky-way-2695569__340.jpg",
+    src: "https://ice1.somafm.com/groovesalad-128-mp3",
+    id: 6,
+    isLive: true,
+  },
+  {
+    name: "Long-form 8h (auto-detected, faux-bars)",
+    writer: "archive.org · no duration prop — gated via metadata",
+    img: "https://cdn.pixabay.com/photo/2016/11/29/05/45/astronomy-1867616__340.jpg",
+    src: "https://archive.org/download/8HOURSOfRelaxingNatureMusicWithBirdsongMeditationWorkStudySleepRelaxation/8%20HOURS%20of%20Relaxing%20Nature%20Music%20with%20Birdsong%20-%20Meditation%2C%20Work%2C%20Study%2C%20Sleep%2C%20Relaxation.mp3",
+    id: 7,
+  },
 ];

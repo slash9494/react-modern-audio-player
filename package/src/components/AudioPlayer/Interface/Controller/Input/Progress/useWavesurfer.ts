@@ -38,7 +38,8 @@ const detachStaleBackendListeners = (waveform: WaveSurfer) => {
 
 export const useWaveSurfer = (waveformRef: React.RefObject<HTMLElement>) => {
   const audioPlayerDispatch = useNonNullableContext(audioPlayerDispatchContext);
-  const { isPlaying: isPlaybackActive } = usePlaybackContext();
+  const { isPlaying: isPlaybackActive, isLoadedMetaData } =
+    usePlaybackContext();
   const { curPlayId } = useTrackContext();
   const { elementRefs } = useResourceContext();
   const { mode, curTrack } = useWaveformMode();
@@ -110,6 +111,7 @@ export const useWaveSurfer = (waveformRef: React.RefObject<HTMLElement>) => {
     if (!elementRefs?.audioEl || !elementRefs?.waveformInst) return;
     const audioEl = elementRefs.audioEl;
     if (!audioEl.getAttribute("src")) return;
+    if (!isLoadedMetaData) return;
     const waveform = elementRefs.waveformInst;
     const isTrackChange = prevPlayIdRef.current !== curPlayId;
     prevPlayIdRef.current = curPlayId;
@@ -157,6 +159,7 @@ export const useWaveSurfer = (waveformRef: React.RefObject<HTMLElement>) => {
     elementRefs?.waveformInst,
     mode,
     curTrack,
+    isLoadedMetaData,
   ]);
 
   useEffect(() => {

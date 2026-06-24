@@ -102,13 +102,43 @@ describe("getWaveformMode faux mode for large files", () => {
     ).toBe("faux");
   });
 
-  it("returns 'normal' at exactly the large-file threshold (inclusive boundary)", () => {
+  it("returns 'normal' at exactly the large-file threshold (exclusive boundary)", () => {
     expect(
       getWaveformMode(
         makeAudioData({ duration: LARGE_FILE_THRESHOLD_SEC }),
         LARGE_FILE_THRESHOLD_SEC
       )
     ).toBe("normal");
+  });
+});
+
+describe("getWaveformMode large-file auto-detection from audioEl duration", () => {
+  it("returns 'faux' from the detected audioEl duration when audioData has no duration", () => {
+    expect(getWaveformMode(makeAudioData(), LARGE_FILE_THRESHOLD_SEC + 1)).toBe(
+      "faux"
+    );
+  });
+
+  it("returns 'normal' when audioData.duration overrides an oversized audioEl duration", () => {
+    expect(
+      getWaveformMode(
+        makeAudioData({ duration: FINITE_DURATION }),
+        LARGE_FILE_THRESHOLD_SEC + 1
+      )
+    ).toBe("normal");
+  });
+
+  it("returns 'faux' when audioData.duration overrides a short audioEl duration", () => {
+    expect(
+      getWaveformMode(
+        makeAudioData({ duration: LARGE_FILE_THRESHOLD_SEC + 1 }),
+        FINITE_DURATION
+      )
+    ).toBe("faux");
+  });
+
+  it("returns 'normal' (not 'faux') from a pre-metadata NaN audioEl duration", () => {
+    expect(getWaveformMode(makeAudioData(), NaN)).toBe("normal");
   });
 });
 

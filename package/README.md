@@ -223,13 +223,17 @@ type AudioData = {
 
 By default the waveform is drawn by decoding the whole file in the browser, which
 stalls on very large files (multi-hour MP3s) and never finishes for an endless
-live stream. These optional fields let a track opt out of that path without any
-breaking change:
+live stream. **Long-form and live tracks are now detected automatically** from the
+`<audio>` metadata (the full-file decode is deferred until `loadedmetadata` and
+skipped for tracks over 30 minutes or live streams), so a plain `{ src, id }`
+track works without configuration. The `<audio>` element also defaults to
+`preload="metadata"`, so playback streams progressively over HTTP range instead
+of waiting on a full download. These optional fields remain as hints/overrides:
 
 | Field      | Type                                      | Effect                                                                                                                                                                                 |
 | ---------- | ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `isLive`   | `boolean`                                 | Marks the track as a live stream. The waveform skips decoding and shows a static placeholder, seeking is disabled, and the duration UI no longer leaks `Infinity`.                     |
-| `duration` | `number` (seconds)                        | The known total length. A track longer than 30 minutes with no `peaks` skips full-file decode and renders a lightweight placeholder instead of hanging. Also drives `H:MM:SS` display. |
+| `duration` | `number` (seconds)                        | Optional early hint for the total length — detection is automatic from metadata, so set this only to gate before metadata loads (or to force the placeholder for a track over 30 minutes). Also drives `H:MM:SS` display. |
 | `peaks`    | `number[] \| number[][]`                  | Server-precomputed, normalized amplitude samples (single array, or one per channel) — the same shape `wavesurfer.load()` accepts. When provided, the real waveform renders with no client-side decode (recommended for large files). |
 | `preload`  | `"none" \| "metadata" \| "auto"`          | Per-track override of the native `<audio preload>` attribute.                                                                                                                          |
 
