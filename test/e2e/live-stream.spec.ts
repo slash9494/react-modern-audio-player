@@ -25,30 +25,26 @@ test.describe("Live-stream stabilization (e2e)", () => {
     expect(text).toMatch(/^(--:--|\d{1,2}(:\d{2}){1,2})$/);
   });
 
-  test("S-5: live waveform seek keeps currentTime finite", async ({
+  test("S-5: live bar-fallback seek keeps currentTime finite", async ({
     playerPageLazy,
   }) => {
+    // isLive swaps the hidden waveform for a plain BarProgress seekbar. Seeking
+    // on that fallback must never drive currentTime to NaN/Infinity.
     await playerPageLazy.gotoWithConfig({
       curPlayId: 1,
       trackOverrides: { 1: { isLive: true } },
       progressType: "waveform",
     });
-    const { page } = playerPageLazy;
-
-    const liveWrapper = page.locator(
-      '.rmap-waveform-wrapper[data-waveform-mode="live"]'
-    );
-    await expect(liveWrapper).toBeVisible({ timeout: 10000 });
+    const { progressBar, page } = playerPageLazy;
 
     const timeBefore = await page.evaluate(
       () => document.querySelector("audio")?.currentTime ?? 0
     );
     expect(Number.isFinite(timeBefore)).toBe(true);
 
-    // Seek by clicking the waveform at ~50% (same pattern as progress-switch 7-8).
-    const waveform = page.locator("#rm-waveform");
-    await expect(waveform).toBeVisible({ timeout: 10000 });
-    const box = await waveform.boundingBox();
+    // Seek by clicking the bar at ~50% (same pattern as progress-switch 7-8).
+    await expect(progressBar).toBeVisible({ timeout: 10000 });
+    const box = await progressBar.boundingBox();
     expect(box).toBeTruthy();
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     await page.mouse.click(box!.x + box!.width * 0.5, box!.y + box!.height / 2);
