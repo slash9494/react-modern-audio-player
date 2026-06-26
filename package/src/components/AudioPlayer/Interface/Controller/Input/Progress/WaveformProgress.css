@@ -8,30 +8,14 @@
   overflow-x: clip;
 }
 
-.rmap-waveform-progress {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  /* above wavesurfer's canvases (z-index 3) so the overlay shows in normal mode */
-  z-index: 4;
-  pointer-events: none;
-  /* scaleX (not width) so dragging updates on the compositor without a
-     per-frame layout/repaint — matches the BarProgress fill, stays smooth. */
-  transform-origin: left center;
-  background-color: var(--rm-audio-player-waveform-bar);
-  opacity: 0.4;
-}
-
 .rmap-waveform-cursor {
   position: absolute;
   left: 0;
   top: 0;
   bottom: 0;
   width: 100%;
-  /* above the fill (z4) and wavesurfer canvas (z3); translateX moves the
-     left border to the drag ratio on the compositor — no per-frame layout. */
+  /* above the wavesurfer canvas (z3); translateX moves the left border to
+     the drag ratio on the compositor — no per-frame layout. */
   z-index: 5;
   pointer-events: none;
   transform-origin: left center;
@@ -53,31 +37,5 @@
 .rmap-waveform-wrapper #rm-waveform wave {
   cursor: pointer !important;
   overflow-x: hidden !important;
-}
-/* stylelint-enable selector-type-no-unknown */
-
-.rmap-waveform-wrapper[data-waveform-mode="faux"] #rm-waveform,
-.rmap-waveform-wrapper[data-waveform-mode="live"] #rm-waveform {
-  height: 80px;
-  background-image: repeating-linear-gradient(
-    to right,
-    var(--rm-audio-player-waveform-bar) 0px,
-    var(--rm-audio-player-waveform-bar) 3px,
-    transparent 3px,
-    transparent 7px
-  );
-  background-size: 7px 100%;
-  background-repeat: repeat-x;
-  opacity: 0.35;
-}
-
-/* In faux/live mode load() is skipped, but the single reused wavesurfer
-   instance keeps the previous track's canvas (a ResizeObserver redraw repaints
-   its retained peaks). Hide that canvas so only the faux-bars background shows. */
-/* stylelint-disable selector-type-no-unknown */
-.rmap-waveform-wrapper[data-waveform-mode="faux"] #rm-waveform wave,
-.rmap-waveform-wrapper[data-waveform-mode="live"] #rm-waveform wave {
-  /* !important: wavesurfer sets display inline on <wave>, beating the stylesheet */
-  display: none !important;
 }
 /* stylelint-enable selector-type-no-unknown */

@@ -119,10 +119,8 @@ export const useWaveSurfer = (waveformRef: React.RefObject<HTMLElement>) => {
     const savedTime = isTrackChange ? 0 : audioEl.currentTime;
     const wasPlaying = isPlaybackActive;
 
-    // Live streams and oversized files render a static placeholder instead of
-    // decoding the whole buffer, so skip load() entirely for those modes. The
-    // prior track's canvas is hidden via CSS (data-waveform-mode), since a
-    // ResizeObserver redraw would otherwise repaint the retained peaks.
+    // Live streams and oversized files skip load() entirely; Progress swaps in
+    // BarProgress as their static placeholder while this waveform stays hidden.
     if (mode !== "normal") return;
 
     detachStaleBackendListeners(waveform);

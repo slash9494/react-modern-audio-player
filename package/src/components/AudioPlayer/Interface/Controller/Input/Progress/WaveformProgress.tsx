@@ -1,13 +1,11 @@
 import { usePlaybackContext } from "@/components/AudioPlayer/Context/hooks/usePlaybackContext";
 import { useResourceContext } from "@/components/AudioPlayer/Context/hooks/useResourceContext";
-import { useTimeContext } from "@/components/AudioPlayer/Context/hooks/useTimeContext";
 import { getTimeWithPadStart } from "@/utils/getTime";
 import { FC, useCallback, useEffect, useRef } from "react";
 import { safeRatio } from "@/utils/safeRatio";
 import { useProgress } from "./useProgress";
 import { useProgressKeyDown } from "./useProgressKeyDown";
 import { useWaveSurfer } from "./useWavesurfer";
-import { useWaveformMode } from "./useWaveformMode";
 import "./WaveformProgress.css";
 
 export const WaveformProgress: FC<{ isActive: boolean }> = ({ isActive }) => {
@@ -16,8 +14,6 @@ export const WaveformProgress: FC<{ isActive: boolean }> = ({ isActive }) => {
   const { elementRefs } = useResourceContext();
 
   useWaveSurfer(waveformRef);
-
-  const { mode } = useWaveformMode();
 
   useEffect(() => {
     if (
@@ -43,10 +39,7 @@ export const WaveformProgress: FC<{ isActive: boolean }> = ({ isActive }) => {
   ]);
 
   const { progressProps, previewRatio } = useProgress();
-  const { currentTime, duration } = useTimeContext();
 
-  // Normal mode lets wavesurfer paint its own fill, so this box is faux-only.
-  const playbackRatio = safeRatio(currentTime, duration);
   const isDragging = previewRatio != null;
 
   const onSeek = useCallback(
@@ -59,17 +52,7 @@ export const WaveformProgress: FC<{ isActive: boolean }> = ({ isActive }) => {
   const handleKeyDown = useProgressKeyDown(onSeek);
 
   return (
-    <div
-      className="rmap-waveform-wrapper"
-      data-active={isActive}
-      data-waveform-mode={mode}
-    >
-      {mode === "faux" && (
-        <div
-          className="rmap-waveform-progress"
-          style={{ transform: `scaleX(${playbackRatio})` }}
-        />
-      )}
+    <div className="rmap-waveform-wrapper" data-active={isActive}>
       {/* Cursor-only mid-drag: the fill recommits after useProgress's debounce, so it must not stretch yet. */}
       {isDragging && (
         <div
