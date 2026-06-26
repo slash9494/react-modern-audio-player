@@ -121,7 +121,12 @@ export const useWaveSurfer = (waveformRef: React.RefObject<HTMLElement>) => {
 
     // Live streams and oversized files render a static placeholder instead of
     // decoding the whole buffer, so skip load() entirely for those modes.
-    if (mode !== "normal") return;
+    if (mode !== "normal") {
+      // A skipped load() leaves the previous track's pixels on the canvas, so
+      // clear them to avoid a stale waveform from the prior file lingering.
+      waveform.drawer?.clearWave?.();
+      return;
+    }
 
     detachStaleBackendListeners(waveform);
     if (curTrack?.peaks) {
