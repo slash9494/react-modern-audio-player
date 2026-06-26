@@ -3,6 +3,7 @@ import Grid, { GridItemLayoutProps } from "@/components/Grid";
 import { FC, useEffect, useState } from "react";
 import { BarProgress } from "./BarProgress";
 import { WaveformProgress } from "./WaveformProgress";
+import { useWaveformMode } from "./useWaveformMode";
 import { useResolvedGridArea } from "../../../hooks/useResolvedGridArea";
 import "./Progress.css";
 
@@ -30,11 +31,15 @@ export const Progress: FC<ProgressProps> = ({
     type ?? (activeUI.progress === "waveform" ? "waveform" : "bar");
   const isWaveform = progressType === "waveform";
   const isBar = progressType === "bar";
+  const { mode } = useWaveformMode();
   const [waveformMounted, setWaveformMounted] = useState(isWaveform);
 
   useEffect(() => {
     if (isWaveform && !waveformMounted) setWaveformMounted(true);
   }, [isWaveform, waveformMounted]);
+
+  const waveformActive = isWaveform && mode === "normal";
+  const showBar = isBar || (isWaveform && mode !== "normal");
 
   const resolvedGridArea = useResolvedGridArea("progress", gridArea);
 
@@ -46,8 +51,8 @@ export const Progress: FC<ProgressProps> = ({
       {...rest}
     >
       <div className="rmap-progress-container">
-        {waveformMounted && <WaveformProgress isActive={isWaveform} />}
-        {isBar && <BarProgress />}
+        {waveformMounted && <WaveformProgress isActive={waveformActive} />}
+        {showBar && <BarProgress />}
       </div>
     </Grid.Item>
   );
