@@ -70,3 +70,14 @@
   background-repeat: repeat-x;
   opacity: 0.35;
 }
+
+/* In faux/live mode load() is skipped, but the single reused wavesurfer
+   instance keeps the previous track's canvas (a ResizeObserver redraw repaints
+   its retained peaks). Hide that canvas so only the faux-bars background shows. */
+/* stylelint-disable selector-type-no-unknown */
+.rmap-waveform-wrapper[data-waveform-mode="faux"] #rm-waveform wave,
+.rmap-waveform-wrapper[data-waveform-mode="live"] #rm-waveform wave {
+  /* !important: wavesurfer sets display inline on <wave>, beating the stylesheet */
+  display: none !important;
+}
+/* stylelint-enable selector-type-no-unknown */

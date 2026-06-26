@@ -120,13 +120,10 @@ export const useWaveSurfer = (waveformRef: React.RefObject<HTMLElement>) => {
     const wasPlaying = isPlaybackActive;
 
     // Live streams and oversized files render a static placeholder instead of
-    // decoding the whole buffer, so skip load() entirely for those modes.
-    if (mode !== "normal") {
-      // A skipped load() leaves the previous track's pixels on the canvas, so
-      // clear them to avoid a stale waveform from the prior file lingering.
-      waveform.drawer?.clearWave?.();
-      return;
-    }
+    // decoding the whole buffer, so skip load() entirely for those modes. The
+    // prior track's canvas is hidden via CSS (data-waveform-mode), since a
+    // ResizeObserver redraw would otherwise repaint the retained peaks.
+    if (mode !== "normal") return;
 
     detachStaleBackendListeners(waveform);
     if (curTrack?.peaks) {
