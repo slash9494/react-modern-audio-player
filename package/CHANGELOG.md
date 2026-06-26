@@ -6,8 +6,8 @@
 
 - **Long-form & live stream stabilization**: large files and endless live streams no longer hang the waveform. Four optional `AudioData` fields opt a track out of full-file decode without any breaking change.
 
-  - **`isLive?: boolean`** — marks a live stream. The waveform skips decoding and renders a static placeholder, seeking is disabled, and the duration UI no longer leaks `Infinity`/`NaN`.
-  - **`duration?: number`** — the known total length in seconds. A track longer than 30 minutes with no `peaks` skips full-file decode and renders a lightweight placeholder instead of stalling. Also drives the new `H:MM:SS` display for multi-hour tracks.
+  - **`isLive?: boolean`** — marks a live stream. The waveform skips decoding and falls back to the standard seekable bar progress, seeking is guarded on endless streams, and the duration UI no longer leaks `Infinity`/`NaN`.
+  - **`duration?: number`** — the known total length in seconds. A track longer than 30 minutes with no `peaks` skips full-file decode and falls back to the standard bar progress instead of stalling. Also drives the new `H:MM:SS` display for multi-hour tracks.
   - **`peaks?: number[] | number[][]`** — server-precomputed, normalized amplitude samples (single array, or one per channel) matching the shape `wavesurfer.load()` accepts, so the real waveform renders with no client-side decode (recommended for large files).
   - **`preload?: "none" | "metadata" | "auto"`** — per-track override of the native `<audio preload>` attribute.
 
