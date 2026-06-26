@@ -45,13 +45,8 @@ export const WaveformProgress: FC<{ isActive: boolean }> = ({ isActive }) => {
   const { progressProps, previewRatio } = useProgress();
   const { currentTime, duration } = useTimeContext();
 
-  // Faux mode renders no wavesurfer canvas, so this scaleX fill is the only
-  // playback-progress indicator there; normal mode lets wavesurfer paint its
-  // own fill, so the box is faux-only.
+  // Normal mode lets wavesurfer paint its own fill, so this box is faux-only.
   const playbackRatio = safeRatio(currentTime, duration);
-  // Beatport-style drag preview: while scrubbing, show only a thin cursor line
-  // at the pointer ratio. The fill is refreshed by wavesurfer (or the faux box)
-  // after useProgress's debounced commit, so it must not stretch mid-drag.
   const isDragging = previewRatio != null;
 
   const onSeek = useCallback(
@@ -75,6 +70,7 @@ export const WaveformProgress: FC<{ isActive: boolean }> = ({ isActive }) => {
           style={{ transform: `scaleX(${playbackRatio})` }}
         />
       )}
+      {/* Cursor-only mid-drag: the fill recommits after useProgress's debounce, so it must not stretch yet. */}
       {isDragging && (
         <div
           className="rmap-waveform-cursor"
