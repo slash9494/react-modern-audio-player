@@ -45,13 +45,14 @@ export const WaveformProgress: FC<{ isActive: boolean }> = ({ isActive }) => {
   const { progressProps, previewRatio } = useProgress();
   const { currentTime, duration } = useTimeContext();
 
-  // CSS scaleX fill overlay for live drag/playback position. wavesurfer's own
-  // progress is width-based (per-frame layout → janky on drag) and faux mode
-  // draws no progress at all, so a single compositor-only overlay (like
-  // BarProgress) covers both. Shown for faux always; for normal only while
-  // dragging — wavesurfer keeps drawing its colored fill during playback.
-  const progressRatio = previewRatio ?? safeRatio(currentTime, duration);
-  const showProgressOverlay = mode === "faux" || previewRatio != null;
+  // Faux mode renders no wavesurfer canvas, so this scaleX fill is the only
+  // playback-progress indicator there; normal mode lets wavesurfer paint its
+  // own fill, so the box is faux-only.
+  const playbackRatio = safeRatio(currentTime, duration);
+  // Beatport-style drag preview: while scrubbing, show only a thin cursor line
+  // at the pointer ratio. The fill is refreshed by wavesurfer (or the faux box)
+  // after useProgress's debounced commit, so it must not stretch mid-drag.
+  const isDragging = previewRatio != null;
 
   const onSeek = useCallback(
     (newTime: number, duration: number) => {
@@ -68,10 +69,16 @@ export const WaveformProgress: FC<{ isActive: boolean }> = ({ isActive }) => {
       data-active={isActive}
       data-waveform-mode={mode}
     >
-      {showProgressOverlay && (
+      {mode === "faux" && (
         <div
           className="rmap-waveform-progress"
-          style={{ transform: `scaleX(${progressRatio})` }}
+          style={{ transform: `scaleX(${playbackRatio})` }}
+        />
+      )}
+      {isDragging && (
+        <div
+          className="rmap-waveform-cursor"
+          style={{ transform: `translateX(${previewRatio * 100}%)` }}
         />
       )}
       <div

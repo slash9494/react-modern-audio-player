@@ -2,6 +2,10 @@
   display: flex;
   position: relative;
   width: 100%;
+  /* clip the full-width drag cursor's translated tail so it can't push
+     horizontal overflow in full-width player layouts; clip (not hidden)
+     keeps the vertical focus ring visible. */
+  overflow-x: clip;
 }
 
 .rmap-waveform-progress {
@@ -17,8 +21,21 @@
      per-frame layout/repaint — matches the BarProgress fill, stays smooth. */
   transform-origin: left center;
   background-color: var(--rm-audio-player-waveform-bar);
-  border-right: 2px solid var(--rm-audio-player-waveform-cursor);
   opacity: 0.4;
+}
+
+.rmap-waveform-cursor {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 100%;
+  /* above the fill (z4) and wavesurfer canvas (z3); translateX moves the
+     left border to the drag ratio on the compositor — no per-frame layout. */
+  z-index: 5;
+  pointer-events: none;
+  transform-origin: left center;
+  border-left: 2px solid var(--rm-audio-player-waveform-cursor);
 }
 
 .rmap-waveform-wrapper[data-active="false"] {
