@@ -47,7 +47,7 @@ SET_REPEAT_TYPE
 UPDATE_PLAY_LIST
 
 - valid: updates playList and recalculates curIdx
-- invalid (curPlayId not found): returns current state unchanged, logs error
+- curPlayId not found in new list: resets to first track (curPlayId/curIdx → first item, bumps audioResetKey, currentTime 0)
 
 SET_VOLUME / SET_MUTED
 
