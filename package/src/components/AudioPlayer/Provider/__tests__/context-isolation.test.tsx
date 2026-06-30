@@ -162,12 +162,14 @@ describe("playbackContext isolation", () => {
     expect(after.resourceCount - base.resourceCount).toBe(0);
   });
 
-  it("SET_VOLUME only re-renders playback consumers", () => {
+  it("SET_PLAYBACK_RATE only re-renders playback consumers", () => {
     const probes = makeProbes();
     const dispatch = renderIsolated(<AllProbes {...probes} />);
     const base = probes.snapshot();
 
-    act(() => dispatch.current({ type: "SET_VOLUME", volume: 0.5 }));
+    act(() =>
+      dispatch.current({ type: "SET_PLAYBACK_RATE", playbackRate: 1.5 })
+    );
 
     const after = probes.snapshot();
     expect(after.playbackCount - base.playbackCount).toBe(1);

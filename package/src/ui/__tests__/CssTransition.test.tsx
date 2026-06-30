@@ -90,7 +90,9 @@ describe("CssTransition latest-ref callback handling", () => {
       </CssTransition>
     );
 
-    vi.advanceTimersByTime(25);
+    act(() => {
+      vi.advanceTimersByTime(25);
+    });
 
     expect(firstExitCallback).not.toHaveBeenCalled();
     expect(replacedExitCallback).toHaveBeenCalledTimes(1);

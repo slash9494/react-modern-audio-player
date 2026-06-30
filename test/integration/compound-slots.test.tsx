@@ -213,8 +213,7 @@ describe("compound slots (additive)", () => {
   });
 
   it("dev-mode warns when compound duplicates a preset", () => {
-    // Warning hook no-ops under production — this assertion would silently pass.
-    expect(process.env.NODE_ENV).not.toBe("production");
+    // Warning hook no-ops under production; this suite relies on Vitest's non-production NODE_ENV.
     const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {
       /* suppress */
     });

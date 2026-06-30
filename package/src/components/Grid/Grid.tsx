@@ -7,6 +7,7 @@ export interface NativeGridProps {
   justifyContent?: CSSProperties["justifyContent"];
   minHeight?: CSSProperties["minHeight"];
   UNSAFE_className?: string;
+  "data-testid"?: string;
   children?: ReactNode;
 }
 
@@ -17,6 +18,7 @@ const NativeGrid: FC<NativeGridProps> = ({
   justifyContent,
   minHeight,
   UNSAFE_className,
+  "data-testid": testId,
   children,
 }) => {
   const style: CSSProperties = {
@@ -28,7 +30,7 @@ const NativeGrid: FC<NativeGridProps> = ({
     minHeight,
   };
   return (
-    <div className={UNSAFE_className} style={style}>
+    <div className={UNSAFE_className} style={style} data-testid={testId}>
       {children}
     </div>
   );

@@ -39,7 +39,11 @@ export const Interface: FC<InterfaceProps> = ({ children }) => {
       <playListPortalContext.Provider value={portalNode}>
         <playListEmptyContext.Provider value={playListEmptyNode}>
           {playListPlacement === "top" && (
-            <div ref={setPortalNode} className="rmap-sortable-playlist" />
+            <div
+              ref={setPortalNode}
+              className="rmap-sortable-playlist"
+              data-testid="sortable-playlist"
+            />
           )}
           <Grid
             alignItems="center"
@@ -48,6 +52,7 @@ export const Interface: FC<InterfaceProps> = ({ children }) => {
             minHeight="30px"
             columns={gridColumns}
             UNSAFE_className="rmap-interface-grid"
+            data-testid="interface-grid"
           >
             <Information />
             <Controller />
@@ -55,7 +60,11 @@ export const Interface: FC<InterfaceProps> = ({ children }) => {
             {compoundChildren}
           </Grid>
           {playListPlacement === "bottom" && (
-            <div ref={setPortalNode} className="rmap-sortable-playlist" />
+            <div
+              ref={setPortalNode}
+              className="rmap-sortable-playlist"
+              data-testid="sortable-playlist"
+            />
           )}
         </playListEmptyContext.Provider>
       </playListPortalContext.Provider>
