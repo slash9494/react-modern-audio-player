@@ -56,6 +56,7 @@ export const getWaveformMode = (
 type WaveformModeResult = {
   mode: WaveformMode;
   curTrack: AudioData | undefined;
+  sizeGatePending: boolean;
 };
 
 export const useWaveformMode = (): WaveformModeResult => {
@@ -63,6 +64,7 @@ export const useWaveformMode = (): WaveformModeResult => {
   const { elementRefs } = useResourceContext();
   const { isLoadedMetaData } = usePlaybackContext();
   const [oversizeSrc, setOversizeSrc] = useState<string | null>(null);
+  const [sizeResolvedSrc, setSizeResolvedSrc] = useState<string | null>(null);
 
   const curTrack = playList.find((audioData) => audioData.id === curPlayId);
   const audioElDuration = isLoadedMetaData
@@ -80,6 +82,7 @@ export const useWaveformMode = (): WaveformModeResult => {
     let cancelled = false;
     fetchContentLength(src).then((bytes) => {
       if (cancelled) return;
+      setSizeResolvedSrc(src);
       if (bytes != null && bytes > LARGE_FILE_BYTES) {
         setOversizeSrc(src);
         if (
@@ -103,6 +106,7 @@ export const useWaveformMode = (): WaveformModeResult => {
   }, [isSizeGateCandidate, src]);
 
   const mode = isSizeGateCandidate && oversizeSrc === src ? "faux" : baseMode;
+  const sizeGatePending = isSizeGateCandidate && sizeResolvedSrc !== src;
 
-  return { mode, curTrack };
+  return { mode, curTrack, sizeGatePending };
 };

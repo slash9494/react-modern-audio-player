@@ -251,7 +251,11 @@ describe("useWaveformMode result shape", () => {
       audioEl: makeAudioEl(FINITE_DURATION),
     });
 
-    expect(result.current).toEqual({ mode: "live", curTrack: track });
+    expect(result.current).toEqual({
+      mode: "live",
+      curTrack: track,
+      sizeGatePending: false,
+    });
   });
 });
 
@@ -455,5 +459,102 @@ describe("useWaveformMode oversize dev warning", () => {
 
     await waitFor(() => expect(global.fetch).toHaveBeenCalledTimes(1));
     expect(warnSpy).not.toHaveBeenCalled();
+  });
+});
+
+describe("useWaveformMode sizeGatePending", () => {
+  const originalFetch = global.fetch;
+
+  afterEach(() => {
+    global.fetch = originalFetch;
+    vi.restoreAllMocks();
+  });
+
+  const makeDeferredHead = () => {
+    let resolveBytes!: (contentLength: string | null) => void;
+    const headResponse = new Promise<{
+      headers: { get: (name: string) => string | null };
+    }>((resolve) => {
+      resolveBytes = (contentLength) =>
+        resolve({
+          headers: {
+            get: (name) => (name === "content-length" ? contentLength : null),
+          },
+        });
+    });
+    global.fetch = vi.fn().mockReturnValue(headResponse) as never;
+    return { resolveBytes };
+  };
+
+  it("pends a candidate until its HEAD resolves, then settles to 'normal' for a small file", async () => {
+    const { resolveBytes } = makeDeferredHead();
+    const track = makeAudioData({ src: "pending-small.mp3" });
+    const { result } = renderUseWaveformMode({
+      playList: [track],
+      curPlayId: track.id,
+      audioEl: makeAudioEl(FINITE_DURATION),
+    });
+
+    expect(result.current.sizeGatePending).toBe(true);
+    expect(result.current.mode).toBe("normal");
+
+    resolveBytes(String(10 * 1024 * 1024));
+
+    await waitFor(() => expect(result.current.sizeGatePending).toBe(false));
+    expect(result.current.mode).toBe("normal");
+  });
+
+  it("pends a candidate until its HEAD resolves, then settles to 'faux' for an oversized file", async () => {
+    const { resolveBytes } = makeDeferredHead();
+    const track = makeAudioData({ src: "pending-oversize.flac" });
+    const { result } = renderUseWaveformMode({
+      playList: [track],
+      curPlayId: track.id,
+      audioEl: makeAudioEl(FINITE_DURATION),
+    });
+
+    expect(result.current.sizeGatePending).toBe(true);
+    expect(result.current.mode).toBe("normal");
+
+    resolveBytes(String(LARGE_FILE_BYTES + 1));
+
+    await waitFor(() => expect(result.current.mode).toBe("faux"));
+    expect(result.current.sizeGatePending).toBe(false);
+  });
+
+  it("never pends a non-candidate track (peaks / live / long-form)", () => {
+    global.fetch = vi.fn();
+
+    const peaksTrack = makeAudioData({
+      src: "nopend-peaks.mp3",
+      peaks: [0.1, 0.2],
+    });
+    const { result: peaksResult } = renderUseWaveformMode({
+      playList: [peaksTrack],
+      curPlayId: peaksTrack.id,
+      audioEl: makeAudioEl(FINITE_DURATION),
+    });
+    expect(peaksResult.current.sizeGatePending).toBe(false);
+
+    const liveTrack = makeAudioData({ src: "nopend-live.mp3", isLive: true });
+    const { result: liveResult } = renderUseWaveformMode({
+      playList: [liveTrack],
+      curPlayId: liveTrack.id,
+      audioEl: makeAudioEl(Infinity),
+    });
+    expect(liveResult.current.sizeGatePending).toBe(false);
+
+    const longFormTrack = makeAudioData({
+      src: "nopend-longform.mp3",
+      duration: LARGE_FILE_THRESHOLD_SEC + 1,
+    });
+    const { result: longFormResult } = renderUseWaveformMode({
+      playList: [longFormTrack],
+      curPlayId: longFormTrack.id,
+      audioEl: makeAudioEl(LARGE_FILE_THRESHOLD_SEC + 1),
+    });
+    expect(longFormResult.current.sizeGatePending).toBe(false);
+
+    expect(global.fetch).not.toHaveBeenCalled();
   });
 });

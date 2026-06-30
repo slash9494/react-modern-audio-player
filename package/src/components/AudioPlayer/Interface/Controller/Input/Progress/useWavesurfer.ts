@@ -42,7 +42,7 @@ export const useWaveSurfer = (waveformRef: React.RefObject<HTMLElement>) => {
     usePlaybackContext();
   const { curPlayId } = useTrackContext();
   const { elementRefs } = useResourceContext();
-  const { mode, curTrack } = useWaveformMode();
+  const { mode, curTrack, sizeGatePending } = useWaveformMode();
   const { colorScheme } = useUIContext();
   const colorsRef = useVariableColor(waveformColors, colorScheme);
   const waveformInstRef = useRef(elementRefs?.waveformInst);
@@ -122,6 +122,9 @@ export const useWaveSurfer = (waveformRef: React.RefObject<HTMLElement>) => {
     // Live streams and oversized files skip load() entirely; Progress swaps in
     // BarProgress as their static placeholder while this waveform stays hidden.
     if (mode !== "normal") return;
+    // Size HEAD unresolved: defer decode until the gate settles, then this
+    // effect re-runs and lands on either load() (small) or faux (oversized).
+    if (sizeGatePending) return;
 
     detachStaleBackendListeners(waveform);
     if (curTrack?.peaks) {
@@ -160,6 +163,7 @@ export const useWaveSurfer = (waveformRef: React.RefObject<HTMLElement>) => {
     mode,
     curTrack,
     isLoadedMetaData,
+    sizeGatePending,
   ]);
 
   useEffect(() => {
