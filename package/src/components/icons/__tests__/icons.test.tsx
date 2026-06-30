@@ -17,9 +17,24 @@ import {
 import type { SvgIconProps } from "@/components/icons";
 import { FC } from "react";
 
+const allIcons: [string, FC<SvgIconProps>][] = [
+  ["MdPlayCircleFilled", MdPlayCircleFilled],
+  ["MdPauseCircleFilled", MdPauseCircleFilled],
+  ["MdPlaylistPlay", MdPlaylistPlay],
+  ["TbRepeat", TbRepeat],
+  ["TbRepeatOnce", TbRepeatOnce],
+  ["TbRepeatOff", TbRepeatOff],
+  ["TbArrowsShuffle", TbArrowsShuffle],
+  ["TbVolume", TbVolume],
+  ["TbVolume2", TbVolume2],
+  ["TbVolume3", TbVolume3],
+  ["ImPrevious", ImPrevious],
+  ["ImNext", ImNext],
+];
+
 describe("size prop", () => {
-  it("default → height/width 1em", () => {
-    const { container } = render(<MdPlayCircleFilled />);
+  it.each(allIcons)("%s default → height/width 1em", (_name, Icon) => {
+    const { container } = render(<Icon />);
     const svg = container.querySelector("svg")!;
     expect(svg.getAttribute("height")).toBe("1em");
     expect(svg.getAttribute("width")).toBe("1em");
@@ -85,21 +100,6 @@ describe("SVGProps forwarding", () => {
     expect(svg.getAttribute("aria-hidden")).toBe("false");
   });
 });
-
-const allIcons: [string, FC<SvgIconProps>][] = [
-  ["MdPlayCircleFilled", MdPlayCircleFilled],
-  ["MdPauseCircleFilled", MdPauseCircleFilled],
-  ["MdPlaylistPlay", MdPlaylistPlay],
-  ["TbRepeat", TbRepeat],
-  ["TbRepeatOnce", TbRepeatOnce],
-  ["TbRepeatOff", TbRepeatOff],
-  ["TbArrowsShuffle", TbArrowsShuffle],
-  ["TbVolume", TbVolume],
-  ["TbVolume2", TbVolume2],
-  ["TbVolume3", TbVolume3],
-  ["ImPrevious", ImPrevious],
-  ["ImNext", ImNext],
-];
 
 describe("smoke — all 12 icons render svg", () => {
   it.each(allIcons)("%s renders an svg element", (_name, Icon) => {
