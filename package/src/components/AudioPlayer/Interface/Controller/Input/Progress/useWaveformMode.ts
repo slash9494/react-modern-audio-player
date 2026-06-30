@@ -14,6 +14,9 @@ export const LARGE_FILE_BYTES = 50 * 1024 * 1024;
 // Cache keeps a single HEAD per src; this hook runs in both Progress and useWaveSurfer.
 const contentLengthCache = new Map<string, Promise<number | null>>();
 
+// Both call sites resolve the same cached HEAD promise, so the .then runs twice per src; dedupe the dev warning.
+const warnedLargeFileSrc = new Set<string>();
+
 const fetchContentLength = (src: string): Promise<number | null> => {
   const cached = contentLengthCache.get(src);
   if (cached) return cached;
@@ -77,7 +80,21 @@ export const useWaveformMode = (): WaveformModeResult => {
     let cancelled = false;
     fetchContentLength(src).then((bytes) => {
       if (cancelled) return;
-      if (bytes != null && bytes > LARGE_FILE_BYTES) setOversizeSrc(src);
+      if (bytes != null && bytes > LARGE_FILE_BYTES) {
+        setOversizeSrc(src);
+        if (
+          process.env.NODE_ENV !== "production" &&
+          !warnedLargeFileSrc.has(src)
+        ) {
+          warnedLargeFileSrc.add(src);
+          // eslint-disable-next-line no-console
+          console.warn(
+            `[react-modern-audio-player] Track "${src}" is larger than 50 MB; ` +
+              `its waveform decode is skipped and it falls back to the bar progress. ` +
+              "Provide `peaks` to render its waveform."
+          );
+        }
+      }
     });
 
     return () => {

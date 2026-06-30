@@ -344,3 +344,116 @@ describe("useWaveformMode byte size-gate", () => {
     expect(global.fetch).not.toHaveBeenCalled();
   });
 });
+
+describe("useWaveformMode oversize dev warning", () => {
+  const originalFetch = global.fetch;
+
+  afterEach(() => {
+    global.fetch = originalFetch;
+    vi.restoreAllMocks();
+  });
+
+  const makeHeadResponse = (contentLength: string | null) => ({
+    headers: {
+      get: (name: string) => (name === "content-length" ? contentLength : null),
+    },
+  });
+
+  it("warns once with the src when a flagless file exceeds the byte threshold", async () => {
+    const warnSpy = vi
+      .spyOn(console, "warn")
+      .mockImplementation(() => undefined);
+    global.fetch = vi
+      .fn()
+      .mockResolvedValue(makeHeadResponse(String(LARGE_FILE_BYTES + 1)));
+    const track = makeAudioData({ src: "warn-oversize-60mb.flac" });
+    renderUseWaveformMode({
+      playList: [track],
+      curPlayId: track.id,
+      audioEl: makeAudioEl(FINITE_DURATION),
+    });
+
+    await waitFor(() => expect(warnSpy).toHaveBeenCalledTimes(1));
+    expect(warnSpy).toHaveBeenCalledWith(
+      expect.stringContaining("warn-oversize-60mb.flac")
+    );
+  });
+
+  it("does not warn when the file is under the byte threshold", async () => {
+    const warnSpy = vi
+      .spyOn(console, "warn")
+      .mockImplementation(() => undefined);
+    global.fetch = vi
+      .fn()
+      .mockResolvedValue(makeHeadResponse(String(10 * 1024 * 1024)));
+    const track = makeAudioData({ src: "warn-small-10mb.mp3" });
+    renderUseWaveformMode({
+      playList: [track],
+      curPlayId: track.id,
+      audioEl: makeAudioEl(FINITE_DURATION),
+    });
+
+    await waitFor(() => expect(global.fetch).toHaveBeenCalledTimes(1));
+    expect(warnSpy).not.toHaveBeenCalled();
+  });
+
+  it("warns only once across repeated call sites for the same oversize src", async () => {
+    const warnSpy = vi
+      .spyOn(console, "warn")
+      .mockImplementation(() => undefined);
+    global.fetch = vi
+      .fn()
+      .mockResolvedValue(makeHeadResponse(String(LARGE_FILE_BYTES + 1)));
+    const track = makeAudioData({ src: "warn-dedupe-60mb.flac" });
+
+    renderUseWaveformMode({
+      playList: [track],
+      curPlayId: track.id,
+      audioEl: makeAudioEl(FINITE_DURATION),
+    });
+    renderUseWaveformMode({
+      playList: [track],
+      curPlayId: track.id,
+      audioEl: makeAudioEl(FINITE_DURATION),
+    });
+
+    await waitFor(() => expect(warnSpy).toHaveBeenCalledTimes(1));
+    expect(warnSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it("does not warn for live, short normal, or peaks-provided tracks", async () => {
+    const warnSpy = vi
+      .spyOn(console, "warn")
+      .mockImplementation(() => undefined);
+    global.fetch = vi
+      .fn()
+      .mockResolvedValue(makeHeadResponse(String(10 * 1024 * 1024)));
+
+    const liveTrack = makeAudioData({ src: "warn-live.mp3", isLive: true });
+    renderUseWaveformMode({
+      playList: [liveTrack],
+      curPlayId: liveTrack.id,
+      audioEl: makeAudioEl(Infinity),
+    });
+
+    const peaksTrack = makeAudioData({
+      src: "warn-peaks.mp3",
+      peaks: [0.1, 0.2],
+    });
+    renderUseWaveformMode({
+      playList: [peaksTrack],
+      curPlayId: peaksTrack.id,
+      audioEl: makeAudioEl(FINITE_DURATION),
+    });
+
+    const normalTrack = makeAudioData({ src: "warn-normal.mp3" });
+    renderUseWaveformMode({
+      playList: [normalTrack],
+      curPlayId: normalTrack.id,
+      audioEl: makeAudioEl(FINITE_DURATION),
+    });
+
+    await waitFor(() => expect(global.fetch).toHaveBeenCalledTimes(1));
+    expect(warnSpy).not.toHaveBeenCalled();
+  });
+});
