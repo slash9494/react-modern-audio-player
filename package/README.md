@@ -225,8 +225,10 @@ By default the waveform is drawn by decoding the whole file in the browser, whic
 stalls on very large files (multi-hour MP3s) and never finishes for an endless
 live stream. **Long-form and live tracks are now detected automatically** from the
 `<audio>` metadata (the full-file decode is deferred until `loadedmetadata` and
-skipped for tracks over 30 minutes or live streams), so a plain `{ src, id }`
-track works without configuration. The `<audio>` element also defaults to
+skipped for tracks over 30 minutes or live streams). A track whose file is
+larger than 50 MB (read via a `HEAD` request on same-origin or CORS-enabled
+hosts) is also skipped, which catches short but heavy hi-res / lossless files,
+so a plain `{ src, id }` track works without configuration. The `<audio>` element also defaults to
 `preload="metadata"`, so playback streams progressively over HTTP range instead
 of waiting on a full download. When the real waveform can't be drawn (long-form
 or live), the player falls back to the standard seekable bar progress instead of

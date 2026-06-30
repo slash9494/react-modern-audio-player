@@ -1,13 +1,15 @@
-import { renderHook } from "@testing-library/react";
-import { describe, it, expect } from "vitest";
+import { renderHook, waitFor } from "@testing-library/react";
+import { describe, it, expect, vi, afterEach } from "vitest";
 import { FC, ReactNode } from "react";
 import { resourceContext } from "@/components/AudioPlayer/Context/ResourceContext";
 import { trackContext } from "@/components/AudioPlayer/Context/TrackContext";
+import { playbackContext } from "@/components/AudioPlayer/Context/PlaybackContext";
 import { AudioData } from "@/components/AudioPlayer/Context";
 import {
   getWaveformMode,
   useWaveformMode,
   LARGE_FILE_THRESHOLD_SEC,
+  LARGE_FILE_BYTES,
 } from "../useWaveformMode";
 
 const FINITE_DURATION = 180;
@@ -31,17 +33,31 @@ const renderUseWaveformMode = ({
   playList,
   curPlayId,
   audioEl,
+  isLoadedMetaData = true,
 }: {
   playList: AudioData[];
   curPlayId: number;
   audioEl: HTMLAudioElement;
+  isLoadedMetaData?: boolean;
 }) => {
   const wrapper: FC<{ children: ReactNode }> = ({ children }) => (
     <trackContext.Provider value={{ playList, curPlayId, curIdx: 0 }}>
       <resourceContext.Provider
         value={{ elementRefs: { audioEl, waveformInst: undefined as never } }}
       >
-        {children}
+        <playbackContext.Provider
+          value={{
+            isPlaying: false,
+            volume: 1,
+            muted: false,
+            repeatType: "ALL",
+            isLoadedMetaData,
+            audioResetKey: 0,
+            playbackRate: 1,
+          }}
+        >
+          {children}
+        </playbackContext.Provider>
       </resourceContext.Provider>
     </trackContext.Provider>
   );
@@ -200,6 +216,30 @@ describe("useWaveformMode audioEl duration wiring", () => {
 
     expect(result.current.mode).toBe("normal");
   });
+
+  it("ignores the audioEl duration until metadata has loaded for a flagless long-form track", () => {
+    const track = makeAudioData();
+    const { result } = renderUseWaveformMode({
+      playList: [track],
+      curPlayId: track.id,
+      audioEl: makeAudioEl(LARGE_FILE_THRESHOLD_SEC + 1),
+      isLoadedMetaData: false,
+    });
+
+    expect(result.current.mode).toBe("normal");
+  });
+
+  it("derives 'faux' from the audioEl duration once metadata has loaded for a flagless long-form track", () => {
+    const track = makeAudioData();
+    const { result } = renderUseWaveformMode({
+      playList: [track],
+      curPlayId: track.id,
+      audioEl: makeAudioEl(LARGE_FILE_THRESHOLD_SEC + 1),
+      isLoadedMetaData: true,
+    });
+
+    expect(result.current.mode).toBe("faux");
+  });
 });
 
 describe("useWaveformMode result shape", () => {
@@ -212,5 +252,95 @@ describe("useWaveformMode result shape", () => {
     });
 
     expect(result.current).toEqual({ mode: "live", curTrack: track });
+  });
+});
+
+describe("useWaveformMode byte size-gate", () => {
+  const originalFetch = global.fetch;
+
+  afterEach(() => {
+    global.fetch = originalFetch;
+    vi.restoreAllMocks();
+  });
+
+  const makeHeadResponse = (contentLength: string | null) => ({
+    headers: {
+      get: (name: string) => (name === "content-length" ? contentLength : null),
+    },
+  });
+
+  it("gates to 'faux' when a short flagless file exceeds the byte threshold", async () => {
+    global.fetch = vi
+      .fn()
+      .mockResolvedValue(makeHeadResponse(String(LARGE_FILE_BYTES + 1)));
+    const track = makeAudioData({ src: "oversize-60mb.flac" });
+    const { result } = renderUseWaveformMode({
+      playList: [track],
+      curPlayId: track.id,
+      audioEl: makeAudioEl(FINITE_DURATION),
+    });
+
+    expect(result.current.mode).toBe("normal");
+    await waitFor(() => expect(result.current.mode).toBe("faux"));
+    expect(global.fetch).toHaveBeenCalledWith("oversize-60mb.flac", {
+      method: "HEAD",
+    });
+  });
+
+  it("stays 'normal' when the file is under the byte threshold", async () => {
+    global.fetch = vi
+      .fn()
+      .mockResolvedValue(makeHeadResponse(String(10 * 1024 * 1024)));
+    const track = makeAudioData({ src: "small-10mb.mp3" });
+    const { result } = renderUseWaveformMode({
+      playList: [track],
+      curPlayId: track.id,
+      audioEl: makeAudioEl(FINITE_DURATION),
+    });
+
+    await waitFor(() => expect(global.fetch).toHaveBeenCalledTimes(1));
+    expect(result.current.mode).toBe("normal");
+  });
+
+  it("stays 'normal' when the HEAD request rejects (CORS-closed)", async () => {
+    global.fetch = vi.fn().mockRejectedValue(new Error("CORS"));
+    const track = makeAudioData({ src: "cors-closed.mp3" });
+    const { result } = renderUseWaveformMode({
+      playList: [track],
+      curPlayId: track.id,
+      audioEl: makeAudioEl(FINITE_DURATION),
+    });
+
+    await waitFor(() => expect(global.fetch).toHaveBeenCalledTimes(1));
+    expect(result.current.mode).toBe("normal");
+  });
+
+  it("skips the HEAD request and stays 'normal' when the track provides peaks", () => {
+    global.fetch = vi.fn();
+    const track = makeAudioData({ src: "with-peaks.mp3", peaks: [0.1, 0.2] });
+    const { result } = renderUseWaveformMode({
+      playList: [track],
+      curPlayId: track.id,
+      audioEl: makeAudioEl(FINITE_DURATION),
+    });
+
+    expect(result.current.mode).toBe("normal");
+    expect(global.fetch).not.toHaveBeenCalled();
+  });
+
+  it("skips the HEAD request when the duration already gates to 'faux'", () => {
+    global.fetch = vi.fn();
+    const track = makeAudioData({
+      src: "long-form.mp3",
+      duration: LARGE_FILE_THRESHOLD_SEC + 1,
+    });
+    const { result } = renderUseWaveformMode({
+      playList: [track],
+      curPlayId: track.id,
+      audioEl: makeAudioEl(LARGE_FILE_THRESHOLD_SEC + 1),
+    });
+
+    expect(result.current.mode).toBe("faux");
+    expect(global.fetch).not.toHaveBeenCalled();
   });
 });
