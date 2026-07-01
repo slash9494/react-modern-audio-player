@@ -177,6 +177,63 @@ describe("getWaveformMode normal mode fallback", () => {
   });
 });
 
+describe("getWaveformMode byte-size signal", () => {
+  it("returns 'faux' when isOversizeBytes is true for a short flagless file", () => {
+    expect(
+      getWaveformMode(
+        makeAudioData({ duration: FINITE_DURATION }),
+        FINITE_DURATION,
+        true
+      )
+    ).toBe("faux");
+  });
+
+  it("returns 'normal' when isOversizeBytes is false for a short flagless file", () => {
+    expect(
+      getWaveformMode(
+        makeAudioData({ duration: FINITE_DURATION }),
+        FINITE_DURATION,
+        false
+      )
+    ).toBe("normal");
+  });
+
+  it("returns 'normal' when isOversizeBytes is omitted (2-arg backward compatibility)", () => {
+    expect(
+      getWaveformMode(
+        makeAudioData({ duration: FINITE_DURATION }),
+        FINITE_DURATION
+      )
+    ).toBe("normal");
+  });
+
+  it("prioritizes live over isOversizeBytes when isLive is true", () => {
+    expect(
+      getWaveformMode(makeAudioData({ isLive: true }), FINITE_DURATION, true)
+    ).toBe("live");
+  });
+
+  it("prioritizes peaks over isOversizeBytes", () => {
+    expect(
+      getWaveformMode(
+        makeAudioData({ peaks: [0.1, 0.2] }),
+        FINITE_DURATION,
+        true
+      )
+    ).toBe("normal");
+  });
+
+  it("prioritizes the large-file duration threshold over an isOversizeBytes false signal", () => {
+    expect(
+      getWaveformMode(
+        makeAudioData({ duration: LARGE_FILE_THRESHOLD_SEC + 1 }),
+        LARGE_FILE_THRESHOLD_SEC + 1,
+        false
+      )
+    ).toBe("faux");
+  });
+});
+
 describe("useWaveformMode track selection", () => {
   it("selects the track whose id matches curPlayId as curTrack", () => {
     const playList = [

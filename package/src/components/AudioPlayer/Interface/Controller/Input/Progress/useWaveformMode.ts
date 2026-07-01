@@ -37,7 +37,8 @@ const fetchContentLength = (src: string): Promise<number | null> => {
 
 export const getWaveformMode = (
   audioData: AudioData | undefined,
-  audioElDuration: number | undefined
+  audioElDuration: number | undefined,
+  isOversizeBytes?: boolean
 ): WaveformMode => {
   if (isLiveTrack(audioData, audioElDuration)) return "live";
 
@@ -49,6 +50,8 @@ export const getWaveformMode = (
     Number.isFinite(knownDuration) &&
     knownDuration > LARGE_FILE_THRESHOLD_SEC;
   if (isLargeFile) return "faux";
+
+  if (isOversizeBytes === true) return "faux";
 
   return "normal";
 };
@@ -105,7 +108,11 @@ export const useWaveformMode = (): WaveformModeResult => {
     };
   }, [isSizeGateCandidate, src]);
 
-  const mode = isSizeGateCandidate && oversizeSrc === src ? "faux" : baseMode;
+  const mode = getWaveformMode(
+    curTrack,
+    audioElDuration,
+    isSizeGateCandidate && oversizeSrc === src ? true : undefined
+  );
   const sizeGatePending = isSizeGateCandidate && sizeResolvedSrc !== src;
 
   return { mode, curTrack, sizeGatePending };
