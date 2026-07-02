@@ -8,6 +8,9 @@ test.describe("Play / Pause toggle", () => {
     await playBtn.click();
     await expect(playBtn).toBeVisible();
 
+    // Playing → button switches to the pause icon (aria-label "Pause")
+    await expect(playBtn).toHaveAttribute("aria-label", "Pause");
+
     // Wait until current time advances past 00:00
     await expect
       .poll(() => trackCurrentTime.textContent(), { timeout: 10000 })

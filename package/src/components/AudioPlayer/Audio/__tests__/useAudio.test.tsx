@@ -112,7 +112,7 @@ describe("useAudio seek sync effect", () => {
 
     expect(audioEl.currentTime).toBe(60);
     expect(waveformSeekTo).toHaveBeenCalledTimes(1);
-    expect(waveformSeekTo).toHaveBeenCalledWith(60 / TRACK_DURATION_SEC);
+    expect(waveformSeekTo).toHaveBeenCalledWith(1 / 3);
   });
 
   it("does NOT write audioEl.currentTime when seekRequestKey is 0, even when playbackCurrentTime is far from DOM (stale onTimeUpdate echo scenario)", () => {
@@ -315,7 +315,7 @@ describe("useAudio seek sync effect — rerender behavior", () => {
     rerender(<Harness playbackCurrentTime={90} seekRequestKey={2} />);
     expect(audioEl.currentTime).toBe(90);
     expect(waveformSeekTo).toHaveBeenCalledTimes(2);
-    expect(waveformSeekTo).toHaveBeenLastCalledWith(90 / TRACK_DURATION_SEC);
+    expect(waveformSeekTo).toHaveBeenLastCalledWith(0.5);
   });
 });
 

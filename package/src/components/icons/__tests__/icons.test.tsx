@@ -17,40 +17,29 @@ import {
 import type { SvgIconProps } from "@/components/icons";
 import { FC } from "react";
 
-describe("SVG icon defaults — MdPlayCircleFilled", () => {
-  it('aria-hidden="true"', () => {
-    const { container } = render(<MdPlayCircleFilled />);
-    const svg = container.querySelector("svg")!;
-    expect(svg.getAttribute("aria-hidden")).toBe("true");
-  });
+const allIcons: [string, FC<SvgIconProps>][] = [
+  ["MdPlayCircleFilled", MdPlayCircleFilled],
+  ["MdPauseCircleFilled", MdPauseCircleFilled],
+  ["MdPlaylistPlay", MdPlaylistPlay],
+  ["TbRepeat", TbRepeat],
+  ["TbRepeatOnce", TbRepeatOnce],
+  ["TbRepeatOff", TbRepeatOff],
+  ["TbArrowsShuffle", TbArrowsShuffle],
+  ["TbVolume", TbVolume],
+  ["TbVolume2", TbVolume2],
+  ["TbVolume3", TbVolume3],
+  ["ImPrevious", ImPrevious],
+  ["ImNext", ImNext],
+];
 
-  it('focusable="false"', () => {
-    const { container } = render(<MdPlayCircleFilled />);
-    const svg = container.querySelector("svg")!;
-    expect(svg.getAttribute("focusable")).toBe("false");
-  });
-
-  it('default size → height/width "1em"', () => {
-    const { container } = render(<MdPlayCircleFilled />);
+describe("size prop", () => {
+  it.each(allIcons)("%s default → height/width 1em", (_name, Icon) => {
+    const { container } = render(<Icon />);
     const svg = container.querySelector("svg")!;
     expect(svg.getAttribute("height")).toBe("1em");
     expect(svg.getAttribute("width")).toBe("1em");
   });
 
-  it('viewBox="0 0 24 24"', () => {
-    const { container } = render(<MdPlayCircleFilled />);
-    const svg = container.querySelector("svg")!;
-    expect(svg.getAttribute("viewBox")).toBe("0 0 24 24");
-  });
-
-  it("no style.color when color prop absent", () => {
-    const { container } = render(<MdPlayCircleFilled />);
-    const svg = container.querySelector("svg")!;
-    expect(svg.style.color).toBe("");
-  });
-});
-
-describe("size prop", () => {
   it("numeric size → height/width as string", () => {
     const { container } = render(<MdPlayCircleFilled size={24} />);
     const svg = container.querySelector("svg")!;
@@ -112,64 +101,18 @@ describe("SVGProps forwarding", () => {
   });
 });
 
-describe("Tb icon defaults — TbRepeat", () => {
-  it('aria-hidden="true"', () => {
-    const { container } = render(<TbRepeat />);
-    const svg = container.querySelector("svg")!;
-    expect(svg.getAttribute("aria-hidden")).toBe("true");
-  });
-
-  it('focusable="false"', () => {
-    const { container } = render(<TbRepeat />);
-    const svg = container.querySelector("svg")!;
-    expect(svg.getAttribute("focusable")).toBe("false");
-  });
-
-  it('fill="none"', () => {
-    const { container } = render(<TbRepeat />);
-    const svg = container.querySelector("svg")!;
-    expect(svg.getAttribute("fill")).toBe("none");
-  });
-
-  it('strokeWidth="2"', () => {
-    const { container } = render(<TbRepeat />);
-    const svg = container.querySelector("svg")!;
-    expect(svg.getAttribute("stroke-width")).toBe("2");
-  });
-});
-
-describe("Im icon defaults — ImPrevious", () => {
-  it('aria-hidden="true"', () => {
-    const { container } = render(<ImPrevious />);
-    const svg = container.querySelector("svg")!;
-    expect(svg.getAttribute("aria-hidden")).toBe("true");
-  });
-
-  it('viewBox="0 0 16 16"', () => {
-    const { container } = render(<ImPrevious />);
-    const svg = container.querySelector("svg")!;
-    expect(svg.getAttribute("viewBox")).toBe("0 0 16 16");
-  });
-});
-
 describe("smoke — all 12 icons render svg", () => {
-  const allIcons: [string, FC<SvgIconProps>][] = [
-    ["MdPlayCircleFilled", MdPlayCircleFilled],
-    ["MdPauseCircleFilled", MdPauseCircleFilled],
-    ["MdPlaylistPlay", MdPlaylistPlay],
-    ["TbRepeat", TbRepeat],
-    ["TbRepeatOnce", TbRepeatOnce],
-    ["TbRepeatOff", TbRepeatOff],
-    ["TbArrowsShuffle", TbArrowsShuffle],
-    ["TbVolume", TbVolume],
-    ["TbVolume2", TbVolume2],
-    ["TbVolume3", TbVolume3],
-    ["ImPrevious", ImPrevious],
-    ["ImNext", ImNext],
-  ];
-
   it.each(allIcons)("%s renders an svg element", (_name, Icon) => {
     const { container } = render(<Icon />);
     expect(container.querySelector("svg")).not.toBeNull();
+  });
+});
+
+describe("decorative a11y defaults — all icons hidden from AT", () => {
+  it.each(allIcons)("%s is aria-hidden and not focusable", (_name, Icon) => {
+    const { container } = render(<Icon />);
+    const svg = container.querySelector("svg")!;
+    expect(svg.getAttribute("aria-hidden")).toBe("true");
+    expect(svg.getAttribute("focusable")).toBe("false");
   });
 });

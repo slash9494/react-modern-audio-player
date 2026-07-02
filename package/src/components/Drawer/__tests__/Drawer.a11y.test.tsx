@@ -29,7 +29,7 @@ const DrawerWrapper = ({
 describe("DrawerContent accessibility", () => {
   it('has role="dialog" when open', () => {
     render(<DrawerWrapper initialOpen={true} />);
-    expect(screen.getByRole("dialog")).toBeDefined();
+    expect(screen.getByRole("dialog")).toBeInTheDocument();
   });
 
   it('has aria-modal="true"', () => {

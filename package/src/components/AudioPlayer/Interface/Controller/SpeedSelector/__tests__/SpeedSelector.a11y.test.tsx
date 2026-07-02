@@ -137,27 +137,27 @@ describe("SpeedSelector accessibility", () => {
     );
   });
 
-  it("opens the menu on trigger click and exposes role=menu with menuitemradio options", () => {
+  it("opens the menu on trigger click and exposes role=group with aria-pressed toggle options", () => {
     renderSpeedSelector({ playbackRate: 1 });
-    expect(screen.queryByRole("menu")).toBeNull();
+    expect(screen.queryByRole("group", { name: "Playback speed" })).toBeNull();
 
     openMenuByClickingTrigger();
 
-    const menu = screen.getByRole("menu", { name: "Playback speed" });
+    const menu = screen.getByRole("group", { name: "Playback speed" });
     expect(menu).toBeInTheDocument();
-    const options = screen.getAllByRole("menuitemradio");
+    const options = screen.getAllByTestId("speed-selector-option");
     // Default option set: 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2 — 7 entries.
     expect(options).toHaveLength(7);
   });
 
-  it("active option has aria-checked=true and all others aria-checked=false", () => {
+  it("active option has aria-pressed=true and all others aria-pressed=false", () => {
     renderSpeedSelector({ playbackRate: 1 });
     openMenuByClickingTrigger();
 
-    const options = screen.getAllByRole("menuitemradio");
+    const options = screen.getAllByTestId("speed-selector-option");
     const checkedStates = options.map((opt) => ({
       rate: opt.getAttribute("data-rate"),
-      checked: opt.getAttribute("aria-checked"),
+      checked: opt.getAttribute("aria-pressed"),
     }));
     expect(checkedStates).toEqual([
       { rate: "0.5", checked: "false" },
@@ -175,7 +175,7 @@ describe("SpeedSelector accessibility", () => {
     openMenuByClickingTrigger();
 
     const optionForOnePointFive = screen
-      .getAllByRole("menuitemradio")
+      .getAllByTestId("speed-selector-option")
       .find((el) => el.getAttribute("data-rate") === "1.5");
     if (!optionForOnePointFive) throw new Error("expected 1.5x option");
 
@@ -189,19 +189,63 @@ describe("SpeedSelector accessibility", () => {
     });
   });
 
-  it("uses the active option's aria-checked when playbackRate matches a non-default option", () => {
+  it("closes the dropdown after selecting an option (content unmounts)", () => {
+    renderSpeedSelector({ playbackRate: 1 });
+    openMenuByClickingTrigger();
+    expect(
+      screen.getByRole("group", { name: "Playback speed" })
+    ).toBeInTheDocument();
+
+    const optionForTwo = screen
+      .getAllByTestId("speed-selector-option")
+      .find((el) => el.getAttribute("data-rate") === "2");
+    if (!optionForTwo) throw new Error("expected 2x option");
+    act(() => {
+      fireEvent.click(optionForTwo);
+    });
+    // Drive the Dropdown exit transition (setIsOpen(false) → CssTransition
+    // leave timer → content unmount) to completion.
+    act(() => vi.runAllTimers());
+    act(() => vi.runAllTimers());
+
+    expect(screen.queryByRole("group", { name: "Playback speed" })).toBeNull();
+  });
+
+  it("trigger exposes aria-haspopup and toggles aria-expanded across the open/close lifecycle", () => {
+    renderSpeedSelector({ playbackRate: 1 });
+    const trigger = screen.getByTestId("speed-selector-trigger");
+    expect(trigger).toHaveAttribute("aria-haspopup", "true");
+    expect(trigger).toHaveAttribute("aria-expanded", "false");
+
+    openMenuByClickingTrigger();
+    expect(trigger).toHaveAttribute("aria-expanded", "true");
+
+    const optionForHalf = screen
+      .getAllByTestId("speed-selector-option")
+      .find((el) => el.getAttribute("data-rate") === "0.5");
+    if (!optionForHalf) throw new Error("expected 0.5x option");
+    act(() => {
+      fireEvent.click(optionForHalf);
+    });
+    act(() => vi.runAllTimers());
+    act(() => vi.runAllTimers());
+
+    expect(trigger).toHaveAttribute("aria-expanded", "false");
+  });
+
+  it("uses the active option's aria-pressed when playbackRate matches a non-default option", () => {
     renderSpeedSelector({ playbackRate: 1.75 });
     openMenuByClickingTrigger();
 
-    const options = screen.getAllByRole("menuitemradio");
+    const options = screen.getAllByTestId("speed-selector-option");
     const active = options.find(
-      (opt) => opt.getAttribute("aria-checked") === "true"
+      (opt) => opt.getAttribute("aria-pressed") === "true"
     );
     if (!active) throw new Error("expected one active option");
     expect(active.getAttribute("data-rate")).toBe("1.75");
     // Exactly one active option at any time.
     expect(
-      options.filter((opt) => opt.getAttribute("aria-checked") === "true")
+      options.filter((opt) => opt.getAttribute("aria-pressed") === "true")
     ).toHaveLength(1);
   });
 
@@ -209,7 +253,7 @@ describe("SpeedSelector accessibility", () => {
     renderSpeedSelector({ playbackRate: 1, options: [1, 2] });
     openMenuByClickingTrigger();
 
-    const options = screen.getAllByRole("menuitemradio");
+    const options = screen.getAllByTestId("speed-selector-option");
     expect(options).toHaveLength(2);
     expect(options.map((opt) => opt.getAttribute("data-rate"))).toEqual([
       "1",
@@ -229,7 +273,7 @@ describe("SpeedSelector accessibility", () => {
     expect(trigger).toHaveTextContent("1x");
 
     openMenuByClickingTrigger();
-    const options = screen.getAllByRole("menuitemradio");
+    const options = screen.getAllByTestId("speed-selector-option");
     expect(options.map((opt) => opt.textContent)).toEqual([
       "0.5x",
       "0.75x",
@@ -259,7 +303,9 @@ describe("SpeedSelector accessibility", () => {
     const { container } = renderSpeedSelector({ playbackRate: 1 });
     openMenuByClickingTrigger();
     // Confirm the menu is committed before scanning.
-    expect(screen.getByRole("menu")).toBeInTheDocument();
+    expect(
+      screen.getByRole("group", { name: "Playback speed" })
+    ).toBeInTheDocument();
     // Flush any pending fake timers first to avoid leaking scheduled work
     // across the timer-mode boundary.
     act(() => {
@@ -277,7 +323,7 @@ describe("SpeedSelector accessibility", () => {
     openMenuByClickingTrigger();
 
     const optionForHalf = screen
-      .getAllByRole("menuitemradio")
+      .getAllByTestId("speed-selector-option")
       .find((el) => el.getAttribute("data-rate") === "0.5");
     if (!optionForHalf) throw new Error("expected 0.5x option");
     act(() => {
@@ -298,12 +344,12 @@ describe("SpeedSelector accessibility", () => {
 
   it('triggerType="hover" opens the menu on mouseEnter', () => {
     renderSpeedSelector({ playbackRate: 1, triggerType: "hover" });
-    expect(screen.queryByRole("menu")).toBeNull();
+    expect(screen.queryByRole("group", { name: "Playback speed" })).toBeNull();
 
     openMenuByHoveringTrigger();
 
     expect(
-      screen.getByRole("menu", { name: "Playback speed" })
+      screen.getByRole("group", { name: "Playback speed" })
     ).toBeInTheDocument();
   });
 
@@ -321,7 +367,7 @@ describe("SpeedSelector accessibility", () => {
     act(() => vi.runAllTimers());
     act(() => vi.runAllTimers());
 
-    expect(screen.queryByRole("menu")).toBeNull();
+    expect(screen.queryByRole("group", { name: "Playback speed" })).toBeNull();
   });
 
   // --- placement prop & UIContext fallback --------------------------------
@@ -331,7 +377,7 @@ describe("SpeedSelector accessibility", () => {
   // `<ul role="menu">` is a direct child of that styled <div>, so reading
   // `menu.parentElement.style` reflects the resolved placement deterministically.
   const getMenuPlacementStyle = (): CSSStyleDeclaration => {
-    const menu = screen.getByRole("menu", { name: "Playback speed" });
+    const menu = screen.getByRole("group", { name: "Playback speed" });
     const contentEl = menu.parentElement;
     if (!contentEl) throw new Error("expected menu to have a content parent");
     return contentEl.style;
