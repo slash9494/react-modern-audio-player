@@ -36,7 +36,7 @@ test.describe("Progress mode switching (e2e)", () => {
     });
 
     // Switch to waveform via in-page button (NOT page reload)
-    await page.getByRole("button", { name: "progress type" }).click();
+    await page.getByTestId("rmap-toggle-progress-type").click();
 
     // Wait for waveform to init
     const wave = page.locator("#rm-waveform wave").first();
@@ -154,7 +154,7 @@ test.describe("Progress mode switching (e2e)", () => {
       .toBeGreaterThan(2);
 
     // Switch to waveform while playing
-    await page.getByRole("button", { name: "progress type" }).click();
+    await page.getByTestId("rmap-toggle-progress-type").click();
     const wave = page.locator("#rm-waveform wave").first();
     await expect(wave).toBeVisible({ timeout: 10000 });
 
@@ -215,7 +215,7 @@ test.describe("Progress mode switching (e2e)", () => {
     });
 
     // Switch to waveform while still playing
-    await page.getByRole("button", { name: "progress type" }).click();
+    await page.getByTestId("rmap-toggle-progress-type").click();
     const wave = page.locator("#rm-waveform wave").first();
     await expect(wave).toBeVisible({ timeout: 10000 });
 
@@ -232,10 +232,15 @@ test.describe("Progress mode switching (e2e)", () => {
       .toBeGreaterThan(timeBefore);
 
     // Audio should still be playing
-    const isPlaying = await page.evaluate(() => {
-      const audio = document.querySelector("audio");
-      return audio ? !audio.paused : false;
-    });
-    expect(isPlaying).toBe(true);
+    await expect
+      .poll(
+        () =>
+          page.evaluate(() => {
+            const audio = document.querySelector("audio");
+            return audio ? !audio.paused : false;
+          }),
+        { timeout: 3000 }
+      )
+      .toBe(true);
   });
 });

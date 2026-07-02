@@ -56,6 +56,7 @@ export const AudioPlayerContainer = React.memo<
 
   return (
     <div
+      data-testid="player-provider"
       {...rootContainerProps}
       className={`rmap-player-provider${
         rootContainerProps?.className ? ` ${rootContainerProps.className}` : ""

@@ -21,6 +21,12 @@
 - **Time display no longer leaks non-finite values**: `getTimeWithPadStart` returns `--:--` for `Infinity`/`NaN`/negative input (previously rendered `Infinity:NaN`), and formats tracks of an hour or longer as `H:MM:SS` instead of overflowing the minutes field (e.g. `5:11:25` instead of `311:25`).
 - **Progress seeking guarded on live tracks**: clicking or dragging the progress bar on a live stream is now a no-op instead of writing a non-finite value into `audio.currentTime`.
 
+## v2.3.2 (2026-07-02)
+
+### ♿ Accessibility
+
+- **`AudioPlayer.SpeedSelector` menu semantics & close-on-select** (Closes [#59](https://github.com/slash9494/react-modern-audio-player/issues/59)): the speed dropdown now exposes its options as a labelled `role="group"` of `aria-pressed` toggle buttons instead of `role="menu"` / `role="menuitemradio"` + `aria-checked`, and selecting a rate now closes the dropdown. The original `role="menu"` contract implied full WAI-ARIA APG keyboard navigation (arrow keys, `Home`/`End`, `Esc`) that was never implemented; the toggle-button group is fully operable with native `Tab` + `Enter`/`Space` and carries no unmet keyboard expectation.
+
 ## v2.3.1 (2026-05-01)
 
 ### 🐛 Bug Fixes

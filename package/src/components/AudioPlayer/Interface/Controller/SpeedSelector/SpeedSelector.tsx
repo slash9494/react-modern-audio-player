@@ -1,10 +1,11 @@
-import { FC, memo, useCallback, useRef } from "react";
+import { FC, memo, useCallback, useRef, MouseEvent } from "react";
 import "./SpeedSelector.css";
 import Dropdown from "@/components/Dropdown";
 import Grid, { GridItemLayoutProps } from "@/components/Grid";
 import { SpeedSelectorPlacement } from "@/components/AudioPlayer/Context/StateContext";
 import { useNonNullableContext } from "@/hooks/useNonNullableContext";
 import { audioPlayerDispatchContext } from "@/components/AudioPlayer/Context/dispatchContext";
+import { dropdownContext } from "@/components/Dropdown/DropdownContext";
 import { usePlaybackContext } from "@/components/AudioPlayer/Context/hooks/usePlaybackContext";
 import { useUIContext } from "@/components/AudioPlayer/Context/hooks/useUIContext";
 import { useResolvedGridArea } from "../../hooks/useResolvedGridArea";
@@ -15,6 +16,58 @@ const DEFAULT_PLAYBACK_RATE_OPTIONS = [
 ] as const;
 
 const formatPlaybackRate = (rate: number): string => `${rate}×`;
+
+interface SpeedSelectorMenuProps {
+  rateOptions: readonly number[];
+  playbackRate: number;
+  formatRateLabel: (rate: number) => string;
+}
+
+const SpeedSelectorMenu: FC<SpeedSelectorMenuProps> = ({
+  rateOptions,
+  playbackRate,
+  formatRateLabel,
+}) => {
+  const audioPlayerDispatch = useNonNullableContext(audioPlayerDispatchContext);
+  const { setIsOpen } = useNonNullableContext(dropdownContext);
+
+  const handleSelectRate = useCallback(
+    (event: MouseEvent<HTMLButtonElement>) => {
+      const rate = Number(event.currentTarget.dataset.rate);
+      audioPlayerDispatch({ type: "SET_PLAYBACK_RATE", playbackRate: rate });
+      setIsOpen(false);
+    },
+    [audioPlayerDispatch, setIsOpen]
+  );
+
+  return (
+    <div
+      role="group"
+      aria-label="Playback speed"
+      className="rmap-speed-selector-menu"
+    >
+      {rateOptions.map((rate) => {
+        const isActive = rate === playbackRate;
+        const optionClassName = isActive
+          ? "rmap-speed-selector-option rmap-speed-selector-option--active"
+          : "rmap-speed-selector-option";
+        return (
+          <button
+            key={rate}
+            type="button"
+            aria-pressed={isActive}
+            className={optionClassName}
+            data-testid="speed-selector-option"
+            data-rate={rate}
+            onClick={handleSelectRate}
+          >
+            {formatRateLabel(rate)}
+          </button>
+        );
+      })}
+    </div>
+  );
+};
 
 export interface SpeedSelectorProps extends GridItemLayoutProps {
   options?: number[];
@@ -35,9 +88,6 @@ export const SpeedSelector: FC<SpeedSelectorProps> = memo(
   }) {
     const triggerRef = useRef<HTMLButtonElement>(null);
     const { playbackRate } = usePlaybackContext();
-    const audioPlayerDispatch = useNonNullableContext(
-      audioPlayerDispatchContext
-    );
     const { speedSelectorPlacement: contextSpeedSelectorPlacement } =
       useUIContext();
 
@@ -53,13 +103,6 @@ export const SpeedSelector: FC<SpeedSelectorProps> = memo(
         triggerRef,
         defaults: { triggerType: "click", placement: "top" },
       });
-
-    const handleSelectRate = useCallback(
-      (rate: number) => {
-        audioPlayerDispatch({ type: "SET_PLAYBACK_RATE", playbackRate: rate });
-      },
-      [audioPlayerDispatch]
-    );
 
     return (
       <Grid.Item
@@ -84,33 +127,11 @@ export const SpeedSelector: FC<SpeedSelectorProps> = memo(
             {formatRateLabel(playbackRate)}
           </Dropdown.Trigger>
           <Dropdown.Content>
-            <ul
-              role="menu"
-              aria-label="Playback speed"
-              className="rmap-speed-selector-menu"
-            >
-              {rateOptions.map((rate) => {
-                const isActive = rate === playbackRate;
-                const optionClassName = isActive
-                  ? "rmap-speed-selector-option rmap-speed-selector-option--active"
-                  : "rmap-speed-selector-option";
-                return (
-                  <li key={rate} role="none">
-                    <button
-                      type="button"
-                      role="menuitemradio"
-                      aria-checked={isActive}
-                      className={optionClassName}
-                      data-testid="speed-selector-option"
-                      data-rate={rate}
-                      onClick={() => handleSelectRate(rate)}
-                    >
-                      {formatRateLabel(rate)}
-                    </button>
-                  </li>
-                );
-              })}
-            </ul>
+            <SpeedSelectorMenu
+              rateOptions={rateOptions}
+              playbackRate={playbackRate}
+              formatRateLabel={formatRateLabel}
+            />
           </Dropdown.Content>
         </Dropdown>
       </Grid.Item>

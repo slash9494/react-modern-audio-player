@@ -3,7 +3,7 @@ import type { Locator } from "@playwright/test";
 
 test.describe("PlayerPlacement — position", () => {
   test("static (default) → position is not fixed", async ({ playerPage }) => {
-    const provider = playerPage.page.locator(".rmap-player-provider");
+    const provider = playerPage.page.getByTestId("player-provider");
     const position = await provider.evaluate(
       (el) => getComputedStyle(el).position
     );
@@ -27,7 +27,7 @@ test.describe("PlayerPlacement — position", () => {
       playerPageLazy,
     }) => {
       await playerPageLazy.gotoWithConfig({ playerPlacement: placement });
-      const provider = playerPageLazy.page.locator(".rmap-player-provider");
+      const provider = playerPageLazy.page.getByTestId("player-provider");
 
       const position = await provider.evaluate(
         (el) => getComputedStyle(el).position
@@ -166,8 +166,8 @@ test.describe("PlayListPlacement — DOM order", () => {
     playerPage,
   }) => {
     const isBottomPlacement = await playerPage.page.evaluate(() => {
-      const list = document.querySelector(".rmap-sortable-playlist");
-      const grid = document.querySelector(".rmap-interface-grid");
+      const list = document.querySelector('[data-testid="sortable-playlist"]');
+      const grid = document.querySelector('[data-testid="interface-grid"]');
       if (!list || !grid) return null;
       // DOCUMENT_POSITION_FOLLOWING means grid comes before list in DOM
       return Boolean(
@@ -183,8 +183,8 @@ test.describe("PlayListPlacement — DOM order", () => {
     await playerPageLazy.gotoWithConfig({ playListPlacement: "top" });
 
     const isTopPlacement = await playerPageLazy.page.evaluate(() => {
-      const list = document.querySelector(".rmap-sortable-playlist");
-      const grid = document.querySelector(".rmap-interface-grid");
+      const list = document.querySelector('[data-testid="sortable-playlist"]');
+      const grid = document.querySelector('[data-testid="interface-grid"]');
       if (!list || !grid) return null;
       return Boolean(
         list.compareDocumentPosition(grid) & Node.DOCUMENT_POSITION_FOLLOWING
