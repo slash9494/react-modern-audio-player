@@ -41,7 +41,7 @@
 
 or
 
-<https://stackblitz.com/edit/stackblitz-webcontainer-api-starter-k4uxhzjx?file=src%2FApp.tsx>
+<https://stackblitz.com/edit/stackblitz-webcontainer-api-starter-nevxganw?file=src%2FApp.tsx>
 
 # **Flexible and Customizable UI**
 
