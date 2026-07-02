@@ -51,4 +51,14 @@ export const playList: PlayList = [
     src: "https://archive.org/download/8HOURSOfRelaxingNatureMusicWithBirdsongMeditationWorkStudySleepRelaxation/8%20HOURS%20of%20Relaxing%20Nature%20Music%20with%20Birdsong%20-%20Meditation%2C%20Work%2C%20Study%2C%20Sleep%2C%20Relaxation.mp3",
     id: 7,
   },
+  {
+    // The 103MB fixture is gitignored (exceeds GitHub's file limit). Regenerate with:
+    // ffmpeg -f lavfi -i "sine=frequency=440:sample_rate=192000:duration=90" \
+    //   -ac 2 -c:a pcm_s24le preview/assets/audio/hires-192k24bit.wav
+    name: "Hi-res 192kHz/24-bit (byte-size gate → bar)",
+    writer: "short duration, >50MB — gated by Content-Length",
+    img: "https://cdn.pixabay.com/photo/2017/08/30/01/05/milky-way-2695569__340.jpg",
+    src: "/preview/assets/audio/hires-192k24bit.wav",
+    id: 8,
+  },
 ];
