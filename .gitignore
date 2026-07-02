@@ -37,6 +37,3 @@ test-results/
 # Yarn PnP
 .pnp.cjs
 .pnp.loader.mjs
-
-# Local-only oversized test fixture (103MB > GitHub limit; regen command in preview/playList.ts)
-package/preview/assets/audio/hires-192k24bit.wav
