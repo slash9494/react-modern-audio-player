@@ -1,6 +1,6 @@
 import { usePlaybackContext } from "@/components/AudioPlayer/Context/hooks/usePlaybackContext";
 import { useResourceContext } from "@/components/AudioPlayer/Context/hooks/useResourceContext";
-import { useTrackContext } from "@/components/AudioPlayer/Context/hooks/useTrackContext";
+import { useCurrentTrack } from "@/components/AudioPlayer/Context/hooks/useCurrentTrack";
 import { safeRatio } from "@/utils/safeRatio";
 import {
   HTMLAttributes,
@@ -22,8 +22,7 @@ type UseProgressResult = {
 export const useProgress = (): UseProgressResult => {
   const { isLoadedMetaData } = usePlaybackContext();
   const { elementRefs } = useResourceContext();
-  const { curPlayId, playList } = useTrackContext();
-  const curTrack = playList.find((audioData) => audioData.id === curPlayId);
+  const curTrack = useCurrentTrack();
   const [isTimeChangeActive, setTimeChangeActive] = useState(false);
   const [previewRatio, setPreviewRatio] = useState<number | null>(null);
 

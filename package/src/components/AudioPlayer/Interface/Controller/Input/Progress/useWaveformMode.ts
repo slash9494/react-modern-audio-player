@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { AudioData } from "@/components/AudioPlayer/Context";
 import { usePlaybackContext } from "@/components/AudioPlayer/Context/hooks/usePlaybackContext";
 import { useResourceContext } from "@/components/AudioPlayer/Context/hooks/useResourceContext";
-import { useTrackContext } from "@/components/AudioPlayer/Context/hooks/useTrackContext";
+import { useCurrentTrack } from "@/components/AudioPlayer/Context/hooks/useCurrentTrack";
 import { isLiveTrack } from "./isLiveTrack";
 
 export type WaveformMode = "live" | "faux" | "normal";
@@ -71,13 +71,12 @@ export type WaveformModeResult = {
 };
 
 export const useWaveformMode = (): WaveformModeResult => {
-  const { curPlayId, playList } = useTrackContext();
   const { elementRefs } = useResourceContext();
   const { isLoadedMetaData } = usePlaybackContext();
   const [oversizeSrc, setOversizeSrc] = useState<string | null>(null);
   const [sizeResolvedSrc, setSizeResolvedSrc] = useState<string | null>(null);
 
-  const curTrack = playList.find((audioData) => audioData.id === curPlayId);
+  const curTrack = useCurrentTrack();
   const audioElDuration = isLoadedMetaData
     ? elementRefs?.audioEl?.duration
     : undefined;
