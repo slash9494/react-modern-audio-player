@@ -6,14 +6,18 @@ import { safeRatio } from "@/utils/safeRatio";
 import { useProgress } from "./useProgress";
 import { useProgressKeyDown } from "./useProgressKeyDown";
 import { useWaveSurfer } from "./useWavesurfer";
+import type { WaveformModeResult } from "./useWaveformMode";
 import "./WaveformProgress.css";
 
-export const WaveformProgress: FC<{ isActive: boolean }> = ({ isActive }) => {
+export const WaveformProgress: FC<{
+  isActive: boolean;
+  waveformMode: WaveformModeResult;
+}> = ({ isActive, waveformMode }) => {
   const waveformRef = useRef<HTMLDivElement>(null);
   const { isLoadedMetaData, isPlaying } = usePlaybackContext();
   const { elementRefs } = useResourceContext();
 
-  useWaveSurfer(waveformRef);
+  useWaveSurfer(waveformRef, waveformMode);
 
   useEffect(() => {
     if (

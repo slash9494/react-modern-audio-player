@@ -7,7 +7,7 @@ import { useResourceContext } from "@/components/AudioPlayer/Context/hooks/useRe
 import { useUIContext } from "@/components/AudioPlayer/Context/hooks/useUIContext";
 import { useEffect, useRef } from "react";
 import type WaveSurfer from "wavesurfer.js";
-import { useWaveformMode } from "./useWaveformMode";
+import type { WaveformModeResult } from "./useWaveformMode";
 
 const waveformColors = {
   progressColor: "--rm-audio-player-waveform-bar",
@@ -36,13 +36,16 @@ const detachStaleBackendListeners = (waveform: WaveSurfer) => {
   }
 };
 
-export const useWaveSurfer = (waveformRef: React.RefObject<HTMLElement>) => {
+export const useWaveSurfer = (
+  waveformRef: React.RefObject<HTMLElement>,
+  waveformMode: WaveformModeResult
+) => {
   const audioPlayerDispatch = useNonNullableContext(audioPlayerDispatchContext);
   const { isPlaying: isPlaybackActive, isLoadedMetaData } =
     usePlaybackContext();
   const { curPlayId } = useTrackContext();
   const { elementRefs } = useResourceContext();
-  const { mode, curTrack, sizeGatePending } = useWaveformMode();
+  const { mode, curTrack, sizeGatePending } = waveformMode;
   const { colorScheme } = useUIContext();
   const colorsRef = useVariableColor(waveformColors, colorScheme);
   const waveformInstRef = useRef(elementRefs?.waveformInst);

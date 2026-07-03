@@ -31,7 +31,8 @@ export const Progress: FC<ProgressProps> = ({
     type ?? (activeUI.progress === "waveform" ? "waveform" : "bar");
   const isWaveform = progressType === "waveform";
   const isBar = progressType === "bar";
-  const { mode } = useWaveformMode();
+  const waveformMode = useWaveformMode();
+  const { mode } = waveformMode;
   const [waveformMounted, setWaveformMounted] = useState(isWaveform);
 
   useEffect(() => {
@@ -51,7 +52,12 @@ export const Progress: FC<ProgressProps> = ({
       {...rest}
     >
       <div className="rmap-progress-container">
-        {waveformMounted && <WaveformProgress isActive={waveformActive} />}
+        {waveformMounted && (
+          <WaveformProgress
+            isActive={waveformActive}
+            waveformMode={waveformMode}
+          />
+        )}
         {showBar && <BarProgress />}
       </div>
     </Grid.Item>

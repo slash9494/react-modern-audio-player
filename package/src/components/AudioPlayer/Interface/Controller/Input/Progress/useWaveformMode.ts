@@ -13,10 +13,10 @@ const BYTES_PER_MB = 1024 * 1024;
 
 export const LARGE_FILE_BYTES = 50 * BYTES_PER_MB;
 
-// Cache keeps a single HEAD per src; this hook runs in both Progress and useWaveSurfer.
+// One HEAD per src, reused across re-renders, track revisits, and any AudioPlayer instances sharing the src.
 const contentLengthCache = new Map<string, Promise<number | null>>();
 
-// Both call sites resolve the same cached HEAD promise, so the .then runs twice per src; dedupe the dev warning.
+// Warn once per src across those same re-renders / revisits / shared instances.
 const warnedLargeFileSrc = new Set<string>();
 
 const fetchContentLength = (src: string): Promise<number | null> => {
@@ -58,7 +58,7 @@ export const getWaveformMode = (
   return "normal";
 };
 
-type WaveformModeResult = {
+export type WaveformModeResult = {
   mode: WaveformMode;
   curTrack: AudioData | undefined;
   sizeGatePending: boolean;

@@ -9,6 +9,7 @@ import { uiContext } from "@/components/AudioPlayer/Context/UIContext";
 import { audioPlayerDispatchContext } from "@/components/AudioPlayer/Context/dispatchContext";
 import { AudioData } from "@/components/AudioPlayer/Context";
 import { useWaveSurfer } from "../useWavesurfer";
+import { useWaveformMode } from "../useWaveformMode";
 
 // useWaveSurfer's track-change effect registers a `ready` callback that, when
 // fired by wavesurfer, calls audioEl.play() if playback was active. This is the
@@ -54,7 +55,8 @@ const makeAudioEl = (currentTime = 0, duration = 180) => {
 
 const Harness: FC = () => {
   const ref = useRef<HTMLDivElement>(null);
-  useWaveSurfer(ref);
+  const waveformMode = useWaveformMode();
+  useWaveSurfer(ref, waveformMode);
   return <div ref={ref} />;
 };
 
