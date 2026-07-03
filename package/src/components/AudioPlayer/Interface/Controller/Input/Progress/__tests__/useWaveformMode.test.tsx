@@ -1,5 +1,5 @@
 import { renderHook, waitFor } from "@testing-library/react";
-import { describe, it, expect, vi, afterEach } from "vitest";
+import { describe, it, expect, vi, afterEach, beforeEach } from "vitest";
 import { FC, ReactNode } from "react";
 import { resourceContext } from "@/components/AudioPlayer/Context/ResourceContext";
 import { trackContext } from "@/components/AudioPlayer/Context/TrackContext";
@@ -10,7 +10,12 @@ import {
   useWaveformMode,
   LARGE_FILE_THRESHOLD_SEC,
   LARGE_FILE_BYTES,
+  __resetWaveformSizeCache,
 } from "../useWaveformMode";
+
+beforeEach(() => {
+  __resetWaveformSizeCache();
+});
 
 const FINITE_DURATION = 180;
 

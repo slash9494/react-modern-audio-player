@@ -19,6 +19,12 @@ const contentLengthCache = new Map<string, Promise<number | null>>();
 // Warn once per src across those same re-renders / revisits / shared instances.
 const warnedLargeFileSrc = new Set<string>();
 
+// Test-only: module caches otherwise leak state between test files sharing a src.
+export const __resetWaveformSizeCache = () => {
+  contentLengthCache.clear();
+  warnedLargeFileSrc.clear();
+};
+
 const fetchContentLength = (src: string): Promise<number | null> => {
   const cached = contentLengthCache.get(src);
   if (cached) return cached;
