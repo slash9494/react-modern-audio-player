@@ -108,11 +108,7 @@ export const useWaveformMode = (): WaveformModeResult => {
     };
   }, [isSizeGateCandidate, src]);
 
-  const mode = getWaveformMode(
-    curTrack,
-    audioElDuration,
-    isSizeGateCandidate && oversizeSrc === src ? true : undefined
-  );
+  const mode = isSizeGateCandidate && oversizeSrc === src ? "faux" : baseMode;
   const sizeGatePending = isSizeGateCandidate && sizeResolvedSrc !== src;
 
   return { mode, curTrack, sizeGatePending };
