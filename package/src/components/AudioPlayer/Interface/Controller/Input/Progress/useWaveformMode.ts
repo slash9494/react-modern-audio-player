@@ -9,7 +9,9 @@ export type WaveformMode = "live" | "faux" | "normal";
 
 export const LARGE_FILE_THRESHOLD_SEC = 30 * 60;
 
-export const LARGE_FILE_BYTES = 50 * 1024 * 1024;
+const BYTES_PER_MB = 1024 * 1024;
+
+export const LARGE_FILE_BYTES = 50 * BYTES_PER_MB;
 
 // Cache keeps a single HEAD per src; this hook runs in both Progress and useWaveSurfer.
 const contentLengthCache = new Map<string, Promise<number | null>>();
@@ -95,7 +97,9 @@ export const useWaveformMode = (): WaveformModeResult => {
           warnedLargeFileSrc.add(src);
           // eslint-disable-next-line no-console
           console.warn(
-            `[react-modern-audio-player] Track "${src}" is larger than 50 MB; ` +
+            `[react-modern-audio-player] Track "${src}" is larger than ${
+              LARGE_FILE_BYTES / BYTES_PER_MB
+            } MB; ` +
               `its waveform decode is skipped and it falls back to the bar progress. ` +
               "Provide `peaks` to render its waveform."
           );
