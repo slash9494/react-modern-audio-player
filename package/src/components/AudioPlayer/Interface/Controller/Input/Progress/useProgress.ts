@@ -60,12 +60,14 @@ export const useProgress = (): UseProgressResult => {
   }, [commitSeek]);
 
   const getSeekTarget = useCallback(
-    (e: MouseEvent<HTMLDivElement>): { ratio: number; time: number } | null => {
+    (
+      event: MouseEvent<HTMLDivElement>
+    ): { ratio: number; time: number } | null => {
       if (!elementRefs?.audioEl || !isLoadedMetaData) return null;
       if (isLiveTrack(curTrack, elementRefs.audioEl.duration)) return null;
-      const { clientX } = e;
-      const { clientWidth } = e.currentTarget;
-      const boundingRect = e.currentTarget.getBoundingClientRect();
+      const { clientX } = event;
+      const { clientWidth } = event.currentTarget;
+      const boundingRect = event.currentTarget.getBoundingClientRect();
       const curPositionX = clientX - boundingRect.x;
       const ratio = safeRatio(curPositionX, clientWidth);
       const time = ratio * elementRefs.audioEl.duration;
@@ -75,8 +77,8 @@ export const useProgress = (): UseProgressResult => {
   );
 
   const moveAudioTime = useCallback(
-    (e: MouseEvent<HTMLDivElement>) => {
-      const seekTarget = getSeekTarget(e);
+    (event: MouseEvent<HTMLDivElement>) => {
+      const seekTarget = getSeekTarget(event);
       if (!seekTarget) return;
       setPreviewRatio(seekTarget.ratio);
       scheduleSeek(seekTarget.time);
@@ -85,8 +87,8 @@ export const useProgress = (): UseProgressResult => {
   );
 
   const clickSeek = useCallback(
-    (e: MouseEvent<HTMLDivElement>) => {
-      const seekTarget = getSeekTarget(e);
+    (event: MouseEvent<HTMLDivElement>) => {
+      const seekTarget = getSeekTarget(event);
       if (!seekTarget) return;
       commitSeek(seekTarget.time);
     },

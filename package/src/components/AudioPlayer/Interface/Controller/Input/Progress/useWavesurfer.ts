@@ -132,12 +132,7 @@ export const useWaveSurfer = (
 
     detachStaleBackendListeners(waveform);
     if (curTrack?.peaks) {
-      waveform.load(
-        audioEl,
-        curTrack.peaks,
-        undefined,
-        curTrack.duration ?? undefined
-      );
+      waveform.load(audioEl, curTrack.peaks, undefined, curTrack.duration);
     } else {
       waveform.load(audioEl);
     }

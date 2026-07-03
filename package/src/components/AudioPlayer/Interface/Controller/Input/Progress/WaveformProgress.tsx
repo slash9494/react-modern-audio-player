@@ -1,6 +1,6 @@
 import { usePlaybackContext } from "@/components/AudioPlayer/Context/hooks/usePlaybackContext";
 import { useResourceContext } from "@/components/AudioPlayer/Context/hooks/useResourceContext";
-import { getTimeWithPadStart } from "@/utils/getTime";
+import { formatClockTime } from "@/utils/getTime";
 import { FC, useCallback, useEffect, useRef } from "react";
 import { safeRatio } from "@/utils/safeRatio";
 import { useProgress } from "./useProgress";
@@ -55,6 +55,10 @@ export const WaveformProgress: FC<{
   );
   const handleKeyDown = useProgressKeyDown(onSeek);
 
+  const currentTime = elementRefs?.audioEl?.currentTime ?? 0;
+  const duration = elementRefs?.audioEl?.duration ?? 0;
+  const sliderRatio = previewRatio ?? safeRatio(currentTime, duration);
+
   return (
     <div className="rmap-waveform-wrapper" data-active={isActive}>
       {/* Cursor-only mid-drag: the fill recommits after useProgress's debounce, so it must not stretch yet. */}
@@ -72,16 +76,10 @@ export const WaveformProgress: FC<{
         aria-label="Seek"
         aria-valuemin={0}
         aria-valuemax={100}
-        aria-valuenow={Math.round(
-          (previewRatio ??
-            safeRatio(
-              elementRefs?.audioEl?.currentTime ?? 0,
-              elementRefs?.audioEl?.duration ?? 0
-            )) * 100
-        )}
-        aria-valuetext={`${getTimeWithPadStart(
-          elementRefs?.audioEl?.currentTime ?? 0
-        )} of ${getTimeWithPadStart(elementRefs?.audioEl?.duration ?? 0)}`}
+        aria-valuenow={Math.round(sliderRatio * 100)}
+        aria-valuetext={`${formatClockTime(currentTime)} of ${formatClockTime(
+          duration
+        )}`}
         onKeyDown={handleKeyDown}
         {...progressProps}
       />

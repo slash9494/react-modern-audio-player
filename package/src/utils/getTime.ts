@@ -1,6 +1,6 @@
 const SECONDS_PER_HOUR = 3600;
 
-export const getTimeWithPadStart = (time: number) => {
+export const formatClockTime = (time: number) => {
   if (!Number.isFinite(time) || time < 0) return "--:--";
 
   const minutes = `${Math.floor((time % SECONDS_PER_HOUR) / 60)}`.padStart(

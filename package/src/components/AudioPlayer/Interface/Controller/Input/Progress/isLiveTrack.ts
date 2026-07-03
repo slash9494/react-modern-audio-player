@@ -1,5 +1,6 @@
 import { AudioData } from "@/components/AudioPlayer/Context";
 
+// Browsers report duration === Infinity for unbounded streams (e.g. Icecast).
 export const isLiveTrack = (
   audioData: AudioData | undefined,
   audioElDuration: number | undefined
