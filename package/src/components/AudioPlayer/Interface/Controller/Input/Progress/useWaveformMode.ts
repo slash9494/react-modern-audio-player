@@ -88,6 +88,9 @@ export const useWaveformMode = (): WaveformModeResult => {
     fetchContentLength(src).then((bytes) => {
       if (cancelled) return;
       setSizeResolvedSrc(src);
+      // null = unknown size (missing header / CORS / SSR), not "small": kept on
+      // the normal decode path. A CORS-blocked HEAD also blocks the decode fetch,
+      // so only a same-origin header-less >50MB stream can slip this gate.
       if (bytes != null && bytes > LARGE_FILE_BYTES) {
         setOversizeSrc(src);
         if (
