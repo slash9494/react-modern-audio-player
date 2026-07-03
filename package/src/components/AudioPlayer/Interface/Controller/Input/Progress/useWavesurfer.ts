@@ -27,9 +27,10 @@ type MediaElementBackendInternals = {
  * `Cannot read properties of null (reading 'muted')`.
  */
 const detachStaleBackendListeners = (waveform: WaveSurfer) => {
-  const backend = (
-    waveform as unknown as { backend?: MediaElementBackendInternals }
-  ).backend;
+  // `backend` itself is public API; only its MediaElement internals are untyped.
+  const backend = waveform.backend as unknown as
+    | MediaElementBackendInternals
+    | undefined;
   if (!backend?.media || !backend.mediaListeners) return;
   for (const [id, listener] of Object.entries(backend.mediaListeners)) {
     backend.media.removeEventListener(id, listener);
