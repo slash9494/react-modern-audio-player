@@ -3,6 +3,7 @@ import { AudioData } from "@/components/AudioPlayer/Context";
 import { usePlaybackContext } from "@/components/AudioPlayer/Context/hooks/usePlaybackContext";
 import { useResourceContext } from "@/components/AudioPlayer/Context/hooks/useResourceContext";
 import { useCurrentTrack } from "@/components/AudioPlayer/Context/hooks/useCurrentTrack";
+import { createTimeoutSignal } from "@/utils/timeoutSignal";
 import { isLiveTrack } from "./isLiveTrack";
 
 export type WaveformMode = "live" | "faux" | "normal";
@@ -32,22 +33,24 @@ const fetchContentLength = (src: string): Promise<number | null> => {
   const cached = contentLengthCache.get(src);
   if (cached) return cached;
 
-  // AbortSignal.timeout postdates fetch (Safari 16 vs 10.1); absent it, run HEAD untimed rather than throw.
-  const headSignal =
-    typeof AbortSignal !== "undefined" &&
-    typeof AbortSignal.timeout === "function"
-      ? AbortSignal.timeout(HEAD_TIMEOUT_MS)
-      : undefined;
+  const timeout =
+    typeof fetch === "undefined" ? null : createTimeoutSignal(HEAD_TIMEOUT_MS);
 
-  const pending =
+  const pending: Promise<number | null> =
     typeof fetch === "undefined"
       ? Promise.resolve<number | null>(null)
-      : fetch(src, { method: "HEAD", signal: headSignal })
+      : fetch(src, { method: "HEAD", signal: timeout?.signal })
           .then((res) => {
             const header = res.headers.get("content-length");
             return header ? Number(header) : null;
           })
-          .catch(() => null);
+          .catch(() => null)
+          // Trailing .then (not .finally) clears the timer: .finally postdates
+          // AbortController on some engines (EdgeHTML/FF57), reintroducing a throw.
+          .then((bytes) => {
+            timeout?.cancel();
+            return bytes;
+          });
 
   contentLengthCache.set(src, pending);
   return pending;
