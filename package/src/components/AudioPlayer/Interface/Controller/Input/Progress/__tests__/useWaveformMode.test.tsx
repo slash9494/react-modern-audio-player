@@ -348,9 +348,10 @@ describe("useWaveformMode byte size-gate", () => {
 
     expect(result.current.mode).toBe("normal");
     await waitFor(() => expect(result.current.mode).toBe("faux"));
-    expect(global.fetch).toHaveBeenCalledWith("oversize-60mb.flac", {
-      method: "HEAD",
-    });
+    expect(global.fetch).toHaveBeenCalledWith(
+      "oversize-60mb.flac",
+      expect.objectContaining({ method: "HEAD" })
+    );
   });
 
   it("stays 'normal' when the file is under the byte threshold", async () => {

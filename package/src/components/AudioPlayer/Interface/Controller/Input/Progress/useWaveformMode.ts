@@ -13,6 +13,9 @@ const BYTES_PER_MB = 1024 * 1024;
 
 export const LARGE_FILE_BYTES = 50 * BYTES_PER_MB;
 
+// A hung HEAD must not pin sizeGatePending forever; time out and fail open to the normal decode path.
+const HEAD_TIMEOUT_MS = 8000;
+
 // One HEAD per src, reused across re-renders, track revisits, and any AudioPlayer instances sharing the src.
 const contentLengthCache = new Map<string, Promise<number | null>>();
 
@@ -29,10 +32,17 @@ const fetchContentLength = (src: string): Promise<number | null> => {
   const cached = contentLengthCache.get(src);
   if (cached) return cached;
 
+  // AbortSignal.timeout postdates fetch (Safari 16 vs 10.1); absent it, run HEAD untimed rather than throw.
+  const headSignal =
+    typeof AbortSignal !== "undefined" &&
+    typeof AbortSignal.timeout === "function"
+      ? AbortSignal.timeout(HEAD_TIMEOUT_MS)
+      : undefined;
+
   const pending =
     typeof fetch === "undefined"
       ? Promise.resolve<number | null>(null)
-      : fetch(src, { method: "HEAD" })
+      : fetch(src, { method: "HEAD", signal: headSignal })
           .then((res) => {
             const header = res.headers.get("content-length");
             return header ? Number(header) : null;
