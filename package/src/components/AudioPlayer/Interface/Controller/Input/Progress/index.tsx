@@ -32,15 +32,16 @@ export const Progress: FC<ProgressProps> = ({
   const isWaveform = progressType === "waveform";
   const isBar = progressType === "bar";
   const waveformMode = useWaveformMode();
-  const { mode } = waveformMode;
+  const { mode, sizeGatePending } = waveformMode;
   const [waveformMounted, setWaveformMounted] = useState(isWaveform);
 
   useEffect(() => {
     if (isWaveform && !waveformMounted) setWaveformMounted(true);
   }, [isWaveform, waveformMounted]);
 
-  const waveformActive = isWaveform && mode === "normal";
-  const showBar = isBar || (isWaveform && mode !== "normal");
+  const waveformActive = isWaveform && mode === "normal" && !sizeGatePending;
+  const showBar =
+    isBar || (isWaveform && (mode !== "normal" || sizeGatePending));
 
   const resolvedGridArea = useResolvedGridArea("progress", gridArea);
 

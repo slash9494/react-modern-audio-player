@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import AudioPlayerWithProviders, { PlayList } from "../../package/src";
 
 const basePlayList: PlayList = [
@@ -169,7 +169,7 @@ describe("compound slots (additive)", () => {
     expect(screen.getByTestId("progress-bar")).toBeInTheDocument();
   });
 
-  it("compound Progress honors explicit type prop over activeUI", () => {
+  it("compound Progress honors explicit type prop over activeUI", async () => {
     const { container } = render(
       <AudioPlayerWithProviders
         playList={basePlayList.map((track) => ({ ...track }))}
@@ -178,9 +178,16 @@ describe("compound slots (additive)", () => {
         <AudioPlayerWithProviders.Progress type="waveform" />
       </AudioPlayerWithProviders>
     );
-    // Preset renders "bar"; compound renders "waveform". Both should coexist.
+    const waveform = () => container.querySelector(".rmap-waveform-wrapper");
+
+    // The compound waveform slot renders a transient bar fallback while its
+    // size probe is in flight. Wait for the gate to clear so only the preset
+    // bar remains, then assert the two renderers coexist.
+    await waitFor(() =>
+      expect(waveform()?.getAttribute("data-active")).toBe("true")
+    );
     expect(screen.getByTestId("progress-bar")).toBeInTheDocument();
-    expect(container.querySelector(".rmap-waveform-wrapper")).not.toBeNull();
+    expect(waveform()).not.toBeNull();
   });
 
   it("grid template preserves a compound slot's area when its preset is disabled (sparse templateArea)", () => {
