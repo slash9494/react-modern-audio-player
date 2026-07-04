@@ -111,6 +111,14 @@ export const useProgress = (): UseProgressResult => {
     []
   );
 
+  useEffect(() => {
+    if (seekTimerRef.current) clearTimeout(seekTimerRef.current);
+    seekTimerRef.current = null;
+    pendingSeekTimeRef.current = null;
+    setPreviewRatio(null);
+    setTimeChangeActive(false);
+  }, [curTrack?.id]);
+
   return {
     progressProps: {
       onMouseDown: () => setTimeChangeActive(true),
