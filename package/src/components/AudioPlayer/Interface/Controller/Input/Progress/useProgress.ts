@@ -20,7 +20,7 @@ type UseProgressResult = {
 };
 
 export const useProgress = (): UseProgressResult => {
-  const { isLoadedMetaData } = usePlaybackContext();
+  const { isLoadedMetaData, audioResetKey } = usePlaybackContext();
   const { elementRefs } = useResourceContext();
   const curTrack = useCurrentTrack();
   const [isTimeChangeActive, setTimeChangeActive] = useState(false);
@@ -117,7 +117,7 @@ export const useProgress = (): UseProgressResult => {
     pendingSeekTimeRef.current = null;
     setPreviewRatio(null);
     setTimeChangeActive(false);
-  }, [curTrack?.id]);
+  }, [curTrack?.id, audioResetKey]);
 
   return {
     progressProps: {
