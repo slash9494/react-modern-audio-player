@@ -42,13 +42,14 @@
   /* matches the wavesurfer create height; the container itself can be
      0-height before the canvas is drawn, so the skeleton needs its own. */
   height: 80px;
-  background-image: repeating-linear-gradient(
-    90deg,
-    var(--rm-audio-player-waveform-background) 0,
-    var(--rm-audio-player-waveform-background) 2px,
-    transparent 2px,
-    transparent 5px
+  /* a single full-width line at the vertical center */
+  background-image: linear-gradient(
+    var(--rm-audio-player-waveform-background),
+    var(--rm-audio-player-waveform-background)
   );
+  background-size: 100% 2px;
+  background-position: center;
+  background-repeat: no-repeat;
   animation: rmap-waveform-skeleton-pulse 1.2s ease-in-out infinite;
 }
 
