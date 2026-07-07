@@ -17,7 +17,7 @@ export const WaveformProgress: FC<{
   const { isLoadedMetaData, isPlaying } = usePlaybackContext();
   const { elementRefs } = useResourceContext();
 
-  useWaveSurfer(waveformRef, waveformMode);
+  const { isWaveformReady } = useWaveSurfer(waveformRef, waveformMode);
 
   useEffect(() => {
     if (
@@ -61,6 +61,9 @@ export const WaveformProgress: FC<{
 
   return (
     <div className="rmap-waveform-wrapper" data-active={isActive}>
+      {isActive && !isWaveformReady && (
+        <div className="rmap-waveform-skeleton" aria-hidden="true" />
+      )}
       {/* Cursor-only mid-drag: the fill recommits after useProgress's debounce, so it must not stretch yet. */}
       {isDragging && (
         <div

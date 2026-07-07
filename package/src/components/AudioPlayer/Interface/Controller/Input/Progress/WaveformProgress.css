@@ -22,6 +22,43 @@
   border-left: 2px solid var(--rm-audio-player-waveform-cursor);
 }
 
+@keyframes rmap-waveform-skeleton-pulse {
+  0%,
+  100% {
+    opacity: 0.3;
+  }
+
+  50% {
+    opacity: 0.65;
+  }
+}
+
+.rmap-waveform-skeleton {
+  position: absolute;
+  inset: 0;
+  /* below the cursor overlay (z5), above the empty pre-draw canvas */
+  z-index: 4;
+  pointer-events: none;
+  /* matches the wavesurfer create height; the container itself can be
+     0-height before the canvas is drawn, so the skeleton needs its own. */
+  height: 80px;
+  background-image: repeating-linear-gradient(
+    90deg,
+    var(--rm-audio-player-waveform-background) 0,
+    var(--rm-audio-player-waveform-background) 2px,
+    transparent 2px,
+    transparent 5px
+  );
+  animation: rmap-waveform-skeleton-pulse 1.2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rmap-waveform-skeleton {
+    animation: none;
+    opacity: 0.45;
+  }
+}
+
 .rmap-waveform-wrapper[data-active="false"] {
   height: 0;
   opacity: 0;

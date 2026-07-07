@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import AudioPlayerWithProviders, {
   PlayList,
   ActiveUI,
@@ -60,20 +60,16 @@ describe("Progress initial rendering", () => {
     expect(container.querySelector(".rmap-waveform-wrapper")).toBeNull();
   });
 
-  it("7-5: waveform mode — waveform is active, bar is absent", async () => {
+  it("7-5: waveform mode — waveform is active, bar is absent", () => {
     const { container } = renderWithProgress("waveform");
-    const waveform = () => container.querySelector(".rmap-waveform-wrapper");
+    const waveform = container.querySelector(".rmap-waveform-wrapper");
 
-    // While the HEAD size probe is in flight the waveform is inactive and the
-    // bar renders as the fallback.
-    expect(screen.getByTestId("progress-bar")).toBeInTheDocument();
-    expect(waveform()?.getAttribute("data-active")).toBe("false");
-
-    await waitFor(() =>
-      expect(waveform()?.getAttribute("data-active")).toBe("true")
-    );
+    // A waveform-configured normal track is active from the first render and
+    // renders no bar fallback. Its decode is async (the mock never fires
+    // "ready"), so the loading skeleton stands in until the waveform is ready.
+    expect(waveform?.getAttribute("data-active")).toBe("true");
     expect(screen.queryByTestId("progress-bar")).not.toBeInTheDocument();
-    expect(waveform()).toBeInTheDocument();
+    expect(container.querySelector(".rmap-waveform-skeleton")).not.toBeNull();
   });
 });
 
@@ -81,7 +77,7 @@ describe("Progress initial rendering", () => {
 // — jsdom cannot reproduce WaveSurfer load() resetting currentTime
 
 describe("Progress mode switching — DOM persistence", () => {
-  it("7-8: waveform mounts on first activation then persists", async () => {
+  it("7-8: waveform mounts on first activation then persists", () => {
     const { container, rerenderWith } = renderSwitchable();
 
     const waveform = () => container.querySelector(".rmap-waveform-wrapper");
@@ -89,12 +85,10 @@ describe("Progress mode switching — DOM persistence", () => {
     // bar start — no waveform in DOM
     expect(waveform()).toBeNull();
 
-    // first activation — mounts, then activates once the size gate clears
+    // first activation — mounts and activates synchronously (no size gate)
     rerenderWith("waveform");
     expect(waveform()).toBeInTheDocument();
-    await waitFor(() =>
-      expect(waveform()?.getAttribute("data-active")).toBe("true")
-    );
+    expect(waveform()?.getAttribute("data-active")).toBe("true");
 
     // back to bar — waveform stays mounted but hidden
     rerenderWith("bar");
@@ -104,8 +98,6 @@ describe("Progress mode switching — DOM persistence", () => {
     // waveform again — still mounted, no re-init
     rerenderWith("waveform");
     expect(waveform()).toBeInTheDocument();
-    await waitFor(() =>
-      expect(waveform()?.getAttribute("data-active")).toBe("true")
-    );
+    expect(waveform()?.getAttribute("data-active")).toBe("true");
   });
 });

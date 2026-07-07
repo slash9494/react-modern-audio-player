@@ -5,7 +5,7 @@ import { usePlaybackContext } from "@/components/AudioPlayer/Context/hooks/usePl
 import { useTrackContext } from "@/components/AudioPlayer/Context/hooks/useTrackContext";
 import { useResourceContext } from "@/components/AudioPlayer/Context/hooks/useResourceContext";
 import { useUIContext } from "@/components/AudioPlayer/Context/hooks/useUIContext";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import type WaveSurfer from "wavesurfer.js";
 import type { WaveformModeResult } from "./useWaveformMode";
 
@@ -51,6 +51,7 @@ export const useWaveSurfer = (
   const colorsRef = useVariableColor(waveformColors, colorScheme);
   const waveformInstRef = useRef(elementRefs?.waveformInst);
   waveformInstRef.current = elementRefs?.waveformInst;
+  const [isWaveformReady, setIsWaveformReady] = useState(false);
 
   useEffect(() => {
     if (
@@ -110,6 +111,11 @@ export const useWaveSurfer = (
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [elementRefs?.waveformInst, audioPlayerDispatch, colorsRef]);
 
+  // Skeleton shows until wavesurfer re-fires "ready" for the new track.
+  useEffect(() => {
+    setIsWaveformReady(false);
+  }, [curPlayId]);
+
   const prevPlayIdRef = useRef(curPlayId);
   useEffect(() => {
     if (!elementRefs?.audioEl || !elementRefs?.waveformInst) return;
@@ -143,16 +149,26 @@ export const useWaveSurfer = (
     // with AbortError. This onReady fallback restarts playback once wavesurfer
     // settles, so the waveform path stays alive even after that abort.
     const onReady = () => {
+      setIsWaveformReady(true);
       if (!isTrackChange && savedTime > 0 && audioEl.duration) {
         audioEl.currentTime = savedTime;
         waveform.seekTo(savedTime / audioEl.duration);
       }
       if (wasPlaying) audioEl.play();
     };
+    // A decode/network error must settle to the (blank but functional) waveform,
+    // not leave the loading skeleton pulsing forever.
+    const onError = () => setIsWaveformReady(true);
     waveform.on("ready", onReady);
+    waveform.on("error", onError);
+    // "ready" rides a one-shot canplay listener; if the media is already playable
+    // it won't fire, so settle now to avoid a stuck skeleton.
+    if (audioEl.readyState >= audioEl.HAVE_FUTURE_DATA)
+      setIsWaveformReady(true);
 
     return () => {
       waveform.un("ready", onReady);
+      waveform.un("error", onError);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
@@ -224,4 +240,6 @@ export const useWaveSurfer = (
     mediaQuery.addEventListener("change", handler);
     return () => mediaQuery.removeEventListener("change", handler);
   }, []);
+
+  return { isWaveformReady };
 };
