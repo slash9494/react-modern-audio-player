@@ -60,7 +60,11 @@ export const WaveformProgress: FC<{
   const sliderRatio = previewRatio ?? safeRatio(currentTime, duration);
 
   return (
-    <div className="rmap-waveform-wrapper" data-active={isActive}>
+    <div
+      className="rmap-waveform-wrapper"
+      data-active={isActive}
+      data-ready={isWaveformReady}
+    >
       {isActive && !isWaveformReady && (
         <div className="rmap-waveform-skeleton" aria-hidden="true" />
       )}

@@ -95,6 +95,7 @@ const makeReadyableWaveformInst = () => {
     backend: { media: null, mediaListeners: {} },
     isReady: false,
     emitReady: () => handlers.ready?.forEach((cb) => cb()),
+    emitRedraw: () => handlers.redraw?.forEach((cb) => cb()),
   };
 };
 
@@ -148,16 +149,27 @@ const renderReadyableWaveform = (
 };
 
 describe("WaveformProgress loading skeleton", () => {
-  it("shows the skeleton until wavesurfer fires ready, then clears it", () => {
+  it("shows the skeleton until wavesurfer fires redraw, then clears it", () => {
     const waveformInst = makeReadyableWaveformInst();
     const { container } = renderReadyableWaveform(waveformInst);
 
     expect(container.querySelector(".rmap-waveform-skeleton")).not.toBeNull();
 
     act(() => {
-      waveformInst.emitReady();
+      waveformInst.emitRedraw();
     });
 
     expect(container.querySelector(".rmap-waveform-skeleton")).toBeNull();
+  });
+
+  it("keeps the skeleton up on ready alone (bars have not painted yet)", () => {
+    const waveformInst = makeReadyableWaveformInst();
+    const { container } = renderReadyableWaveform(waveformInst);
+
+    act(() => {
+      waveformInst.emitReady();
+    });
+
+    expect(container.querySelector(".rmap-waveform-skeleton")).not.toBeNull();
   });
 });

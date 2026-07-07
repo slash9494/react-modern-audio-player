@@ -111,7 +111,7 @@ export const useWaveSurfer = (
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [elementRefs?.waveformInst, audioPlayerDispatch, colorsRef]);
 
-  // Skeleton shows until wavesurfer re-fires "ready" for the new track.
+  // Skeleton shows until wavesurfer re-fires "redraw" for the new track.
   useEffect(() => {
     setIsWaveformReady(false);
   }, [curPlayId]);
@@ -149,25 +149,26 @@ export const useWaveSurfer = (
     // with AbortError. This onReady fallback restarts playback once wavesurfer
     // settles, so the waveform path stays alive even after that abort.
     const onReady = () => {
-      setIsWaveformReady(true);
       if (!isTrackChange && savedTime > 0 && audioEl.duration) {
         audioEl.currentTime = savedTime;
         waveform.seekTo(savedTime / audioEl.duration);
       }
       if (wasPlaying) audioEl.play();
     };
+    // "redraw" fires after drawBuffer paints the bars; settling here (not on
+    // "ready", which precedes drawing) keeps the skeleton up through the blank
+    // pre-paint window. Extra redraws are no-op sets.
+    const onRedraw = () => setIsWaveformReady(true);
     // A decode/network error must settle to the (blank but functional) waveform,
     // not leave the loading skeleton pulsing forever.
     const onError = () => setIsWaveformReady(true);
     waveform.on("ready", onReady);
+    waveform.on("redraw", onRedraw);
     waveform.on("error", onError);
-    // "ready" rides a one-shot canplay listener; if the media is already playable
-    // it won't fire, so settle now to avoid a stuck skeleton.
-    if (audioEl.readyState >= audioEl.HAVE_FUTURE_DATA)
-      setIsWaveformReady(true);
 
     return () => {
       waveform.un("ready", onReady);
+      waveform.un("redraw", onRedraw);
       waveform.un("error", onError);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps

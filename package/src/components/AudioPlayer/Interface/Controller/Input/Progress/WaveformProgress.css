@@ -69,16 +69,12 @@
 .rmap-waveform-wrapper #rm-waveform {
   width: 100%;
   overflow: hidden;
-  /* Baseline center line behind the transparent wavesurfer canvas: keeps the
-     empty box from flashing blank during wavesurfer's own draw/redraw cycle
-     (after the skeleton clears, before the bars paint). Bars cover it. */
-  background-image: linear-gradient(
-    var(--rm-audio-player-waveform-background),
-    var(--rm-audio-player-waveform-background)
-  );
-  background-size: 100% 2px;
-  background-position: center;
-  background-repeat: no-repeat;
+}
+
+/* Hide the previous track's stale canvas while the next one decodes;
+   the skeleton overlay is the only visible layer until "redraw". */
+.rmap-waveform-wrapper[data-ready="false"] #rm-waveform {
+  visibility: hidden;
 }
 
 /* stylelint-disable selector-type-no-unknown */
