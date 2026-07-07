@@ -81,10 +81,18 @@ describe("WaveformProgress accessibility", () => {
 // A track with precomputed peaks skips the byte-size HEAD probe, so mode is
 // "normal" with no pending gate — the ready callback registers synchronously
 // and the test stays deterministic (no fetch, no timers).
-const makeReadyableWaveformInst = () => {
+const makeReadyableWaveformInst = ({ syncLoadEmit = false } = {}) => {
   const handlers: Record<string, ((...args: unknown[]) => void)[]> = {};
+  const emitRedraw = (...args: unknown[]) =>
+    handlers.redraw?.forEach((cb) => cb(...args));
   return {
-    load: vi.fn(),
+    // Mirrors wavesurfer 6.6.4: peaks-provided load() fires "redraw"
+    // synchronously (with the peaks) before returning.
+    load: vi.fn((_audioEl?: unknown, peaks?: unknown) => {
+      if (syncLoadEmit && Array.isArray(peaks) && peaks.length > 0) {
+        emitRedraw(peaks);
+      }
+    }),
     on: vi.fn((event: string, cb: (...args: unknown[]) => void) => {
       (handlers[event] ??= []).push(cb);
     }),
@@ -95,7 +103,7 @@ const makeReadyableWaveformInst = () => {
     backend: { media: null, mediaListeners: {} },
     isReady: false,
     emitReady: () => handlers.ready?.forEach((cb) => cb()),
-    emitRedraw: () => handlers.redraw?.forEach((cb) => cb()),
+    emitRedraw,
   };
 };
 
@@ -149,17 +157,28 @@ const renderReadyableWaveform = (
 };
 
 describe("WaveformProgress loading skeleton", () => {
-  it("shows the skeleton until wavesurfer fires redraw, then clears it", () => {
+  it("shows the skeleton until a redraw paints real bars, then clears it", () => {
     const waveformInst = makeReadyableWaveformInst();
     const { container } = renderReadyableWaveform(waveformInst);
 
     expect(container.querySelector(".rmap-waveform-skeleton")).not.toBeNull();
 
     act(() => {
-      waveformInst.emitRedraw();
+      waveformInst.emitRedraw([0.1, 0.5]);
     });
 
     expect(container.querySelector(".rmap-waveform-skeleton")).toBeNull();
+  });
+
+  it("keeps the skeleton up on an empty-peaks redraw (pre-decode/resize draw)", () => {
+    const waveformInst = makeReadyableWaveformInst();
+    const { container } = renderReadyableWaveform(waveformInst);
+
+    act(() => {
+      waveformInst.emitRedraw([]);
+    });
+
+    expect(container.querySelector(".rmap-waveform-skeleton")).not.toBeNull();
   });
 
   it("keeps the skeleton up on ready alone (bars have not painted yet)", () => {
@@ -171,5 +190,14 @@ describe("WaveformProgress loading skeleton", () => {
     });
 
     expect(container.querySelector(".rmap-waveform-skeleton")).not.toBeNull();
+  });
+
+  it("clears the skeleton when load() emits redraw synchronously (peaks track)", () => {
+    // Regresses the listener registration order: the settling redraw fires
+    // inside load(), so a listener registered after load() would miss it.
+    const waveformInst = makeReadyableWaveformInst({ syncLoadEmit: true });
+    const { container } = renderReadyableWaveform(waveformInst);
+
+    expect(container.querySelector(".rmap-waveform-skeleton")).toBeNull();
   });
 });

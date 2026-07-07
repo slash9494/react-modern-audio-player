@@ -71,13 +71,14 @@
   overflow: hidden;
 }
 
-/* Hide the previous track's stale canvas while the next one decodes;
-   the skeleton overlay is the only visible layer until "redraw". */
-.rmap-waveform-wrapper[data-ready="false"] #rm-waveform {
+/* stylelint-disable selector-type-no-unknown */
+/* Hide only the stale canvas ("wave" child) while the next track decodes —
+   #rm-waveform itself stays visible so click/keyboard seek keep working;
+   hidden children are skipped in hit testing and clicks fall through to it. */
+.rmap-waveform-wrapper[data-ready="false"] #rm-waveform wave {
   visibility: hidden;
 }
 
-/* stylelint-disable selector-type-no-unknown */
 .rmap-waveform-wrapper #rm-waveform wave {
   cursor: pointer !important;
   overflow-x: hidden !important;
