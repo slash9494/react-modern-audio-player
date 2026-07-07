@@ -58,4 +58,18 @@ export const playList: PlayList = [
     src: "/preview/assets/audio/hires-192k24bit.wav",
     id: 8,
   },
+  {
+    name: "29 min — just under the 30-min gate (waveform decodes)",
+    writer: "archive.org · 13.9MB, passes both gates",
+    img: "https://cdn.pixabay.com/photo/2016/11/29/05/45/astronomy-1867616__340.jpg",
+    src: "https://archive.org/download/count_monte_cristo_0711_librivox/count_of_monte_cristo_060_dumas_64kb.mp3",
+    id: 9,
+  },
+  {
+    name: "20 min — normal decode path",
+    writer: "archive.org · 19.1MB, passes both gates",
+    img: "https://cdn.pixabay.com/photo/2016/11/29/05/45/astronomy-1867616__340.jpg",
+    src: "https://archive.org/download/count_monte_cristo_0711_librivox/count_of_monte_cristo_085_dumas.mp3",
+    id: 10,
+  },
 ];
