@@ -72,4 +72,11 @@ export const playList: PlayList = [
     src: "https://archive.org/download/count_monte_cristo_0711_librivox/count_of_monte_cristo_085_dumas.mp3",
     id: 10,
   },
+  {
+    name: "30.5 min — just over the 30-min gate (bar fallback)",
+    writer: "archive.org · 14MB, tripped by the duration gate",
+    img: "https://cdn.pixabay.com/photo/2016/11/29/05/45/astronomy-1867616__340.jpg",
+    src: "https://archive.org/download/pride_and_prejudice_librivox/prideandprejudice_16-17_austen_64kb.mp3",
+    id: 11,
+  },
 ];
