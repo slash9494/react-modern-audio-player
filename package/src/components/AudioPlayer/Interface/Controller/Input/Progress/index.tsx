@@ -31,9 +31,9 @@ export const Progress: FC<ProgressProps> = ({
     type ?? (activeUI.progress === "waveform" ? "waveform" : "bar");
   const isWaveform = progressType === "waveform";
   const isBar = progressType === "bar";
-  const waveformMode = useWaveformMode();
-  const { mode, sizeGatePending } = waveformMode;
   const [waveformMounted, setWaveformMounted] = useState(isWaveform);
+  const waveformMode = useWaveformMode(isWaveform || waveformMounted);
+  const { mode, sizeGatePending } = waveformMode;
 
   useEffect(() => {
     if (isWaveform && !waveformMounted) setWaveformMounted(true);

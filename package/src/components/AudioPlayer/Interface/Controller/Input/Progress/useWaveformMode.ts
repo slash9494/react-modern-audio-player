@@ -83,7 +83,10 @@ export type WaveformModeResult = {
   sizeGatePending: boolean;
 };
 
-export const useWaveformMode = (): WaveformModeResult => {
+// `enabled` skips the HEAD size probe for bar-only players; it stays true while a
+// waveform instance is mounted so an oversized track's "faux" verdict cannot flip
+// back to "normal" and trigger a hidden decode.
+export const useWaveformMode = (enabled = true): WaveformModeResult => {
   const { elementRefs } = useResourceContext();
   const { isLoadedMetaData } = usePlaybackContext();
   const [oversizeSrc, setOversizeSrc] = useState<string | null>(null);
@@ -97,7 +100,7 @@ export const useWaveformMode = (): WaveformModeResult => {
 
   const src = curTrack?.src;
   const isSizeGateCandidate =
-    baseMode === "normal" && !!src && !curTrack?.peaks;
+    enabled && baseMode === "normal" && !!src && !curTrack?.peaks;
 
   useEffect(() => {
     if (!isSizeGateCandidate || !src) return;

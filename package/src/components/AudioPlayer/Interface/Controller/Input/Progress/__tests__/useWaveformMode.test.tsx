@@ -39,11 +39,13 @@ const renderUseWaveformMode = ({
   curPlayId,
   audioEl,
   isLoadedMetaData = true,
+  enabled = true,
 }: {
   playList: AudioData[];
   curPlayId: number;
   audioEl: HTMLAudioElement;
   isLoadedMetaData?: boolean;
+  enabled?: boolean;
 }) => {
   const wrapper: FC<{ children: ReactNode }> = ({ children }) => (
     <trackContext.Provider value={{ playList, curPlayId, curIdx: 0 }}>
@@ -66,7 +68,7 @@ const renderUseWaveformMode = ({
       </resourceContext.Provider>
     </trackContext.Provider>
   );
-  return renderHook(() => useWaveformMode(), { wrapper });
+  return renderHook(() => useWaveformMode(enabled), { wrapper });
 };
 
 describe("getWaveformMode live mode", () => {
@@ -619,5 +621,20 @@ describe("useWaveformMode sizeGatePending", () => {
     expect(longFormResult.current.sizeGatePending).toBe(false);
 
     expect(global.fetch).not.toHaveBeenCalled();
+  });
+
+  it("skips the HEAD probe and reports no pending gate when disabled", () => {
+    global.fetch = vi.fn();
+    const track = makeAudioData({ src: "disabled-candidate.mp3" });
+    const { result } = renderUseWaveformMode({
+      playList: [track],
+      curPlayId: track.id,
+      audioEl: makeAudioEl(FINITE_DURATION),
+      enabled: false,
+    });
+
+    expect(global.fetch).not.toHaveBeenCalled();
+    expect(result.current.sizeGatePending).toBe(false);
+    expect(result.current.mode).toBe("normal");
   });
 });
