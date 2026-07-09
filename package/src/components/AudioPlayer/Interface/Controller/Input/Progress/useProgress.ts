@@ -17,6 +17,7 @@ const SEEK_DEBOUNCE_MS = 120;
 type UseProgressResult = {
   progressProps: HTMLAttributes<HTMLDivElement>;
   previewRatio: number | null;
+  hoverRatio: number | null;
 };
 
 export const useProgress = (): UseProgressResult => {
@@ -25,6 +26,7 @@ export const useProgress = (): UseProgressResult => {
   const curTrack = useCurrentTrack();
   const [isTimeChangeActive, setTimeChangeActive] = useState(false);
   const [previewRatio, setPreviewRatio] = useState<number | null>(null);
+  const [hoverRatio, setHoverRatio] = useState<number | null>(null);
 
   const seekTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const pendingSeekTimeRef = useRef<number | null>(null);
@@ -69,7 +71,12 @@ export const useProgress = (): UseProgressResult => {
       const { clientWidth } = event.currentTarget;
       const boundingRect = event.currentTarget.getBoundingClientRect();
       const curPositionX = clientX - boundingRect.x;
-      const ratio = safeRatio(curPositionX, clientWidth);
+      // Integer clientX vs fractional rect.x can push the raw ratio slightly
+      // outside [0,1] at the edges — surfacing "--:--" or a time past the end.
+      const ratio = Math.min(
+        1,
+        Math.max(0, safeRatio(curPositionX, clientWidth))
+      );
       const time = ratio * elementRefs.audioEl.duration;
       return { ratio, time };
     },
@@ -84,6 +91,23 @@ export const useProgress = (): UseProgressResult => {
       scheduleSeek(seekTarget.time);
     },
     [getSeekTarget, scheduleSeek]
+  );
+
+  const trackHover = useCallback(
+    (event: MouseEvent<HTMLDivElement>) => {
+      const seekTarget = getSeekTarget(event);
+      // null = live track or metadata not loaded: no tooltip either
+      setHoverRatio(seekTarget ? seekTarget.ratio : null);
+    },
+    [getSeekTarget]
+  );
+
+  const handleMouseMove = useCallback(
+    (event: MouseEvent<HTMLDivElement>) => {
+      trackHover(event);
+      if (isTimeChangeActive) moveAudioTime(event);
+    },
+    [trackHover, isTimeChangeActive, moveAudioTime]
   );
 
   const clickSeek = useCallback(
@@ -116,6 +140,7 @@ export const useProgress = (): UseProgressResult => {
     seekTimerRef.current = null;
     pendingSeekTimeRef.current = null;
     setPreviewRatio(null);
+    setHoverRatio(null);
     setTimeChangeActive(false);
   }, [curTrack?.id, audioResetKey]);
 
@@ -126,15 +151,20 @@ export const useProgress = (): UseProgressResult => {
         setTimeChangeActive(false);
         flushSeek();
         setPreviewRatio(null);
+        // Touch taps synthesize mousemove but never mouseleave, pinning the
+        // tooltip; clearing here hides it — desktop re-shows on the next move.
+        setHoverRatio(null);
       },
       onMouseLeave: () => {
         setTimeChangeActive(false);
         flushSeek();
         setPreviewRatio(null);
+        setHoverRatio(null);
       },
-      onMouseMove: isTimeChangeActive ? moveAudioTime : undefined,
+      onMouseMove: handleMouseMove,
       onClick: clickSeek,
     },
     previewRatio,
+    hoverRatio,
   };
 };

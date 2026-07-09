@@ -3,6 +3,7 @@ import { useResourceContext } from "@/components/AudioPlayer/Context/hooks/useRe
 import { formatClockTime } from "@/utils/getTime";
 import { FC, useCallback, useEffect, useRef } from "react";
 import { safeRatio } from "@/utils/safeRatio";
+import { ProgressTooltip } from "./ProgressTooltip";
 import { useProgress } from "./useProgress";
 import { useProgressKeyDown } from "./useProgressKeyDown";
 import { useWaveSurfer } from "./useWavesurfer";
@@ -42,7 +43,7 @@ export const WaveformProgress: FC<{
     isPlaying,
   ]);
 
-  const { progressProps, previewRatio } = useProgress();
+  const { progressProps, previewRatio, hoverRatio } = useProgress();
 
   const isDragging = previewRatio != null;
 
@@ -90,6 +91,7 @@ export const WaveformProgress: FC<{
         onKeyDown={handleKeyDown}
         {...progressProps}
       />
+      <ProgressTooltip ratio={previewRatio ?? hoverRatio} duration={duration} />
     </div>
   );
 };
