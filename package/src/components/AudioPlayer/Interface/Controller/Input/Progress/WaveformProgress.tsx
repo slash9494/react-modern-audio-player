@@ -1,19 +1,23 @@
 import { usePlaybackContext } from "@/components/AudioPlayer/Context/hooks/usePlaybackContext";
 import { useResourceContext } from "@/components/AudioPlayer/Context/hooks/useResourceContext";
-import { getTimeWithPadStart } from "@/utils/getTime";
+import { formatClockTime } from "@/utils/getTime";
 import { FC, useCallback, useEffect, useRef } from "react";
 import { safeRatio } from "@/utils/safeRatio";
 import { useProgress } from "./useProgress";
 import { useProgressKeyDown } from "./useProgressKeyDown";
 import { useWaveSurfer } from "./useWavesurfer";
+import type { WaveformModeResult } from "./useWaveformMode";
 import "./WaveformProgress.css";
 
-export const WaveformProgress: FC<{ isActive: boolean }> = ({ isActive }) => {
+export const WaveformProgress: FC<{
+  isActive: boolean;
+  waveformMode: WaveformModeResult;
+}> = ({ isActive, waveformMode }) => {
   const waveformRef = useRef<HTMLDivElement>(null);
   const { isLoadedMetaData, isPlaying } = usePlaybackContext();
   const { elementRefs } = useResourceContext();
 
-  useWaveSurfer(waveformRef);
+  const { isWaveformReady } = useWaveSurfer(waveformRef, waveformMode);
 
   useEffect(() => {
     if (
@@ -38,7 +42,9 @@ export const WaveformProgress: FC<{ isActive: boolean }> = ({ isActive }) => {
     isPlaying,
   ]);
 
-  const eventProps = useProgress();
+  const { progressProps, previewRatio } = useProgress();
+
+  const isDragging = previewRatio != null;
 
   const onSeek = useCallback(
     (newTime: number, duration: number) => {
@@ -49,8 +55,26 @@ export const WaveformProgress: FC<{ isActive: boolean }> = ({ isActive }) => {
   );
   const handleKeyDown = useProgressKeyDown(onSeek);
 
+  const currentTime = elementRefs?.audioEl?.currentTime ?? 0;
+  const duration = elementRefs?.audioEl?.duration ?? 0;
+  const sliderRatio = previewRatio ?? safeRatio(currentTime, duration);
+
   return (
-    <div className="rmap-waveform-wrapper" data-active={isActive}>
+    <div
+      className="rmap-waveform-wrapper"
+      data-active={isActive}
+      data-ready={isWaveformReady}
+    >
+      {isActive && !isWaveformReady && (
+        <div className="rmap-waveform-skeleton" aria-hidden="true" />
+      )}
+      {/* Cursor-only mid-drag: the fill recommits after useProgress's debounce, so it must not stretch yet. */}
+      {isDragging && (
+        <div
+          className="rmap-waveform-cursor"
+          style={{ transform: `translateX(${previewRatio * 100}%)` }}
+        />
+      )}
       <div
         id="rm-waveform"
         ref={waveformRef}
@@ -59,16 +83,12 @@ export const WaveformProgress: FC<{ isActive: boolean }> = ({ isActive }) => {
         aria-label="Seek"
         aria-valuemin={0}
         aria-valuemax={100}
-        aria-valuenow={Math.round(
-          ((elementRefs?.audioEl?.currentTime ?? 0) /
-            (elementRefs?.audioEl?.duration || 1)) *
-            100
-        )}
-        aria-valuetext={`${getTimeWithPadStart(
-          elementRefs?.audioEl?.currentTime ?? 0
-        )} of ${getTimeWithPadStart(elementRefs?.audioEl?.duration ?? 0)}`}
+        aria-valuenow={Math.round(sliderRatio * 100)}
+        aria-valuetext={`${formatClockTime(currentTime)} of ${formatClockTime(
+          duration
+        )}`}
         onKeyDown={handleKeyDown}
-        {...eventProps}
+        {...progressProps}
       />
     </div>
   );

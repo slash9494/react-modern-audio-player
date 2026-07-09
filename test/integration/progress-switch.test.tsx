@@ -62,10 +62,14 @@ describe("Progress initial rendering", () => {
 
   it("7-5: waveform mode — waveform is active, bar is absent", () => {
     const { container } = renderWithProgress("waveform");
-    expect(screen.queryByTestId("progress-bar")).not.toBeInTheDocument();
     const waveform = container.querySelector(".rmap-waveform-wrapper");
-    expect(waveform).toBeInTheDocument();
+
+    // A waveform-configured normal track is active from the first render and
+    // renders no bar fallback. Its decode is async (the mock never fires
+    // "ready"), so the loading skeleton stands in until the waveform is ready.
     expect(waveform?.getAttribute("data-active")).toBe("true");
+    expect(screen.queryByTestId("progress-bar")).not.toBeInTheDocument();
+    expect(container.querySelector(".rmap-waveform-skeleton")).not.toBeNull();
   });
 });
 
@@ -81,7 +85,7 @@ describe("Progress mode switching — DOM persistence", () => {
     // bar start — no waveform in DOM
     expect(waveform()).toBeNull();
 
-    // first activation — mounts
+    // first activation — mounts and activates synchronously (no size gate)
     rerenderWith("waveform");
     expect(waveform()).toBeInTheDocument();
     expect(waveform()?.getAttribute("data-active")).toBe("true");

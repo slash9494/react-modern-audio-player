@@ -1,5 +1,26 @@
 # React-modern-audio-player
 
+## v2.4.0 (Unreleased)
+
+### ✨ New Features
+
+- **Long-form & live stream stabilization**: large files and endless live streams no longer hang the waveform. Four optional `AudioData` fields opt a track out of full-file decode without any breaking change.
+
+  - **`isLive?: boolean`** — marks a live stream. The waveform skips decoding and falls back to the standard seekable bar progress, seeking is guarded on endless streams, and the duration UI no longer leaks `Infinity`/`NaN`.
+  - **`duration?: number`** — the known total length in seconds. A track longer than 30 minutes with no `peaks` skips full-file decode and falls back to the standard bar progress instead of stalling. Also drives the new `H:MM:SS` display for multi-hour tracks.
+  - **`peaks?: number[] | number[][]`** — server-precomputed, normalized amplitude samples (single array, or one per channel) matching the shape `wavesurfer.load()` accepts, so the real waveform renders with no client-side decode (recommended for large files).
+  - **`preload?: "none" | "metadata" | "auto"`** — per-track override of the native `<audio preload>` attribute.
+
+- **Automatic long-form & live detection**: the large-file / live gate now reads the real `<audio>` duration from `loadedmetadata`, so the waveform's full-file decode is deferred until metadata arrives and skipped for tracks over 30 minutes (or live streams). `duration` / `isLive` become optional early hints rather than requirements — a plain `{ src, id }` long-form track is detected on its own. Small files still decode and render their real waveform as before.
+- **Oversized-file gate (byte size)**: a track whose `Content-Length` exceeds 50 MB skips the in-browser decode and falls back to the standard bar progress, even when its duration is under the 30-minute threshold — this catches short but heavy hi-res / lossless files that the duration gate misses. The size is read with a `HEAD` request when the host allows it (same-origin or CORS-enabled). A cross-origin host without CORS can't be measured, but its waveform fetch is blocked by the browser anyway, so no decode bottleneck occurs; supply `peaks` to render the real waveform for those.
+- **`preload="metadata"` default**: the `<audio>` element now defaults to `preload="metadata"` (consumers still override via native audio attrs), so only the header is fetched up front and playback streams progressively over HTTP range instead of waiting on a full download.
+- **Debounced progress scrubbing**: dragging the progress bar moves the handle immediately but commits the actual `audio.currentTime` seek on a 120 ms trailing debounce (and on pointer release), so fast back-and-forth scrubbing on a remote long-form track no longer fires a seek per pointer move.
+
+### 🐛 Bug Fixes
+
+- **Time display no longer leaks non-finite values**: `getTimeWithPadStart` returns `--:--` for `Infinity`/`NaN`/negative input (previously rendered `Infinity:NaN`), and formats tracks of an hour or longer as `H:MM:SS` instead of overflowing the minutes field (e.g. `5:11:25` instead of `311:25`).
+- **Progress seeking guarded on live tracks**: clicking or dragging the progress bar on a live stream is now a no-op instead of writing a non-finite value into `audio.currentTime`.
+
 ## v2.3.2 (2026-07-02)
 
 ### ♿ Accessibility

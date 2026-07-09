@@ -1,5 +1,5 @@
 import { useTimeContext } from "@/components/AudioPlayer/Context/hooks/useTimeContext";
-import { getTimeWithPadStart } from "@/utils/getTime";
+import { formatClockTime } from "@/utils/getTime";
 import { safeRatio } from "@/utils/safeRatio";
 import { FC, useEffect, useRef, useState } from "react";
 import { useProgress } from "./useProgress";
@@ -15,19 +15,19 @@ export const BarProgress: FC = () => {
     const el = wrapperRef.current;
     if (!el) return;
     setWrapperWidth(el.offsetWidth);
-    const ro = new ResizeObserver(([entry]) => {
+    const resizeObserver = new ResizeObserver(([entry]) => {
       setWrapperWidth(entry.contentBoxSize[0].inlineSize);
     });
-    ro.observe(el);
-    return () => ro.disconnect();
+    resizeObserver.observe(el);
+    return () => resizeObserver.disconnect();
   }, []);
 
-  const progressRatio = safeRatio(currentTime, duration);
-
-  const eventProps = useProgress();
+  const { progressProps, previewRatio } = useProgress();
   const handleKeyDown = useProgressKeyDown();
 
-  const progressOffset = progressRatio * wrapperWidth;
+  const ratio = previewRatio ?? safeRatio(currentTime, duration);
+
+  const progressOffset = ratio * wrapperWidth;
 
   return (
     <div
@@ -39,17 +39,17 @@ export const BarProgress: FC = () => {
       aria-label="Seek"
       aria-valuemin={0}
       aria-valuemax={100}
-      aria-valuenow={Math.round(progressRatio * 100)}
-      aria-valuetext={`${getTimeWithPadStart(
-        currentTime
-      )} of ${getTimeWithPadStart(duration)}`}
+      aria-valuenow={Math.round(ratio * 100)}
+      aria-valuetext={`${formatClockTime(currentTime)} of ${formatClockTime(
+        duration
+      )}`}
       onKeyDown={handleKeyDown}
-      {...eventProps}
+      {...progressProps}
     >
       <div className="rmap-progress-bar">
         <div
           className="rmap-progress-fill"
-          style={{ transform: `scaleX(${progressRatio})` }}
+          style={{ transform: `scaleX(${ratio})` }}
         />
       </div>
       <div

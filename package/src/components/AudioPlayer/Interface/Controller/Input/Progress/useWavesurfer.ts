@@ -5,8 +5,9 @@ import { usePlaybackContext } from "@/components/AudioPlayer/Context/hooks/usePl
 import { useTrackContext } from "@/components/AudioPlayer/Context/hooks/useTrackContext";
 import { useResourceContext } from "@/components/AudioPlayer/Context/hooks/useResourceContext";
 import { useUIContext } from "@/components/AudioPlayer/Context/hooks/useUIContext";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import type WaveSurfer from "wavesurfer.js";
+import type { WaveformModeResult } from "./useWaveformMode";
 
 const waveformColors = {
   progressColor: "--rm-audio-player-waveform-bar",
@@ -26,26 +27,31 @@ type MediaElementBackendInternals = {
  * `Cannot read properties of null (reading 'muted')`.
  */
 const detachStaleBackendListeners = (waveform: WaveSurfer) => {
-  const backend = (
-    waveform as unknown as { backend?: MediaElementBackendInternals }
-  ).backend;
+  // `backend` itself is public API; only its MediaElement internals are untyped.
+  const backend = waveform.backend as unknown as
+    | MediaElementBackendInternals
+    | undefined;
   if (!backend?.media || !backend.mediaListeners) return;
   for (const [id, listener] of Object.entries(backend.mediaListeners)) {
     backend.media.removeEventListener(id, listener);
   }
 };
 
-// TODO : dynamic drawing form from large files
-
-export const useWaveSurfer = (waveformRef: React.RefObject<HTMLElement>) => {
+export const useWaveSurfer = (
+  waveformRef: React.RefObject<HTMLElement>,
+  waveformMode: WaveformModeResult
+) => {
   const audioPlayerDispatch = useNonNullableContext(audioPlayerDispatchContext);
-  const { isPlaying: isPlaybackActive } = usePlaybackContext();
+  const { isPlaying: isPlaybackActive, isLoadedMetaData } =
+    usePlaybackContext();
   const { curPlayId } = useTrackContext();
   const { elementRefs } = useResourceContext();
+  const { mode, curTrack, sizeGatePending } = waveformMode;
   const { colorScheme } = useUIContext();
   const colorsRef = useVariableColor(waveformColors, colorScheme);
   const waveformInstRef = useRef(elementRefs?.waveformInst);
   waveformInstRef.current = elementRefs?.waveformInst;
+  const [isWaveformReady, setIsWaveformReady] = useState(false);
 
   useEffect(() => {
     if (
@@ -105,11 +111,17 @@ export const useWaveSurfer = (waveformRef: React.RefObject<HTMLElement>) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [elementRefs?.waveformInst, audioPlayerDispatch, colorsRef]);
 
+  // Skeleton shows until wavesurfer re-fires "redraw" for the new track.
+  useEffect(() => {
+    setIsWaveformReady(false);
+  }, [curPlayId]);
+
   const prevPlayIdRef = useRef(curPlayId);
   useEffect(() => {
     if (!elementRefs?.audioEl || !elementRefs?.waveformInst) return;
     const audioEl = elementRefs.audioEl;
     if (!audioEl.getAttribute("src")) return;
+    if (!isLoadedMetaData) return;
     const waveform = elementRefs.waveformInst;
     const isTrackChange = prevPlayIdRef.current !== curPlayId;
     prevPlayIdRef.current = curPlayId;
@@ -117,8 +129,12 @@ export const useWaveSurfer = (waveformRef: React.RefObject<HTMLElement>) => {
     const savedTime = isTrackChange ? 0 : audioEl.currentTime;
     const wasPlaying = isPlaybackActive;
 
-    detachStaleBackendListeners(waveform);
-    waveform.load(audioEl);
+    // Live streams and oversized files skip load() entirely; Progress swaps in
+    // BarProgress as their static placeholder while this waveform stays hidden.
+    if (mode !== "normal") return;
+    // Size HEAD unresolved: defer decode until the gate settles, then this
+    // effect re-runs and lands on either load() (small) or faux (oversized).
+    if (sizeGatePending) return;
 
     // useAudio owns the primary track-change autoplay (deps include
     // audioResetKey), but `waveform.load(audioEl)` re-attaches MediaElement
@@ -132,13 +148,41 @@ export const useWaveSurfer = (waveformRef: React.RefObject<HTMLElement>) => {
       }
       if (wasPlaying) audioEl.play();
     };
+    // "redraw" also fires for resize relays and the pre-decode canplay draw,
+    // both with empty peaks; only a draw that painted real bars may settle.
+    const onRedraw = (peaks: unknown) =>
+      Array.isArray(peaks) && peaks.length > 0 && setIsWaveformReady(true);
+    // A decode/network error must settle to the (blank but functional) waveform,
+    // not leave the loading skeleton pulsing forever.
+    const onError = () => setIsWaveformReady(true);
+    // Register before load(): for peaks-provided tracks wavesurfer 6.6.4 fires
+    // the settling "redraw" synchronously inside load(), before it would return.
     waveform.on("ready", onReady);
+    waveform.on("redraw", onRedraw);
+    waveform.on("error", onError);
+
+    detachStaleBackendListeners(waveform);
+    if (curTrack?.peaks) {
+      waveform.load(audioEl, curTrack.peaks, undefined, curTrack.duration);
+    } else {
+      waveform.load(audioEl);
+    }
 
     return () => {
       waveform.un("ready", onReady);
+      waveform.un("redraw", onRedraw);
+      waveform.un("error", onError);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [curPlayId, elementRefs?.audioEl, elementRefs?.waveformInst]);
+  }, [
+    curPlayId,
+    elementRefs?.audioEl,
+    elementRefs?.waveformInst,
+    mode,
+    curTrack,
+    isLoadedMetaData,
+    sizeGatePending,
+  ]);
 
   useEffect(() => {
     if (!waveformRef.current || !elementRefs?.waveformInst) return;
@@ -199,4 +243,6 @@ export const useWaveSurfer = (waveformRef: React.RefObject<HTMLElement>) => {
     mediaQuery.addEventListener("change", handler);
     return () => mediaQuery.removeEventListener("change", handler);
   }, []);
+
+  return { isWaveformReady };
 };
