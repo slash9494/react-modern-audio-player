@@ -104,6 +104,7 @@ const makeReadyableWaveformInst = ({ syncLoadEmit = false } = {}) => {
     isReady: false,
     emitReady: () => handlers.ready?.forEach((cb) => cb()),
     emitRedraw,
+    emitError: () => handlers.error?.forEach((cb) => cb()),
   };
 };
 
@@ -197,6 +198,19 @@ describe("WaveformProgress loading skeleton", () => {
     // inside load(), so a listener registered after load() would miss it.
     const waveformInst = makeReadyableWaveformInst({ syncLoadEmit: true });
     const { container } = renderReadyableWaveform(waveformInst);
+
+    expect(container.querySelector(".rmap-waveform-skeleton")).toBeNull();
+  });
+
+  it("clears the skeleton on error (decode failure must not pulse forever)", () => {
+    const waveformInst = makeReadyableWaveformInst();
+    const { container } = renderReadyableWaveform(waveformInst);
+
+    expect(container.querySelector(".rmap-waveform-skeleton")).not.toBeNull();
+
+    act(() => {
+      waveformInst.emitError();
+    });
 
     expect(container.querySelector(".rmap-waveform-skeleton")).toBeNull();
   });
