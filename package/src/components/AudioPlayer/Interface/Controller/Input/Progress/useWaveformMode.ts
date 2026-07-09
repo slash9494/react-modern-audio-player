@@ -8,10 +8,14 @@ import { isLiveTrack } from "./isLiveTrack";
 
 export type WaveformMode = "live" | "faux" | "normal";
 
+// Decoded PCM costs ~353KB/s (44.1kHz stereo float32): 30min ≈ 0.6GB, already
+// the kill line for mobile Safari tabs — decode time is not the constraint.
 export const LARGE_FILE_THRESHOLD_SEC = 30 * 60;
 
 const BYTES_PER_MB = 1024 * 1024;
 
+// Download budget (~10s at 40Mbps) and the catch for short-but-heavy hi-res
+// files that slip the duration gate.
 export const LARGE_FILE_BYTES = 50 * BYTES_PER_MB;
 
 // A hung HEAD must not pin sizeGatePending forever; time out and fail open to the normal decode path.
