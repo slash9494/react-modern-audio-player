@@ -1,7 +1,7 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { BarProgress } from "../BarProgress";
-import { AudioData } from "@/components/AudioPlayer/Context";
+import type { AudioData } from "@/components/AudioPlayer/Context";
 import { playbackContext } from "@/components/AudioPlayer/Context/PlaybackContext";
 import { timeContext } from "@/components/AudioPlayer/Context/TimeContext";
 import { resourceContext } from "@/components/AudioPlayer/Context/ResourceContext";

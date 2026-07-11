@@ -234,7 +234,8 @@ of waiting on a full download. When the real waveform can't be drawn (long-form
 or live), the player falls back to the standard seekable bar progress instead of
 a faux waveform. Hovering (or dragging) either progress type shows a floating
 time tooltip at the pointer position, hidden for live streams where seeking is
-disabled. These optional fields remain as hints/overrides:
+disabled and until the track metadata is available. These optional fields remain
+as hints/overrides:
 
 | Field      | Type                             | Effect                                                                                                                                                                                                                               |
 | ---------- | -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -509,7 +510,8 @@ function PlayerControls() {
       <button onClick={() => setVolume(0.5)}>Volume 50%</button>
       <button onClick={() => setTrack(1)}>Track 2</button>
       <p>
-        {currentTrack?.name} — {currentTime.toFixed(0)}s / {duration.toFixed(0)}s
+        {currentTrack?.name} — {currentTime.toFixed(0)}s / {duration.toFixed(0)}
+        s
       </p>
     </div>
   );
