@@ -5,7 +5,7 @@ import { TransportControls, RepeatTypeBtn } from "./Button";
 import { SortablePlayList } from "./Drawer";
 import { Progress } from "./Input";
 import { SpeedSelector } from "./SpeedSelector";
-import { Volume } from "./Tooltip";
+import { Volume } from "./Volume";
 
 export const Controller: FC = () => {
   const { activeUI } = useUIContext();

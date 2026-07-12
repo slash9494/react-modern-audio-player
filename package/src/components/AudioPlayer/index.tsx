@@ -10,7 +10,7 @@ import { CustomComponent } from "./Interface/CustomComponent";
 import { PlayListEmpty } from "./Interface/PlayListEmpty";
 import { AudioPlayer, AudioPlayerProps } from "./Player";
 import { Progress } from "./Interface/Controller/Input";
-import { Volume } from "./Interface/Controller/Tooltip";
+import { Volume } from "./Interface/Controller/Volume";
 import { SortablePlayList } from "./Interface/Controller/Drawer";
 import { SpeedSelector } from "./Interface/Controller/SpeedSelector";
 import {

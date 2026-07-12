@@ -1,6 +1,6 @@
 import { FC } from "react";
+import { Tooltip } from "@/components/Tooltip";
 import { formatClockTime } from "@/utils/getTime";
-import "./ProgressTooltip.css";
 
 export const ProgressTooltip: FC<{
   ratio: number | null;
@@ -8,12 +8,11 @@ export const ProgressTooltip: FC<{
 }> = ({ ratio, duration }) => {
   if (ratio == null || !duration || !isFinite(duration)) return null;
   return (
-    <div
+    <Tooltip
       className="rmap-progress-tooltip"
       style={{ left: `${ratio * 100}%` }}
-      aria-hidden="true"
     >
       {formatClockTime(ratio * duration)}
-    </div>
+    </Tooltip>
   );
 };
