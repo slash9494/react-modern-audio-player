@@ -61,7 +61,17 @@ const renderBar = (trackOverride?: Partial<AudioData>) =>
 const mockSliderGeometry = (slider: HTMLElement) => {
   Object.defineProperty(slider, "clientWidth", { value: PROGRESS_BAR_WIDTH });
   slider.getBoundingClientRect = () =>
-    ({ x: 0, width: PROGRESS_BAR_WIDTH } as DOMRect);
+    ({
+      x: 0,
+      y: 0,
+      width: PROGRESS_BAR_WIDTH,
+      height: 0,
+      top: 0,
+      left: 0,
+      right: PROGRESS_BAR_WIDTH,
+      bottom: 0,
+      toJSON: () => ({}),
+    } as DOMRect);
 };
 
 const queryTooltip = () =>
