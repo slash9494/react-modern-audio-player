@@ -2,6 +2,7 @@ import { useTimeContext } from "@/components/AudioPlayer/Context/hooks/useTimeCo
 import { formatClockTime } from "@/utils/getTime";
 import { safeRatio } from "@/utils/safeRatio";
 import { FC, useEffect, useRef, useState } from "react";
+import { ProgressTooltip } from "./ProgressTooltip";
 import { useProgress } from "./useProgress";
 import { useProgressKeyDown } from "./useProgressKeyDown";
 import "./BarProgress.css";
@@ -22,7 +23,7 @@ export const BarProgress: FC = () => {
     return () => resizeObserver.disconnect();
   }, []);
 
-  const { progressProps, previewRatio } = useProgress();
+  const { progressProps, previewRatio, hoverRatio } = useProgress();
   const handleKeyDown = useProgressKeyDown();
 
   const ratio = previewRatio ?? safeRatio(currentTime, duration);
@@ -58,6 +59,7 @@ export const BarProgress: FC = () => {
           transform: `translateX(${progressOffset}px)`,
         }}
       />
+      <ProgressTooltip ratio={previewRatio ?? hoverRatio} duration={duration} />
     </div>
   );
 };

@@ -232,14 +232,17 @@ so a plain `{ src, id }` track works without configuration. The `<audio>` elemen
 `preload="metadata"`, so playback streams progressively over HTTP range instead
 of waiting on a full download. When the real waveform can't be drawn (long-form
 or live), the player falls back to the standard seekable bar progress instead of
-a faux waveform. These optional fields remain as hints/overrides:
+a faux waveform. Hovering (or dragging) either progress type shows a floating
+time tooltip at the pointer position, hidden for live streams where seeking is
+disabled and until metadata is available. These optional fields remain
+as hints/overrides:
 
-| Field      | Type                                      | Effect                                                                                                                                                                                 |
-| ---------- | ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `isLive`   | `boolean`                                 | Marks the track as a live stream. The waveform skips decoding and falls back to the standard seekable bar progress, seeking is guarded on endless streams, and the duration UI no longer leaks `Infinity`.                     |
-| `duration` | `number` (seconds)                        | Optional early hint for the total length — detection is automatic from metadata, so set this only to gate before metadata loads (or to force the bar fallback for a track over 30 minutes). Also drives `H:MM:SS` display. |
-| `peaks`    | `number[] \| number[][]`                  | Server-precomputed, normalized amplitude samples (single array, or one per channel) — the same shape `wavesurfer.load()` accepts. When provided, the real waveform renders with no client-side decode (recommended for large files). |
-| `preload`  | `"none" \| "metadata" \| "auto"`          | Per-track override of the native `<audio preload>` attribute.                                                                                                                          |
+| Field      | Type                             | Effect                                                                                                                                                                                                                               |
+| ---------- | -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `isLive`   | `boolean`                        | Marks the track as a live stream. The waveform skips decoding and falls back to the standard seekable bar progress, seeking is guarded on endless streams, and the duration UI no longer leaks `Infinity`.                           |
+| `duration` | `number` (seconds)               | Optional early hint for the total length — detection is automatic from metadata, so set this only to gate before metadata loads (or to force the bar fallback for a track over 30 minutes). Also drives `H:MM:SS` display.           |
+| `peaks`    | `number[] \| number[][]`         | Server-precomputed, normalized amplitude samples (single array, or one per channel) — the same shape `wavesurfer.load()` accepts. When provided, the real waveform renders with no client-side decode (recommended for large files). |
+| `preload`  | `"none" \| "metadata" \| "auto"` | Per-track override of the native `<audio preload>` attribute.                                                                                                                                                                        |
 
 ```tsx
 const playList = [
