@@ -463,6 +463,7 @@ const defaultInterfacePlacement = {
   --rm-audio-player-track-duration: #8c8c8c;
   --rm-audio-player-progress-bar: #0072f5;
   --rm-audio-player-progress-bar-background: #393939;
+  --rm-audio-player-tooltip-background: #f2f2f2;
   --rm-audio-player-waveform-cursor: #4b4b4b;
   --rm-audio-player-waveform-background: var(
     --rm-audio-player-progress-bar-background

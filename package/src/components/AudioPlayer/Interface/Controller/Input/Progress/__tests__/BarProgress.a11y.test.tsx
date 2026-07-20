@@ -7,6 +7,7 @@ import { timeContext } from "@/components/AudioPlayer/Context/TimeContext";
 import { resourceContext } from "@/components/AudioPlayer/Context/ResourceContext";
 import { trackContext } from "@/components/AudioPlayer/Context/TrackContext";
 import { audioPlayerDispatchContext } from "@/components/AudioPlayer/Context/dispatchContext";
+import { uiContext } from "@/components/AudioPlayer/Context/UIContext";
 
 const mockDispatch = vi.fn();
 const mockAudioEl = document.createElement("audio");
@@ -32,27 +33,31 @@ const makePlaybackValue = () => ({
 
 const renderBar = () =>
   render(
-    <trackContext.Provider
-      value={{
-        playList: [{ id: 1, src: "track.mp3" }],
-        curPlayId: 1,
-        curIdx: 0,
-      }}
+    <uiContext.Provider
+      value={{ activeUI: { progress: "bar" }, playListPlacement: "bottom" }}
     >
-      <timeContext.Provider
-        value={{ currentTime: 0, duration: 180, seekRequestKey: 0 }}
+      <trackContext.Provider
+        value={{
+          playList: [{ id: 1, src: "track.mp3" }],
+          curPlayId: 1,
+          curIdx: 0,
+        }}
       >
-        <playbackContext.Provider value={makePlaybackValue()}>
-          <resourceContext.Provider
-            value={{ elementRefs: { audioEl: mockAudioEl } }}
-          >
-            <audioPlayerDispatchContext.Provider value={mockDispatch}>
-              <BarProgress />
-            </audioPlayerDispatchContext.Provider>
-          </resourceContext.Provider>
-        </playbackContext.Provider>
-      </timeContext.Provider>
-    </trackContext.Provider>
+        <timeContext.Provider
+          value={{ currentTime: 0, duration: 180, seekRequestKey: 0 }}
+        >
+          <playbackContext.Provider value={makePlaybackValue()}>
+            <resourceContext.Provider
+              value={{ elementRefs: { audioEl: mockAudioEl } }}
+            >
+              <audioPlayerDispatchContext.Provider value={mockDispatch}>
+                <BarProgress />
+              </audioPlayerDispatchContext.Provider>
+            </resourceContext.Provider>
+          </playbackContext.Provider>
+        </timeContext.Provider>
+      </trackContext.Provider>
+    </uiContext.Provider>
   );
 
 describe("BarProgress accessibility", () => {

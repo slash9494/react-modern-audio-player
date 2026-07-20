@@ -4,12 +4,18 @@ import { safeRatio } from "@/utils/safeRatio";
 import { FC, useEffect, useRef, useState } from "react";
 import { ProgressTooltip } from "./ProgressTooltip";
 import { useProgress, useProgressKeyDown } from "./hooks";
+import { useAutoPlacement } from "@/components/AudioPlayer/Interface/hooks";
 import "./BarProgress.css";
 
 export const BarProgress: FC = () => {
   const { currentTime, duration } = useTimeContext();
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [wrapperWidth, setWrapperWidth] = useState(0);
+  const autoPlacement = useAutoPlacement({
+    triggerRef: wrapperRef,
+    initialState: "top",
+  });
+  const tooltipPlacement = autoPlacement === "bottom" ? "bottom" : "top";
 
   useEffect(() => {
     const el = wrapperRef.current;
@@ -58,7 +64,11 @@ export const BarProgress: FC = () => {
           transform: `translateX(${progressOffset}px)`,
         }}
       />
-      <ProgressTooltip ratio={previewRatio ?? hoverRatio} duration={duration} />
+      <ProgressTooltip
+        ratio={previewRatio ?? hoverRatio}
+        duration={duration}
+        placement={tooltipPlacement}
+      />
     </div>
   );
 };

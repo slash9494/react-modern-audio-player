@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { BarProgress } from "../BarProgress";
 import type { AudioData } from "@/components/AudioPlayer/Context";
@@ -7,6 +7,7 @@ import { timeContext } from "@/components/AudioPlayer/Context/TimeContext";
 import { resourceContext } from "@/components/AudioPlayer/Context/ResourceContext";
 import { trackContext } from "@/components/AudioPlayer/Context/TrackContext";
 import { audioPlayerDispatchContext } from "@/components/AudioPlayer/Context/dispatchContext";
+import { uiContext } from "@/components/AudioPlayer/Context/UIContext";
 
 const DURATION = 100;
 const PROGRESS_BAR_WIDTH = 200;
@@ -26,36 +27,40 @@ beforeEach(() => {
 
 const renderBar = (trackOverride?: Partial<AudioData>) =>
   render(
-    <trackContext.Provider
-      value={{
-        playList: [{ id: 1, src: "track.mp3", ...trackOverride }],
-        curPlayId: 1,
-        curIdx: 0,
-      }}
+    <uiContext.Provider
+      value={{ activeUI: { progress: "bar" }, playListPlacement: "bottom" }}
     >
-      <timeContext.Provider
-        value={{ currentTime: 0, duration: DURATION, seekRequestKey: 0 }}
+      <trackContext.Provider
+        value={{
+          playList: [{ id: 1, src: "track.mp3", ...trackOverride }],
+          curPlayId: 1,
+          curIdx: 0,
+        }}
       >
-        <playbackContext.Provider
-          value={{
-            isPlaying: false,
-            repeatType: "ALL",
-            muted: false,
-            volume: 0.5,
-            isLoadedMetaData: true,
-            audioResetKey: 0,
-          }}
+        <timeContext.Provider
+          value={{ currentTime: 0, duration: DURATION, seekRequestKey: 0 }}
         >
-          <resourceContext.Provider
-            value={{ elementRefs: { audioEl: mockAudioEl } }}
+          <playbackContext.Provider
+            value={{
+              isPlaying: false,
+              repeatType: "ALL",
+              muted: false,
+              volume: 0.5,
+              isLoadedMetaData: true,
+              audioResetKey: 0,
+            }}
           >
-            <audioPlayerDispatchContext.Provider value={mockDispatch}>
-              <BarProgress />
-            </audioPlayerDispatchContext.Provider>
-          </resourceContext.Provider>
-        </playbackContext.Provider>
-      </timeContext.Provider>
-    </trackContext.Provider>
+            <resourceContext.Provider
+              value={{ elementRefs: { audioEl: mockAudioEl } }}
+            >
+              <audioPlayerDispatchContext.Provider value={mockDispatch}>
+                <BarProgress />
+              </audioPlayerDispatchContext.Provider>
+            </resourceContext.Provider>
+          </playbackContext.Provider>
+        </timeContext.Provider>
+      </trackContext.Provider>
+    </uiContext.Provider>
   );
 
 const mockSliderGeometry = (slider: HTMLElement) => {
@@ -134,5 +139,49 @@ describe("BarProgress hover tooltip", () => {
     fireEvent.mouseUp(slider);
 
     expect(queryTooltip()).toBeNull();
+  });
+});
+
+const mockSliderTop = (slider: HTMLElement, top: number) => {
+  Object.defineProperty(slider, "clientWidth", { value: PROGRESS_BAR_WIDTH });
+  slider.getBoundingClientRect = () =>
+    ({
+      x: 0,
+      y: top,
+      width: PROGRESS_BAR_WIDTH,
+      height: 0,
+      top,
+      left: 0,
+      right: PROGRESS_BAR_WIDTH,
+      bottom: top,
+      toJSON: () => ({}),
+    } as DOMRect);
+};
+
+describe("BarProgress tooltip auto-placement", () => {
+  it("flips the tooltip below the bar when it sits in the upper half of the viewport", async () => {
+    window.innerHeight = 768;
+    renderBar();
+    const slider = screen.getByRole("slider");
+    mockSliderTop(slider, 100);
+
+    fireEvent.mouseMove(slider, { clientX: PROGRESS_BAR_WIDTH / 2 });
+
+    await waitFor(() =>
+      expect(queryTooltip()).toHaveAttribute("data-placement", "bottom")
+    );
+  });
+
+  it("keeps the tooltip above the bar when it sits in the lower half of the viewport", async () => {
+    window.innerHeight = 768;
+    renderBar();
+    const slider = screen.getByRole("slider");
+    mockSliderTop(slider, 600);
+
+    fireEvent.mouseMove(slider, { clientX: PROGRESS_BAR_WIDTH / 2 });
+
+    await waitFor(() =>
+      expect(queryTooltip()).toHaveAttribute("data-placement", "top")
+    );
   });
 });

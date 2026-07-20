@@ -5,12 +5,18 @@
   max-width: none;
   padding: 2px 6px;
   border-radius: 4px;
-  background-color: var(--rm-audio-player-text-color);
-  color: var(--rm-audio-player-interface-container);
+  background-color: var(--rm-audio-player-tooltip-background);
+  color: var(--rm-audio-player-text-color);
   font-size: 12px;
   line-height: 1.4;
+  text-align: center;
   white-space: nowrap;
   box-shadow: 0 2px 4px rgb(var(--rm-audio-player-shadow, 0 0 0) / 10%);
   pointer-events: none;
   z-index: 6;
+}
+
+.rmap-tooltip[data-placement="bottom"] {
+  bottom: auto;
+  top: calc(100% + 6px);
 }

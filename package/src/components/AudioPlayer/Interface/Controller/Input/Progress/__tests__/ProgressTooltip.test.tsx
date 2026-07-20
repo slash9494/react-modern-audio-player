@@ -8,33 +8,35 @@ const queryTooltip = (container: HTMLElement) =>
 describe("ProgressTooltip", () => {
   it("renders nothing when ratio is null", () => {
     const { container } = render(
-      <ProgressTooltip ratio={null} duration={100} />
+      <ProgressTooltip ratio={null} duration={100} placement="top" />
     );
     expect(queryTooltip(container)).toBeNull();
   });
 
   it("renders nothing when duration is zero", () => {
-    const { container } = render(<ProgressTooltip ratio={0.5} duration={0} />);
+    const { container } = render(
+      <ProgressTooltip ratio={0.5} duration={0} placement="top" />
+    );
     expect(queryTooltip(container)).toBeNull();
   });
 
   it("renders nothing when duration is Infinity", () => {
     const { container } = render(
-      <ProgressTooltip ratio={0.5} duration={Infinity} />
+      <ProgressTooltip ratio={0.5} duration={Infinity} placement="top" />
     );
     expect(queryTooltip(container)).toBeNull();
   });
 
   it("renders nothing when ratio is NaN", () => {
     const { container } = render(
-      <ProgressTooltip ratio={NaN} duration={100} />
+      <ProgressTooltip ratio={NaN} duration={100} placement="top" />
     );
     expect(queryTooltip(container)).toBeNull();
   });
 
   it("renders nothing when ratio is Infinity", () => {
     const { container } = render(
-      <ProgressTooltip ratio={Infinity} duration={100} />
+      <ProgressTooltip ratio={Infinity} duration={100} placement="top" />
     );
     expect(queryTooltip(container)).toBeNull();
   });

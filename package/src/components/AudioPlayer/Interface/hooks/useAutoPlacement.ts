@@ -2,7 +2,7 @@ import { DropdownContentPlacement } from "@/components/Dropdown";
 import { useUIContext } from "@/components/AudioPlayer/Context/hooks/useUIContext";
 import { useState, useEffect } from "react";
 
-export const useDropdownAutoPlacement = ({
+export const useAutoPlacement = ({
   triggerRef,
   initialState,
 }: {

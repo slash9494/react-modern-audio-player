@@ -6,6 +6,7 @@ import { safeRatio } from "@/utils/safeRatio";
 import { ProgressTooltip } from "./ProgressTooltip";
 import { useProgress, useProgressKeyDown, useWaveSurfer } from "./hooks";
 import type { WaveformModeResult } from "./hooks";
+import { useAutoPlacement } from "@/components/AudioPlayer/Interface/hooks";
 import "./WaveformProgress.css";
 
 export const WaveformProgress: FC<{
@@ -13,8 +14,15 @@ export const WaveformProgress: FC<{
   waveformMode: WaveformModeResult;
 }> = ({ isActive, waveformMode }) => {
   const waveformRef = useRef<HTMLDivElement>(null);
+  const wrapperRef = useRef<HTMLDivElement>(null);
   const { isLoadedMetaData, isPlaying } = usePlaybackContext();
   const { elementRefs } = useResourceContext();
+
+  const autoPlacement = useAutoPlacement({
+    triggerRef: wrapperRef,
+    initialState: "top",
+  });
+  const tooltipPlacement = autoPlacement === "bottom" ? "bottom" : "top";
 
   const { isWaveformReady } = useWaveSurfer(waveformRef, waveformMode);
 
@@ -60,6 +68,7 @@ export const WaveformProgress: FC<{
 
   return (
     <div
+      ref={wrapperRef}
       className="rmap-waveform-wrapper"
       data-active={isActive}
       data-ready={isWaveformReady}
@@ -89,7 +98,11 @@ export const WaveformProgress: FC<{
         onKeyDown={handleKeyDown}
         {...progressProps}
       />
-      <ProgressTooltip ratio={previewRatio ?? hoverRatio} duration={duration} />
+      <ProgressTooltip
+        ratio={previewRatio ?? hoverRatio}
+        duration={duration}
+        placement={tooltipPlacement}
+      />
     </div>
   );
 };
