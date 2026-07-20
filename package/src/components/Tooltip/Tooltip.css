@@ -10,10 +10,20 @@
   font-size: 12px;
   line-height: 1.4;
   text-align: center;
+  font-variant-numeric: tabular-nums;
   white-space: nowrap;
   box-shadow: 0 2px 4px rgb(var(--rm-audio-player-shadow, 0 0 0) / 10%);
   pointer-events: none;
   z-index: 6;
+}
+
+/* The app font (e.g. Apple SD Gothic Neo) lacks a `tnum` glyph set, so
+   `tabular-nums` above is silently dropped and proportional digits make the
+   box width jitter per second. A monospace stack renders equal-width digits,
+   so the width changes only when the digit count does (MM:SS vs H:MM:SS). */
+.rmap-tooltip.rmap-progress-tooltip {
+  font-family: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas,
+    "Liberation Mono", monospace;
 }
 
 .rmap-tooltip[data-placement="bottom"] {

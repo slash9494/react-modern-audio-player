@@ -1,4 +1,5 @@
 import { useTimeContext } from "@/components/AudioPlayer/Context/hooks/useTimeContext";
+import { useUIContext } from "@/components/AudioPlayer/Context/hooks/useUIContext";
 import { formatClockTime } from "@/utils/getTime";
 import { safeRatio } from "@/utils/safeRatio";
 import { FC, useEffect, useRef, useState } from "react";
@@ -9,13 +10,15 @@ import "./BarProgress.css";
 
 export const BarProgress: FC = () => {
   const { currentTime, duration } = useTimeContext();
+  const { timeTooltipPlacement } = useUIContext();
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [wrapperWidth, setWrapperWidth] = useState(0);
   const autoPlacement = useAutoPlacement({
     triggerRef: wrapperRef,
     initialState: "top",
   });
-  const tooltipPlacement = autoPlacement === "bottom" ? "bottom" : "top";
+  const tooltipPlacement =
+    timeTooltipPlacement ?? (autoPlacement === "bottom" ? "bottom" : "top");
 
   useEffect(() => {
     const el = wrapperRef.current;

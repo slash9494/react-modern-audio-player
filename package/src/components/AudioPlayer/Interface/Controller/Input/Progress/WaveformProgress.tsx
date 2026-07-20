@@ -1,5 +1,6 @@
 import { usePlaybackContext } from "@/components/AudioPlayer/Context/hooks/usePlaybackContext";
 import { useResourceContext } from "@/components/AudioPlayer/Context/hooks/useResourceContext";
+import { useUIContext } from "@/components/AudioPlayer/Context/hooks/useUIContext";
 import { formatClockTime } from "@/utils/getTime";
 import { FC, useCallback, useEffect, useRef } from "react";
 import { safeRatio } from "@/utils/safeRatio";
@@ -17,12 +18,14 @@ export const WaveformProgress: FC<{
   const wrapperRef = useRef<HTMLDivElement>(null);
   const { isLoadedMetaData, isPlaying } = usePlaybackContext();
   const { elementRefs } = useResourceContext();
+  const { timeTooltipPlacement } = useUIContext();
 
   const autoPlacement = useAutoPlacement({
     triggerRef: wrapperRef,
     initialState: "top",
   });
-  const tooltipPlacement = autoPlacement === "bottom" ? "bottom" : "top";
+  const tooltipPlacement =
+    timeTooltipPlacement ?? (autoPlacement === "bottom" ? "bottom" : "top");
 
   const { isWaveformReady } = useWaveSurfer(waveformRef, waveformMode);
 

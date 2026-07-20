@@ -247,6 +247,7 @@ export const audioPlayerReducer = (
         playListPlacement: action.playListPlacement || state.playListPlacement,
         interfacePlacement: action.interfacePlacement,
         volumeSliderPlacement: action.volumeSliderPlacement,
+        timeTooltipPlacement: action.timeTooltipPlacement,
       };
     case "SET_MUTED":
       return {

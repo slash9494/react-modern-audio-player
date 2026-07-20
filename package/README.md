@@ -182,6 +182,7 @@ interface AudioPlayerProps {
     interface?: InterfacePlacement;
     volumeSlider?: VolumeSliderPlacement;
     speedSelector?: SpeedSelectorPlacement;
+    timeTooltip?: TimeTooltipPlacement;
   };
   rootContainerProps?: RootContainerProps;
   colorScheme?: "light" | "dark";
@@ -357,6 +358,8 @@ type PlayerPlacement =
 type VolumeSliderPlacement = "bottom" | "top" | "left" | "right";
 
 type SpeedSelectorPlacement = "bottom" | "top" | "left" | "right";
+
+type TimeTooltipPlacement = "top" | "bottom";
 
 type PlayListPlacement = "bottom" | "top";
 
