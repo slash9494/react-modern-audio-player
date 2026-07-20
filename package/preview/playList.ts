@@ -37,10 +37,10 @@ export const playList: PlayList = [
     id: 5,
   },
   {
-    name: "Live — SomaFM Groove Salad",
+    name: "Live — Radio Paradise",
     writer: "live stream (isLive)",
     img: "https://cdn.pixabay.com/photo/2017/08/30/01/05/milky-way-2695569__340.jpg",
-    src: "https://ice1.somafm.com/groovesalad-128-mp3",
+    src: "https://stream.radioparadise.com/mp3-192",
     id: 6,
     isLive: true,
   },
