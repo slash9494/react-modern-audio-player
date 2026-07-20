@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { AudioData } from "@/components/AudioPlayer/Context";
-import { isLiveTrack } from "../isLiveTrack";
+import { isLiveTrack } from "../hooks/isLiveTrack";
 
 const makeAudioData = (overrides: Partial<AudioData> = {}): AudioData => ({
   src: "track.mp3",

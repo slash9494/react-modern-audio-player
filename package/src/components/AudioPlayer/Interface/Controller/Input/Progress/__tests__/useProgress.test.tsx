@@ -5,7 +5,7 @@ import { playbackContext } from "@/components/AudioPlayer/Context/PlaybackContex
 import { resourceContext } from "@/components/AudioPlayer/Context/ResourceContext";
 import { trackContext } from "@/components/AudioPlayer/Context/TrackContext";
 import { AudioData } from "@/components/AudioPlayer/Context";
-import { useProgress } from "../useProgress";
+import { useProgress } from "../hooks/useProgress";
 
 // useProgress.moveAudioTime translates a pointer position on the progress bar
 // into audioEl.currentTime. Live streams must bail out before computing a seek

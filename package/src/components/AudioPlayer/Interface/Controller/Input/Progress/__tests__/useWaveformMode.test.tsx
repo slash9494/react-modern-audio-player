@@ -11,7 +11,7 @@ import {
   LARGE_FILE_THRESHOLD_SEC,
   LARGE_FILE_BYTES,
   __resetWaveformSizeCache,
-} from "../useWaveformMode";
+} from "../hooks/useWaveformMode";
 
 beforeEach(() => {
   __resetWaveformSizeCache();

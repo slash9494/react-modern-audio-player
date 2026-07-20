@@ -3,8 +3,7 @@ import { formatClockTime } from "@/utils/getTime";
 import { safeRatio } from "@/utils/safeRatio";
 import { FC, useEffect, useRef, useState } from "react";
 import { ProgressTooltip } from "./ProgressTooltip";
-import { useProgress } from "./useProgress";
-import { useProgressKeyDown } from "./useProgressKeyDown";
+import { useProgress, useProgressKeyDown } from "./hooks";
 import "./BarProgress.css";
 
 export const BarProgress: FC = () => {

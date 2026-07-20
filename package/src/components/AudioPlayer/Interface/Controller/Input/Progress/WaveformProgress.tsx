@@ -4,10 +4,8 @@ import { formatClockTime } from "@/utils/getTime";
 import { FC, useCallback, useEffect, useRef } from "react";
 import { safeRatio } from "@/utils/safeRatio";
 import { ProgressTooltip } from "./ProgressTooltip";
-import { useProgress } from "./useProgress";
-import { useProgressKeyDown } from "./useProgressKeyDown";
-import { useWaveSurfer } from "./useWavesurfer";
-import type { WaveformModeResult } from "./useWaveformMode";
+import { useProgress, useProgressKeyDown, useWaveSurfer } from "./hooks";
+import type { WaveformModeResult } from "./hooks";
 import "./WaveformProgress.css";
 
 export const WaveformProgress: FC<{
