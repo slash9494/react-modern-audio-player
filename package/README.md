@@ -219,23 +219,17 @@ type AudioData = {
 };
 ```
 
-### Long-form & live stream tracks
+### Long-form & live streams — automatic waveform fallback
 
-By default the waveform is drawn by decoding the whole file in the browser, which
-stalls on very large files (multi-hour MP3s) and never finishes for an endless
-live stream. **Long-form and live tracks are now detected automatically** from the
-`<audio>` metadata (the full-file decode is deferred until `loadedmetadata` and
-skipped for tracks over 30 minutes or live streams). A track whose file is
-larger than 50 MB (read via a `HEAD` request on same-origin or CORS-enabled
-hosts) is also skipped, which catches short but heavy hi-res / lossless files,
-so a plain `{ src, id }` track works without configuration. The `<audio>` element also defaults to
-`preload="metadata"`, so playback streams progressively over HTTP range instead
-of waiting on a full download. When the real waveform can't be drawn (long-form
-or live), the player falls back to the standard seekable bar progress instead of
-a faux waveform. Hovering (or dragging) either progress type shows a floating
-time tooltip at the pointer position, hidden for live streams where seeking is
-disabled and until metadata is available. These optional fields remain
-as hints/overrides:
+A plain `{ src, id }` track just works — the player automatically detects
+long-form and live tracks and falls back from the waveform to a standard
+seekable bar. Fallback kicks in when a track is:
+
+- a **live stream**,
+- longer than **30 minutes**, or
+- over **50 MB** (detected via a `HEAD` request on same-origin / CORS-enabled hosts).
+
+You can override or hint any of this with optional `AudioData` fields:
 
 | Field      | Type                             | Effect                                                                                                                                                                                                                               |
 | ---------- | -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -501,6 +495,8 @@ function PlayerControls() {
     setTrack,
   } = useAudioPlayer();
 
+  const timeLabel = `${currentTime.toFixed(0)}s / ${duration.toFixed(0)}s`;
+
   return (
     <div>
       <button onClick={togglePlay}>{isPlaying ? "Pause" : "Play"}</button>
@@ -510,8 +506,7 @@ function PlayerControls() {
       <button onClick={() => setVolume(0.5)}>Volume 50%</button>
       <button onClick={() => setTrack(1)}>Track 2</button>
       <p>
-        {currentTrack?.name} — {currentTime.toFixed(0)}s / {duration.toFixed(0)}
-        s
+        {currentTrack?.name} — {timeLabel}
       </p>
     </div>
   );
