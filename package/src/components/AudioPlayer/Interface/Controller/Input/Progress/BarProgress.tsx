@@ -71,6 +71,7 @@ export const BarProgress: FC = () => {
         ratio={previewRatio ?? hoverRatio}
         duration={duration}
         placement={tooltipPlacement}
+        containerWidth={wrapperWidth}
       />
     </div>
   );

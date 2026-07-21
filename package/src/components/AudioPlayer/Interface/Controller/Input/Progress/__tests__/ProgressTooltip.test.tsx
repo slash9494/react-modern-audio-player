@@ -1,5 +1,5 @@
 import { render } from "@testing-library/react";
-import { describe, it, expect } from "vitest";
+import { afterEach, beforeEach, describe, it, expect } from "vitest";
 import { ProgressTooltip } from "../ProgressTooltip";
 
 const queryTooltip = (container: HTMLElement) =>
@@ -67,5 +67,88 @@ describe("ProgressTooltip", () => {
       <ProgressTooltip ratio={0.5} duration={100} />
     );
     expect(queryTooltip(container)).toHaveStyle({ left: "50%" });
+  });
+
+  describe("horizontal clamping", () => {
+    const TOOLTIP_WIDTH = 40;
+    const CONTAINER_WIDTH = 200;
+    let originalOffsetWidth: PropertyDescriptor | undefined;
+
+    beforeEach(() => {
+      originalOffsetWidth = Object.getOwnPropertyDescriptor(
+        HTMLElement.prototype,
+        "offsetWidth"
+      );
+      Object.defineProperty(HTMLElement.prototype, "offsetWidth", {
+        configurable: true,
+        get: () => TOOLTIP_WIDTH,
+      });
+    });
+
+    afterEach(() => {
+      if (originalOffsetWidth) {
+        Object.defineProperty(
+          HTMLElement.prototype,
+          "offsetWidth",
+          originalOffsetWidth
+        );
+      } else {
+        delete (HTMLElement.prototype as { offsetWidth?: number }).offsetWidth;
+      }
+    });
+
+    it("clamps the center to tooltipWidth/2 at the start (ratio 0)", () => {
+      const { container } = render(
+        <ProgressTooltip
+          ratio={0}
+          duration={100}
+          placement="top"
+          containerWidth={CONTAINER_WIDTH}
+        />
+      );
+      expect(queryTooltip(container)).toHaveStyle({
+        left: `${TOOLTIP_WIDTH / 2}px`,
+      });
+    });
+
+    it("clamps the center to containerWidth - tooltipWidth/2 at the end (ratio 1)", () => {
+      const { container } = render(
+        <ProgressTooltip
+          ratio={1}
+          duration={100}
+          placement="top"
+          containerWidth={CONTAINER_WIDTH}
+        />
+      );
+      expect(queryTooltip(container)).toHaveStyle({
+        left: `${CONTAINER_WIDTH - TOOLTIP_WIDTH / 2}px`,
+      });
+    });
+
+    it("keeps the center on the cursor in the middle (ratio 0.5)", () => {
+      const { container } = render(
+        <ProgressTooltip
+          ratio={0.5}
+          duration={100}
+          placement="top"
+          containerWidth={CONTAINER_WIDTH}
+        />
+      );
+      expect(queryTooltip(container)).toHaveStyle({
+        left: `${0.5 * CONTAINER_WIDTH}px`,
+      });
+    });
+
+    it("falls back to the percentage position when containerWidth is 0", () => {
+      const { container } = render(
+        <ProgressTooltip
+          ratio={0.5}
+          duration={100}
+          placement="top"
+          containerWidth={0}
+        />
+      );
+      expect(queryTooltip(container)).toHaveStyle({ left: "50%" });
+    });
   });
 });
