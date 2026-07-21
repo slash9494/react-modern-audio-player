@@ -33,6 +33,25 @@ export const __resetWaveformSizeCache = () => {
   warnedLargeFileSrc.clear();
 };
 
+// AbortController-less engines (legacy Edge 14/15, some webviews) run the HEAD
+// untimed via `signal: undefined`. Race a manual timer so a hung HEAD fails open
+// to `null` (normal decode) instead of pinning sizeGatePending forever.
+// `.then` (not `.finally`) clears the timer: those same engines predate
+// Promise.prototype.finally, and headBytes never rejects (it has `.catch`).
+const withUntimedFailOpen = (
+  headBytes: Promise<number | null>,
+  timeout: ReturnType<typeof createTimeoutSignal>
+): Promise<number | null> => {
+  if (timeout !== null) return headBytes;
+  return Promise.race([
+    headBytes,
+    new Promise<number | null>((resolve) => {
+      const timer = setTimeout(() => resolve(null), HEAD_TIMEOUT_MS);
+      headBytes.then(() => clearTimeout(timer));
+    }),
+  ]);
+};
+
 const fetchContentLength = (src: string): Promise<number | null> => {
   const cached = contentLengthCache.get(src);
   if (cached) return cached;
@@ -43,18 +62,21 @@ const fetchContentLength = (src: string): Promise<number | null> => {
   const pending: Promise<number | null> =
     typeof fetch === "undefined"
       ? Promise.resolve<number | null>(null)
-      : fetch(src, { method: "HEAD", signal: timeout?.signal })
-          .then((res) => {
-            const header = res.headers.get("content-length");
-            return header ? Number(header) : null;
-          })
-          .catch(() => null)
-          // Trailing .then (not .finally) clears the timer: .finally postdates
-          // AbortController on some engines (EdgeHTML/FF57), reintroducing a throw.
-          .then((bytes) => {
-            timeout?.cancel();
-            return bytes;
-          });
+      : withUntimedFailOpen(
+          fetch(src, { method: "HEAD", signal: timeout?.signal })
+            .then((res) => {
+              const header = res.headers.get("content-length");
+              return header ? Number(header) : null;
+            })
+            .catch(() => null)
+            // Trailing .then (not .finally) clears the timer: .finally postdates
+            // AbortController on some engines (EdgeHTML/FF57), reintroducing a throw.
+            .then((bytes) => {
+              timeout?.cancel();
+              return bytes;
+            }),
+          timeout
+        );
 
   contentLengthCache.set(src, pending);
   return pending;

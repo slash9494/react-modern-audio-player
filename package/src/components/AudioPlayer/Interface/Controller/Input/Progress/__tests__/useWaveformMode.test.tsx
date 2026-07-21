@@ -1,4 +1,4 @@
-import { renderHook, waitFor } from "@testing-library/react";
+import { act, renderHook, waitFor } from "@testing-library/react";
 import { describe, it, expect, vi, afterEach, beforeEach } from "vitest";
 import { FC, ReactNode } from "react";
 import { resourceContext } from "@/components/AudioPlayer/Context/ResourceContext";
@@ -634,6 +634,50 @@ describe("useWaveformMode sizeGatePending", () => {
     });
 
     expect(global.fetch).not.toHaveBeenCalled();
+    expect(result.current.sizeGatePending).toBe(false);
+    expect(result.current.mode).toBe("normal");
+  });
+});
+
+describe("useWaveformMode fail-open when AbortController is unavailable", () => {
+  const originalFetch = global.fetch;
+  const originalAbortController = global.AbortController;
+  const HEAD_TIMEOUT_MS = 8000;
+
+  beforeEach(() => {
+    vi.useFakeTimers();
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+    global.fetch = originalFetch;
+    global.AbortController = originalAbortController;
+    vi.restoreAllMocks();
+  });
+
+  it("times out a hung untimed HEAD and settles to 'normal' instead of pinning sizeGatePending", async () => {
+    // No AbortController → createTimeoutSignal returns null → the HEAD runs untimed.
+    global.AbortController = undefined as never;
+    // A HEAD that never settles: without the manual fail-open timer this would
+    // pin sizeGatePending forever.
+    global.fetch = vi
+      .fn()
+      .mockReturnValue(new Promise(() => undefined)) as never;
+
+    const track = makeAudioData({ src: "hung-untimed-head.mp3" });
+    const { result } = renderUseWaveformMode({
+      playList: [track],
+      curPlayId: track.id,
+      audioEl: makeAudioEl(FINITE_DURATION),
+    });
+
+    expect(result.current.sizeGatePending).toBe(true);
+    expect(result.current.mode).toBe("normal");
+
+    await act(async () => {
+      vi.advanceTimersByTime(HEAD_TIMEOUT_MS);
+    });
+
     expect(result.current.sizeGatePending).toBe(false);
     expect(result.current.mode).toBe("normal");
   });
