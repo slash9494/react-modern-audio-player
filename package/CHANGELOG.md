@@ -1,5 +1,11 @@
 # React-modern-audio-player
 
+## v2.4.1 - 2026-07-21
+
+### 🐛 Fixed
+
+- **Hover time tooltip clipped near track ends**: the tooltip is centered on the cursor, so close to the start/end half of it overflowed the progress wrapper and was cut off by its `overflow` clip (only partial text like `:00` showed). Its horizontal position is now clamped to stay fully inside the track.
+
 ## v2.4.0 - 2026-07-21
 
 ### ✨ New Features
