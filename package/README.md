@@ -230,6 +230,8 @@ seekable bar. Fallback kicks in when a track is:
 - longer than **30 minutes**, or
 - over **50 MB** (detected via a `HEAD` request on same-origin / CORS-enabled hosts).
 
+> Live auto-detection relies on the browser reporting `duration === Infinity` after metadata loads. A few streams report `NaN` instead and are treated as normal tracks — set `isLive: true` explicitly for those.
+
 You can override or hint any of this with optional `AudioData` fields:
 
 | Field      | Type                             | Effect                                                                                                                                                                                                                               |
