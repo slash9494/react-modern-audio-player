@@ -656,7 +656,7 @@ describe("useWaveformMode fail-open when AbortController is unavailable", () => 
   });
 
   it("times out a hung untimed HEAD and settles to 'normal' instead of pinning sizeGatePending", async () => {
-    // No AbortController → createTimeoutSignal returns null → the HEAD runs untimed.
+    // No AbortController → fetchWithTimeout cannot cancel → the HEAD runs untimed.
     global.AbortController = undefined as never;
     // A HEAD that never settles: without the manual fail-open timer this would
     // pin sizeGatePending forever.

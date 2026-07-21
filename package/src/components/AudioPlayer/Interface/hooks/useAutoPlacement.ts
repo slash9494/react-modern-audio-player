@@ -41,7 +41,7 @@ export const useAutoPlacement = ({
     window.addEventListener("scroll", scheduleMeasure, { passive: true });
     window.addEventListener("resize", scheduleMeasure);
 
-    // Absent on the same legacy engines createTimeoutSignal guards for; the
+    // Absent on the same legacy engines fetchWithTimeout guards for; the
     // scroll/resize listeners still degrade gracefully without it.
     const resizeObserver =
       typeof ResizeObserver !== "undefined"
