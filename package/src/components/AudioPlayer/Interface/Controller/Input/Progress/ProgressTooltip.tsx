@@ -1,6 +1,7 @@
-import { FC, useLayoutEffect, useRef, useState } from "react";
+import { FC, useRef } from "react";
 import { Tooltip, TooltipPlacement } from "@/components/Tooltip";
 import { formatClockTime } from "@/utils/getTime";
+import { useElementWidth } from "./hooks";
 
 export interface ProgressTooltipProps {
   ratio: number | null;
@@ -37,24 +38,7 @@ export const ProgressTooltip: FC<ProgressTooltipProps> = ({
   containerWidth = 0,
 }) => {
   const tooltipRef = useRef<HTMLDivElement>(null);
-  const [tooltipWidth, setTooltipWidth] = useState(0);
-
-  const isRenderable = hasRenderableProgress(ratio, duration);
-
-  useLayoutEffect(() => {
-    if (!isRenderable) return;
-    const el = tooltipRef.current;
-    if (!el) return;
-    setTooltipWidth(el.offsetWidth);
-
-    if (typeof ResizeObserver === "undefined") return;
-    const resizeObserver = new ResizeObserver(() => {
-      const node = tooltipRef.current;
-      if (node) setTooltipWidth(node.offsetWidth);
-    });
-    resizeObserver.observe(el);
-    return () => resizeObserver.disconnect();
-  }, [isRenderable]);
+  const tooltipWidth = useElementWidth(tooltipRef);
 
   if (!hasRenderableProgress(ratio, duration)) {
     return null;

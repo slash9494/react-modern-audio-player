@@ -2,9 +2,9 @@ import { useTimeContext } from "@/components/AudioPlayer/Context/hooks/useTimeCo
 import { useUIContext } from "@/components/AudioPlayer/Context/hooks/useUIContext";
 import { formatClockTime } from "@/utils/getTime";
 import { safeRatio } from "@/utils/safeRatio";
-import { FC, useEffect, useRef, useState } from "react";
+import { FC, useRef } from "react";
 import { ProgressTooltip } from "./ProgressTooltip";
-import { useProgress, useProgressKeyDown } from "./hooks";
+import { useElementWidth, useProgress, useProgressKeyDown } from "./hooks";
 import { useAutoPlacement } from "@/components/AudioPlayer/Interface/hooks";
 import "./BarProgress.css";
 
@@ -12,24 +12,13 @@ export const BarProgress: FC = () => {
   const { currentTime, duration } = useTimeContext();
   const { timeTooltipPlacement } = useUIContext();
   const wrapperRef = useRef<HTMLDivElement>(null);
-  const [wrapperWidth, setWrapperWidth] = useState(0);
+  const wrapperWidth = useElementWidth(wrapperRef);
   const autoPlacement = useAutoPlacement({
     triggerRef: wrapperRef,
     initialState: "top",
   });
   const tooltipPlacement =
     timeTooltipPlacement ?? (autoPlacement === "bottom" ? "bottom" : "top");
-
-  useEffect(() => {
-    const el = wrapperRef.current;
-    if (!el) return;
-    setWrapperWidth(el.offsetWidth);
-    const resizeObserver = new ResizeObserver(([entry]) => {
-      setWrapperWidth(entry.contentBoxSize[0].inlineSize);
-    });
-    resizeObserver.observe(el);
-    return () => resizeObserver.disconnect();
-  }, []);
 
   const { progressProps, previewRatio, hoverRatio } = useProgress();
   const handleKeyDown = useProgressKeyDown();
