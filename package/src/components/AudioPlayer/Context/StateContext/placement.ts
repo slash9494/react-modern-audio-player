@@ -5,6 +5,7 @@ import { ActiveUI } from "./element";
 export type VolumeSliderPlacement = DropdownContentPlacement;
 export type SpeedSelectorPlacement = DropdownContentPlacement;
 export type PlayListPlacement = "bottom" | "top";
+export type TimeTooltipPlacement = "top" | "bottom";
 export type PlayerPlacement =
   | "bottom"
   | "top"
@@ -79,5 +80,6 @@ export interface Placements<
   interfacePlacement: InterfacePlacement<TInterfacePlacementLength>;
   volumeSliderPlacement: VolumeSliderPlacement | undefined;
   speedSelectorPlacement: SpeedSelectorPlacement | undefined;
+  timeTooltipPlacement: TimeTooltipPlacement | undefined;
   playerPlacement: PlayerPlacement | undefined;
 }

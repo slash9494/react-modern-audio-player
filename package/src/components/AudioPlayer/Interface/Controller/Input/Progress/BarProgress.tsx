@@ -1,33 +1,42 @@
 import { useTimeContext } from "@/components/AudioPlayer/Context/hooks/useTimeContext";
-import { getTimeWithPadStart } from "@/utils/getTime";
+import { useUIContext } from "@/components/AudioPlayer/Context/hooks/useUIContext";
+import { formatClockTime } from "@/utils/getTime";
 import { safeRatio } from "@/utils/safeRatio";
 import { FC, useEffect, useRef, useState } from "react";
-import { useProgress } from "./useProgress";
-import { useProgressKeyDown } from "./useProgressKeyDown";
+import { ProgressTooltip } from "./ProgressTooltip";
+import { useProgress, useProgressKeyDown } from "./hooks";
+import { useAutoPlacement } from "@/components/AudioPlayer/Interface/hooks";
 import "./BarProgress.css";
 
 export const BarProgress: FC = () => {
   const { currentTime, duration } = useTimeContext();
+  const { timeTooltipPlacement } = useUIContext();
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [wrapperWidth, setWrapperWidth] = useState(0);
+  const autoPlacement = useAutoPlacement({
+    triggerRef: wrapperRef,
+    initialState: "top",
+  });
+  const tooltipPlacement =
+    timeTooltipPlacement ?? (autoPlacement === "bottom" ? "bottom" : "top");
 
   useEffect(() => {
     const el = wrapperRef.current;
     if (!el) return;
     setWrapperWidth(el.offsetWidth);
-    const ro = new ResizeObserver(([entry]) => {
+    const resizeObserver = new ResizeObserver(([entry]) => {
       setWrapperWidth(entry.contentBoxSize[0].inlineSize);
     });
-    ro.observe(el);
-    return () => ro.disconnect();
+    resizeObserver.observe(el);
+    return () => resizeObserver.disconnect();
   }, []);
 
-  const progressRatio = safeRatio(currentTime, duration);
-
-  const eventProps = useProgress();
+  const { progressProps, previewRatio, hoverRatio } = useProgress();
   const handleKeyDown = useProgressKeyDown();
 
-  const progressOffset = progressRatio * wrapperWidth;
+  const ratio = previewRatio ?? safeRatio(currentTime, duration);
+
+  const progressOffset = ratio * wrapperWidth;
 
   return (
     <div
@@ -39,17 +48,17 @@ export const BarProgress: FC = () => {
       aria-label="Seek"
       aria-valuemin={0}
       aria-valuemax={100}
-      aria-valuenow={Math.round(progressRatio * 100)}
-      aria-valuetext={`${getTimeWithPadStart(
-        currentTime
-      )} of ${getTimeWithPadStart(duration)}`}
+      aria-valuenow={Math.round(ratio * 100)}
+      aria-valuetext={`${formatClockTime(currentTime)} of ${formatClockTime(
+        duration
+      )}`}
       onKeyDown={handleKeyDown}
-      {...eventProps}
+      {...progressProps}
     >
       <div className="rmap-progress-bar">
         <div
           className="rmap-progress-fill"
-          style={{ transform: `scaleX(${progressRatio})` }}
+          style={{ transform: `scaleX(${ratio})` }}
         />
       </div>
       <div
@@ -57,6 +66,11 @@ export const BarProgress: FC = () => {
         style={{
           transform: `translateX(${progressOffset}px)`,
         }}
+      />
+      <ProgressTooltip
+        ratio={previewRatio ?? hoverRatio}
+        duration={duration}
+        placement={tooltipPlacement}
       />
     </div>
   );

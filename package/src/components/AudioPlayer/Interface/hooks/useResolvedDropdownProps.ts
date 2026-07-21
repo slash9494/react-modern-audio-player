@@ -1,5 +1,5 @@
 import type { DropdownContentPlacement } from "@/components/Dropdown";
-import { useDropdownAutoPlacement } from "./useDropdownAutoPlacement";
+import { useAutoPlacement } from "./useAutoPlacement";
 
 type TriggerType = "click" | "hover";
 
@@ -21,7 +21,7 @@ export const useResolvedDropdownProps = ({
   triggerRef,
   defaults,
 }: UseResolvedDropdownPropsParams) => {
-  const autoPlacement = useDropdownAutoPlacement({
+  const autoPlacement = useAutoPlacement({
     triggerRef,
     initialState: defaults.placement,
   });

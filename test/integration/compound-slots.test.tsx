@@ -178,9 +178,13 @@ describe("compound slots (additive)", () => {
         <AudioPlayerWithProviders.Progress type="waveform" />
       </AudioPlayerWithProviders>
     );
-    // Preset renders "bar"; compound renders "waveform". Both should coexist.
+    const waveform = container.querySelector(".rmap-waveform-wrapper");
+
+    // The compound waveform slot is active immediately and renders no bar
+    // fallback, so the only progress-bar is the preset "bar" instance.
+    expect(waveform?.getAttribute("data-active")).toBe("true");
     expect(screen.getByTestId("progress-bar")).toBeInTheDocument();
-    expect(container.querySelector(".rmap-waveform-wrapper")).not.toBeNull();
+    expect(waveform).not.toBeNull();
   });
 
   it("grid template preserves a compound slot's area when its preset is disabled (sparse templateArea)", () => {
