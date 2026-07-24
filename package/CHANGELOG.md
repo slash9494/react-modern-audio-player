@@ -1,6 +1,6 @@
 # React-modern-audio-player
 
-## Unreleased
+## v2.4.2 (Unreleased)
 
 ### 🐛 Fixed
 
