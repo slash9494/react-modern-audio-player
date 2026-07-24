@@ -67,12 +67,20 @@ export const audioPlayerReducer = (
         };
       }
       const infiniteLoopNextIdx = (state.curIdx + 1) % state.playList.length;
+      // Single-track ALL loop returns the same idx/src, so <audio> never
+      // reloads and loadedmetadata never re-fires — flipping isLoadedMetaData
+      // false here would strand it false and kill the progress bar.
+      const isTrackChanging = infiniteLoopNextIdx !== state.curIdx;
       return {
         ...state,
         audioResetKey: state.audioResetKey + 1,
         curIdx: infiniteLoopNextIdx,
         curPlayId: state.playList[infiniteLoopNextIdx].id,
-        curAudioState: { ...state.curAudioState, currentTime: 0 },
+        curAudioState: {
+          ...state.curAudioState,
+          ...(isTrackChanging ? { isLoadedMetaData: false } : {}),
+          currentTime: 0,
+        },
       };
     }
     case "PREV_AUDIO": {

@@ -1,5 +1,11 @@
 # React-modern-audio-player
 
+## Unreleased
+
+### 🐛 Fixed
+
+- **Waveform fallback stuck after advancing from a long-form/live track**: auto-advancing to the next track (via `onEnded` or the next control) kept `isLoadedMetaData` set, so the progress bar kept reading the previous long-form/live track's duration and stayed on the `faux`/`live` bar fallback until the new track's metadata loaded. `NEXT_AUDIO` now resets `isLoadedMetaData` when the track actually changes, matching the shuffle and previous-track paths, while leaving a single-track repeat-`ALL` loop (same `src`, no reload) untouched so its progress bar stays live.
+
 ## v2.4.1 - 2026-07-21
 
 ### 🐛 Fixed
