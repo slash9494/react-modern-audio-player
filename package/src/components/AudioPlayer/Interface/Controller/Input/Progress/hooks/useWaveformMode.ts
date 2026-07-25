@@ -24,6 +24,9 @@ const HEAD_TIMEOUT_MS = 8000;
 // One HEAD per src, reused across re-renders, track revisits, and any AudioPlayer instances sharing the src.
 const contentLengthCache = new Map<string, Promise<number | null>>();
 
+// Distinct track sources must not grow the cache without bound; evict oldest.
+const MAX_CONTENT_LENGTH_CACHE = 100;
+
 // Warn once per src across those same re-renders / revisits / shared instances.
 const warnedLargeFileSrc = new Set<string>();
 
@@ -37,14 +40,30 @@ const fetchContentLength = (src: string): Promise<number | null> => {
   const cached = contentLengthCache.get(src);
   if (cached) return cached;
 
+  if (contentLengthCache.size >= MAX_CONTENT_LENGTH_CACHE) {
+    const oldestSrc = contentLengthCache.keys().next().value;
+    if (oldestSrc !== undefined) contentLengthCache.delete(oldestSrc);
+  }
+
   const pending: Promise<number | null> = fetchWithTimeout(
     src,
     { method: "HEAD" },
     HEAD_TIMEOUT_MS
   ).then((res) => {
-    if (!res) return null;
+    if (!res) {
+      // No response (network error / timeout) is transient — drop so a later
+      // attempt retries. A response (even a 200 without content-length) is a
+      // stable property of the src, so its verdict stays cached: one HEAD per src.
+      // Guard the delete: an older probe failing late must not evict a newer
+      // promise that has since replaced this src's entry.
+      if (contentLengthCache.get(src) === pending)
+        contentLengthCache.delete(src);
+      return null;
+    }
     const header = res.headers.get("content-length");
-    return header ? Number(header) : null;
+    const bytes = header != null ? Number(header) : null;
+    if (bytes == null || !Number.isFinite(bytes)) return null;
+    return bytes;
   });
 
   contentLengthCache.set(src, pending);
