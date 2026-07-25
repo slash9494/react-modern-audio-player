@@ -54,7 +54,10 @@ const fetchContentLength = (src: string): Promise<number | null> => {
       // No response (network error / timeout) is transient — drop so a later
       // attempt retries. A response (even a 200 without content-length) is a
       // stable property of the src, so its verdict stays cached: one HEAD per src.
-      contentLengthCache.delete(src);
+      // Guard the delete: an older probe failing late must not evict a newer
+      // promise that has since replaced this src's entry.
+      if (contentLengthCache.get(src) === pending)
+        contentLengthCache.delete(src);
       return null;
     }
     const header = res.headers.get("content-length");

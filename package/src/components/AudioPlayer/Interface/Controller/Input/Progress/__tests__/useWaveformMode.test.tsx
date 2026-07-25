@@ -443,6 +443,7 @@ describe("useWaveformMode content-length cache lifecycle", () => {
     );
     expect(global.fetch).toHaveBeenCalledTimes(1);
     expect(first.result.current.mode).toBe("normal");
+    first.unmount();
 
     const second = renderUseWaveformMode({
       playList: [track],
