@@ -96,12 +96,27 @@ or
 
 Fixes #42
 
+### Bare `#N` auto-links — do not misuse
+
+GitHub auto-links every bare `#N` in a PR title, body, or commit message to
+the issue/PR with that number. Never use `#N` to enumerate findings, steps, or
+list items — it silently cross-links unrelated issues. Enumerate as `1.`,
+`(1)`, or `item N` instead. Reserve `#N` for deliberate issue/PR references.
+
+Before running `gh pr create`, grep the body for stray references and confirm
+each one is intended:
+
+```
+grep -oE '#[0-9]+' <body-file>   # every hit must be a real issue/PR you mean to link
+```
+
 ---
 
 ## PR Checklist Before Opening
 
 - [ ] commit messages follow Conventional Commits format
 - [ ] no unrelated changes included
+- [ ] no stray `#N` in the title/body/commits — every `#N` is a deliberate issue/PR link (see Issue Linking)
 - [ ] build and tests pass locally
 - [ ] PR description is filled out
 - [ ] `package/README.md` reviewed and updated if the change affects public API, types, props, or user-facing behavior
