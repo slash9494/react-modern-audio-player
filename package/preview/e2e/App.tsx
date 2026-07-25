@@ -1,6 +1,7 @@
 import { ReactElement, useState } from "react";
 import AudioPlayerWithProviders, {
   ActiveUI,
+  AudioData,
   CustomIcons,
   InterfaceGridTemplateArea,
   InterfacePlacement,
@@ -40,6 +41,8 @@ interface TestConfig {
   volumeSliderPlacement?: VolumeSliderPlacement;
   playListPlacement?: PlayListPlacement;
   customIconTestIds?: Partial<Record<keyof CustomIcons, string>>;
+  curPlayId?: number;
+  trackOverrides?: Record<number, Partial<AudioData>>;
 }
 
 function parseTestConfig(): TestConfig {
@@ -85,11 +88,25 @@ function App() {
     ...(progressType !== undefined && { progress: progressType }),
   };
 
+  // e2e nav contract assumes a fixed 5-track list; demo-only showcase tracks
+  // (live / long-form / hi-res, ids 6-8) are excluded so demo playlist growth
+  // cannot break the navigation specs. Overrides target id 1, which is in range.
+  const basePlayList = playList.slice(0, 5);
+  const mergedPlayList = basePlayList.map((track) => ({
+    ...track,
+    ...(config.trackOverrides?.[track.id] ?? {}),
+  }));
+
+  const audioInitialState = {
+    ...initialState,
+    curPlayId: config.curPlayId ?? initialState.curPlayId,
+  };
+
   return (
     <div style={{ width: "100%", padding: "1rem", boxSizing: "border-box" }}>
       <AudioPlayerWithProviders
-        playList={playList}
-        audioInitialState={initialState}
+        playList={mergedPlayList}
+        audioInitialState={audioInitialState}
         activeUI={activeUI}
         customIcons={customIcons}
         placement={

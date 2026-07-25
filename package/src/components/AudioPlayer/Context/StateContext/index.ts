@@ -11,6 +11,7 @@ import {
   InterfacePlacement,
   PlayerPlacement,
   SpeedSelectorPlacement,
+  TimeTooltipPlacement,
   VolumeSliderPlacement,
 } from "./placement";
 
@@ -25,6 +26,7 @@ export interface AudioPlayerStateContext {
   interfacePlacement?: InterfacePlacement;
   volumeSliderPlacement?: VolumeSliderPlacement;
   speedSelectorPlacement?: SpeedSelectorPlacement;
+  timeTooltipPlacement?: TimeTooltipPlacement;
   elementRefs?: ElementRefs;
   customIcons?: CustomIcons;
   coverImgsCss?: CoverImgsCss;

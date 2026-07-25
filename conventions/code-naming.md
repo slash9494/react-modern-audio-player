@@ -95,6 +95,9 @@ Use the same word for the same domain concept throughout the codebase.
 | Volume level | `volume` | `vol`, `level`, `gain` |
 | Playback progress | `progress` | `position`, `seek` |
 | UI visibility state | `isOpen` / `isVisible` | `show`, `display`, `active` |
+| Progress hover time tooltip | `timeTooltip` | `progressTooltip`, `tooltip`, `seekTooltip` |
+
+**Display-purpose UI naming** — a UI element whose job is to *show* something (tooltip, badge, label) is named by **what it shows + the element type**; the displayed subject must be in the name. A tooltip showing the hovered time is `timeTooltip`, not `progressTooltip` (says where, not what) or bare `tooltip` (says nothing). This keeps placement keys parallel to the existing component-named ones (`volumeSlider`, `speedSelector`).
 
 ---
 
