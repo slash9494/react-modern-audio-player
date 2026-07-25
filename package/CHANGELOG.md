@@ -7,10 +7,6 @@
 - **Drag seeking now continues outside the progress bar**: once a seek drag starts, moving the pointer off the bar (or releasing anywhere on the page) is tracked via document-level listeners, so the drag no longer aborts when the cursor leaves the bar. `onMouseLeave` now only clears the hover tooltip.
 - **Oversize probe no longer caches transient failures**: a failed `HEAD` size probe (no response / missing `Content-Length`) is no longer cached permanently, so a later attempt can retry. Successful probes are still cached and deduped, and the probe cache is now bounded.
 
-### 🔄 Changed
-
-- **Reduced redundant work while hovering/seeking the progress bar**: the pointer position is now measured once per mouse event (a single `getBoundingClientRect`) and reused for both the hover tooltip and the seek. Tooltip placement resolution shared by the bar and waveform progress is extracted into a `useTooltipPlacement` hook (no behavior change).
-
 ## v2.4.1 - 2026-07-21
 
 ### 🐛 Fixed
