@@ -1,4 +1,5 @@
 import { test as base, expect, Page, Locator } from "@playwright/test";
+import type { AudioData } from "../../../package/src";
 
 export interface TestConfig {
   playerPlacement?: string;
@@ -8,6 +9,8 @@ export interface TestConfig {
   volumeSliderPlacement?: string;
   playListPlacement?: "top" | "bottom";
   customIconTestIds?: Record<string, string>;
+  curPlayId?: number;
+  trackOverrides?: Record<number, Partial<AudioData>>;
 }
 
 export class PlayerPage {

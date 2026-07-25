@@ -1,6 +1,63 @@
 .rmap-waveform-wrapper {
   display: flex;
+  position: relative;
   width: 100%;
+  /* clip the full-width drag cursor's translated tail so it can't push
+     horizontal overflow in full-width player layouts; clip (not hidden)
+     keeps the vertical focus ring visible. */
+  overflow-x: clip;
+}
+
+.rmap-waveform-cursor {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 100%;
+  /* above the wavesurfer canvas (z3); translateX moves the left border to
+     the drag ratio on the compositor — no per-frame layout. */
+  z-index: 5;
+  pointer-events: none;
+  transform-origin: left center;
+  border-left: 2px solid var(--rm-audio-player-waveform-cursor);
+}
+
+@keyframes rmap-waveform-skeleton-pulse {
+  0%,
+  100% {
+    opacity: 0.3;
+  }
+
+  50% {
+    opacity: 0.65;
+  }
+}
+
+.rmap-waveform-skeleton {
+  position: absolute;
+  inset: 0;
+  /* below the cursor overlay (z5), above the empty pre-draw canvas */
+  z-index: 4;
+  pointer-events: none;
+  /* matches the wavesurfer create height; the container itself can be
+     0-height before the canvas is drawn, so the skeleton needs its own. */
+  height: 80px;
+  /* a single full-width line at the vertical center */
+  background-image: linear-gradient(
+    var(--rm-audio-player-waveform-background),
+    var(--rm-audio-player-waveform-background)
+  );
+  background-size: 100% 2px;
+  background-position: center;
+  background-repeat: no-repeat;
+  animation: rmap-waveform-skeleton-pulse 1.2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rmap-waveform-skeleton {
+    animation: none;
+    opacity: 0.45;
+  }
 }
 
 .rmap-waveform-wrapper[data-active="false"] {
@@ -15,6 +72,13 @@
 }
 
 /* stylelint-disable selector-type-no-unknown */
+/* Hide only the stale canvas ("wave" child) while the next track decodes —
+   #rm-waveform itself stays visible so click/keyboard seek keep working;
+   hidden children are skipped in hit testing and clicks fall through to it. */
+.rmap-waveform-wrapper[data-ready="false"] #rm-waveform wave {
+  visibility: hidden;
+}
+
 .rmap-waveform-wrapper #rm-waveform wave {
   cursor: pointer !important;
   overflow-x: hidden !important;

@@ -2,7 +2,7 @@ import { FC } from "react";
 import { TrackTimeContainer } from "./TrackTimeContainer";
 import { TrackTimeChildrenProps } from "./Types";
 import { useTimeContext } from "@/components/AudioPlayer/Context/hooks/useTimeContext";
-import { getTimeWithPadStart } from "@/utils/getTime";
+import { formatClockTime } from "@/utils/getTime";
 
 export const Duration: FC<TrackTimeChildrenProps> = ({ position }) => {
   const { duration } = useTimeContext();
@@ -12,9 +12,7 @@ export const Duration: FC<TrackTimeChildrenProps> = ({ position }) => {
       position={position}
       className="rmap-track-time-duration"
     >
-      <span className="rmap-track-duration">
-        {getTimeWithPadStart(duration)}
-      </span>
+      <span className="rmap-track-duration">{formatClockTime(duration)}</span>
     </TrackTimeContainer>
   );
 };

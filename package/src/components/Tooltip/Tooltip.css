@@ -1,0 +1,32 @@
+.rmap-tooltip {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  transform: translateX(-50%);
+  max-width: none;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background-color: var(--rm-audio-player-tooltip-background);
+  color: var(--rm-audio-player-text-color);
+  font-size: 12px;
+  line-height: 1.4;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  box-shadow: 0 2px 4px rgb(var(--rm-audio-player-shadow, 0 0 0) / 10%);
+  pointer-events: none;
+  z-index: 6;
+}
+
+/* The app font (e.g. Apple SD Gothic Neo) lacks a `tnum` glyph set, so
+   `tabular-nums` above is silently dropped and proportional digits make the
+   box width jitter per second. `monospace` renders equal-width digits, so the
+   width changes only when the digit count does (MM:SS vs H:MM:SS). Matches the
+   time-display font in TrackTimeContainer.css. */
+.rmap-tooltip.rmap-progress-tooltip {
+  font-family: monospace;
+}
+
+.rmap-tooltip[data-placement="bottom"] {
+  bottom: auto;
+  top: calc(100% + 6px);
+}

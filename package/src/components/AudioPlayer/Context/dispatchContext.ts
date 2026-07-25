@@ -10,6 +10,7 @@ import {
   InterfacePlacement,
   CoverImgsCss,
   VolumeSliderPlacement,
+  TimeTooltipPlacement,
   DEFAULT_INTERFACE_GRID_BOUND,
   AudioState,
 } from "./StateContext";
@@ -43,6 +44,7 @@ export type AudioContextAction<
       playListPlacement?: PlayListPlacement;
       interfacePlacement?: InterfacePlacement<TInterfacePlacementLength>;
       volumeSliderPlacement?: VolumeSliderPlacement;
+      timeTooltipPlacement?: TimeTooltipPlacement;
     };
 export type AudioPlayerDispatchContext = Dispatch<AudioContextAction>;
 

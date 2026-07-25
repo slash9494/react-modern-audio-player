@@ -1,5 +1,5 @@
-import { render } from "@testing-library/react";
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { render, waitFor } from "@testing-library/react";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { FC, ReactNode, useRef } from "react";
 import { playbackContext } from "@/components/AudioPlayer/Context/PlaybackContext";
 import { timeContext } from "@/components/AudioPlayer/Context/TimeContext";
@@ -7,7 +7,9 @@ import { trackContext } from "@/components/AudioPlayer/Context/TrackContext";
 import { resourceContext } from "@/components/AudioPlayer/Context/ResourceContext";
 import { uiContext } from "@/components/AudioPlayer/Context/UIContext";
 import { audioPlayerDispatchContext } from "@/components/AudioPlayer/Context/dispatchContext";
-import { useWaveSurfer } from "../useWavesurfer";
+import { AudioData } from "@/components/AudioPlayer/Context";
+import { useWaveSurfer } from "../hooks/useWavesurfer";
+import { useWaveformMode } from "../hooks/useWaveformMode";
 
 // useWaveSurfer's track-change effect registers a `ready` callback that, when
 // fired by wavesurfer, calls audioEl.play() if playback was active. This is the
@@ -53,7 +55,8 @@ const makeAudioEl = (currentTime = 0, duration = 180) => {
 
 const Harness: FC = () => {
   const ref = useRef<HTMLDivElement>(null);
-  useWaveSurfer(ref);
+  const waveformMode = useWaveformMode();
+  useWaveSurfer(ref, waveformMode);
   return <div ref={ref} />;
 };
 
@@ -62,6 +65,8 @@ interface WrapperProps {
   isPlaying: boolean;
   audioEl: HTMLAudioElement;
   waveformInst: MockWaveSurfer;
+  playList?: AudioData[];
+  isLoadedMetaData?: boolean;
   children: ReactNode;
 }
 
@@ -70,12 +75,14 @@ const Wrapper: FC<WrapperProps> = ({
   isPlaying,
   audioEl,
   waveformInst,
+  playList = [],
+  isLoadedMetaData = true,
   children,
 }) => (
   <uiContext.Provider
     value={{ activeUI: { progress: "waveform" }, playListPlacement: "bottom" }}
   >
-    <trackContext.Provider value={{ playList: [], curPlayId, curIdx: 0 }}>
+    <trackContext.Provider value={{ playList, curPlayId, curIdx: 0 }}>
       <timeContext.Provider
         value={{ currentTime: 0, duration: 180, seekRequestKey: 0 }}
       >
@@ -85,7 +92,7 @@ const Wrapper: FC<WrapperProps> = ({
             repeatType: "ALL",
             muted: false,
             volume: 0.5,
-            isLoadedMetaData: true,
+            isLoadedMetaData,
             audioResetKey: 0,
           }}
         >
@@ -211,5 +218,268 @@ describe("useWaveSurfer onReady recovery", () => {
     // !isTrackChange + savedTime > 0 + duration > 0 → restore time and seek
     expect(audioEl.currentTime).toBe(45);
     expect(waveformInst.seekTo).toHaveBeenCalledWith(45 / 180);
+  });
+});
+
+const makeAudioData = (overrides: Partial<AudioData> = {}): AudioData => ({
+  src: "track1.mp3",
+  id: 1,
+  ...overrides,
+});
+
+const SMALL_FILE_BYTES = 10 * 1024 * 1024;
+const OVERSIZE_FILE_BYTES = 60 * 1024 * 1024;
+
+const makeHeadResponse = (contentLength: string | null) => ({
+  headers: {
+    get: (name: string) => (name === "content-length" ? contentLength : null),
+  },
+});
+
+describe("useWaveSurfer load gating by waveform mode", () => {
+  const originalFetch = global.fetch;
+
+  beforeEach(() => {
+    window.HTMLMediaElement.prototype.play = vi
+      .fn()
+      .mockResolvedValue(undefined);
+    window.HTMLMediaElement.prototype.pause = vi.fn();
+    global.fetch = vi
+      .fn()
+      .mockResolvedValue(makeHeadResponse(String(SMALL_FILE_BYTES))) as never;
+  });
+
+  afterEach(() => {
+    global.fetch = originalFetch;
+  });
+
+  it("does NOT call load for a live track", () => {
+    const audioEl = makeAudioEl();
+    const waveformInst = makeWaveformInst();
+    render(
+      <Wrapper
+        curPlayId={1}
+        isPlaying={false}
+        audioEl={audioEl}
+        waveformInst={waveformInst}
+        playList={[makeAudioData({ id: 1, isLive: true })]}
+      >
+        <Harness />
+      </Wrapper>
+    );
+
+    expect(waveformInst.load).not.toHaveBeenCalled();
+  });
+
+  it("does NOT call load for a large file without precomputed peaks", () => {
+    const audioEl = makeAudioEl(0, 7200);
+    const waveformInst = makeWaveformInst();
+    render(
+      <Wrapper
+        curPlayId={1}
+        isPlaying={false}
+        audioEl={audioEl}
+        waveformInst={waveformInst}
+        playList={[makeAudioData({ id: 1, duration: 7200 })]}
+      >
+        <Harness />
+      </Wrapper>
+    );
+
+    expect(waveformInst.load).not.toHaveBeenCalled();
+  });
+
+  it("calls load with peaks data, undefined preload, and duration when precomputed peaks are provided", () => {
+    const audioEl = makeAudioEl();
+    const waveformInst = makeWaveformInst();
+    const peaksData = [0.1, 0.5, 0.9];
+    render(
+      <Wrapper
+        curPlayId={1}
+        isPlaying={false}
+        audioEl={audioEl}
+        waveformInst={waveformInst}
+        playList={[
+          makeAudioData({
+            id: 1,
+            peaks: peaksData,
+            duration: 7200,
+          }),
+        ]}
+      >
+        <Harness />
+      </Wrapper>
+    );
+
+    expect(waveformInst.load).toHaveBeenCalledWith(
+      audioEl,
+      peaksData,
+      undefined,
+      7200
+    );
+  });
+
+  it("calls load with the audio element alone for a small file without peaks (regression guard)", async () => {
+    const audioEl = makeAudioEl();
+    const waveformInst = makeWaveformInst();
+    render(
+      <Wrapper
+        curPlayId={1}
+        isPlaying={false}
+        audioEl={audioEl}
+        waveformInst={waveformInst}
+        playList={[
+          makeAudioData({ id: 1, src: "gate-small-mode.mp3", duration: 180 }),
+        ]}
+      >
+        <Harness />
+      </Wrapper>
+    );
+
+    await waitFor(() =>
+      expect(waveformInst.load).toHaveBeenCalledWith(audioEl)
+    );
+    expect(waveformInst.load).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe("useWaveSurfer load gating by metadata readiness", () => {
+  const originalFetch = global.fetch;
+
+  beforeEach(() => {
+    window.HTMLMediaElement.prototype.play = vi
+      .fn()
+      .mockResolvedValue(undefined);
+    window.HTMLMediaElement.prototype.pause = vi.fn();
+    global.fetch = vi
+      .fn()
+      .mockResolvedValue(makeHeadResponse(String(SMALL_FILE_BYTES))) as never;
+  });
+
+  afterEach(() => {
+    global.fetch = originalFetch;
+  });
+
+  it("does NOT call load before metadata is loaded", () => {
+    const audioEl = makeAudioEl();
+    const waveformInst = makeWaveformInst();
+    render(
+      <Wrapper
+        curPlayId={1}
+        isPlaying={false}
+        audioEl={audioEl}
+        waveformInst={waveformInst}
+        isLoadedMetaData={false}
+        playList={[makeAudioData({ id: 1, duration: 180 })]}
+      >
+        <Harness />
+      </Wrapper>
+    );
+
+    expect(waveformInst.load).not.toHaveBeenCalled();
+  });
+
+  it("calls load once metadata is loaded for a normal-mode track", async () => {
+    const audioEl = makeAudioEl();
+    const waveformInst = makeWaveformInst();
+    render(
+      <Wrapper
+        curPlayId={1}
+        isPlaying={false}
+        audioEl={audioEl}
+        waveformInst={waveformInst}
+        isLoadedMetaData={true}
+        playList={[
+          makeAudioData({ id: 1, src: "gate-small-meta.mp3", duration: 180 }),
+        ]}
+      >
+        <Harness />
+      </Wrapper>
+    );
+
+    await waitFor(() =>
+      expect(waveformInst.load).toHaveBeenCalledWith(audioEl)
+    );
+  });
+});
+
+describe("useWaveSurfer load gating by byte size-gate", () => {
+  const originalFetch = global.fetch;
+
+  beforeEach(() => {
+    window.HTMLMediaElement.prototype.play = vi
+      .fn()
+      .mockResolvedValue(undefined);
+    window.HTMLMediaElement.prototype.pause = vi.fn();
+  });
+
+  afterEach(() => {
+    global.fetch = originalFetch;
+  });
+
+  const makeDeferredHead = () => {
+    let resolveBytes!: (contentLength: string | null) => void;
+    const headResponse = new Promise<ReturnType<typeof makeHeadResponse>>(
+      (resolve) => {
+        resolveBytes = (contentLength) =>
+          resolve(makeHeadResponse(contentLength));
+      }
+    );
+    global.fetch = vi.fn().mockReturnValue(headResponse) as never;
+    return { resolveBytes };
+  };
+
+  it("does NOT call load while the size HEAD is unresolved, then loads once it resolves under the byte threshold", async () => {
+    const { resolveBytes } = makeDeferredHead();
+    const audioEl = makeAudioEl();
+    const waveformInst = makeWaveformInst();
+    render(
+      <Wrapper
+        curPlayId={1}
+        isPlaying={false}
+        audioEl={audioEl}
+        waveformInst={waveformInst}
+        playList={[
+          makeAudioData({ id: 1, src: "defer-small.mp3", duration: 180 }),
+        ]}
+      >
+        <Harness />
+      </Wrapper>
+    );
+
+    expect(waveformInst.load).not.toHaveBeenCalled();
+
+    resolveBytes(String(SMALL_FILE_BYTES));
+
+    await waitFor(() =>
+      expect(waveformInst.load).toHaveBeenCalledWith(audioEl)
+    );
+    expect(waveformInst.load).toHaveBeenCalledTimes(1);
+  });
+
+  it("does NOT call load when the size HEAD resolves over the byte threshold", async () => {
+    const { resolveBytes } = makeDeferredHead();
+    const audioEl = makeAudioEl();
+    const waveformInst = makeWaveformInst();
+    render(
+      <Wrapper
+        curPlayId={1}
+        isPlaying={false}
+        audioEl={audioEl}
+        waveformInst={waveformInst}
+        playList={[
+          makeAudioData({ id: 1, src: "defer-oversize.flac", duration: 180 }),
+        ]}
+      >
+        <Harness />
+      </Wrapper>
+    );
+
+    expect(waveformInst.load).not.toHaveBeenCalled();
+
+    resolveBytes(String(OVERSIZE_FILE_BYTES));
+
+    await waitFor(() => expect(global.fetch).toHaveBeenCalledTimes(1));
+    expect(waveformInst.load).not.toHaveBeenCalled();
   });
 });
