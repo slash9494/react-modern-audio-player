@@ -5,7 +5,12 @@ import { formatClockTime } from "@/utils/getTime";
 import { FC, useCallback, useEffect, useRef } from "react";
 import { safeRatio } from "@/utils/safeRatio";
 import { ProgressTooltip } from "./ProgressTooltip";
-import { useProgress, useProgressKeyDown, useWaveSurfer } from "./hooks";
+import {
+  useElementWidth,
+  useProgress,
+  useProgressKeyDown,
+  useWaveSurfer,
+} from "./hooks";
 import type { WaveformModeResult } from "./hooks";
 import { useAutoPlacement } from "@/components/AudioPlayer/Interface/hooks";
 import "./WaveformProgress.css";
@@ -16,6 +21,7 @@ export const WaveformProgress: FC<{
 }> = ({ isActive, waveformMode }) => {
   const waveformRef = useRef<HTMLDivElement>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
+  const wrapperWidth = useElementWidth(wrapperRef);
   const { isLoadedMetaData, isPlaying } = usePlaybackContext();
   const { elementRefs } = useResourceContext();
   const { timeTooltipPlacement } = useUIContext();
@@ -105,6 +111,7 @@ export const WaveformProgress: FC<{
         ratio={previewRatio ?? hoverRatio}
         duration={duration}
         placement={tooltipPlacement}
+        containerWidth={wrapperWidth}
       />
     </div>
   );
