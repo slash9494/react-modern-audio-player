@@ -1,6 +1,6 @@
 # React-modern-audio-player
 
-## v2.4.2 (Unreleased)
+## v2.4.2 - 2026-07-25
 
 ### 🐛 Fixed
 
