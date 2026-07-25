@@ -50,14 +50,16 @@ const fetchContentLength = (src: string): Promise<number | null> => {
     { method: "HEAD" },
     HEAD_TIMEOUT_MS
   ).then((res) => {
-    const header = res?.headers.get("content-length");
-    const bytes = header != null ? Number(header) : null;
-    if (bytes == null || !Number.isFinite(bytes)) {
-      // Only a definitive byte count deserves to stick; drop transient failures
-      // (no response / missing header / unparsable) so a later attempt retries.
+    if (!res) {
+      // No response (network error / timeout) is transient — drop so a later
+      // attempt retries. A response (even a 200 without content-length) is a
+      // stable property of the src, so its verdict stays cached: one HEAD per src.
       contentLengthCache.delete(src);
       return null;
     }
+    const header = res.headers.get("content-length");
+    const bytes = header != null ? Number(header) : null;
+    if (bytes == null || !Number.isFinite(bytes)) return null;
     return bytes;
   });
 

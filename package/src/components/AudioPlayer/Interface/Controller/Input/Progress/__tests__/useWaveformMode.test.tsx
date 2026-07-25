@@ -428,9 +428,38 @@ describe("useWaveformMode content-length cache lifecycle", () => {
     },
   });
 
-  it("re-probes the same src after a transient failure without a content-length header", async () => {
+  it("caches a header-less 200 verdict and dedupes the HEAD across a remount", async () => {
     global.fetch = vi.fn().mockResolvedValue(makeHeadResponse(null));
-    const track = makeAudioData({ src: "transient-no-length.mp3" });
+    const track = makeAudioData({ src: "headerless-200.mp3" });
+
+    const first = renderUseWaveformMode({
+      playList: [track],
+      curPlayId: track.id,
+      audioEl: makeAudioEl(FINITE_DURATION),
+    });
+
+    await waitFor(() =>
+      expect(first.result.current.sizeGatePending).toBe(false)
+    );
+    expect(global.fetch).toHaveBeenCalledTimes(1);
+    expect(first.result.current.mode).toBe("normal");
+
+    const second = renderUseWaveformMode({
+      playList: [track],
+      curPlayId: track.id,
+      audioEl: makeAudioEl(FINITE_DURATION),
+    });
+
+    await waitFor(() =>
+      expect(second.result.current.sizeGatePending).toBe(false)
+    );
+    expect(global.fetch).toHaveBeenCalledTimes(1);
+    expect(second.result.current.mode).toBe("normal");
+  });
+
+  it("re-probes the same src after a true transient failure (no response is not cached)", async () => {
+    global.fetch = vi.fn().mockRejectedValue(new Error("network"));
+    const track = makeAudioData({ src: "transient-network-error.mp3" });
 
     const first = renderUseWaveformMode({
       playList: [track],

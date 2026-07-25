@@ -264,6 +264,21 @@ describe("useProgress drag seek debounce", () => {
     expect(audioEl.currentTime).toBe(timeAt(PROGRESS_BAR_WIDTH / 2));
   });
 
+  it("clears the hover tooltip when the drag is released off the bar", () => {
+    vi.useFakeTimers();
+    const audioEl = makeAudioEl(DURATION);
+    const { result } = renderUseProgress(audioEl);
+
+    startDrag(result, PROGRESS_BAR_WIDTH / 4);
+    moveDocumentTo(PROGRESS_BAR_WIDTH + 40);
+    expect(result.current.hoverRatio).toBe(1);
+
+    releaseOnDocument();
+
+    expect(result.current.hoverRatio).toBeNull();
+    expect(result.current.previewRatio).toBeNull();
+  });
+
   it("does not end the drag on mouse leave: it clears hover but a document mousemove still seeks", async () => {
     vi.useFakeTimers();
     const audioEl = makeAudioEl(DURATION);

@@ -127,6 +127,9 @@ export const useProgress = (): UseProgressResult => {
       // early-returns once nothing is pending.
       flushSeek();
       setPreviewRatio(null);
+      // Released off the bar → no mouseleave fires; clear hover so the tooltip
+      // doesn't linger pinned at the clamped edge (mirrors element onMouseUp).
+      setHoverRatio(null);
     };
 
     document.addEventListener("mousemove", handleDocumentMouseMove);
