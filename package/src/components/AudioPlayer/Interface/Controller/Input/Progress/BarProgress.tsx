@@ -1,24 +1,21 @@
 import { useTimeContext } from "@/components/AudioPlayer/Context/hooks/useTimeContext";
-import { useUIContext } from "@/components/AudioPlayer/Context/hooks/useUIContext";
 import { formatClockTime } from "@/utils/getTime";
 import { safeRatio } from "@/utils/safeRatio";
 import { FC, useRef } from "react";
 import { ProgressTooltip } from "./ProgressTooltip";
-import { useElementWidth, useProgress, useProgressKeyDown } from "./hooks";
-import { useAutoPlacement } from "@/components/AudioPlayer/Interface/hooks";
+import {
+  useElementWidth,
+  useProgress,
+  useProgressKeyDown,
+  useTooltipPlacement,
+} from "./hooks";
 import "./BarProgress.css";
 
 export const BarProgress: FC = () => {
   const { currentTime, duration } = useTimeContext();
-  const { timeTooltipPlacement } = useUIContext();
   const wrapperRef = useRef<HTMLDivElement>(null);
   const wrapperWidth = useElementWidth(wrapperRef);
-  const autoPlacement = useAutoPlacement({
-    triggerRef: wrapperRef,
-    initialState: "top",
-  });
-  const tooltipPlacement =
-    timeTooltipPlacement ?? (autoPlacement === "bottom" ? "bottom" : "top");
+  const tooltipPlacement = useTooltipPlacement(wrapperRef);
 
   const { progressProps, previewRatio, hoverRatio } = useProgress();
   const handleKeyDown = useProgressKeyDown();
