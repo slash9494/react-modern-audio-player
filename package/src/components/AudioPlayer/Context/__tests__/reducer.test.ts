@@ -46,6 +46,39 @@ describe("NEXT_AUDIO", () => {
     expect(next.audioResetKey).toBe(state.audioResetKey + 1);
   });
 
+  it("resets isLoadedMetaData so the new track re-derives its waveform mode", () => {
+    // A long-form/live previous track leaves isLoadedMetaData=true; without a
+    // reset useWaveformMode keeps reading the old audioEl.duration and the
+    // faux/live bar fallback sticks on the next track until loadedmetadata.
+    const base = makeBaseState();
+    const state = {
+      ...base,
+      curIdx: 0,
+      curPlayId: 1,
+      curAudioState: { ...base.curAudioState, isLoadedMetaData: true },
+    };
+    const next = audioPlayerReducer(state, { type: "NEXT_AUDIO" });
+    expect(next.curIdx).toBe(1);
+    expect(next.curAudioState.isLoadedMetaData).toBe(false);
+  });
+
+  it("keeps isLoadedMetaData on a single-track ALL loop (same src never reloads)", () => {
+    // (0+1)%1 === 0: same idx/id/src, so <audio> never reloads and
+    // loadedmetadata cannot re-fire. Flipping isLoadedMetaData=false would
+    // strand it false forever and disable the progress bar.
+    const base = makeBaseState();
+    const state = {
+      ...base,
+      playList: [base.playList[0]],
+      curIdx: 0,
+      curPlayId: base.playList[0].id,
+      curAudioState: { ...base.curAudioState, isLoadedMetaData: true },
+    };
+    const next = audioPlayerReducer(state, { type: "NEXT_AUDIO" });
+    expect(next.curIdx).toBe(0);
+    expect(next.curAudioState.isLoadedMetaData).toBe(true);
+  });
+
   it("wraps around to first track when at end (repeatType ALL)", () => {
     const state = { ...makeBaseState(), curIdx: 2, curPlayId: 3 };
     const next = audioPlayerReducer(state, { type: "NEXT_AUDIO" });

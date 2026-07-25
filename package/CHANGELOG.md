@@ -6,6 +6,7 @@
 
 - **Drag seeking now continues outside the progress bar**: once a seek drag starts, moving the pointer off the bar (or releasing anywhere on the page) is tracked via document-level listeners, so the drag no longer aborts when the cursor leaves the bar. `onMouseLeave` now only clears the hover tooltip.
 - **Oversize probe no longer caches transient failures**: a failed `HEAD` size probe (no response / missing `Content-Length`) is no longer cached permanently, so a later attempt can retry. Successful probes are still cached and deduped, and the probe cache is now bounded.
+- **Waveform fallback stuck after advancing from a long-form/live track**: auto-advancing to the next track (via `onEnded` or the next control) kept `isLoadedMetaData` set, so the progress bar kept reading the previous long-form/live track's duration and stayed on the `faux`/`live` bar fallback until the new track's metadata loaded. `NEXT_AUDIO` now resets `isLoadedMetaData` when the track actually changes, matching the shuffle and previous-track paths, while leaving a single-track repeat-`ALL` loop (same `src`, no reload) untouched so its progress bar stays live.
 
 ## v2.4.1 - 2026-07-21
 
