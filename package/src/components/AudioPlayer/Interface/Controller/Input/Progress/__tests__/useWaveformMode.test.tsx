@@ -414,6 +414,67 @@ describe("useWaveformMode byte size-gate", () => {
   });
 });
 
+describe("useWaveformMode content-length cache lifecycle", () => {
+  const originalFetch = global.fetch;
+
+  afterEach(() => {
+    global.fetch = originalFetch;
+    vi.restoreAllMocks();
+  });
+
+  const makeHeadResponse = (contentLength: string | null) => ({
+    headers: {
+      get: (name: string) => (name === "content-length" ? contentLength : null),
+    },
+  });
+
+  it("re-probes the same src after a transient failure without a content-length header", async () => {
+    global.fetch = vi.fn().mockResolvedValue(makeHeadResponse(null));
+    const track = makeAudioData({ src: "transient-no-length.mp3" });
+
+    const first = renderUseWaveformMode({
+      playList: [track],
+      curPlayId: track.id,
+      audioEl: makeAudioEl(FINITE_DURATION),
+    });
+
+    await waitFor(() =>
+      expect(first.result.current.sizeGatePending).toBe(false)
+    );
+    expect(global.fetch).toHaveBeenCalledTimes(1);
+
+    renderUseWaveformMode({
+      playList: [track],
+      curPlayId: track.id,
+      audioEl: makeAudioEl(FINITE_DURATION),
+    });
+
+    await waitFor(() => expect(global.fetch).toHaveBeenCalledTimes(2));
+  });
+
+  it("shares one in-flight HEAD across concurrent probes of the same src and applies the oversize verdict", async () => {
+    global.fetch = vi
+      .fn()
+      .mockResolvedValue(makeHeadResponse(String(LARGE_FILE_BYTES + 1)));
+    const track = makeAudioData({ src: "dedup-oversize-60mb.flac" });
+
+    const first = renderUseWaveformMode({
+      playList: [track],
+      curPlayId: track.id,
+      audioEl: makeAudioEl(FINITE_DURATION),
+    });
+    const second = renderUseWaveformMode({
+      playList: [track],
+      curPlayId: track.id,
+      audioEl: makeAudioEl(FINITE_DURATION),
+    });
+
+    await waitFor(() => expect(first.result.current.mode).toBe("faux"));
+    await waitFor(() => expect(second.result.current.mode).toBe("faux"));
+    expect(global.fetch).toHaveBeenCalledTimes(1);
+  });
+});
+
 describe("useWaveformMode oversize dev warning", () => {
   const originalFetch = global.fetch;
 

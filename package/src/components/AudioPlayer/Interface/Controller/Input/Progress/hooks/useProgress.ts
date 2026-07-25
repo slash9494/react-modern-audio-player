@@ -12,7 +12,7 @@ import {
 } from "react";
 import { isLiveTrack } from "./isLiveTrack";
 
-const SEEK_DEBOUNCE_MS = 120;
+export const SEEK_DEBOUNCE_MS = 120;
 
 type UseProgressResult = {
   progressProps: HTMLAttributes<HTMLDivElement>;
@@ -30,6 +30,9 @@ export const useProgress = (): UseProgressResult => {
 
   const seekTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const pendingSeekTimeRef = useRef<number | null>(null);
+  // Element captured on mousedown so the document-level drag can measure against
+  // it after the pointer leaves the bar (document events have no useful currentTarget).
+  const progressElRef = useRef<HTMLDivElement | null>(null);
 
   const commitSeek = useCallback(
     (time: number) => {
@@ -63,13 +66,13 @@ export const useProgress = (): UseProgressResult => {
 
   const getSeekTarget = useCallback(
     (
-      event: MouseEvent<HTMLDivElement>
+      clientX: number,
+      element: HTMLElement
     ): { ratio: number; time: number } | null => {
       if (!elementRefs?.audioEl || !isLoadedMetaData) return null;
       if (isLiveTrack(curTrack, elementRefs.audioEl.duration)) return null;
-      const { clientX } = event;
-      const { clientWidth } = event.currentTarget;
-      const boundingRect = event.currentTarget.getBoundingClientRect();
+      const { clientWidth } = element;
+      const boundingRect = element.getBoundingClientRect();
       const curPositionX = clientX - boundingRect.x;
       // Integer clientX vs fractional rect.x can push the raw ratio slightly
       // outside [0,1] at the edges — surfacing "--:--" or a time past the end.
@@ -83,41 +86,56 @@ export const useProgress = (): UseProgressResult => {
     [isLoadedMetaData, elementRefs?.audioEl, curTrack]
   );
 
-  const moveAudioTime = useCallback(
+  const handleMouseMove = useCallback(
     (event: MouseEvent<HTMLDivElement>) => {
-      const seekTarget = getSeekTarget(event);
-      if (!seekTarget) return;
+      const seekTarget = getSeekTarget(event.clientX, event.currentTarget);
+      // null = live track or metadata not loaded: no tooltip and no seek.
+      setHoverRatio(seekTarget ? seekTarget.ratio : null);
+      if (!isTimeChangeActive || !seekTarget) return;
       setPreviewRatio(seekTarget.ratio);
       scheduleSeek(seekTarget.time);
     },
-    [getSeekTarget, scheduleSeek]
-  );
-
-  const trackHover = useCallback(
-    (event: MouseEvent<HTMLDivElement>) => {
-      const seekTarget = getSeekTarget(event);
-      // null = live track or metadata not loaded: no tooltip either
-      setHoverRatio(seekTarget ? seekTarget.ratio : null);
-    },
-    [getSeekTarget]
-  );
-
-  const handleMouseMove = useCallback(
-    (event: MouseEvent<HTMLDivElement>) => {
-      trackHover(event);
-      if (isTimeChangeActive) moveAudioTime(event);
-    },
-    [trackHover, isTimeChangeActive, moveAudioTime]
+    [getSeekTarget, isTimeChangeActive, scheduleSeek]
   );
 
   const clickSeek = useCallback(
     (event: MouseEvent<HTMLDivElement>) => {
-      const seekTarget = getSeekTarget(event);
+      const seekTarget = getSeekTarget(event.clientX, event.currentTarget);
       if (!seekTarget) return;
       commitSeek(seekTarget.time);
     },
     [getSeekTarget, commitSeek]
   );
+
+  useEffect(() => {
+    if (!isTimeChangeActive) return;
+
+    const handleDocumentMouseMove = (event: globalThis.MouseEvent) => {
+      const element = progressElRef.current;
+      if (!element) return;
+      const seekTarget = getSeekTarget(event.clientX, element);
+      // Drives the active seek beyond the bar's bounds; mirrors handleMouseMove.
+      setHoverRatio(seekTarget ? seekTarget.ratio : null);
+      if (!seekTarget) return;
+      setPreviewRatio(seekTarget.ratio);
+      scheduleSeek(seekTarget.time);
+    };
+
+    const endDrag = () => {
+      setTimeChangeActive(false);
+      // Idempotent with the element onMouseUp for the same release: flushSeek
+      // early-returns once nothing is pending.
+      flushSeek();
+      setPreviewRatio(null);
+    };
+
+    document.addEventListener("mousemove", handleDocumentMouseMove);
+    document.addEventListener("mouseup", endDrag);
+    return () => {
+      document.removeEventListener("mousemove", handleDocumentMouseMove);
+      document.removeEventListener("mouseup", endDrag);
+    };
+  }, [isTimeChangeActive, getSeekTarget, scheduleSeek, flushSeek]);
 
   useEffect(() => {
     if (!isTimeChangeActive) return;
@@ -139,6 +157,7 @@ export const useProgress = (): UseProgressResult => {
     if (seekTimerRef.current) clearTimeout(seekTimerRef.current);
     seekTimerRef.current = null;
     pendingSeekTimeRef.current = null;
+    progressElRef.current = null;
     setPreviewRatio(null);
     setHoverRatio(null);
     setTimeChangeActive(false);
@@ -146,7 +165,10 @@ export const useProgress = (): UseProgressResult => {
 
   return {
     progressProps: {
-      onMouseDown: () => setTimeChangeActive(true),
+      onMouseDown: (event: MouseEvent<HTMLDivElement>) => {
+        progressElRef.current = event.currentTarget;
+        setTimeChangeActive(true);
+      },
       onMouseUp: () => {
         setTimeChangeActive(false);
         flushSeek();
@@ -156,10 +178,10 @@ export const useProgress = (): UseProgressResult => {
         setHoverRatio(null);
       },
       onMouseLeave: () => {
-        setTimeChangeActive(false);
-        flushSeek();
-        setPreviewRatio(null);
         setHoverRatio(null);
+        // Document mouseup owns end-of-drag now; only drop the preview when a
+        // drag isn't in progress so leaving the bar mid-drag keeps the cursor.
+        if (!isTimeChangeActive) setPreviewRatio(null);
       },
       onMouseMove: handleMouseMove,
       onClick: clickSeek,
