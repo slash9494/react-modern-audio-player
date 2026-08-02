@@ -5,7 +5,7 @@ import { useAudioPlayerTime } from "./useAudioPlayerTime";
 import type {
   RepeatType,
   AudioData,
-} from "@/components/AudioPlayer/Context/StateContext";
+} from "@/audio-player/Context/StateContext";
 
 export interface AudioPlayerControls {
   isPlaying: boolean;

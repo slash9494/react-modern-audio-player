@@ -7,7 +7,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { renderHook, act } from "@testing-library/react";
 import { FC, ReactNode } from "react";
-import { AudioPlayerStateProvider } from "@/components/AudioPlayer/Provider/AudioPlayerStateProvider";
+import { AudioPlayerStateProvider } from "@/audio-player/Provider/AudioPlayerStateProvider";
 import { useAudioPlayer } from "@/api/useAudioPlayer";
 
 const basePlayList = [

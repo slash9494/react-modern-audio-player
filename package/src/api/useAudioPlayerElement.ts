@@ -1,5 +1,5 @@
-import { useResourceContext } from "@/components/AudioPlayer/Context/hooks/useResourceContext";
-import type { ElementRefs } from "@/components/AudioPlayer/Context/StateContext";
+import { useResourceContext } from "@/audio-player/Context/hooks/useResourceContext";
+import type { ElementRefs } from "@/audio-player/Context/StateContext";
 
 export interface AudioPlayerElementControls {
   audioEl: ElementRefs["audioEl"] | undefined;

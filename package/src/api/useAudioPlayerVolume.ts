@@ -1,7 +1,7 @@
 import { useCallback } from "react";
 import { useNonNullableContext } from "@/hooks/useNonNullableContext";
-import { audioPlayerDispatchContext } from "@/components/AudioPlayer/Context/dispatchContext";
-import { usePlaybackContext } from "@/components/AudioPlayer/Context/hooks/usePlaybackContext";
+import { audioPlayerDispatchContext } from "@/audio-player/Context/dispatchContext";
+import { usePlaybackContext } from "@/audio-player/Context/hooks/usePlaybackContext";
 
 export interface AudioPlayerVolumeControls {
   volume: number;

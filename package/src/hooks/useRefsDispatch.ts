@@ -1,7 +1,7 @@
 import {
   audioPlayerDispatchContext,
   ElementRefs,
-} from "@/components/AudioPlayer/Context";
+} from "@/audio-player/Context";
 import { useEffect } from "react";
 import { useNonNullableContext } from ".";
 

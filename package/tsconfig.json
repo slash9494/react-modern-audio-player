@@ -17,7 +17,7 @@
     "noEmit": true,
     "jsx": "react-jsx",
     "paths": {
-      "@/components/*": ["./src/components/*"],
+      "@/audio-player/*": ["./src/audio-player/*"],
       "@/hooks/*": ["./src/hooks/*"],
       "@/utils/*": ["./src/utils/*"],
       "@/styles/*": ["./src/styles/*"],
