@@ -1,11 +1,11 @@
 import { FC, ReactElement, ReactNode } from "react";
-import { SvgIconProps } from "@/components/icons";
+import { SvgIconProps } from "@/ui/icons";
 
-interface _IconProps {
+interface _IconSlotProps {
   render: ReactElement<SvgIconProps>;
   customIcon?: ReactNode;
 }
 
-export const Icon: FC<_IconProps> = ({ render, customIcon }) => {
+export const IconSlot: FC<_IconSlotProps> = ({ render, customIcon }) => {
   return <>{customIcon ?? render}</>;
 };

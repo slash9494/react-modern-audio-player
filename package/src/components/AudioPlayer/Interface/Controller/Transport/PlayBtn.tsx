@@ -5,8 +5,8 @@ import { audioPlayerDispatchContext } from "@/components/AudioPlayer/Context/dis
 import { usePlaybackContext } from "@/components/AudioPlayer/Context/hooks/usePlaybackContext";
 import { useResourceContext } from "@/components/AudioPlayer/Context/hooks/useResourceContext";
 import { StyledBtn } from "@/ui/StyledBtn";
-import { MdPauseCircleFilled, MdPlayCircleFilled } from "@/components/icons";
-import { Icon } from "../Icon";
+import { MdPauseCircleFilled, MdPlayCircleFilled } from "@/ui/icons";
+import { IconSlot } from "@/ui/IconSlot";
 
 export const PlayBtn: FC = memo(function PlayBtn() {
   const { isPlaying } = usePlaybackContext();
@@ -25,12 +25,15 @@ export const PlayBtn: FC = memo(function PlayBtn() {
       data-testid="play-btn"
     >
       {isPlaying ? (
-        <Icon
+        <IconSlot
           render={<MdPauseCircleFilled />}
           customIcon={customIcons?.pause}
         />
       ) : (
-        <Icon render={<MdPlayCircleFilled />} customIcon={customIcons?.play} />
+        <IconSlot
+          render={<MdPlayCircleFilled />}
+          customIcon={customIcons?.play}
+        />
       )}
     </StyledBtn>
   );

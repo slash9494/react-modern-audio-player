@@ -1,6 +1,6 @@
 import { render, fireEvent } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
-import { GridItem } from "@/components/Grid/Item";
+import { GridItem } from "@/ui/Grid/Item";
 
 describe("GridItem — visibility", () => {
   it("visible=true (default) → renders div", () => {

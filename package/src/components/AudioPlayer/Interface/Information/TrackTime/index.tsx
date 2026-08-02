@@ -1,4 +1,4 @@
-import Grid, { GridItemLayoutProps } from "@/components/Grid";
+import Grid, { GridItemLayoutProps } from "@/ui/Grid";
 import { FC, useCallback } from "react";
 import { Current } from "./Current";
 import { Duration } from "./Duration";

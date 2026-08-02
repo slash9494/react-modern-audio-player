@@ -1,7 +1,7 @@
 import { FC, useCallback, useRef } from "react";
 import { VolumeSlider } from "./Content";
-import Dropdown from "@/components/Dropdown";
-import Grid, { GridItemLayoutProps } from "@/components/Grid";
+import Dropdown from "@/ui/Dropdown";
+import Grid, { GridItemLayoutProps } from "@/ui/Grid";
 import { VolumeIcon } from "./VolumeIcon";
 import { VolumeSliderPlacement } from "@/components/AudioPlayer/Context/StateContext";
 import { useUIContext } from "@/components/AudioPlayer/Context/hooks/useUIContext";

@@ -1,13 +1,8 @@
 import { usePlaybackContext } from "@/components/AudioPlayer/Context/hooks/usePlaybackContext";
 import { useResourceContext } from "@/components/AudioPlayer/Context/hooks/useResourceContext";
 import { FC, memo } from "react";
-import {
-  SvgIconProps,
-  TbVolume3,
-  TbVolume2,
-  TbVolume,
-} from "@/components/icons";
-import { Icon } from "../Icon";
+import { SvgIconProps, TbVolume3, TbVolume2, TbVolume } from "@/ui/icons";
+import { IconSlot } from "@/ui/IconSlot";
 
 const volumeOpt: SvgIconProps = { size: "100%" };
 
@@ -19,7 +14,7 @@ export const VolumeIcon: FC = memo(() => {
 
   if (muted || volume === 0) {
     return (
-      <Icon
+      <IconSlot
         render={<TbVolume3 {...volumeOpt} />}
         customIcon={customIcons?.volumeMuted}
       />
@@ -27,14 +22,14 @@ export const VolumeIcon: FC = memo(() => {
   }
   if (isLowVolume) {
     return (
-      <Icon
+      <IconSlot
         render={<TbVolume2 {...volumeOpt} />}
         customIcon={customIcons?.volumeHalf}
       />
     );
   }
   return (
-    <Icon
+    <IconSlot
       render={<TbVolume {...volumeOpt} />}
       customIcon={customIcons?.volumeFull}
     />

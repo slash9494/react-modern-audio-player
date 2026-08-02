@@ -1,4 +1,4 @@
-import { DropdownContentPlacement } from "@/components/Dropdown";
+import { DropdownContentPlacement } from "@/ui/Dropdown";
 import { useUIContext } from "@/components/AudioPlayer/Context/hooks/useUIContext";
 import { useState, useEffect } from "react";
 

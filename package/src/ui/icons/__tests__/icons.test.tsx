@@ -13,8 +13,8 @@ import {
   TbVolume3,
   ImPrevious,
   ImNext,
-} from "@/components/icons";
-import type { SvgIconProps } from "@/components/icons";
+} from "@/ui/icons";
+import type { SvgIconProps } from "@/ui/icons";
 import { FC } from "react";
 
 const allIcons: [string, FC<SvgIconProps>][] = [

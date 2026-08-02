@@ -1,5 +1,5 @@
-import Grid from "@/components/Grid";
-import { GridItemProps } from "@/components/Grid/Item";
+import Grid from "@/ui/Grid";
+import { GridItemProps } from "@/ui/Grid/Item";
 import { usePlaybackContext } from "@/components/AudioPlayer/Context/hooks/usePlaybackContext";
 import { useTimeContext } from "@/components/AudioPlayer/Context/hooks/useTimeContext";
 import { useTrackContext } from "@/components/AudioPlayer/Context/hooks/useTrackContext";

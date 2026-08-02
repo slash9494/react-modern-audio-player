@@ -3,8 +3,8 @@ import { useNonNullableContext } from "@/hooks/useNonNullableContext";
 import { audioPlayerDispatchContext } from "@/components/AudioPlayer/Context/dispatchContext";
 import { useResourceContext } from "@/components/AudioPlayer/Context/hooks/useResourceContext";
 import { StyledBtn } from "@/ui/StyledBtn";
-import { ImNext } from "@/components/icons";
-import { Icon } from "../Icon";
+import { ImNext } from "@/ui/icons";
+import { IconSlot } from "@/ui/IconSlot";
 
 interface NextBtnProps {
   isVisible: boolean;
@@ -26,7 +26,7 @@ export const NextBtn: FC<NextBtnProps> = memo(function NextBtn({ isVisible }) {
       className="rmap-next-btn"
       data-testid="next-btn"
     >
-      <Icon render={<ImNext />} customIcon={customIcons?.next} />
+      <IconSlot render={<ImNext />} customIcon={customIcons?.next} />
     </StyledBtn>
   ) : null;
 });

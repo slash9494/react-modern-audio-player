@@ -2,7 +2,7 @@ import React, { FC, useState } from "react";
 import { Controller } from "./Controller";
 import { Information } from "./Information";
 
-import Grid from "@/components/Grid";
+import Grid from "@/ui/Grid";
 
 import { useUIContext } from "@/components/AudioPlayer/Context/hooks/useUIContext";
 import { useGridTemplate } from "./hooks";

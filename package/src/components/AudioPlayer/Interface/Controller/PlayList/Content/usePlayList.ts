@@ -3,7 +3,7 @@ import {
   audioPlayerDispatchContext,
 } from "@/components/AudioPlayer/Context";
 import { CssTransitionProps } from "@/ui/CssTransition";
-import { UseSortableListItemProps } from "@/components/SortableList/useSortableListItem";
+import { UseSortableListItemProps } from "@/ui/SortableList/useSortableListItem";
 import { useNonNullableContext } from "@/hooks/useNonNullableContext";
 import { useTrackContext } from "@/components/AudioPlayer/Context/hooks/useTrackContext";
 import { useUIContext } from "@/components/AudioPlayer/Context/hooks/useUIContext";

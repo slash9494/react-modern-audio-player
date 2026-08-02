@@ -1,7 +1,7 @@
 import { useTrackContext } from "@/components/AudioPlayer/Context/hooks/useTrackContext";
 import { useResourceContext } from "@/components/AudioPlayer/Context/hooks/useResourceContext";
 import { FC, memo } from "react";
-import Grid, { GridItemLayoutProps } from "@/components/Grid";
+import Grid, { GridItemLayoutProps } from "@/ui/Grid";
 import { useResolvedGridArea } from "../hooks/useResolvedGridArea";
 import "./Artwork.css";
 

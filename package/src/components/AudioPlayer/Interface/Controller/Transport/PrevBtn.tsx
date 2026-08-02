@@ -3,8 +3,8 @@ import { useNonNullableContext } from "@/hooks/useNonNullableContext";
 import { audioPlayerDispatchContext } from "@/components/AudioPlayer/Context/dispatchContext";
 import { useResourceContext } from "@/components/AudioPlayer/Context/hooks/useResourceContext";
 import { StyledBtn } from "@/ui/StyledBtn";
-import { ImPrevious } from "@/components/icons";
-import { Icon } from "../Icon";
+import { ImPrevious } from "@/ui/icons";
+import { IconSlot } from "@/ui/IconSlot";
 
 interface PrevBtnProps {
   isVisible: boolean;
@@ -27,7 +27,7 @@ export const PrevBtn: FC<PrevBtnProps> = memo(function PrevBtn({ isVisible }) {
       className="rmap-prev-btn"
       data-testid="prev-btn"
     >
-      <Icon render={<ImPrevious />} customIcon={customIcons?.prev} />
+      <IconSlot render={<ImPrevious />} customIcon={customIcons?.prev} />
     </StyledBtn>
   ) : null;
 });

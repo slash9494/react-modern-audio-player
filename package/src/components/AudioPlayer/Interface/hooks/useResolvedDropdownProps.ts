@@ -1,4 +1,4 @@
-import type { DropdownContentPlacement } from "@/components/Dropdown";
+import type { DropdownContentPlacement } from "@/ui/Dropdown";
 import { useAutoPlacement } from "./useAutoPlacement";
 
 type TriggerType = "click" | "hover";

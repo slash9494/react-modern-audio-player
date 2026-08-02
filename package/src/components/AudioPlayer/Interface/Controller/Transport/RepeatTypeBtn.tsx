@@ -5,14 +5,14 @@ import { usePlaybackContext } from "@/components/AudioPlayer/Context/hooks/usePl
 import { useResourceContext } from "@/components/AudioPlayer/Context/hooks/useResourceContext";
 import { RepeatType } from "@/components/AudioPlayer/Context/StateContext";
 import { StyledBtn } from "@/ui/StyledBtn";
-import Grid, { GridItemLayoutProps } from "@/components/Grid";
+import Grid, { GridItemLayoutProps } from "@/ui/Grid";
 import {
   TbRepeatOff,
   TbRepeatOnce,
   TbRepeat,
   TbArrowsShuffle,
-} from "@/components/icons";
-import { Icon } from "../Icon";
+} from "@/ui/icons";
+import { IconSlot } from "@/ui/IconSlot";
 import { useResolvedGridArea } from "../../hooks/useResolvedGridArea";
 
 const repeatAriaLabels: Record<RepeatType, string> = {
@@ -63,22 +63,25 @@ export const RepeatTypeBtn: FC<RepeatTypeBtnProps> = memo(
           data-repeattype={repeatType}
         >
           {repeatType === "ALL" && (
-            <Icon render={<TbRepeat />} customIcon={customIcons?.repeatAll} />
+            <IconSlot
+              render={<TbRepeat />}
+              customIcon={customIcons?.repeatAll}
+            />
           )}
           {repeatType === "ONE" && (
-            <Icon
+            <IconSlot
               render={<TbRepeatOnce />}
               customIcon={customIcons?.repeatOne}
             />
           )}
           {repeatType === "NONE" && (
-            <Icon
+            <IconSlot
               render={<TbRepeatOff />}
               customIcon={customIcons?.repeatNone}
             />
           )}
           {repeatType === "SHUFFLE" && (
-            <Icon
+            <IconSlot
               render={<TbArrowsShuffle />}
               customIcon={customIcons?.repeatShuffle}
             />

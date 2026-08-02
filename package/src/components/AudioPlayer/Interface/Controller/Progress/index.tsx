@@ -1,5 +1,5 @@
 import { useUIContext } from "@/components/AudioPlayer/Context/hooks/useUIContext";
-import Grid, { GridItemLayoutProps } from "@/components/Grid";
+import Grid, { GridItemLayoutProps } from "@/ui/Grid";
 import { FC, useEffect, useState } from "react";
 import { BarProgress } from "./BarProgress";
 import { WaveformProgress } from "./WaveformProgress";

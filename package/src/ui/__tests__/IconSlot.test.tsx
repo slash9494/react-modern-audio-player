@@ -1,26 +1,26 @@
 import { render } from "@testing-library/react";
 import { describe, it, expect } from "vitest";
-import { Icon } from "@/components/AudioPlayer/Interface/Controller/Icon";
-import { MdPlayCircleFilled } from "@/components/icons";
+import { IconSlot } from "@/ui/IconSlot";
+import { MdPlayCircleFilled } from "@/ui/icons";
 
 const defaultRender = <MdPlayCircleFilled data-testid="default-svg" />;
 
-describe("Icon — customIcon override", () => {
+describe("IconSlot — customIcon override", () => {
   it("renders render element when customIcon absent", () => {
-    const { getByTestId } = render(<Icon render={defaultRender} />);
+    const { getByTestId } = render(<IconSlot render={defaultRender} />);
     expect(getByTestId("default-svg")).toBeInTheDocument();
   });
 
   it("renders render element when customIcon=undefined", () => {
     const { getByTestId } = render(
-      <Icon render={defaultRender} customIcon={undefined} />
+      <IconSlot render={defaultRender} customIcon={undefined} />
     );
     expect(getByTestId("default-svg")).toBeInTheDocument();
   });
 
   it("renders customIcon when provided — overrides render", () => {
     const { getByTestId, queryByTestId } = render(
-      <Icon
+      <IconSlot
         render={defaultRender}
         customIcon={<span data-testid="custom-icon" />}
       />
@@ -31,7 +31,7 @@ describe("Icon — customIcon override", () => {
 
   it("customIcon can be a plain string", () => {
     const { getByText } = render(
-      <Icon render={defaultRender} customIcon="▶" />
+      <IconSlot render={defaultRender} customIcon="▶" />
     );
     expect(getByText("▶")).toBeInTheDocument();
   });

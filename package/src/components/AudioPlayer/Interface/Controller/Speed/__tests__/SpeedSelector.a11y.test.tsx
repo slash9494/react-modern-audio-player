@@ -9,7 +9,7 @@ import {
   UIContext,
 } from "@/components/AudioPlayer/Context/UIContext";
 import { audioPlayerDispatchContext } from "@/components/AudioPlayer/Context/dispatchContext";
-import type { DropdownContentPlacement } from "@/components/Dropdown";
+import type { DropdownContentPlacement } from "@/ui/Dropdown";
 
 const mockDispatch = vi.fn();
 

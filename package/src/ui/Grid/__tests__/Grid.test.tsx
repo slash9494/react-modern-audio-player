@@ -1,6 +1,6 @@
 import { render } from "@testing-library/react";
 import { describe, it, expect } from "vitest";
-import Grid from "@/components/Grid";
+import Grid from "@/ui/Grid";
 
 describe("Grid — style prop mapping", () => {
   it("renders div with display: grid", () => {

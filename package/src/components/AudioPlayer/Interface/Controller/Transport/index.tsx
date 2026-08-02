@@ -1,5 +1,5 @@
 import { FC } from "react";
-import Grid, { GridItemLayoutProps } from "@/components/Grid";
+import Grid, { GridItemLayoutProps } from "@/ui/Grid";
 import { useUIContext } from "@/components/AudioPlayer/Context/hooks/useUIContext";
 import { useResolvedGridArea } from "../../hooks/useResolvedGridArea";
 import { PlayBtn } from "./PlayBtn";

@@ -1,5 +1,5 @@
 import { FC, useRef } from "react";
-import { Tooltip, TooltipPlacement } from "@/components/Tooltip";
+import { Tooltip, TooltipPlacement } from "@/ui/Tooltip";
 import { formatClockTime } from "@/utils/getTime";
 import { useElementWidth } from "./hooks";
 

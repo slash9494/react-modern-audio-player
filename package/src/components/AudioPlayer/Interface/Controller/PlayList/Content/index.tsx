@@ -1,6 +1,6 @@
-import { drawerContext } from "@/components/Drawer/DrawerContext";
+import { drawerContext } from "@/ui/Drawer/DrawerContext";
 import { CssTransition } from "@/ui/CssTransition";
-import SortableList from "@/components/SortableList";
+import SortableList from "@/ui/SortableList";
 import { useNonNullableContext } from "@/hooks/useNonNullableContext";
 import { useTrackContext } from "@/components/AudioPlayer/Context/hooks/useTrackContext";
 import {

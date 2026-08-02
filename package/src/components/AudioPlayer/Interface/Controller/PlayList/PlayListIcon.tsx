@@ -1,12 +1,12 @@
 import { useResourceContext } from "@/components/AudioPlayer/Context/hooks/useResourceContext";
 import { FC } from "react";
-import { MdPlaylistPlay } from "@/components/icons";
-import { Icon } from "../Icon";
+import { MdPlaylistPlay } from "@/ui/icons";
+import { IconSlot } from "@/ui/IconSlot";
 
 export const PlayListIcon: FC = () => {
   const { customIcons } = useResourceContext();
   return (
-    <Icon
+    <IconSlot
       render={<MdPlaylistPlay size={"100%"} />}
       customIcon={customIcons?.playList}
     />

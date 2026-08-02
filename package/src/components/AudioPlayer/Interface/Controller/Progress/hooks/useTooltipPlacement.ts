@@ -1,6 +1,6 @@
 import { useUIContext } from "@/components/AudioPlayer/Context/hooks/useUIContext";
 import { useAutoPlacement } from "@/components/AudioPlayer/Interface/hooks";
-import type { TooltipPlacement } from "@/components/Tooltip";
+import type { TooltipPlacement } from "@/ui/Tooltip";
 
 export const useTooltipPlacement = (
   wrapperRef: React.RefObject<HTMLElement>

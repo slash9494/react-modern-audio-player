@@ -1,4 +1,4 @@
-import { DropdownContentPlacement } from "@/components/Dropdown";
+import { DropdownContentPlacement } from "@/ui/Dropdown";
 import { NumbersToUnionNum } from "@/utils/generateUnionNumType";
 import { ActiveUI } from "./element";
 
