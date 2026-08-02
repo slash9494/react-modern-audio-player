@@ -1,6 +1,6 @@
 import { createElement, memo } from "react";
 import { describe, expect, it } from "vitest";
-import AudioPlayer from "@/components/AudioPlayer";
+import AudioPlayer from "@/audio-player";
 import {
   SLOT_ID,
   compoundSlotMetaMap,
