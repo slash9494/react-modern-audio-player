@@ -6,7 +6,7 @@ import { usePlaybackContext } from "@/components/AudioPlayer/Context/hooks/usePl
 import { useResourceContext } from "@/components/AudioPlayer/Context/hooks/useResourceContext";
 import { StyledBtn } from "@/ui/StyledBtn";
 import { MdPauseCircleFilled, MdPlayCircleFilled } from "@/components/icons";
-import { Icon } from "../../Icon";
+import { Icon } from "../Icon";
 
 export const PlayBtn: FC = memo(function PlayBtn() {
   const { isPlaying } = usePlaybackContext();

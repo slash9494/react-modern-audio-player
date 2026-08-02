@@ -9,14 +9,14 @@ import { DEFAULT_INTERFACE_GRID_BOUND } from "./Context";
 import { CustomComponent } from "./Interface/CustomComponent";
 import { PlayListEmpty } from "./Interface/PlayListEmpty";
 import { AudioPlayer, AudioPlayerProps } from "./Player";
-import { Progress } from "./Interface/Controller/Input";
-import { Volume } from "./Interface/Controller/Volume";
-import { SortablePlayList } from "./Interface/Controller/Drawer";
-import { SpeedSelector } from "./Interface/Controller/SpeedSelector";
 import {
+  Progress,
+  Volume,
+  SortablePlayList,
+  SpeedSelector,
   TransportControls,
   RepeatTypeBtn,
-} from "./Interface/Controller/Button";
+} from "./Interface/Controller";
 import { Artwork } from "./Interface/Information/Artwork";
 import { TrackInfo } from "./Interface/Information/TrackInfo";
 import { TrackTime } from "./Interface/Information/TrackTime";

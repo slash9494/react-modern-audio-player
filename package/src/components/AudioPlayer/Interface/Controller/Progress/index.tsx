@@ -4,7 +4,7 @@ import { FC, useEffect, useState } from "react";
 import { BarProgress } from "./BarProgress";
 import { WaveformProgress } from "./WaveformProgress";
 import { useWaveformMode } from "./hooks";
-import { useResolvedGridArea } from "../../../hooks/useResolvedGridArea";
+import { useResolvedGridArea } from "../../hooks/useResolvedGridArea";
 import "./Progress.css";
 
 export type ProgressType = "bar" | "waveform";

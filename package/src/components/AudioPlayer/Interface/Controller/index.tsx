@@ -1,17 +1,18 @@
 import { FC } from "react";
 import "./Controller.css";
 import { useUIContext } from "@/components/AudioPlayer/Context/hooks/useUIContext";
-import { TransportControls, RepeatTypeBtn } from "./Button";
-import { SortablePlayList } from "./Drawer";
-import { Progress } from "./Input";
-import { SpeedSelector } from "./SpeedSelector";
+import { TransportControls, RepeatTypeBtn } from "./Transport";
+import { SortablePlayList } from "./PlayList";
+import { Progress } from "./Progress";
+import { SpeedSelector } from "./Speed";
 import { Volume } from "./Volume";
 
-// TODO(v2.4.2, Phase 7.7): this directory mixes input-kind groupings
-// (Button/Input/Drawer) with domain folders (Volume/SpeedSelector), so the
-// domain and UI layers collide. Regroup by domain in v2.4.2; full visual
-// unification follows the design-system groundwork (v2.7.0 — see
-// .claude/docs/v2-final-overhaul.md roadmap).
+export * from "./Transport";
+export * from "./PlayList";
+export * from "./Progress";
+export * from "./Speed";
+export * from "./Volume";
+
 export const Controller: FC = () => {
   const { activeUI } = useUIContext();
   const isVisible = (key: keyof typeof activeUI) =>
