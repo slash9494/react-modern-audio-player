@@ -8,6 +8,7 @@ import "@/styles/GlobalStyle.css";
 import { DEFAULT_INTERFACE_GRID_BOUND } from "./Context";
 import { CustomComponent } from "./Interface/CustomComponent";
 import { PlayListEmpty } from "./Interface/PlayListEmpty";
+import { withSlotIds } from "./Interface/compound/slotMetaMap";
 import { AudioPlayer, AudioPlayerProps } from "./Player";
 import {
   Progress,
@@ -61,18 +62,21 @@ type AudioPlayerComponent = typeof AudioPlayerWithProviders & {
   CustomComponent: typeof CustomComponent;
 };
 
-const AudioPlayerCompound = Object.assign(AudioPlayerWithProviders, {
-  Progress,
-  Volume,
-  PlayList: SortablePlayList,
-  PlayListEmpty,
-  PlayButton: TransportControls,
-  RepeatButton: RepeatTypeBtn,
-  SpeedSelector,
-  Artwork,
-  TrackInfo,
-  TrackTime,
-  CustomComponent,
-}) as AudioPlayerComponent;
+const AudioPlayerCompound = Object.assign(
+  AudioPlayerWithProviders,
+  withSlotIds({
+    Progress,
+    Volume,
+    PlayList: SortablePlayList,
+    PlayListEmpty,
+    PlayButton: TransportControls,
+    RepeatButton: RepeatTypeBtn,
+    SpeedSelector,
+    Artwork,
+    TrackInfo,
+    TrackTime,
+    CustomComponent,
+  })
+) as AudioPlayerComponent;
 
 export default AudioPlayerCompound;

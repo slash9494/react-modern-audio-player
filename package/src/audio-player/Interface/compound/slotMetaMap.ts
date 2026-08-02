@@ -4,20 +4,27 @@ import { ActiveUI } from "@/audio-player/Context/StateContext";
 export type ActiveUIKey = keyof ActiveUI;
 
 export interface SlotMeta {
-  displayName: string;
   activeUIKey: ActiveUIKey;
 }
 
+// Slot identity is declared, not inferred. Minified builds rename component
+// functions, and React's production `memo` — unlike the development build —
+// does not copy `displayName` onto the wrapped function, so neither `.name`
+// nor `.displayName` survives a published bundle.
+export const SLOT_ID = "__rmapSlotId";
+
+type SlotCarrier = { [SLOT_ID]?: string };
+
 export const compoundSlotMetaMap: Record<string, SlotMeta> = {
-  Progress: { displayName: "Progress", activeUIKey: "progress" },
-  Volume: { displayName: "Volume", activeUIKey: "volume" },
-  SortablePlayList: { displayName: "PlayList", activeUIKey: "playList" },
-  TransportControls: { displayName: "PlayButton", activeUIKey: "playButton" },
-  RepeatTypeBtn: { displayName: "RepeatButton", activeUIKey: "repeatType" },
-  Artwork: { displayName: "Artwork", activeUIKey: "artwork" },
-  TrackInfo: { displayName: "TrackInfo", activeUIKey: "trackInfo" },
-  TrackTime: { displayName: "TrackTime", activeUIKey: "trackTime" },
-  SpeedSelector: { displayName: "SpeedSelector", activeUIKey: "playbackRate" },
+  Progress: { activeUIKey: "progress" },
+  Volume: { activeUIKey: "volume" },
+  PlayList: { activeUIKey: "playList" },
+  PlayButton: { activeUIKey: "playButton" },
+  RepeatButton: { activeUIKey: "repeatType" },
+  Artwork: { activeUIKey: "artwork" },
+  TrackInfo: { activeUIKey: "trackInfo" },
+  TrackTime: { activeUIKey: "trackTime" },
+  SpeedSelector: { activeUIKey: "playbackRate" },
 };
 
 export function isPresetActive(activeUI: ActiveUI, key: ActiveUIKey): boolean {
@@ -27,16 +34,19 @@ export function isPresetActive(activeUI: ActiveUI, key: ActiveUIKey): boolean {
   return Boolean(activeUI.all);
 }
 
-// Unwrap one layer of memo/forwardRef — wrappers hide the inner `.name`.
+// Stamps each entry's key onto the component it points at, so the key the
+// consumer writes (`<AudioPlayer.Progress/>`) is the key resolved at runtime.
+// Stamping the outer object matters: `child.type` is the memo wrapper, not the
+// function inside it.
+export function withSlotIds<TSlots extends Record<string, unknown>>(
+  slots: TSlots
+): TSlots {
+  Object.entries(slots).forEach(([slotId, component]) => {
+    (component as SlotCarrier)[SLOT_ID] = slotId;
+  });
+  return slots;
+}
+
 export function resolveSlotKey(child: ReactElement): string | undefined {
-  const outer = child.type as
-    | {
-        name?: string;
-        displayName?: string;
-        type?: { name?: string; displayName?: string };
-      }
-    | undefined;
-  if (!outer) return undefined;
-  const inner = outer.type ?? outer;
-  return inner.displayName || inner.name || undefined;
+  return (child.type as SlotCarrier | undefined)?.[SLOT_ID];
 }
