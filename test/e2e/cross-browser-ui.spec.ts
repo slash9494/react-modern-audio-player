@@ -1,4 +1,6 @@
+import { resolve } from "path";
 import { test, expect } from "./fixtures/player.fixture";
+import { requireBox, type BoundingBox } from "./helpers/boundingBox";
 import type { Locator, Page } from "@playwright/test";
 
 // Cross-browser UI consistency (chromium/firefox/webkit).
@@ -8,28 +10,23 @@ import type { Locator, Page } from "@playwright/test";
 // check. Layer 2 (bottom of this file) pixel-compares stable end states only.
 //
 // Anti-flake rules: no pixel assertions on transient states, state changes are
-// observed via data-ready / element presence rather than timing sleeps, and
-// the audio fetch is route-delayed so the loading window stays open long
-// enough to measure instead of racing it.
+// observed via data-ready / element presence rather than timing sleeps, and the
+// audio request is fulfilled from a local fixture on a route delay, so the
+// loading window stays open long enough to measure without a live CDN in it.
 
 const WAVEFORM_HEIGHT_PX = 80;
+// Default placement only: Content.css rotates the container 90deg for
+// left/right placement, which swaps the box to roughly 119x32.
 const VOLUME_SLIDER_BOX = { width: 32, height: 119 };
 const SUBPIXEL_EPSILON = 0.5;
 const READY_TIMEOUT_MS = 20000;
 const AUDIO_DELAY_MS = 3000;
-
-interface Box {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-}
-
-const requireBox = async (locator: Locator): Promise<Box> => {
-  const box = await locator.boundingBox();
-  expect(box).toBeTruthy();
-  return box as Box;
-};
+// 154s / 4.7MB clears both waveform fallback gates (30min, 50MB), so the real
+// waveform still renders instead of the faux one.
+const LOCAL_AUDIO_PATH = resolve(
+  __dirname,
+  "../../package/preview/assets/audio/audio-1.mp3"
+);
 
 // Drawer.css and Dropdown.css both open on a CSS animation, so the element is
 // still growing when it first becomes visible and `toBeVisible` measures a
@@ -43,7 +40,7 @@ const requireBox = async (locator: Locator): Promise<Box> => {
 const waitForSettledBox = async (
   target: Locator,
   animated: Locator = target
-): Promise<Box> => {
+): Promise<BoundingBox> => {
   await animated.evaluate((element) =>
     Promise.all(
       element
@@ -74,12 +71,18 @@ const horizontalOverflow = (page: Page, testId: string) =>
     return { scrollWidth: el.scrollWidth, clientWidth: el.clientWidth };
   }, testId);
 
-// Holds the loading window open: without it the fetch can resolve before the
-// first measurement, and the skeleton phase becomes unobservable.
+// Serves the local fixture so no assertion here rides on a CDN round-trip, and
+// holds the loading window open: without the delay the request can resolve
+// before the first measurement, and the skeleton phase becomes unobservable.
 const delayAudioResponse = (page: Page) =>
   page.route("**/audio_*.mp3", async (route) => {
-    await new Promise((resolve) => setTimeout(resolve, AUDIO_DELAY_MS));
-    await route.continue();
+    await new Promise((resolveDelay) =>
+      setTimeout(resolveDelay, AUDIO_DELAY_MS)
+    );
+    await route.fulfill({
+      path: LOCAL_AUDIO_PATH,
+      contentType: "audio/mpeg",
+    });
   });
 
 test.describe("Cross-browser UI consistency — Layer 1 (layout invariants)", () => {
@@ -215,6 +218,11 @@ test.describe("Cross-browser UI consistency — Layer 2 (stable-state pixels)", 
     !snapshotsEnabled,
     "needs platform baselines — set E2E_SNAPSHOTS=1 (see comment above)"
   );
+
+  // Playwright's Desktop Safari preset uses deviceScaleFactor: 2 while Chrome
+  // and Firefox use 1, so the webkit baselines are raster-doubled — an upgrade
+  // that changes that preset invalidates only the webkit set, and CI cannot
+  // catch it because Layer 2 is skipped there.
 
   test("L2-1: ready waveform player matches its baseline", async ({
     playerPageLazy,
