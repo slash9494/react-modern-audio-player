@@ -41,7 +41,7 @@
 
 or
 
-<https://stackblitz.com/edit/stackblitz-webcontainer-api-starter-k4uxhzjx?file=src%2FApp.tsx>
+<https://stackblitz.com/edit/stackblitz-webcontainer-api-starter-nevxganw?file=src%2FApp.tsx>
 
 # **Flexible and Customizable UI**
 
@@ -182,6 +182,7 @@ interface AudioPlayerProps {
     interface?: InterfacePlacement;
     volumeSlider?: VolumeSliderPlacement;
     speedSelector?: SpeedSelectorPlacement;
+    timeTooltip?: TimeTooltipPlacement;
   };
   rootContainerProps?: RootContainerProps;
   colorScheme?: "light" | "dark";
@@ -219,27 +220,26 @@ type AudioData = {
 };
 ```
 
-### Long-form & live stream tracks
+### Long-form & live streams — automatic waveform fallback
 
-By default the waveform is drawn by decoding the whole file in the browser, which
-stalls on very large files (multi-hour MP3s) and never finishes for an endless
-live stream. **Long-form and live tracks are now detected automatically** from the
-`<audio>` metadata (the full-file decode is deferred until `loadedmetadata` and
-skipped for tracks over 30 minutes or live streams). A track whose file is
-larger than 50 MB (read via a `HEAD` request on same-origin or CORS-enabled
-hosts) is also skipped, which catches short but heavy hi-res / lossless files,
-so a plain `{ src, id }` track works without configuration. The `<audio>` element also defaults to
-`preload="metadata"`, so playback streams progressively over HTTP range instead
-of waiting on a full download. When the real waveform can't be drawn (long-form
-or live), the player falls back to the standard seekable bar progress instead of
-a faux waveform. These optional fields remain as hints/overrides:
+A plain `{ src, id }` track just works — the player automatically detects
+long-form and live tracks and falls back from the waveform to a standard
+seekable bar. Fallback kicks in when a track is:
 
-| Field      | Type                                      | Effect                                                                                                                                                                                 |
-| ---------- | ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `isLive`   | `boolean`                                 | Marks the track as a live stream. The waveform skips decoding and falls back to the standard seekable bar progress, seeking is guarded on endless streams, and the duration UI no longer leaks `Infinity`.                     |
-| `duration` | `number` (seconds)                        | Optional early hint for the total length — detection is automatic from metadata, so set this only to gate before metadata loads (or to force the bar fallback for a track over 30 minutes). Also drives `H:MM:SS` display. |
-| `peaks`    | `number[] \| number[][]`                  | Server-precomputed, normalized amplitude samples (single array, or one per channel) — the same shape `wavesurfer.load()` accepts. When provided, the real waveform renders with no client-side decode (recommended for large files). |
-| `preload`  | `"none" \| "metadata" \| "auto"`          | Per-track override of the native `<audio preload>` attribute.                                                                                                                          |
+- a **live stream**,
+- longer than **30 minutes**, or
+- over **50 MB** (detected via a `HEAD` request on same-origin / CORS-enabled hosts).
+
+> Live auto-detection relies on the browser reporting `duration === Infinity` after metadata loads. A few streams report `NaN` instead and are treated as normal tracks — set `isLive: true` explicitly for those.
+
+You can override or hint any of this with optional `AudioData` fields:
+
+| Field      | Type                             | Effect                                                                                                                                                                                                                               |
+| ---------- | -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `isLive`   | `boolean`                        | Marks the track as a live stream. The waveform skips decoding and falls back to the standard seekable bar progress, seeking is guarded on endless streams, and the duration UI no longer leaks `Infinity`.                           |
+| `duration` | `number` (seconds)               | Optional early hint for the total length — detection is automatic from metadata, so set this only to gate before metadata loads (or to force the bar fallback for a track over 30 minutes). Also drives `H:MM:SS` display.           |
+| `peaks`    | `number[] \| number[][]`         | Server-precomputed, normalized amplitude samples (single array, or one per channel) — the same shape `wavesurfer.load()` accepts. When provided, the real waveform renders with no client-side decode (recommended for large files). |
+| `preload`  | `"none" \| "metadata" \| "auto"` | Per-track override of the native `<audio preload>` attribute.                                                                                                                                                                        |
 
 ```tsx
 const playList = [
@@ -361,6 +361,8 @@ type VolumeSliderPlacement = "bottom" | "top" | "left" | "right";
 
 type SpeedSelectorPlacement = "bottom" | "top" | "left" | "right";
 
+type TimeTooltipPlacement = "top" | "bottom";
+
 type PlayListPlacement = "bottom" | "top";
 
 type InterfacePlacement = {
@@ -466,6 +468,7 @@ const defaultInterfacePlacement = {
   --rm-audio-player-track-duration: #8c8c8c;
   --rm-audio-player-progress-bar: #0072f5;
   --rm-audio-player-progress-bar-background: #393939;
+  --rm-audio-player-tooltip-background: #f2f2f2;
   --rm-audio-player-waveform-cursor: #4b4b4b;
   --rm-audio-player-waveform-background: var(
     --rm-audio-player-progress-bar-background
@@ -498,6 +501,8 @@ function PlayerControls() {
     setTrack,
   } = useAudioPlayer();
 
+  const timeLabel = `${currentTime.toFixed(0)}s / ${duration.toFixed(0)}s`;
+
   return (
     <div>
       <button onClick={togglePlay}>{isPlaying ? "Pause" : "Play"}</button>
@@ -507,8 +512,7 @@ function PlayerControls() {
       <button onClick={() => setVolume(0.5)}>Volume 50%</button>
       <button onClick={() => setTrack(1)}>Track 2</button>
       <p>
-        {currentTrack?.name} — {currentTime.toFixed(0)}s / {duration.toFixed(0)}
-        s
+        {currentTrack?.name} — {timeLabel}
       </p>
     </div>
   );

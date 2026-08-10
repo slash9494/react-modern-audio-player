@@ -5,7 +5,7 @@ import { playbackContext } from "@/components/AudioPlayer/Context/PlaybackContex
 import { resourceContext } from "@/components/AudioPlayer/Context/ResourceContext";
 import { trackContext } from "@/components/AudioPlayer/Context/TrackContext";
 import { AudioData } from "@/components/AudioPlayer/Context";
-import { useProgress } from "../useProgress";
+import { SEEK_DEBOUNCE_MS, useProgress } from "../hooks/useProgress";
 
 // useProgress.moveAudioTime translates a pointer position on the progress bar
 // into audioEl.currentTime. Live streams must bail out before computing a seek
@@ -17,8 +17,6 @@ import { useProgress } from "../useProgress";
 
 const PROGRESS_BAR_WIDTH = 200;
 const INITIAL_CURRENT_TIME = 30;
-// Mirrors the module-private SEEK_DEBOUNCE_MS in useProgress.ts (not exported).
-const SEEK_DEBOUNCE_MS = 120;
 
 const makeAudioEl = (duration: number) => {
   const audioEl = document.createElement("audio");
@@ -132,6 +130,26 @@ describe("useProgress drag seek debounce", () => {
     act(() => result.current.progressProps.onMouseMove?.(makeClickAt(clientX)));
   };
 
+  const moveDocumentTo = (clientX: number) => {
+    act(() => {
+      document.dispatchEvent(
+        new window.MouseEvent("mousemove", { clientX, bubbles: true })
+      );
+    });
+  };
+
+  const releaseOnDocument = () => {
+    act(() => {
+      document.dispatchEvent(
+        new window.MouseEvent("mouseup", { bubbles: true })
+      );
+    });
+  };
+
+  const leaveBar = (result: { current: ReturnType<typeof useProgress> }) => {
+    act(() => result.current.progressProps.onMouseLeave?.(makeClickAt(0)));
+  };
+
   afterEach(() => {
     vi.useRealTimers();
   });
@@ -211,5 +229,72 @@ describe("useProgress drag seek debounce", () => {
     );
 
     expect(audioEl.currentTime).toBe(DURATION / 2);
+  });
+
+  it("keeps seeking from a document mousemove after the pointer leaves the bar", async () => {
+    vi.useFakeTimers();
+    const audioEl = makeAudioEl(DURATION);
+    const { result } = renderUseProgress(audioEl);
+
+    startDrag(result, PROGRESS_BAR_WIDTH / 4);
+    moveDocumentTo(PROGRESS_BAR_WIDTH + 40);
+
+    expect(result.current.previewRatio).toBe(1);
+
+    await act(() => vi.advanceTimersByTimeAsync(SEEK_DEBOUNCE_MS));
+
+    expect(audioEl.currentTime).toBe(DURATION);
+  });
+
+  it("ends the drag on a document mouseup, flushing the pending seek and stopping later moves", async () => {
+    vi.useFakeTimers();
+    const audioEl = makeAudioEl(DURATION);
+    const { result } = renderUseProgress(audioEl);
+
+    startDrag(result, PROGRESS_BAR_WIDTH / 4);
+    moveDocumentTo(PROGRESS_BAR_WIDTH / 2);
+    expect(audioEl.currentTime).toBe(INITIAL_CURRENT_TIME);
+
+    releaseOnDocument();
+    expect(audioEl.currentTime).toBe(timeAt(PROGRESS_BAR_WIDTH / 2));
+
+    moveDocumentTo((PROGRESS_BAR_WIDTH * 3) / 4);
+    await act(() => vi.advanceTimersByTimeAsync(SEEK_DEBOUNCE_MS));
+
+    expect(audioEl.currentTime).toBe(timeAt(PROGRESS_BAR_WIDTH / 2));
+  });
+
+  it("clears the hover tooltip when the drag is released off the bar", () => {
+    vi.useFakeTimers();
+    const audioEl = makeAudioEl(DURATION);
+    const { result } = renderUseProgress(audioEl);
+
+    startDrag(result, PROGRESS_BAR_WIDTH / 4);
+    moveDocumentTo(PROGRESS_BAR_WIDTH + 40);
+    expect(result.current.hoverRatio).toBe(1);
+
+    releaseOnDocument();
+
+    expect(result.current.hoverRatio).toBeNull();
+    expect(result.current.previewRatio).toBeNull();
+  });
+
+  it("does not end the drag on mouse leave: it clears hover but a document mousemove still seeks", async () => {
+    vi.useFakeTimers();
+    const audioEl = makeAudioEl(DURATION);
+    const { result } = renderUseProgress(audioEl);
+
+    startDrag(result, PROGRESS_BAR_WIDTH / 4);
+    moveDocumentTo(PROGRESS_BAR_WIDTH / 2);
+    expect(result.current.hoverRatio).toBe(ratioAt(PROGRESS_BAR_WIDTH / 2));
+
+    leaveBar(result);
+    expect(result.current.hoverRatio).toBeNull();
+    expect(result.current.previewRatio).toBe(ratioAt(PROGRESS_BAR_WIDTH / 2));
+
+    moveDocumentTo((PROGRESS_BAR_WIDTH * 3) / 4);
+    await act(() => vi.advanceTimersByTimeAsync(SEEK_DEBOUNCE_MS));
+
+    expect(audioEl.currentTime).toBe(timeAt((PROGRESS_BAR_WIDTH * 3) / 4));
   });
 });

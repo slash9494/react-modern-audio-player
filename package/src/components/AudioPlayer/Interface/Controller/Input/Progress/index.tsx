@@ -3,7 +3,7 @@ import Grid, { GridItemLayoutProps } from "@/components/Grid";
 import { FC, useEffect, useState } from "react";
 import { BarProgress } from "./BarProgress";
 import { WaveformProgress } from "./WaveformProgress";
-import { useWaveformMode } from "./useWaveformMode";
+import { useWaveformMode } from "./hooks";
 import { useResolvedGridArea } from "../../../hooks/useResolvedGridArea";
 import "./Progress.css";
 

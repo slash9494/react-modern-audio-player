@@ -7,6 +7,7 @@ import {
   PlayerPlacement,
   PlayListPlacement,
   VolumeSliderPlacement,
+  TimeTooltipPlacement,
 } from "../Context";
 
 export const usePropsStateEffect = <TInterfacePlacementLength extends number>({
@@ -25,11 +26,13 @@ export const usePropsStateEffect = <TInterfacePlacementLength extends number>({
       playList: playListPlacement,
       interface: interfacePlacement,
       volumeSlider: volumeSliderPlacement,
+      timeTooltip: timeTooltipPlacement,
     } = placement as {
       player?: PlayerPlacement;
       playList?: PlayListPlacement;
       interface?: InterfacePlacement;
       volumeSlider?: VolumeSliderPlacement;
+      timeTooltip?: TimeTooltipPlacement;
     };
     audioPlayerDispatch({
       type: "SET_PLACEMENTS",
@@ -37,6 +40,7 @@ export const usePropsStateEffect = <TInterfacePlacementLength extends number>({
       playListPlacement,
       interfacePlacement,
       volumeSliderPlacement,
+      timeTooltipPlacement,
     });
   }, [audioPlayerDispatch, placement]);
 

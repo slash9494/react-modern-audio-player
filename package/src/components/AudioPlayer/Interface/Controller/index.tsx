@@ -5,8 +5,13 @@ import { TransportControls, RepeatTypeBtn } from "./Button";
 import { SortablePlayList } from "./Drawer";
 import { Progress } from "./Input";
 import { SpeedSelector } from "./SpeedSelector";
-import { Volume } from "./Tooltip";
+import { Volume } from "./Volume";
 
+// TODO(v2.4.2, Phase 7.7): this directory mixes input-kind groupings
+// (Button/Input/Drawer) with domain folders (Volume/SpeedSelector), so the
+// domain and UI layers collide. Regroup by domain in v2.4.2; full visual
+// unification follows the design-system groundwork (v2.7.0 — see
+// .claude/docs/v2-final-overhaul.md roadmap).
 export const Controller: FC = () => {
   const { activeUI } = useUIContext();
   const isVisible = (key: keyof typeof activeUI) =>

@@ -1,4 +1,4 @@
-import { renderHook, waitFor } from "@testing-library/react";
+import { act, renderHook, waitFor } from "@testing-library/react";
 import { describe, it, expect, vi, afterEach, beforeEach } from "vitest";
 import { FC, ReactNode } from "react";
 import { resourceContext } from "@/components/AudioPlayer/Context/ResourceContext";
@@ -11,7 +11,7 @@ import {
   LARGE_FILE_THRESHOLD_SEC,
   LARGE_FILE_BYTES,
   __resetWaveformSizeCache,
-} from "../useWaveformMode";
+} from "../hooks/useWaveformMode";
 
 beforeEach(() => {
   __resetWaveformSizeCache();
@@ -414,6 +414,97 @@ describe("useWaveformMode byte size-gate", () => {
   });
 });
 
+describe("useWaveformMode content-length cache lifecycle", () => {
+  const originalFetch = global.fetch;
+
+  afterEach(() => {
+    global.fetch = originalFetch;
+    vi.restoreAllMocks();
+  });
+
+  const makeHeadResponse = (contentLength: string | null) => ({
+    headers: {
+      get: (name: string) => (name === "content-length" ? contentLength : null),
+    },
+  });
+
+  it("caches a header-less 200 verdict and dedupes the HEAD across a remount", async () => {
+    global.fetch = vi.fn().mockResolvedValue(makeHeadResponse(null));
+    const track = makeAudioData({ src: "headerless-200.mp3" });
+
+    const first = renderUseWaveformMode({
+      playList: [track],
+      curPlayId: track.id,
+      audioEl: makeAudioEl(FINITE_DURATION),
+    });
+
+    await waitFor(() =>
+      expect(first.result.current.sizeGatePending).toBe(false)
+    );
+    expect(global.fetch).toHaveBeenCalledTimes(1);
+    expect(first.result.current.mode).toBe("normal");
+    first.unmount();
+
+    const second = renderUseWaveformMode({
+      playList: [track],
+      curPlayId: track.id,
+      audioEl: makeAudioEl(FINITE_DURATION),
+    });
+
+    await waitFor(() =>
+      expect(second.result.current.sizeGatePending).toBe(false)
+    );
+    expect(global.fetch).toHaveBeenCalledTimes(1);
+    expect(second.result.current.mode).toBe("normal");
+  });
+
+  it("re-probes the same src after a true transient failure (no response is not cached)", async () => {
+    global.fetch = vi.fn().mockRejectedValue(new Error("network"));
+    const track = makeAudioData({ src: "transient-network-error.mp3" });
+
+    const first = renderUseWaveformMode({
+      playList: [track],
+      curPlayId: track.id,
+      audioEl: makeAudioEl(FINITE_DURATION),
+    });
+
+    await waitFor(() =>
+      expect(first.result.current.sizeGatePending).toBe(false)
+    );
+    expect(global.fetch).toHaveBeenCalledTimes(1);
+
+    renderUseWaveformMode({
+      playList: [track],
+      curPlayId: track.id,
+      audioEl: makeAudioEl(FINITE_DURATION),
+    });
+
+    await waitFor(() => expect(global.fetch).toHaveBeenCalledTimes(2));
+  });
+
+  it("shares one in-flight HEAD across concurrent probes of the same src and applies the oversize verdict", async () => {
+    global.fetch = vi
+      .fn()
+      .mockResolvedValue(makeHeadResponse(String(LARGE_FILE_BYTES + 1)));
+    const track = makeAudioData({ src: "dedup-oversize-60mb.flac" });
+
+    const first = renderUseWaveformMode({
+      playList: [track],
+      curPlayId: track.id,
+      audioEl: makeAudioEl(FINITE_DURATION),
+    });
+    const second = renderUseWaveformMode({
+      playList: [track],
+      curPlayId: track.id,
+      audioEl: makeAudioEl(FINITE_DURATION),
+    });
+
+    await waitFor(() => expect(first.result.current.mode).toBe("faux"));
+    await waitFor(() => expect(second.result.current.mode).toBe("faux"));
+    expect(global.fetch).toHaveBeenCalledTimes(1);
+  });
+});
+
 describe("useWaveformMode oversize dev warning", () => {
   const originalFetch = global.fetch;
 
@@ -634,6 +725,50 @@ describe("useWaveformMode sizeGatePending", () => {
     });
 
     expect(global.fetch).not.toHaveBeenCalled();
+    expect(result.current.sizeGatePending).toBe(false);
+    expect(result.current.mode).toBe("normal");
+  });
+});
+
+describe("useWaveformMode fail-open when AbortController is unavailable", () => {
+  const originalFetch = global.fetch;
+  const originalAbortController = global.AbortController;
+  const HEAD_TIMEOUT_MS = 8000;
+
+  beforeEach(() => {
+    vi.useFakeTimers();
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+    global.fetch = originalFetch;
+    global.AbortController = originalAbortController;
+    vi.restoreAllMocks();
+  });
+
+  it("times out a hung untimed HEAD and settles to 'normal' instead of pinning sizeGatePending", async () => {
+    // No AbortController → fetchWithTimeout cannot cancel → the HEAD runs untimed.
+    global.AbortController = undefined as never;
+    // A HEAD that never settles: without the manual fail-open timer this would
+    // pin sizeGatePending forever.
+    global.fetch = vi
+      .fn()
+      .mockReturnValue(new Promise(() => undefined)) as never;
+
+    const track = makeAudioData({ src: "hung-untimed-head.mp3" });
+    const { result } = renderUseWaveformMode({
+      playList: [track],
+      curPlayId: track.id,
+      audioEl: makeAudioEl(FINITE_DURATION),
+    });
+
+    expect(result.current.sizeGatePending).toBe(true);
+    expect(result.current.mode).toBe("normal");
+
+    await act(async () => {
+      vi.advanceTimersByTime(HEAD_TIMEOUT_MS);
+    });
+
     expect(result.current.sizeGatePending).toBe(false);
     expect(result.current.mode).toBe("normal");
   });

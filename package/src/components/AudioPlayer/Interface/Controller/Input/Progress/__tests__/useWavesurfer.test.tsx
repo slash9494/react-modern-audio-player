@@ -8,8 +8,8 @@ import { resourceContext } from "@/components/AudioPlayer/Context/ResourceContex
 import { uiContext } from "@/components/AudioPlayer/Context/UIContext";
 import { audioPlayerDispatchContext } from "@/components/AudioPlayer/Context/dispatchContext";
 import { AudioData } from "@/components/AudioPlayer/Context";
-import { useWaveSurfer } from "../useWavesurfer";
-import { useWaveformMode } from "../useWaveformMode";
+import { useWaveSurfer } from "../hooks/useWavesurfer";
+import { useWaveformMode } from "../hooks/useWaveformMode";
 
 // useWaveSurfer's track-change effect registers a `ready` callback that, when
 // fired by wavesurfer, calls audioEl.play() if playback was active. This is the

@@ -3,10 +3,15 @@ import { useResourceContext } from "@/components/AudioPlayer/Context/hooks/useRe
 import { formatClockTime } from "@/utils/getTime";
 import { FC, useCallback, useEffect, useRef } from "react";
 import { safeRatio } from "@/utils/safeRatio";
-import { useProgress } from "./useProgress";
-import { useProgressKeyDown } from "./useProgressKeyDown";
-import { useWaveSurfer } from "./useWavesurfer";
-import type { WaveformModeResult } from "./useWaveformMode";
+import { ProgressTooltip } from "./ProgressTooltip";
+import {
+  useElementWidth,
+  useProgress,
+  useProgressKeyDown,
+  useTooltipPlacement,
+  useWaveSurfer,
+} from "./hooks";
+import type { WaveformModeResult } from "./hooks";
 import "./WaveformProgress.css";
 
 export const WaveformProgress: FC<{
@@ -14,8 +19,11 @@ export const WaveformProgress: FC<{
   waveformMode: WaveformModeResult;
 }> = ({ isActive, waveformMode }) => {
   const waveformRef = useRef<HTMLDivElement>(null);
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  const wrapperWidth = useElementWidth(wrapperRef);
   const { isLoadedMetaData, isPlaying } = usePlaybackContext();
   const { elementRefs } = useResourceContext();
+  const tooltipPlacement = useTooltipPlacement(wrapperRef);
 
   const { isWaveformReady } = useWaveSurfer(waveformRef, waveformMode);
 
@@ -42,7 +50,7 @@ export const WaveformProgress: FC<{
     isPlaying,
   ]);
 
-  const { progressProps, previewRatio } = useProgress();
+  const { progressProps, previewRatio, hoverRatio } = useProgress();
 
   const isDragging = previewRatio != null;
 
@@ -61,6 +69,7 @@ export const WaveformProgress: FC<{
 
   return (
     <div
+      ref={wrapperRef}
       className="rmap-waveform-wrapper"
       data-active={isActive}
       data-ready={isWaveformReady}
@@ -89,6 +98,12 @@ export const WaveformProgress: FC<{
         )}`}
         onKeyDown={handleKeyDown}
         {...progressProps}
+      />
+      <ProgressTooltip
+        ratio={previewRatio ?? hoverRatio}
+        duration={duration}
+        placement={tooltipPlacement}
+        containerWidth={wrapperWidth}
       />
     </div>
   );

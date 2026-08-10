@@ -1,28 +1,23 @@
 import { useTimeContext } from "@/components/AudioPlayer/Context/hooks/useTimeContext";
 import { formatClockTime } from "@/utils/getTime";
 import { safeRatio } from "@/utils/safeRatio";
-import { FC, useEffect, useRef, useState } from "react";
-import { useProgress } from "./useProgress";
-import { useProgressKeyDown } from "./useProgressKeyDown";
+import { FC, useRef } from "react";
+import { ProgressTooltip } from "./ProgressTooltip";
+import {
+  useElementWidth,
+  useProgress,
+  useProgressKeyDown,
+  useTooltipPlacement,
+} from "./hooks";
 import "./BarProgress.css";
 
 export const BarProgress: FC = () => {
   const { currentTime, duration } = useTimeContext();
   const wrapperRef = useRef<HTMLDivElement>(null);
-  const [wrapperWidth, setWrapperWidth] = useState(0);
+  const wrapperWidth = useElementWidth(wrapperRef);
+  const tooltipPlacement = useTooltipPlacement(wrapperRef);
 
-  useEffect(() => {
-    const el = wrapperRef.current;
-    if (!el) return;
-    setWrapperWidth(el.offsetWidth);
-    const resizeObserver = new ResizeObserver(([entry]) => {
-      setWrapperWidth(entry.contentBoxSize[0].inlineSize);
-    });
-    resizeObserver.observe(el);
-    return () => resizeObserver.disconnect();
-  }, []);
-
-  const { progressProps, previewRatio } = useProgress();
+  const { progressProps, previewRatio, hoverRatio } = useProgress();
   const handleKeyDown = useProgressKeyDown();
 
   const ratio = previewRatio ?? safeRatio(currentTime, duration);
@@ -57,6 +52,12 @@ export const BarProgress: FC = () => {
         style={{
           transform: `translateX(${progressOffset}px)`,
         }}
+      />
+      <ProgressTooltip
+        ratio={previewRatio ?? hoverRatio}
+        duration={duration}
+        placement={tooltipPlacement}
+        containerWidth={wrapperWidth}
       />
     </div>
   );
