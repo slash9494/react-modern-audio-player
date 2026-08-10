@@ -13,7 +13,6 @@ import type { Locator, Page } from "@playwright/test";
 // enough to measure instead of racing it.
 
 const WAVEFORM_HEIGHT_PX = 80;
-const PLAYLIST_ITEM_HEIGHT_PX = 55;
 const VOLUME_SLIDER_BOX = { width: 32, height: 119 };
 const SUBPIXEL_EPSILON = 0.5;
 const READY_TIMEOUT_MS = 20000;
@@ -182,11 +181,17 @@ test.describe("Cross-browser UI consistency — Layer 1 (layout invariants)", ()
     const count = await items.count();
     expect(count).toBeGreaterThan(0);
 
-    const heights = await items.evaluateAll((nodes) =>
+    // Row height is driven by the text, so its absolute value is neither
+    // portable (55 on macOS, 56 on the ubuntu runner) nor equal across engines
+    // on one machine (chromium 56, firefox 58). Pinning a number — or demanding
+    // one number everywhere — asserts font metrics, not layout. What must hold
+    // is that the rows agree with each other: one ragged row is the real defect.
+    const [firstHeight, ...restHeights] = await items.evaluateAll((nodes) =>
       nodes.map((node) => node.getBoundingClientRect().height)
     );
-    for (const height of heights) {
-      expect(height).toBeCloseTo(PLAYLIST_ITEM_HEIGHT_PX, 0);
+    expect(firstHeight).toBeGreaterThan(0);
+    for (const height of restHeights) {
+      expect(height).toBeCloseTo(firstHeight, 0);
     }
 
     const overflow = await horizontalOverflow(page, "audio-player");
