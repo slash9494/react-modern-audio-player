@@ -67,14 +67,17 @@ const playFirstWorkingSource = async (
   overrides: Partial<AudioData> = {}
 ): Promise<string | null> => {
   for (const candidate of candidates) {
-    await playerPage.gotoWithConfig({
-      curPlayId: 1,
-      // src last: the candidate under test always wins over the overrides.
-      trackOverrides: { 1: { ...overrides, src: candidate } },
-      progressType: "waveform",
-    });
-    await playerPage.playBtn.click();
+    // Navigation and the click belong inside the try: a candidate that fails
+    // to mount a playable player is exactly the case the walk exists for, and
+    // letting it throw here would strand the remaining mirrors untried.
     try {
+      await playerPage.gotoWithConfig({
+        curPlayId: 1,
+        // src last: the candidate under test always wins over the overrides.
+        trackOverrides: { 1: { ...overrides, src: candidate } },
+        progressType: "waveform",
+      });
+      await playerPage.playBtn.click();
       await playerPage.page.waitForFunction(
         (minSeconds) => {
           const audioEl = document.querySelector("audio");
@@ -85,7 +88,7 @@ const playFirstWorkingSource = async (
       );
       return candidate;
     } catch {
-      // Never started within the window — fall through to the next mirror.
+      // Never reached sustained playback — fall through to the next mirror.
     }
   }
   return null;
