@@ -9,10 +9,14 @@ import type { Locator, Page } from "@playwright/test";
 // once and runs unchanged on all three engines — that IS the consistency
 // check. Layer 2 (bottom of this file) pixel-compares stable end states only.
 //
-// Anti-flake rules: no pixel assertions on transient states, state changes are
-// observed via data-ready / element presence rather than timing sleeps, and the
-// audio request is fulfilled from a local fixture on a route delay, so the
-// loading window stays open long enough to measure without a live CDN in it.
+// Anti-flake rules: no pixel assertions on transient states, and state changes
+// are observed via data-ready / element presence rather than timing sleeps.
+//
+// Only the tests that take playerPageLazy (L1-1, L2-1) serve the audio from a
+// local fixture — the playerPage fixture navigates during its own setup, so the
+// rest have nowhere to register a route first and still reach the live CDN.
+// Their assertions read geometry rather than audio metadata, so that is a
+// latency risk, not a correctness one.
 
 const WAVEFORM_HEIGHT_PX = 80;
 // Default placement only: Content.css rotates the container 90deg for
@@ -22,7 +26,8 @@ const SUBPIXEL_EPSILON = 0.5;
 const READY_TIMEOUT_MS = 20000;
 const AUDIO_DELAY_MS = 3000;
 // 154s / 4.7MB clears both waveform fallback gates (30min, 50MB), so the real
-// waveform still renders instead of the faux one.
+// waveform still renders instead of the faux one. Its duration is also painted
+// into the L2-1 baseline as text, so swapping this file means regenerating it.
 const LOCAL_AUDIO_PATH = resolve(
   __dirname,
   "../../package/preview/assets/audio/audio-1.mp3"
@@ -71,18 +76,18 @@ const horizontalOverflow = (page: Page, testId: string) =>
     return { scrollWidth: el.scrollWidth, clientWidth: el.clientWidth };
   }, testId);
 
-// Serves the local fixture so no assertion here rides on a CDN round-trip, and
-// holds the loading window open: without the delay the request can resolve
-// before the first measurement, and the skeleton phase becomes unobservable.
-const delayAudioResponse = (page: Page) =>
+// Serves the local fixture so no assertion here rides on a CDN round-trip.
+// `delayMs` holds the loading window open where a test needs it: without a
+// delay the request can resolve before the first measurement, and the skeleton
+// phase becomes unobservable. Snapshot tests want the opposite — no delay, just
+// the local file — so they pass nothing.
+const serveLocalAudio = (page: Page, delayMs = 0) =>
   page.route("**/audio_*.mp3", async (route) => {
     // useWaveformMode probes this URL with HEAD for content-length. Holding the
     // probe for the download's artificial delay would move when the size gate
     // resolves relative to the fetch, which is the ordering under test.
-    if (route.request().method() === "GET") {
-      await new Promise((resolveDelay) =>
-        setTimeout(resolveDelay, AUDIO_DELAY_MS)
-      );
+    if (delayMs > 0 && route.request().method() === "GET") {
+      await new Promise((resolveDelay) => setTimeout(resolveDelay, delayMs));
     }
     await route.fulfill({
       path: LOCAL_AUDIO_PATH,
@@ -95,7 +100,7 @@ test.describe("Cross-browser UI consistency — Layer 1 (layout invariants)", ()
     playerPageLazy,
   }) => {
     const { page } = playerPageLazy;
-    await delayAudioResponse(page);
+    await serveLocalAudio(page, AUDIO_DELAY_MS);
     await playerPageLazy.gotoWithConfig({ progressType: "waveform" });
 
     const wrapper = page.locator(".rmap-waveform-wrapper");
@@ -216,7 +221,9 @@ test.describe("Cross-browser UI consistency — Layer 1 (layout invariants)", ()
 // therefore opt-in: run `E2E_SNAPSHOTS=1 npx playwright test cross-browser-ui
 // --update-snapshots` on the platform you intend to gate, commit the files it
 // writes, then keep E2E_SNAPSHOTS set wherever those baselines live.
-const snapshotsEnabled = Boolean(process.env.E2E_SNAPSHOTS);
+// Exact match, not truthiness: `Boolean("false")` is true, so a runner setting
+// E2E_SNAPSHOTS=false to opt out would turn the suite on against no baselines.
+const snapshotsEnabled = process.env.E2E_SNAPSHOTS === "1";
 
 test.describe("Cross-browser UI consistency — Layer 2 (stable-state pixels)", () => {
   test.skip(
@@ -233,6 +240,8 @@ test.describe("Cross-browser UI consistency — Layer 2 (stable-state pixels)", 
     playerPageLazy,
   }) => {
     const { page } = playerPageLazy;
+    // A baseline compared against a CDN-served file is a baseline of the CDN.
+    await serveLocalAudio(page);
     await playerPageLazy.gotoWithConfig({ progressType: "waveform" });
 
     const wrapper = page.locator(".rmap-waveform-wrapper");
