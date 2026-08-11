@@ -8,7 +8,9 @@ export interface BoundingBox {
   height: number;
 }
 
-export const requireBox = async (locator: Locator): Promise<BoundingBox> => {
+export const requireBoundingBox = async (
+  locator: Locator
+): Promise<BoundingBox> => {
   const box = await locator.boundingBox();
   expect(box).toBeTruthy();
   return box as BoundingBox;

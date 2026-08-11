@@ -1,5 +1,5 @@
 import { test, expect } from "./fixtures/player.fixture";
-import { requireBox, type BoundingBox } from "./helpers/boundingBox";
+import { requireBoundingBox, type BoundingBox } from "./helpers/boundingBox";
 import type { Locator, Page } from "@playwright/test";
 
 const EDGE_INSET_PX = 2;
@@ -33,7 +33,7 @@ const readTooltipBoxAtHover = async (
 ): Promise<BoundingBox> => {
   await page.mouse.move(x, y);
   await tooltip.waitFor({ state: "visible" });
-  return requireBox(tooltip);
+  return requireBoundingBox(tooltip);
 };
 
 const expectTooltipWithinWrapper = (
@@ -54,7 +54,7 @@ test.describe("Progress tooltip horizontal clamp", () => {
     await playerPageLazy.gotoWithConfig({ progressType: "bar" });
     await waitForDurationLoaded(page);
 
-    const wrapper = await requireBox(progressBar);
+    const wrapper = await requireBoundingBox(progressBar);
     const tooltip = page.locator(".rmap-progress-tooltip");
     const hoverCenterY = wrapper.y + wrapper.height / 2;
 

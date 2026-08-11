@@ -1,6 +1,6 @@
 import { resolve } from "path";
 import { test, expect } from "./fixtures/player.fixture";
-import { requireBox, type BoundingBox } from "./helpers/boundingBox";
+import { requireBoundingBox, type BoundingBox } from "./helpers/boundingBox";
 import type { Locator, Page } from "@playwright/test";
 
 // Cross-browser UI consistency (chromium/firefox/webkit).
@@ -49,7 +49,7 @@ const waitForSettledBox = async (
         .map((animation) => animation.finished.catch(() => undefined))
     )
   );
-  return requireBox(target);
+  return requireBoundingBox(target);
 };
 
 // Remote cover art paints on the CDN's schedule, not ours: webkit intermittently
@@ -76,9 +76,14 @@ const horizontalOverflow = (page: Page, testId: string) =>
 // before the first measurement, and the skeleton phase becomes unobservable.
 const delayAudioResponse = (page: Page) =>
   page.route("**/audio_*.mp3", async (route) => {
-    await new Promise((resolveDelay) =>
-      setTimeout(resolveDelay, AUDIO_DELAY_MS)
-    );
+    // useWaveformMode probes this URL with HEAD for content-length. Holding the
+    // probe for the download's artificial delay would move when the size gate
+    // resolves relative to the fetch, which is the ordering under test.
+    if (route.request().method() === "GET") {
+      await new Promise((resolveDelay) =>
+        setTimeout(resolveDelay, AUDIO_DELAY_MS)
+      );
+    }
     await route.fulfill({
       path: LOCAL_AUDIO_PATH,
       contentType: "audio/mpeg",
@@ -101,9 +106,9 @@ test.describe("Cross-browser UI consistency — Layer 1 (layout invariants)", ()
     await expect(wrapper).toHaveAttribute("data-ready", "false");
     await expect(skeleton).toBeVisible();
 
-    const wrapperLoading = await requireBox(wrapper);
-    const skeletonBox = await requireBox(skeleton);
-    const playBtnLoading = await requireBox(playBtn);
+    const wrapperLoading = await requireBoundingBox(wrapper);
+    const skeletonBox = await requireBoundingBox(skeleton);
+    const playBtnLoading = await requireBoundingBox(playBtn);
     const overflowLoading = await horizontalOverflow(page, "audio-player");
 
     expect(wrapperLoading.height).toBeCloseTo(WAVEFORM_HEIGHT_PX, 0);
@@ -122,8 +127,8 @@ test.describe("Cross-browser UI consistency — Layer 1 (layout invariants)", ()
     });
     await expect(skeleton).toHaveCount(0);
 
-    const wrapperReady = await requireBox(wrapper);
-    const playBtnReady = await requireBox(playBtn);
+    const wrapperReady = await requireBoundingBox(wrapper);
+    const playBtnReady = await requireBoundingBox(playBtn);
     const overflowReady = await horizontalOverflow(page, "audio-player");
 
     expect(Math.abs(wrapperReady.height - wrapperLoading.height)).toBeLessThan(
