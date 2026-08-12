@@ -12,7 +12,7 @@ import { describe, it, expect } from "vitest";
 import { render, act } from "@testing-library/react";
 import { FC, ReactNode } from "react";
 import { AudioPlayerStateProvider } from "@/audioPlayer/Provider/AudioPlayerStateProvider";
-import { InitialStates } from "@/audioPlayer/Context/StateContext";
+import { InitialStates } from "@/audioPlayer/Context/state";
 import {
   audioPlayerDispatchContext,
   AudioContextAction,

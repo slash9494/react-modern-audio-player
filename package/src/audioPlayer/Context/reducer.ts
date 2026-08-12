@@ -1,7 +1,7 @@
 import { clampVolume } from "@/audioPlayer/utils/clampVolume";
 import { getRandomNumber } from "@/utils/getRandomNumber";
 import { AudioContextAction } from "./dispatchContext";
-import { AudioPlayerStateContext } from "./StateContext";
+import { AudioPlayerStateContext } from "./state";
 
 const PREV_RESET_THRESHOLD_SEC = 1;
 

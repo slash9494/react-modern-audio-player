@@ -1,5 +1,5 @@
 import { ReactElement } from "react";
-import { ActiveUI } from "@/audioPlayer/Context/StateContext";
+import { ActiveUI } from "@/audioPlayer/Context/state";
 
 export type ActiveUIKey = keyof ActiveUI;
 

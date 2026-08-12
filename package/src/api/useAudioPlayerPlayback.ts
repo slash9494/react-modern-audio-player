@@ -2,7 +2,7 @@ import { useCallback } from "react";
 import { useNonNullableContext } from "@/hooks/useNonNullableContext";
 import { audioPlayerDispatchContext } from "@/audioPlayer/Context/dispatchContext";
 import { usePlaybackContext } from "@/audioPlayer/Context/hooks/usePlaybackContext";
-import type { RepeatType } from "@/audioPlayer/Context/StateContext";
+import type { RepeatType } from "@/audioPlayer/Context/state";
 
 export interface AudioPlayerPlaybackControls {
   isPlaying: boolean;

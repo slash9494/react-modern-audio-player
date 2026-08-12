@@ -6,7 +6,7 @@ import { playbackContext } from "@/audioPlayer/Context/PlaybackContext";
 import { resourceContext } from "@/audioPlayer/Context/ResourceContext";
 import { uiContext } from "@/audioPlayer/Context/UIContext";
 import { audioPlayerDispatchContext } from "@/audioPlayer/Context/dispatchContext";
-import { RepeatType } from "@/audioPlayer/Context/StateContext";
+import { RepeatType } from "@/audioPlayer/Context/state";
 
 const mockDispatch = vi.fn();
 

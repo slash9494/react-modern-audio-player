@@ -1,4 +1,4 @@
-export * from "./StateContext";
+export * from "./state";
 export * from "./dispatchContext";
 export * from "./reducer";
 export * from "./PlaybackContext";

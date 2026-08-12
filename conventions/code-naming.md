@@ -44,6 +44,8 @@ All identifiers — variables, constants, functions, hooks, types, interfaces �
 | --- | --- | --- |
 | Components | PascalCase, noun | `PlayButton`, `VolumeSlider` |
 | Hooks | `use{Purpose}` | `useVolume`, `useTrackContext` |
+| Context readers | `use{Context}Context` returns that context as it is | `useTimeContext`, `useUIContext` |
+| Derived context values | no `Context` suffix — name the value returned | `useCurrentTrack` (reads `useTrackContext`, returns an `AudioData`) |
 | Context providers | `{Domain}Provider` | `AudioPlayerProvider` |
 | HOCs | `with{Feature}` | `withPlaybackControl` |
 

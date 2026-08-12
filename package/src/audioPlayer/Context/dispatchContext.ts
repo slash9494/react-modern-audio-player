@@ -13,7 +13,7 @@ import {
   TimeTooltipPlacement,
   DEFAULT_INTERFACE_GRID_BOUND,
   AudioState,
-} from "./StateContext";
+} from "./state";
 
 export type AudioContextAction<
   TInterfacePlacementLength extends number = typeof DEFAULT_INTERFACE_GRID_BOUND

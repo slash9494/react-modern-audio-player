@@ -2,7 +2,7 @@ import { FC, memo, useCallback, useRef, MouseEvent } from "react";
 import "./SpeedSelector.css";
 import Dropdown from "@/ui/Dropdown";
 import Grid, { GridItemLayoutProps } from "@/ui/Grid";
-import { SpeedSelectorPlacement } from "@/audioPlayer/Context/StateContext";
+import { SpeedSelectorPlacement } from "@/audioPlayer/Context/state";
 import { useNonNullableContext } from "@/hooks/useNonNullableContext";
 import { audioPlayerDispatchContext } from "@/audioPlayer/Context/dispatchContext";
 import { dropdownContext } from "@/ui/Dropdown/DropdownContext";

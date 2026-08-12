@@ -1,5 +1,5 @@
 import { createContext } from "react";
-import { AudioNativeProps } from "./StateContext";
+import { AudioNativeProps } from "./state";
 
 /**
  * Native HTML <audio> attributes that the consumer passes through

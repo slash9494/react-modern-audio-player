@@ -10,7 +10,7 @@ import type {
   SpeedSelectorPlacement,
   TimeTooltipPlacement,
   VolumeSliderPlacement,
-} from "./StateContext";
+} from "./state";
 
 export interface AudioPlayerStateProviderProps<
   TInterfacePlacementLength extends number

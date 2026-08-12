@@ -1,5 +1,5 @@
 import { createContext } from "react";
-import { RepeatType } from "./StateContext";
+import { RepeatType } from "./state";
 
 export interface PlaybackContext {
   isPlaying: boolean;

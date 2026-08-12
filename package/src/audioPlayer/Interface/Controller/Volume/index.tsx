@@ -3,7 +3,7 @@ import { VolumeSlider } from "./Content";
 import Dropdown from "@/ui/Dropdown";
 import Grid, { GridItemLayoutProps } from "@/ui/Grid";
 import { VolumeIcon } from "./VolumeIcon";
-import { VolumeSliderPlacement } from "@/audioPlayer/Context/StateContext";
+import { VolumeSliderPlacement } from "@/audioPlayer/Context/state";
 import { useUIContext } from "@/audioPlayer/Context/hooks/useUIContext";
 import { usePlaybackContext } from "@/audioPlayer/Context/hooks/usePlaybackContext";
 import { useNonNullableContext } from "@/hooks/useNonNullableContext";

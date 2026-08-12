@@ -1,6 +1,6 @@
 import { useNonNullableContext } from "@/hooks/useNonNullableContext";
 import { audioPlayerDispatchContext } from "@/audioPlayer/Context/dispatchContext";
-import { VolumeSliderPlacement } from "@/audioPlayer/Context/StateContext";
+import { VolumeSliderPlacement } from "@/audioPlayer/Context/state";
 import { usePlaybackContext } from "@/audioPlayer/Context/hooks/usePlaybackContext";
 import { useResourceContext } from "@/audioPlayer/Context/hooks/useResourceContext";
 import { ChangeEvent, FC, useCallback, useMemo, useRef } from "react";

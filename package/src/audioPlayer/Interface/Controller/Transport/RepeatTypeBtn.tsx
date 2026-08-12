@@ -3,7 +3,7 @@ import { useNonNullableContext } from "@/hooks/useNonNullableContext";
 import { audioPlayerDispatchContext } from "@/audioPlayer/Context/dispatchContext";
 import { usePlaybackContext } from "@/audioPlayer/Context/hooks/usePlaybackContext";
 import { useResourceContext } from "@/audioPlayer/Context/hooks/useResourceContext";
-import { RepeatType } from "@/audioPlayer/Context/StateContext";
+import { RepeatType } from "@/audioPlayer/Context/state";
 import { StyledBtn } from "@/ui/StyledBtn";
 import Grid, { GridItemLayoutProps } from "@/ui/Grid";
 import {

@@ -2,7 +2,7 @@ import { renderHook, render, act } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { FC, ReactNode, SyntheticEvent } from "react";
 import { useAudio } from "../useAudio";
-import { RepeatType } from "@/audioPlayer/Context/StateContext";
+import { RepeatType } from "@/audioPlayer/Context/state";
 import { playbackContext } from "@/audioPlayer/Context/PlaybackContext";
 import { timeContext } from "@/audioPlayer/Context/TimeContext";
 import { resourceContext } from "@/audioPlayer/Context/ResourceContext";

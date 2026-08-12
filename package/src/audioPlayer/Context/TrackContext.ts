@@ -1,5 +1,5 @@
 import { createContext } from "react";
-import { PlayList } from "./StateContext";
+import { PlayList } from "./state";
 
 export interface TrackContext {
   playList: PlayList;

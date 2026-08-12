@@ -7,7 +7,7 @@ import {
   SpeedSelectorPlacement,
   TimeTooltipPlacement,
   VolumeSliderPlacement,
-} from "./StateContext";
+} from "./state";
 
 export type ColorScheme = "light" | "dark";
 

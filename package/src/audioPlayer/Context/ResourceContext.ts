@@ -1,5 +1,5 @@
 import { createContext } from "react";
-import { CoverImgsCss, CustomIcons, ElementRefs } from "./StateContext";
+import { CoverImgsCss, CustomIcons, ElementRefs } from "./state";
 
 export interface ResourceContext {
   elementRefs?: ElementRefs;

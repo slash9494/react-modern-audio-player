@@ -3,7 +3,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { AudioPlayerContainer } from "@/audioPlayer/Container/AudioPlayerContainer";
 import type { AudioPlayerContainerProps } from "@/audioPlayer/Container/AudioPlayerContainer";
 import type { UIContext } from "@/audioPlayer/Context/UIContext";
-import type { PlayerPlacement } from "@/audioPlayer/Context/StateContext";
+import type { PlayerPlacement } from "@/audioPlayer/Context/state";
 
 vi.mock("@/audioPlayer/Context/hooks/useUIContext");
 

@@ -5,7 +5,7 @@ import React, {
   useMemo,
 } from "react";
 import { useUIContext } from "@/audioPlayer/Context/hooks/useUIContext";
-import { PlayerPlacement } from "@/audioPlayer/Context/StateContext";
+import { PlayerPlacement } from "@/audioPlayer/Context/state";
 
 export interface AudioPlayerContainerProps {
   rootContainerProps?: Omit<HTMLAttributes<HTMLDivElement>, "children">;

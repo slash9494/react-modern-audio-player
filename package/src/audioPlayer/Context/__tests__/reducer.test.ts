@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { audioPlayerReducer } from "../reducer";
-import { AudioPlayerStateContext } from "../StateContext";
+import { AudioPlayerStateContext } from "../state";
 
 const makeBaseState = (): AudioPlayerStateContext => ({
   playList: [

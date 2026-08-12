@@ -2,7 +2,7 @@ import { useAudioPlayerPlayback } from "./useAudioPlayerPlayback";
 import { useAudioPlayerTrack } from "./useAudioPlayerTrack";
 import { useAudioPlayerVolume } from "./useAudioPlayerVolume";
 import { useAudioPlayerTime } from "./useAudioPlayerTime";
-import type { RepeatType, AudioData } from "@/audioPlayer/Context/StateContext";
+import type { RepeatType, AudioData } from "@/audioPlayer/Context/state";
 
 export interface AudioPlayerControls {
   isPlaying: boolean;

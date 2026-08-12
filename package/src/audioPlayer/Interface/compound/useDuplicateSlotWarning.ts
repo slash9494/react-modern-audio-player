@@ -1,5 +1,5 @@
 import { ReactElement, useEffect } from "react";
-import { ActiveUI } from "@/audioPlayer/Context/StateContext";
+import { ActiveUI } from "@/audioPlayer/Context/state";
 import {
   isPresetActive,
   resolveSlotKey,

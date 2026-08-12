@@ -3,7 +3,7 @@ import { useNonNullableContext } from "@/hooks/useNonNullableContext";
 import { audioPlayerDispatchContext } from "@/audioPlayer/Context/dispatchContext";
 import { useTrackContext } from "@/audioPlayer/Context/hooks/useTrackContext";
 import { useResourceContext } from "@/audioPlayer/Context/hooks/useResourceContext";
-import type { AudioData } from "@/audioPlayer/Context/StateContext";
+import type { AudioData } from "@/audioPlayer/Context/state";
 
 export interface AudioPlayerTrackControls {
   currentPlayId: number;
