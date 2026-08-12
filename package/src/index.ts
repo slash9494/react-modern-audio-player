@@ -1,12 +1,12 @@
 "use client";
 
-import AudioPlayer from "./audio-player";
+import AudioPlayer from "./audioPlayer";
 
 export default AudioPlayer;
 
-export * from "./audio-player";
-export * from "./audio-player/Context";
-export * from "./audio-player/Player";
-export * from "./audio-player/Container";
-export * from "./audio-player/Provider";
+export * from "./audioPlayer";
+export * from "./audioPlayer/Context";
+export * from "./audioPlayer/Player";
+export * from "./audioPlayer/Container";
+export * from "./audioPlayer/Provider";
 export * from "./api";

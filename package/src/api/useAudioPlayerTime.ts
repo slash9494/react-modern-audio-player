@@ -1,7 +1,7 @@
 import { useCallback } from "react";
 import { useNonNullableContext } from "@/hooks/useNonNullableContext";
-import { audioPlayerDispatchContext } from "@/audio-player/Context/dispatchContext";
-import { useTimeContext } from "@/audio-player/Context/hooks/useTimeContext";
+import { audioPlayerDispatchContext } from "@/audioPlayer/Context/dispatchContext";
+import { useTimeContext } from "@/audioPlayer/Context/hooks/useTimeContext";
 
 export interface AudioPlayerTimeControls {
   currentTime: number;

@@ -1,9 +1,9 @@
 import { useCallback } from "react";
 import { useNonNullableContext } from "@/hooks/useNonNullableContext";
-import { audioPlayerDispatchContext } from "@/audio-player/Context/dispatchContext";
-import { useTrackContext } from "@/audio-player/Context/hooks/useTrackContext";
-import { useResourceContext } from "@/audio-player/Context/hooks/useResourceContext";
-import type { AudioData } from "@/audio-player/Context/StateContext";
+import { audioPlayerDispatchContext } from "@/audioPlayer/Context/dispatchContext";
+import { useTrackContext } from "@/audioPlayer/Context/hooks/useTrackContext";
+import { useResourceContext } from "@/audioPlayer/Context/hooks/useResourceContext";
+import type { AudioData } from "@/audioPlayer/Context/StateContext";
 
 export interface AudioPlayerTrackControls {
   currentPlayId: number;

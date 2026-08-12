@@ -32,7 +32,7 @@ export default defineConfig({
   resolve: {
     dedupe: ["react", "react-dom"],
     alias: {
-      "@/audio-player": path.resolve(__dirname, "./src/audio-player"),
+      "@/audioPlayer": path.resolve(__dirname, "./src/audioPlayer"),
       "@/hooks": path.resolve(__dirname, "./src/hooks"),
       "@/utils": path.resolve(__dirname, "./src/utils"),
       "@/styles": path.resolve(__dirname, "./src/styles"),

@@ -6,7 +6,7 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      "@/audio-player": path.resolve(__dirname, "./src/audio-player"),
+      "@/audioPlayer": path.resolve(__dirname, "./src/audioPlayer"),
       "@/hooks": path.resolve(__dirname, "./src/hooks"),
       "@/utils": path.resolve(__dirname, "./src/utils"),
       "@/styles": path.resolve(__dirname, "./src/styles"),
