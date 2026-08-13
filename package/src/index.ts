@@ -1,12 +1,12 @@
 "use client";
 
-import AudioPlayer from "./components/AudioPlayer";
+import AudioPlayer from "./audioPlayer";
 
 export default AudioPlayer;
 
-export * from "./components/AudioPlayer";
-export * from "./components/AudioPlayer/Context";
-export * from "./components/AudioPlayer/Player";
-export * from "./components/AudioPlayer/Container";
-export * from "./components/AudioPlayer/Provider";
+export * from "./audioPlayer";
+export * from "./audioPlayer/Context";
+export * from "./audioPlayer/Player";
+export * from "./audioPlayer/Container";
+export * from "./audioPlayer/Provider";
 export * from "./api";

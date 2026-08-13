@@ -44,8 +44,24 @@ All identifiers — variables, constants, functions, hooks, types, interfaces �
 | --- | --- | --- |
 | Components | PascalCase, noun | `PlayButton`, `VolumeSlider` |
 | Hooks | `use{Purpose}` | `useVolume`, `useTrackContext` |
+| Context readers | `use{Context}Context` returns that context as it is | `useTimeContext`, `useUIContext` |
+| Derived context values | no `Context` suffix — name the value returned | `useCurrentTrack` (reads `useTrackContext`, returns an `AudioData`) |
 | Context providers | `{Domain}Provider` | `AudioPlayerProvider` |
 | HOCs | `with{Feature}` | `withPlaybackControl` |
+
+---
+
+## Files & Folders
+
+| Rule | Format | Example |
+| --- | --- | --- |
+| File with one primary export | Mirrors that export's name and case | `BarProgress.tsx`, `useWaveformMode.ts`, `TimeContext.ts`, `playListPortalContext.ts` |
+| File grouping several exports | lowercase topic name | `audio.ts`, `reducer.ts`, `refs.ts` |
+| Component folders | PascalCase, matches the component it holds | `Progress/`, `SortableList/`, `TrackTime/` |
+| Domain & support folders | camelCase | `audioPlayer/`, `api/`, `hooks/`, `utils/` |
+| Test folders | `__tests__/` beside the code under test | `Progress/__tests__/` |
+
+kebab-case is reserved for names that leave the source tree: CSS class names (`rmap-*`, see `class-naming.md`), CSS custom properties (`--rm-audio-player-*`), and the npm package name (`react-modern-audio-player`). A folder inside `src/` never uses it.
 
 ---
 
