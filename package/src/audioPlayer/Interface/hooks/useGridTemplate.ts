@@ -5,41 +5,96 @@ import {
 } from "@/audioPlayer/Context";
 import {
   compoundSlotMetaMap,
+  isPresetActive,
   resolveSlotKey,
 } from "@/audioPlayer/Interface/compound/slotMetaMap";
 import { isBrowser } from "@/utils/ssr";
 import { ReactElement, useCallback, useMemo, useState } from "react";
 
+type GridAreaLayer = Partial<Record<string, string>>;
+
+interface CompoundSlotArea {
+  activeUIKey: keyof ActiveUI;
+  gridArea: string | undefined;
+}
+
+// The only shape this template can declare. Three digits leave room above
+// `DEFAULT_INTERFACE_GRID_BOUND` for a raised `InterfacePlacement<N>` while
+// keeping an unbounded value out of the row and column loops below.
+const AREA_NAME_PATTERN = /^row(\d{1,3})-(\d{1,3})$/;
+
+// Accepts a value only if it already *is* the name the template emits. Zero
+// padding matches the pattern but not the emitted form (`row02-01` vs
+// `row2-1`), and the item is handed its raw value by `useResolvedGridArea`, so
+// it would ask for a cell that was never declared. Rejected values — a raw CSS
+// `grid-area`, a typo — are treated as absent, leaving the slot its default
+// cell while the raw value still reaches CSS.
+const parseAreaName = (value: unknown) => {
+  if (typeof value !== "string") return null;
+  const parsed = AREA_NAME_PATTERN.exec(value);
+  if (!parsed) return null;
+
+  const row = +parsed[1];
+  const col = +parsed[2];
+  if (row < 1 || col < 1) return null;
+  return `row${row}-${col}` === value ? { row, col } : null;
+};
+
+const toAreaName = (value: string | undefined): string | undefined =>
+  parseAreaName(value) ? value : undefined;
+
+// Later layers win, but only where they actually name an area: a partial layer
+// carrying an explicit `undefined` must not erase the layer beneath it. The
+// layer order follows the `??` chain in `useResolvedGridArea` — that chain is
+// what every rendered item asks for, so a template built on any other
+// precedence would declare areas no item ever claims. `itemCustomArea` is
+// deliberately left out: it holds a raw CSS `grid-area` value (line-based, e.g.
+// `"row1-4 / 2 / row1-4 / 10"`), not a name this template can declare.
+const mergeAreaLayers = (
+  ...layers: (GridAreaLayer | undefined)[]
+): Record<string, string> => {
+  const mergedAreas: Record<string, string> = {};
+  for (const layer of layers) {
+    for (const [slotKey, area] of Object.entries(layer ?? {})) {
+      if (area !== undefined) mergedAreas[slotKey] = area;
+    }
+  }
+  return mergedAreas;
+};
+
 export const useGridTemplate = (
   activeUI: ActiveUI,
-  templateArea: InterfacePlacement["templateArea"] | undefined,
-  customComponentsArea?: InterfacePlacement["customComponentsArea"],
+  interfacePlacement: InterfacePlacement | undefined,
   compoundChildren?: ReactElement[]
 ) => {
-  const compoundActiveKeys = useMemo(
+  const compoundSlotAreas = useMemo<CompoundSlotArea[]>(
     () =>
-      (compoundChildren ?? [])
-        .map(resolveSlotKey)
-        .map((slotKey) =>
-          slotKey ? compoundSlotMetaMap[slotKey]?.activeUIKey : undefined
-        )
-        .filter((key): key is keyof ActiveUI => key !== undefined),
+      (compoundChildren ?? []).flatMap((child) => {
+        const slotKey = resolveSlotKey(child);
+        const activeUIKey = slotKey
+          ? compoundSlotMetaMap[slotKey]?.activeUIKey
+          : undefined;
+        if (!activeUIKey) return [];
+        const { gridArea } = child.props as { gridArea?: string };
+        return [{ activeUIKey, gridArea: toAreaName(gridArea) }];
+      }),
     [compoundChildren]
   );
 
-  const compoundKeySignature = useMemo(
-    () => [...compoundActiveKeys].sort().join(","),
-    [compoundActiveKeys]
+  const compoundSlotSignature = useMemo(
+    () =>
+      compoundSlotAreas
+        .map(({ activeUIKey, gridArea }) => `${activeUIKey}:${gridArea ?? ""}`)
+        .sort()
+        .join(","),
+    [compoundSlotAreas]
   );
 
   const generateGridTemplateValues = useCallback(
     (
       activeUi: ActiveUI,
-      templatePlacement: InterfacePlacement["templateArea"] | undefined,
-      customComponentsPlacement:
-        | InterfacePlacement["customComponentsArea"]
-        | undefined,
-      compoundKeys: (keyof ActiveUI)[]
+      placement: InterfacePlacement | undefined,
+      compoundSlots: CompoundSlotArea[]
     ) => {
       const activeUIAllKeys = Object.keys(
         defaultInterfacePlacement.templateArea
@@ -63,8 +118,9 @@ export const useGridTemplate = (
             .filter(([, value]) => value)
             .map(([key]) => key);
 
-      for (const key of compoundKeys) {
-        if (!activeUIKeysArr.includes(key)) activeUIKeysArr.push(key);
+      for (const { activeUIKey } of compoundSlots) {
+        if (!activeUIKeysArr.includes(activeUIKey))
+          activeUIKeysArr.push(activeUIKey);
       }
 
       const renameTrackTime = () => {
@@ -76,39 +132,77 @@ export const useGridTemplate = (
       };
       renameTrackTime();
 
-      const totalTemplatePlacement = {
-        ...defaultInterfacePlacement.templateArea,
-        ...templatePlacement,
-      };
+      // A compound child renders additively, so its preset counterpart may be
+      // on screen at the same time, and nothing stops a consumer from rendering
+      // several copies of one slot. Every instance resolves its own area — the
+      // preset one to the slot's entry, each child to its `gridArea` — so only
+      // the first area that can claim the slot's entry takes it and the rest
+      // are declared alongside. Overwriting instead would leave some instance
+      // asking for a name the template no longer holds.
+      // `isPresetActive` answers "activeUI allows it", not "it renders": artwork
+      // and trackInfo also need track data, so their column can end up reserved
+      // for an instance that never appears.
+      const compoundReplacements: GridAreaLayer = {};
+      const compoundExtraAreas: [string, string][] = [];
+      for (const { activeUIKey, gridArea } of compoundSlots) {
+        // `trackTime` owns no column of its own — it maps to two areas — so a
+        // key the template cannot place would only add a row nothing claims.
+        if (
+          gridArea === undefined ||
+          !(activeUIKey in defaultInterfacePlacement.templateArea)
+        ) {
+          continue;
+        }
+
+        if (
+          isPresetActive(activeUi, activeUIKey) ||
+          compoundReplacements[activeUIKey] !== undefined
+        ) {
+          compoundExtraAreas.push([activeUIKey, gridArea]);
+        } else {
+          compoundReplacements[activeUIKey] = gridArea;
+        }
+      }
+
+      const totalTemplatePlacement = mergeAreaLayers(
+        defaultInterfacePlacement.templateArea,
+        placement?.templateArea,
+        compoundReplacements
+      );
       const activeTemplatePlacementArr = Object.entries(
         totalTemplatePlacement
       ).filter(([key]) => activeUIKeysArr.includes(key));
 
       let maxRow = 1;
-      const colsCntRecord: Record<number, number> = {};
+      // Widest column *index* in use, not how many items are placed: column
+      // numbers are fixed per slot, so turning one off must not shift the
+      // others left.
+      let maxCol = 1;
 
       const totalPlacementArr = [
         ...activeTemplatePlacementArr,
-        ...Object.entries(customComponentsPlacement || {}),
+        ...compoundExtraAreas,
+        ...Object.entries(placement?.customComponentsArea ?? {}),
       ]
         .flatMap(([key, value]) => {
-          if (value == null) return [];
-          const [rowWithText, colStrNum] = value.split("-");
-          const row = +rowWithText.split("row")[1];
+          // `customComponentsArea` reaches here straight from consumer props,
+          // so an unreadable value still has to be dropped rather than poison
+          // `maxRow`/`maxCol` and wipe out the template for every item.
+          const parsedArea = parseAreaName(value);
+          if (!parsedArea) return [];
+          const { row, col } = parsedArea;
 
           maxRow = Math.max(maxRow, row);
-          colsCntRecord[row] = colsCntRecord[row] ? colsCntRecord[row] + 1 : 1;
+          maxCol = Math.max(maxCol, col);
           return [
             {
               key,
               row,
-              col: +colStrNum,
+              col,
             },
           ];
         })
         .sort((a, b) => a.col - b.col);
-
-      const maxCol = Math.max(...Object.values(colsCntRecord));
 
       let progressColIdx: number | undefined;
       const gridAreas = new Array(maxRow).fill("").map((_, rowIdx) => {
@@ -139,27 +233,50 @@ export const useGridTemplate = (
           >();
           curRowPlacementArr.forEach((item) => itemByCol.set(item.col, item));
 
-          const progressAreaName = `row${rowIdx + 1}-${progressItem.col}`;
+          const progressCol = progressItem.col;
+          const progressAreaName = `row${rowIdx + 1}-${progressCol}`;
+
+          // A repeated area name must stay rectangular, so only empty columns
+          // reachable from progress without crossing an occupied one may take
+          // its name. Absorbing a detached gap too would split the span and
+          // make CSS discard the whole template.
+          const isAdjacentToProgress = (colNum: number) => {
+            const step = colNum < progressCol ? 1 : -1;
+            for (let col = colNum + step; col !== progressCol; col += step) {
+              if (itemByCol.has(col)) return false;
+            }
+            return true;
+          };
 
           const slotNames: string[] = [];
           for (let i = 0; i < maxCol; i++) {
             const colNum = i + 1;
             // Empty slot → absorbed by progress (repeats progress area name,
             // which CSS Grid interprets as a single spanning area).
-            if (!itemByCol.has(colNum)) {
+            if (!itemByCol.has(colNum) && isAdjacentToProgress(colNum)) {
               slotNames.push(progressAreaName);
             } else {
               slotNames.push(`row${rowIdx + 1}-${colNum}`);
             }
           }
 
-          // Mark the center of the progress span as the 1fr column.
+          // Mark the center of the progress span as the 1fr column. Every row
+          // repeats the same column tracks, so there is only one index to give
+          // away: the first progress row claims it, and a later one must not
+          // overwrite it or the free space goes to whatever sits at that index
+          // in the row that is actually sized. With progress on more than one
+          // row the later spans may not contain that index and stay fixed —
+          // one track cannot satisfy spans that do not overlap.
           // `progressAreaName` is guaranteed to appear in `slotNames`:
           // progress's own col lands in itemByCol (hit branch) and produces
           // an identical `row{r}-{col}` name, so indexOf is never -1.
-          const firstProgressIdx = slotNames.indexOf(progressAreaName);
-          const lastProgressIdx = slotNames.lastIndexOf(progressAreaName);
-          progressColIdx = Math.floor((firstProgressIdx + lastProgressIdx) / 2);
+          if (progressColIdx === undefined) {
+            const firstProgressIdx = slotNames.indexOf(progressAreaName);
+            const lastProgressIdx = slotNames.lastIndexOf(progressAreaName);
+            progressColIdx = Math.floor(
+              (firstProgressIdx + lastProgressIdx) / 2
+            );
+          }
 
           cols = " " + slotNames.join(" ");
         } else {
@@ -197,13 +314,16 @@ export const useGridTemplate = (
     []
   );
 
+  const placementAreas = {
+    templateArea: interfacePlacement?.templateArea,
+    customComponentsArea: interfacePlacement?.customComponentsArea,
+  };
+
   const [curActiveUI, setCurActiveUI] = useState(activeUI);
-  const [curCompoundKeySig, setCurCompoundKeySig] =
-    useState(compoundKeySignature);
-  const [curPlacementArea, setCurPlacementArea] = useState({
-    templateArea,
-    customComponentsArea,
-  });
+  const [curCompoundSlotSignature, setCurCompoundSlotSignature] = useState(
+    compoundSlotSignature
+  );
+  const [curPlacementArea, setCurPlacementArea] = useState(placementAreas);
   const [curPlacementAreaValues, setCurPlacementAreaValues] = useState<{
     gridAreas: string[];
     gridColumns: string[];
@@ -212,9 +332,8 @@ export const useGridTemplate = (
   if (!curPlacementAreaValues) {
     const { gridAreas, gridColumns } = generateGridTemplateValues(
       curActiveUI,
-      curPlacementArea.templateArea,
-      curPlacementArea.customComponentsArea,
-      compoundActiveKeys
+      curPlacementArea,
+      compoundSlotAreas
     );
     setCurPlacementAreaValues({ gridAreas, gridColumns });
     return [gridAreas, gridColumns] as const;
@@ -222,19 +341,19 @@ export const useGridTemplate = (
 
   if (
     curActiveUI !== activeUI ||
-    curCompoundKeySig !== compoundKeySignature ||
-    curPlacementArea.templateArea !== templateArea ||
-    curPlacementArea.customComponentsArea !== customComponentsArea
+    curCompoundSlotSignature !== compoundSlotSignature ||
+    curPlacementArea.templateArea !== placementAreas.templateArea ||
+    curPlacementArea.customComponentsArea !==
+      placementAreas.customComponentsArea
   ) {
     setCurActiveUI(activeUI);
-    setCurCompoundKeySig(compoundKeySignature);
-    setCurPlacementArea({ templateArea, customComponentsArea });
+    setCurCompoundSlotSignature(compoundSlotSignature);
+    setCurPlacementArea(placementAreas);
 
     const { gridAreas, gridColumns } = generateGridTemplateValues(
       activeUI,
-      templateArea,
-      customComponentsArea,
-      compoundActiveKeys
+      interfacePlacement,
+      compoundSlotAreas
     );
     setCurPlacementAreaValues({ gridAreas, gridColumns });
   }

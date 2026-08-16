@@ -22,8 +22,7 @@ export const Interface: FC<InterfaceProps> = ({ children }) => {
 
   const [gridAreas, gridColumns] = useGridTemplate(
     activeUI,
-    interfacePlacement?.templateArea,
-    interfacePlacement?.customComponentsArea,
+    interfacePlacement,
     compoundChildren
   );
 
