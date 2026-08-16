@@ -81,6 +81,41 @@ Examples: `v1.5.0`, `v2.0.0`, `v2.1.3`
 
 ---
 
+## Changelog Audience
+
+The changelog is written for the people who install the package, not for the
+people who maintain it. Every entry answers "what changes for me?".
+
+Write:
+
+- the symptom a consumer could observe, in their vocabulary — props, exports,
+  rendered result, error at import
+- the condition that triggered it, so a reader can tell whether it affected them
+- what to do differently, if anything
+
+Do not write:
+
+- internal identifiers, file paths, or private function names
+- how the fix works — the mechanism, the data structure, the algorithm
+- why the bug escaped — missing tests, tooling gaps, post-mortem notes
+- counts and measurements that only mean something inside the repo
+
+Group entries by what the consumer experiences, not by how the fix was split
+across commits. Several commits that cure one visible symptom are one entry.
+
+Work a consumer cannot observe gets **no entry at all** — refactors, folder
+moves, internal renames, test additions, tooling. An entry that has to say
+"no public API or behavior change" is answering "what changes for me?" with
+"nothing", which is a reason to delete the entry, not to write it. The record
+of that work is the commit history, which is where a maintainer looks.
+
+Classify by what the consumer expected, not by what the diff added. Making
+something work that the README already promised is a **fix** — the consumer
+was told it existed, followed the documentation, and it failed. Reserve
+"New Features" for capability the docs did not previously claim.
+
+---
+
 ## Pre-Release Checklist
 
 - [ ] version bumped correctly in package.json
