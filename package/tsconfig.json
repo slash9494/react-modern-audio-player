@@ -17,11 +17,14 @@
     "noEmit": true,
     "jsx": "react-jsx",
     "paths": {
-      "@/components/*": ["./src/components/*"],
+      "@/audioPlayer": ["./src/audioPlayer"],
+      "@/audioPlayer/*": ["./src/audioPlayer/*"],
+      "@/hooks": ["./src/hooks"],
       "@/hooks/*": ["./src/hooks/*"],
       "@/utils/*": ["./src/utils/*"],
       "@/styles/*": ["./src/styles/*"],
       "@/ui/*": ["./src/ui/*"],
+      "@/api": ["./src/api"],
       "@/api/*": ["./src/api/*"]
     }
   },

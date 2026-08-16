@@ -1,12 +1,20 @@
 "use client";
 
-import AudioPlayer from "./components/AudioPlayer";
+import AudioPlayer from "./audioPlayer";
 
 export default AudioPlayer;
 
-export * from "./components/AudioPlayer";
-export * from "./components/AudioPlayer/Context";
-export * from "./components/AudioPlayer/Player";
-export * from "./components/AudioPlayer/Container";
-export * from "./components/AudioPlayer/Provider";
+export * from "./audioPlayer";
+// Documented in README as the escape hatch for native DOM attributes, which
+// compound slots do not forward. Only these three — the rest of the Controller
+// barrel stays internal.
+export {
+  PlayBtn,
+  PrevBtn,
+  NextBtn,
+} from "./audioPlayer/Interface/Controller/Transport";
+export * from "./audioPlayer/Context";
+export * from "./audioPlayer/Player";
+export * from "./audioPlayer/Container";
+export * from "./audioPlayer/Provider";
 export * from "./api";

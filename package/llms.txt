@@ -2,7 +2,7 @@
 
 > Modern, customizable React audio player with waveform visualization, drag-and-drop playlist, WAI-ARIA accessibility, TypeScript-first API, and Next.js App Router (Server Components) support. Published on npm as `react-modern-audio-player`.
 
-This library exports a single default `<AudioPlayer>` component driven by declarative props, plus a compound `<AudioPlayer.CustomComponent>` and a family of `useAudioPlayer*` hooks for programmatic control. Runtime requirements: React 18 or higher, `react-dom` 18 or higher. `wavesurfer.js` 6.x is an internal dependency (no peer install needed). The library entry point ships a `'use client'` directive so it can be imported directly from Next.js Server Components; hook consumers and compound children must themselves be Client Components.
+This library exports a single default `<AudioPlayer>` component driven by declarative props, plus eleven compound slots on that component (`<AudioPlayer.Progress>`, `<AudioPlayer.Volume>`, and so on) and a family of `useAudioPlayer*` hooks for programmatic control. Runtime requirements: React 18 or higher, `react-dom` 18 or higher. `wavesurfer.js` 6.x is an internal dependency (no peer install needed). The library entry point ships a `'use client'` directive so it can be imported directly from Next.js Server Components; hook consumers and compound children must themselves be Client Components.
 
 ## Installation
 
@@ -27,7 +27,18 @@ export default function Page() {
 ## Core API
 
 - `AudioPlayer` (default export) — accepts `playList`, `audioInitialState`, `activeUI`, `placement`, `colorScheme`, `customIcons`, `coverImgsCss`, `rootContainerProps`, `audioRef`.
-- `AudioPlayer.CustomComponent` — compound child that slots custom nodes into a named grid area (`placement.interface.customComponentsArea`). Requires `'use client'` in the consumer file.
+- Compound slots — static members of `AudioPlayer` that re-place or augment one control without rebuilding the layout. Each accepts `GridItemLayoutProps` (`gridArea?`, `visible?`, `width?`, `padding?`, `justifySelf?`, `UNSAFE_className?`) plus its own domain props; `TrackTime` takes only `visible?`. Native HTML attributes are not forwarded. Requires `'use client'` in the consumer file.
+  - `AudioPlayer.Progress` — progress bar or waveform
+  - `AudioPlayer.Volume` — volume trigger + slider (`triggerType?`, `placement?`)
+  - `AudioPlayer.PlayList` — sortable playlist drawer (`initialExpanded?`)
+  - `AudioPlayer.PlayListEmpty` — fallback shown in the drawer when `playList` is empty
+  - `AudioPlayer.PlayButton` — Play + Prev + Next group (Prev/Next follow `activeUI.prevNnext`)
+  - `AudioPlayer.RepeatButton` — repeat-type button
+  - `AudioPlayer.SpeedSelector` — playback rate dropdown (`options?`, `formatRate?`, `triggerType?`, `placement?`)
+  - `AudioPlayer.Artwork` — track artwork
+  - `AudioPlayer.TrackInfo` — track title and writer
+  - `AudioPlayer.TrackTime` — current and duration time
+  - `AudioPlayer.CustomComponent` — user-defined node in a named grid area (`placement.interface.customComponentsArea`)
 - `useAudioPlayer()` — control hook. Returns `{ isPlaying, volume, currentTime, duration, repeatType, muted, currentTrack, currentIndex, playList, play, pause, togglePlay, next, prev, seek, setVolume, toggleMute, setTrack }`.
 - Sub-hooks for minimal re-renders: `useAudioPlayerPlayback`, `useAudioPlayerTrack`, `useAudioPlayerVolume`, `useAudioPlayerTime`, `useAudioPlayerElement`.
 - Low-level context hooks (advanced): `usePlaybackContext`, `useTrackContext`, `useUIContext`, `useResourceContext`.
@@ -43,6 +54,11 @@ type AudioData = {
   img?: string;
   description?: string | ReactNode;
   customTrackInfo?: string | ReactNode;
+  // long-form / live stream support (all optional, non-breaking)
+  isLive?: boolean;
+  duration?: number;
+  peaks?: number[] | number[][];
+  preload?: "none" | "metadata" | "auto";
 };
 type PlayList = AudioData[];
 type RepeatType = "ALL" | "ONE" | "NONE" | "SHUFFLE";

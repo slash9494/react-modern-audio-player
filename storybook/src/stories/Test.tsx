@@ -1,6 +1,5 @@
-import { FC, useEffect, useState } from "react";
+import { FC } from "react";
 import AudioPlayer from "../../../package/dist/index.es.js";
-import { PlayList } from "../../../package/dist/types/components/AudioPlayer/Context";
 import { playerMode } from "./playerMode.ts";
 // import AudioPlayer, { PlayList } from "react-modern-audio-player";
 
