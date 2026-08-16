@@ -1,5 +1,13 @@
 # React-modern-audio-player
 
+## v2.4.3 - 2026-08-16
+
+### 🐛 Fixed
+
+- **Compound slots were ignored in published builds**: `<AudioPlayer.Progress />` and every other slot rendered without the placement it was given once an app was built for production. Development builds were unaffected, so this only showed up after deploying.
+- **Layout broke when controls were switched off or re-placed**: turning a control off through `activeUI`, or giving a slot a `gridArea`, could shift the remaining controls sideways, pile them all into one spot, leave the progress bar unable to stretch, or — from a single mistyped `gridArea` — collapse the whole layout. Positions now hold, and a value the player cannot read costs only that one control its place.
+- **A re-placed slot displaced the built-in one**: rendering a compound copy while its preset counterpart is still on (the documented additive mode) left the preset control without a place to sit. Both now keep their own.
+
 ## v2.4.2 - 2026-07-25
 
 ### 🐛 Fixed
