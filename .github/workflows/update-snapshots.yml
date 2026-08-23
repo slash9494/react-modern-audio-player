@@ -1,0 +1,129 @@
+name: Update E2E Snapshots
+
+# Records the Layer 2 pixel baselines on the same runner images e2e.yml gates
+# them on. A locally generated set carries the developer's fonts and rendering
+# stack, so it can never match what CI produces.
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  # Two dispatches on one branch would both try to push the recorded baselines.
+  group: "${{ github.workflow }}-${{ github.ref }}"
+  cancel-in-progress: false
+
+env:
+  # `toHaveScreenshot` lives only in cross-browser-ui.spec.ts, so this is the
+  # whole baseline set. Named once: the recorders, the download and the commit
+  # must all agree on it or the wipe-and-replace below loses files.
+  SNAPSHOT_DIR: test/e2e/cross-browser-ui.spec.ts-snapshots
+
+jobs:
+  record:
+    name: record (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        # Mirrors the snapshot-carrying half of e2e.yml — same pinned images,
+        # same engine split. Windows records nothing and is absent here.
+        include:
+          - os: ubuntu-24.04
+            engines: chromium firefox
+            projects: --project=chromium --project=firefox
+            install_flags: --with-deps
+          - os: macos-15
+            engines: webkit
+            projects: --project=webkit
+            install_flags: ""
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      # yarn 1 hard-errors on the packageManager pin without corepack
+      - name: Enable corepack (yarn berry)
+        run: corepack enable
+
+      - name: Setup Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 20
+          cache: "yarn"
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Install Playwright browsers
+        run: npx playwright install ${{ matrix.install_flags }} ${{ matrix.engines }}
+
+      # `--update-snapshots` rewrites and adds, but never removes. Starting from
+      # an empty directory makes the artifact below the exact set this runner's
+      # projects produce, so a renamed or deleted screenshot stops being carried.
+      - name: Clear checked-in baselines
+        run: rm -rf "$SNAPSHOT_DIR"
+
+      # Scoped to the one spec that owns baselines: the other suites fetch remote
+      # CDN audio, and a flake there must not cost us the recording.
+      - name: Record baselines
+        run: yarn test:e2e cross-browser-ui ${{ matrix.projects }} --update-snapshots
+        env:
+          E2E_SNAPSHOTS: "1"
+
+      - name: Upload recorded baselines
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        if: always()
+        with:
+          name: e2e-snapshots-${{ matrix.os }}
+          path: ${{ env.SNAPSHOT_DIR }}
+          retention-days: 1
+
+  commit:
+    name: commit baselines
+    # No `if: always()` here on purpose. The wipe-and-replace below is only safe
+    # when every recorder succeeded; gating on that keeps a half set from being
+    # committed as if it were the whole one.
+    needs: record
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # The rebase fallback below needs a merge base, which the default
+          # depth-1 clone does not carry.
+          fetch-depth: 0
+
+      - name: Clear checked-in baselines
+        run: rm -rf "$SNAPSHOT_DIR"
+
+      # The two runners write disjoint files but would race pushing them. They
+      # hand their output here instead, so the branch takes a single commit.
+      - name: Download recorded baselines
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          pattern: e2e-snapshots-*
+          merge-multiple: true
+          path: ${{ env.SNAPSHOT_DIR }}
+
+      - name: Commit updated baselines
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          # -A, so files the recorders no longer produce are staged as deletions.
+          git add -A test/e2e
+          if git diff --cached --quiet; then
+            echo "Baselines already match this branch — nothing to commit."
+            exit 0
+          fi
+
+          git commit -m "🧪 test(e2e): update cross-browser pixel baselines"
+
+          # Recording takes minutes; an ordinary commit landing on the branch in
+          # that window would otherwise discard both runners' output. concurrency
+          # only serialises this workflow against itself.
+          if ! git push origin "HEAD:${{ github.ref_name }}"; then
+            git pull --rebase origin "${{ github.ref_name }}"
+            git push origin "HEAD:${{ github.ref_name }}"
+          fi
