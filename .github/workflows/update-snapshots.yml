@@ -6,10 +6,19 @@ name: Update E2E Snapshots
 
 on:
   workflow_dispatch:
+  # workflow_dispatch can only reach a workflow file that is already on the
+  # default branch, so a PR cannot record its own baselines that way. A
+  # pull_request run uses the file from the PR branch, which is what makes the
+  # label path work before this lands on main.
+  pull_request:
+    types: [labeled]
 
 concurrency:
-  # Two dispatches on one branch would both try to push the recorded baselines.
-  group: "${{ github.workflow }}-${{ github.ref }}"
+  # Keyed on the branch, not on github.ref: one branch is refs/heads/x under
+  # dispatch and refs/pull/N/merge under the label, so a ref-keyed group would
+  # let both paths push at the same time. `env` is not a context this key
+  # accepts, so the expression is repeated rather than shared with TARGET_BRANCH.
+  group: "${{ github.workflow }}-${{ github.event_name == 'pull_request' && github.event.pull_request.head.ref || github.ref_name }}"
   cancel-in-progress: false
 
 env:
@@ -17,10 +26,19 @@ env:
   # whole baseline set. Named once: the recorders, the download and the commit
   # must all agree on it or the wipe-and-replace below loses files.
   SNAPSHOT_DIR: test/e2e/cross-browser-ui.spec.ts-snapshots
+  # On a pull_request event github.ref is refs/pull/N/merge — not a branch, and
+  # not something that can be pushed to. Both checkouts and the push use this.
+  TARGET_BRANCH: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.ref || github.ref_name }}
 
 jobs:
   record:
     name: record (${{ matrix.os }})
+    # PR Labeler puts `test` and `chore` on this repo's branches automatically and
+    # each one fires `labeled`, so the label name has to be checked, not just the
+    # event.
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      github.event.label.name == 'update-snapshots'
     runs-on: ${{ matrix.os }}
     permissions:
       contents: read
@@ -39,7 +57,20 @@ jobs:
             projects: --project=webkit
             install_flags: ""
     steps:
+      # A forked PR's token is read-only whatever `permissions` asks for, so the
+      # commit job could never push what this records. Say so up front rather
+      # than recording for ten minutes and failing at the push.
+      - name: Reject forked pull requests
+        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository
+        run: |
+          echo "::error::Baseline updates must run from a branch in ${{ github.repository }} — a forked pull request cannot push the result."
+          exit 1
+
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # pull_request checks out the PR's merge commit by default. Baselines
+          # must be recorded from the branch's own tree, which is where they land.
+          ref: ${{ env.TARGET_BRANCH }}
 
       # Node must be on PATH before corepack, not after: `corepack enable` drops its
       # shims next to whichever corepack `which` resolves, and setup-node prepends
@@ -102,6 +133,9 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          # Same reason as the recorders: committing onto the detached merge
+          # commit would land the baselines on no branch at all.
+          ref: ${{ env.TARGET_BRANCH }}
           # The rebase fallback below needs a merge base, which the default
           # depth-1 clone does not carry.
           fetch-depth: 0
@@ -135,7 +169,7 @@ jobs:
           # Recording takes minutes; an ordinary commit landing on the branch in
           # that window would otherwise discard both runners' output. concurrency
           # only serialises this workflow against itself.
-          if ! git push origin "HEAD:${{ github.ref_name }}"; then
-            git pull --rebase origin "${{ github.ref_name }}"
-            git push origin "HEAD:${{ github.ref_name }}"
+          if ! git push origin "HEAD:$TARGET_BRANCH"; then
+            git pull --rebase origin "$TARGET_BRANCH"
+            git push origin "HEAD:$TARGET_BRANCH"
           fi
