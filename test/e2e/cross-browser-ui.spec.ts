@@ -12,10 +12,10 @@ import type { Locator, Page } from "@playwright/test";
 // Anti-flake rules: no pixel assertions on transient states, and state changes
 // are observed via data-ready / element presence rather than timing sleeps.
 //
-// Only the tests that take playerPageLazy (L1-1, L2-1) serve the audio from a
-// local fixture — the playerPage fixture navigates during its own setup, so the
-// rest have nowhere to register a route first and still reach the live CDN.
-// Their assertions read geometry rather than audio metadata, so that is a
+// Only the tests that take playerPageLazy (L1-1, L2-1, L2-4) serve the audio
+// from a local fixture — the playerPage fixture navigates during its own setup,
+// so the rest have nowhere to register a route first and still reach the live
+// CDN. Their assertions read geometry rather than audio metadata, so that is a
 // latency risk, not a correctness one.
 
 const WAVEFORM_HEIGHT_PX = 80;
@@ -94,6 +94,59 @@ const serveLocalAudio = (page: Page, delayMs = 0) =>
       contentType: "audio/mpeg",
     });
   });
+
+// An element screenshot is clipped to the border box, so everything the engine
+// paints outside it — a focus outline sitting 2px out, a box-shadow dropped 2px
+// down — is missing from the frame while the assertion still passes. Those
+// rules are the reason the baselines below exist, so the page is clipped to the
+// target's box grown by a margin instead of the element being shot directly.
+const OUTSIDE_PAINT_MARGIN_PX = 8;
+
+const clipAroundBox = (box: BoundingBox) => ({
+  x: box.x - OUTSIDE_PAINT_MARGIN_PX,
+  y: box.y - OUTSIDE_PAINT_MARGIN_PX,
+  width: box.width + OUTSIDE_PAINT_MARGIN_PX * 2,
+  height: box.height + OUTSIDE_PAINT_MARGIN_PX * 2,
+});
+
+// `:focus-visible` is the selector that draws the outline, and a bare
+// `locator.focus()` leaves it inert — the baseline would record a control with
+// no outline on it at all. Tabbing all the way to the target is not portable
+// either: webkit follows the macOS default and skips <button> in the tab order,
+// so play-btn is unreachable there. What all three engines agree on is that a
+// scripted focus keeps :focus-visible when the focus it replaces was
+// keyboard-driven, so one Tab sets the modality and focus() does the aiming.
+const focusWithKeyboardModality = async (page: Page, target: Locator) => {
+  await page.keyboard.press("Tab");
+  await target.focus();
+};
+
+const expectFocusOutlineVisible = async (target: Locator) => {
+  await expect(target).toBeFocused();
+  const matchesFocusVisible = await target.evaluate((element) =>
+    element.matches(":focus-visible")
+  );
+  expect(matchesFocusVisible).toBe(true);
+};
+
+// preload="metadata" makes duration finite without playback; ProgressTooltip
+// returns null until duration > 0, so hovering before the metadata lands leaves
+// nothing to photograph.
+const waitForDurationLoaded = (page: Page) =>
+  expect
+    .poll(
+      () =>
+        page.evaluate(() => {
+          const durationSeconds = document.querySelector("audio")?.duration;
+          return (
+            typeof durationSeconds === "number" &&
+            Number.isFinite(durationSeconds) &&
+            durationSeconds > 0
+          );
+        }),
+      { timeout: READY_TIMEOUT_MS }
+    )
+    .toBe(true);
 
 test.describe("Cross-browser UI consistency — Layer 1 (layout invariants)", () => {
   test("L1-1: waveform loading flow keeps layout stable", async ({
@@ -231,10 +284,10 @@ test.describe("Cross-browser UI consistency — Layer 2 (stable-state pixels)", 
     "needs platform baselines — set E2E_SNAPSHOTS=1 (see comment above)"
   );
 
-  // Playwright's Desktop Safari preset uses deviceScaleFactor: 2 while Chrome
-  // and Firefox use 1, so the webkit baselines are raster-doubled — an upgrade
-  // that changes that preset invalidates only the webkit set, and CI cannot
-  // catch it because Layer 2 is skipped there.
+  // Playwright's Desktop Safari preset runs at deviceScaleFactor 2 while Chrome
+  // and Firefox run at 1, but `scale` defaults to "css" — one image pixel per
+  // CSS pixel — so all three engines' baselines come out the same size. Passing
+  // `scale: "device"` here would raster-double only the webkit set.
 
   test("L2-1: ready waveform player matches its baseline", async ({
     playerPageLazy,
@@ -256,18 +309,24 @@ test.describe("Cross-browser UI consistency — Layer 2 (stable-state pixels)", 
     });
   });
 
-  test("L2-2: opened volume dropdown matches its baseline", async ({
+  test("L2-2: opened volume slider matches its baseline", async ({
     playerPage,
   }) => {
-    const { page, volumeTriggerBtn } = playerPage;
+    const { page, volumeTriggerBtn, volumeSlider } = playerPage;
+    const dropdown = page.getByTestId("volume-dropdown");
+
     await volumeTriggerBtn.click();
-    await expect(page.getByTestId("volume-dropdown")).toBeVisible();
+    await expect(volumeSlider).toBeVisible();
+    const sliderBox = await waitForSettledBox(volumeSlider, dropdown);
 
     // Covers what DOM cannot reach: the vendor-prefixed thumb and track rules.
-    await expect(page.getByTestId("volume-dropdown")).toHaveScreenshot(
-      "volume-dropdown.png",
-      { animations: "disabled" }
-    );
+    // The `volume-dropdown` testid is on the Dropdown shell, whose box is the
+    // 20px trigger icon rather than the panel it opens; shooting it yields the
+    // speaker glyph and none of these rules.
+    await expect(page).toHaveScreenshot("volume-slider.png", {
+      clip: clipAroundBox(sliderBox),
+      animations: "disabled",
+    });
   });
 
   test("L2-3: opened playlist drawer matches its baseline", async ({
@@ -282,6 +341,82 @@ test.describe("Cross-browser UI consistency — Layer 2 (stable-state pixels)", 
 
     await expect(playlist).toHaveScreenshot("playlist-drawer.png", {
       mask: remoteImageMasks(page),
+      animations: "disabled",
+    });
+  });
+
+  test("L2-4: hovered progress tooltip matches its baseline", async ({
+    playerPageLazy,
+  }) => {
+    const { page, progressBar } = playerPageLazy;
+    // The label is the timestamp under the cursor, so the baseline text is a
+    // function of the track's duration, not just of the styling under test.
+    await serveLocalAudio(page);
+    await playerPageLazy.gotoWithConfig({ progressType: "bar" });
+    await waitForDurationLoaded(page);
+
+    const barBox = await requireBoundingBox(progressBar);
+    const tooltip = page.locator(".rmap-progress-tooltip");
+
+    await page.mouse.move(
+      barBox.x + barBox.width / 2,
+      barBox.y + barBox.height / 2
+    );
+    await expect(tooltip).toBeVisible();
+
+    const tooltipBox = await requireBoundingBox(tooltip);
+    await expect(page).toHaveScreenshot("progress-tooltip.png", {
+      clip: clipAroundBox(tooltipBox),
+      animations: "disabled",
+    });
+  });
+
+  test("L2-5: keyboard-focused play button matches its baseline", async ({
+    playerPage,
+  }) => {
+    const { page, playBtn } = playerPage;
+
+    await focusWithKeyboardModality(page, playBtn);
+    await expectFocusOutlineVisible(playBtn);
+
+    const playBtnBox = await requireBoundingBox(playBtn);
+    await expect(page).toHaveScreenshot("play-btn-focused.png", {
+      clip: clipAroundBox(playBtnBox),
+      animations: "disabled",
+    });
+  });
+
+  test("L2-6: opened speed menu matches its baseline", async ({
+    playerPage,
+  }) => {
+    const { page } = playerPage;
+    const dropdown = page.getByTestId("speed-selector-dropdown");
+    const menu = page.locator(".rmap-speed-selector-menu");
+
+    await page.getByTestId("speed-selector-trigger").click();
+    await expect(menu).toBeVisible();
+
+    // The opening animation runs on the dropdown content, not on the menu.
+    const menuBox = await waitForSettledBox(menu, dropdown);
+    await expect(page).toHaveScreenshot("speed-menu-open.png", {
+      clip: clipAroundBox(menuBox),
+      animations: "disabled",
+    });
+  });
+
+  test("L2-7: keyboard-focused bar progress matches its baseline", async ({
+    playerPage,
+  }) => {
+    const { page, progressBar } = playerPage;
+
+    // Focus is also what reveals the round handle: it is opacity 0 until the
+    // wrapper is hovered or focus-visible, so an idle bar hides half the rules.
+    await focusWithKeyboardModality(page, progressBar);
+    await expectFocusOutlineVisible(progressBar);
+
+    const barBox = await requireBoundingBox(progressBar);
+    await expect(page).toHaveScreenshot("bar-progress-focused.png", {
+      clip: clipAroundBox(barBox),
       animations: "disabled",
     });
   });
