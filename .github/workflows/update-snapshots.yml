@@ -136,9 +136,6 @@ jobs:
           # Same reason as the recorders: committing onto the detached merge
           # commit would land the baselines on no branch at all.
           ref: ${{ env.TARGET_BRANCH }}
-          # The rebase fallback below needs a merge base, which the default
-          # depth-1 clone does not carry.
-          fetch-depth: 0
 
       - name: Clear checked-in baselines
         run: rm -rf "$SNAPSHOT_DIR"
@@ -170,6 +167,11 @@ jobs:
           # that window would otherwise discard both runners' output. concurrency
           # only serialises this workflow against itself.
           if ! git push origin "HEAD:$TARGET_BRANCH"; then
+            # Naming the remote and branch here is load-bearing: it lets rebase
+            # use the fork point, which is what keeps the default depth-1 clone
+            # correct after a force-push. A rewind leaves no merge base at that
+            # depth, so a bare `git rebase` would take the rewound commits as
+            # its replay range and either resurrect them or stop on a conflict.
             git pull --rebase origin "$TARGET_BRANCH"
             git push origin "HEAD:$TARGET_BRANCH"
           fi
