@@ -21,7 +21,7 @@ If the branch starts with `v*/`, also load the corresponding agent from `agents/
 
 ## Repo Analysis Load Policy
 
-Before performing any code/folder modification or analysis task, read all files inside `.claude/docs/repo-analysis/` to ensure accurate context on the current repository structure. (Not required for trivial chat or unrelated questions.)
+`.claude/` is gitignored, so `.claude/docs/repo-analysis/` is a local-only cache and is absent on a fresh clone. When it is present, read it before a code/folder modification or analysis task. When it is absent, read the source directly — do not treat the missing folder as an error, and do not block on it. (Not required for trivial chat or unrelated questions.)
 
 ---
 

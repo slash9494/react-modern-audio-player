@@ -37,15 +37,27 @@ Examples: `v1.5.0`, `v2.0.0`, `v2.1.3`
 
 ## Release Steps
 
-1. Confirm all target changes are merged into the release branch
-2. Bump version in `package.json`
-3. Update `CHANGELOG.md` with release notes
-4. Run build and verify output — `npm run build`
-5. Ensure CI passes
-6. Commit version bump — `🚀Deploy : bump version to v1.5.0`
-7. Create and push git tag — `git tag v1.5.0 && git push origin v1.5.0`
-8. Publish package — `npm publish`
-9. Create GitHub Release with changelog content as description
+Releases run on changesets plus `.github/workflows/release.yaml`. Do not publish by hand.
+
+Done by a person or agent:
+
+1. Add a changeset describing the change — `yarn changeset`
+2. Merge all target changes into `main`
+3. On `main`, apply the changesets — `yarn version-packages`
+   (bumps `package/package.json` and writes `package/CHANGELOG.md`)
+4. Verify the build — `yarn build`
+5. Commit the version bump — `🚀Deploy : bump version to v1.5.0`
+6. Push `main`
+
+Done by `release.yaml` on push to `main` touching `package/package.json`:
+
+- builds, then skips entirely if that version is already on npm
+- `npm publish ./package --provenance`, with dist-tag `next` for beta/rc/alpha versions and `latest` otherwise
+- creates the `v<version>` git tag and the GitHub Release
+
+The version bump must be committed on `main`. The husky `pre-commit` hook rejects a
+`package/package.json` version change on any other branch, and `guard-version-bump.yml`
+checks the same rule on pull requests.
 
 ---
 
