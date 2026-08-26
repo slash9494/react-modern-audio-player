@@ -1,21 +1,142 @@
-# Global Instructions
+# React Modern Audio Player — Agent Guide
 
-This repository uses modular agent instructions.
+> **Note:** `CLAUDE.md` is a symlink to `AGENTS.md`. They are the same file.
+
+This repository uses modular agent instructions. This file is the canonical source; the sections below cover the common cases, and the trigger table points at deeper files for the rest.
+
+---
+
+## Commands
+
+Requires Node.js 20+ and yarn 4. Run `corepack enable` first — yarn 1 hard-errors on the `packageManager` pin without it.
+
+| Task | Command | Run from |
+| --- | --- | --- |
+| Install | `yarn install` | root |
+| Build the library | `yarn build` | root |
+| Dev server | `yarn dev` | `package/` |
+| Unit tests | `yarn test:unit` | `package/` |
+| Integration tests | `yarn test:integration` | `package/` |
+| All Vitest tests | `yarn test` | `package/` |
+| Coverage | `yarn test:coverage` | `package/` |
+| Type check | `yarn typeCheck` | `package/` |
+| Lint and fix | `yarn lint` | root |
+| End-to-end tests | `yarn test:e2e` | root |
+| Add a changeset | `yarn changeset` | root |
+| Apply changesets | `yarn version-packages` | root |
+
+Release steps and the publish workflow → `agents/base/release.md`.
+
+---
+
+## Repository Structure
+
+A yarn workspaces monorepo. The published npm package is `package/`; everything else is development tooling.
+
+```text
+react-modern-audio-player/
+├── package/                  # the published library
+│   ├── src/
+│   │   ├── audioPlayer/      # component tree: Audio, Container, Context, Interface, Player, Provider, utils
+│   │   ├── api/              # public hooks: useAudioPlayer, ...Time, ...Playback, ...Track, ...Volume, ...Element
+│   │   ├── hooks/            # internal hooks
+│   │   ├── ui/               # shared presentational pieces
+│   │   ├── utils/            # pure helpers
+│   │   ├── styles/           # CSS
+│   │   └── test/             # Vitest setup
+│   ├── README.md             # full public API documentation
+│   ├── CHANGELOG.md
+│   └── llms.txt
+├── storybook/                # Storybook workspace
+├── test/
+│   ├── e2e/                  # Playwright specs (testDir in playwright.config.ts)
+│   └── integration/          # cross-module tests
+├── agents/                   # instruction files for coding agents
+├── conventions/              # naming rules
+└── .github/workflows/
+```
+
+---
+
+## Testing
+
+| Layer | Runner | Location |
+| --- | --- | --- |
+| Unit | Vitest + @testing-library/react | colocated with the source, or a `__tests__` directory |
+| Integration | Vitest | `test/integration/` |
+| End-to-end | Playwright | `test/e2e/` |
+
+Coverage targets, mock strategy, and per-layer rules → `agents/base/testing.md`, which references `unit.md` and `e2e.md`.
+
+---
+
+## Definition of Done
+
+CI runs only integration tests (`integration.yml`) and end-to-end tests (`e2e.yml`). **Type errors, lint errors, and build failures will not be caught for you** — there is no CI job for them. Run them locally before opening a pull request.
+
+Before saying a change is done:
+
+1. `cd package && yarn typeCheck` passes
+2. `yarn lint` passes
+3. `cd package && yarn test` passes
+4. `yarn build` succeeds, if the change touches `package/src/`
+5. `yarn test:e2e` passes, if the change touches rendering, layout, or user interaction
+6. Public API changed? `package/README.md` and `package/CHANGELOG.md` updated per the policies below
+7. Change affects the published package? `yarn changeset` added
+
+The husky `pre-commit` hook runs prettier, eslint, and `yarn vitest run --changed` on staged files. Passing it is not the same as passing this list.
+
+---
+
+## Anti-Patterns
+
+- **Do not start long-running servers** — `yarn dev`, `yarn test:e2e:ui`, and the Storybook `sb` script never exit and are the wrong default for an agent. Use `yarn test:e2e` for a run that terminates.
+- **Do not edit the version in `package/package.json` outside `main`.** The husky `pre-commit` hook rejects it and `guard-version-bump.yml` fails the pull request.
+- **Do not publish by hand.** `release.yaml` publishes, tags, and drafts the release on push to `main`.
+- **Do not assume CI catches type, lint, or build errors.** See Definition of Done.
+- **Do not read every file under `agents/` unconditionally.** Load only what the trigger table below calls for.
+- **Do not add a file, component, or instruction before checking whether one already covers it.** See the Duplication Check Policy.
+
+---
+
+## Load Triggers
 
 Load base agent files only when the task directly requires them. Do not read all files unconditionally.
 
-| Trigger condition                                      | File to load                                                                                      |
-| ------------------------------------------------------ | ------------------------------------------------------------------------------------------------- |
-| Analyzing code, understanding structure, debugging     | `agents/base/analysis.md`                                                                         |
-| Writing or reviewing a git commit message              | `agents/base/commit.md` (**REQUIRED**: Read this file before creating any commit — no exceptions) |
-| Creating or reviewing a pull request                   | `agents/base/pr.md`                                                                               |
-| Performing a release or version bump                   | `agents/base/release.md`                                                                          |
-| Unsure about the development workflow or task sequence | `agents/base/workflow.md`                                                                         |
-| Starting a new task or doing branch-related work       | `agents/base/branch.md`                                                                           |
-| Writing, reviewing, or analyzing any test code         | `agents/base/testing.md`                                                                          |
-| Performing overhaul-specific library analysis          | `agents/overhaul/library-analysis.md`                                                             |
+| Trigger condition | File to load |
+| --- | --- |
+| Analyzing code, understanding structure, debugging | `agents/base/analysis.md` |
+| Writing or reviewing a git commit message | `agents/base/commit.md` (**REQUIRED**: read before creating any commit — no exceptions) |
+| Creating or reviewing a pull request | `agents/base/pr.md` |
+| Performing a release or version bump | `agents/base/release.md` |
+| Unsure about the development workflow or task sequence | `agents/base/workflow.md` |
+| Starting a new task or doing branch-related work | `agents/base/branch.md` |
+| Writing, reviewing, or analyzing any test code | `agents/base/testing.md` |
+| Writing or reviewing unit tests | `agents/base/unit.md` |
+| Writing or reviewing end-to-end tests | `agents/base/e2e.md` |
+| Performing overhaul-specific library analysis | `agents/overhaul/library-analysis.md` |
 
-If the branch starts with `v*/`, also load the corresponding agent from `agents/overhaul/`.
+If the branch starts with `v*/`, also load the matching file from `agents/overhaul/` — currently `v2.md` for `v2/*` branches.
+
+---
+
+## Agent Priority Order
+
+When multiple instruction sources exist, follow this priority:
+
+1. agents/base/\*
+2. agents/overhaul/\*
+3. repository documentation
+
+Overhaul agents may extend or override base workflows when necessary.
+
+---
+
+## Repository Workflow Rules
+
+All development work must follow this loop:
+
+ANALYZE → PLAN → IMPLEMENT → TEST → CREATE PR → REVIEW → MERGE → REPEAT
 
 ---
 
@@ -55,33 +176,6 @@ Before performing any task — adding instructions, writing tests, creating trig
 - If content already exists that covers the intent, update or extend it rather than duplicating
 
 This applies to all work, not just documentation.
-
----
-
-## Agent Priority Order
-
-When multiple instruction sources exist, follow this priority:
-
-1. agents/base/\*
-2. agents/overhaul/\*
-3. repository documentation
-
-Overhaul agents may extend or override base workflows when necessary.
-
----
-
-## Repository Workflow Rules
-
-All development work must follow this loop:
-
-ANALYZE
-PLAN
-IMPLEMENT
-TEST
-CREATE PR
-REVIEW
-MERGE
-REPEAT
 
 ---
 
@@ -144,3 +238,13 @@ All identifiers must follow the conventions defined in the `conventions/` direct
   - Pull Request titles and descriptions
   - README.md updates or any documentation
   - Code comments and inline documentation
+
+---
+
+## Maintenance Rules For Agents
+
+- Use this file as the canonical instruction source
+- Update it when commands, structure, workflows, or release flow change
+- Keep `CLAUDE.md` and any other agent entrypoint a thin reference to this file — never a copy
+- Do not restate a rule that already lives in `agents/` or `conventions/`; link to it instead
+- Every path quoted in this file and under `agents/` must resolve — a renamed directory or workflow is a documentation bug
