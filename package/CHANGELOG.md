@@ -1,6 +1,14 @@
 # React-modern-audio-player
 
-## v2.4.2 (Unreleased)
+## v2.4.3 - 2026-08-16
+
+### 🐛 Fixed
+
+- **Compound slots were ignored in published builds**: `<AudioPlayer.Progress />` and every other slot rendered without the placement it was given once an app was built for production. Development builds were unaffected, so this only showed up after deploying.
+- **Layout broke when controls were switched off or re-placed**: turning a control off through `activeUI`, or giving a slot a `gridArea`, could shift the remaining controls sideways, pile them all into one spot, leave the progress bar unable to stretch, or — from a single mistyped `gridArea` — collapse the whole layout. Positions now hold, and a value the player cannot read costs only that one control its place.
+- **A re-placed slot displaced the built-in one**: rendering a compound copy while its preset counterpart is still on (the documented additive mode) left the preset control without a place to sit. Both now keep their own.
+
+## v2.4.2 - 2026-07-25
 
 ### 🐛 Fixed
 
@@ -16,7 +24,7 @@
 
 ## v2.4.0 - 2026-07-21
 
-### ✨ New Features
+### ✨ Added
 
 - **Long-form & live stream support**: the player now auto-detects long-form and live tracks and falls back from the waveform to a standard seekable bar, so multi-hour files no longer stall the Web Audio decode and endless streams no longer leak `Infinity:NaN` into the UI. Fallback triggers on a live stream, a duration over **30 minutes**, or a file over **50 MB** (probed via a `HEAD` request). Four optional, non-breaking `AudioData` fields tune it: `isLive` (skip decode, disable seeking, hide the duration), `duration` (early length hint / force the bar), `peaks` (server-precomputed samples that render the real waveform with no client decode), and `preload`. Existing playlists are unaffected; `getTime` shows `--:--` for non-finite input and `H:MM:SS` for hour-plus tracks.
 - **Hover time tooltip**: hovering or dragging either progress type (bar or waveform) shows a floating time label at the pointer position, YouTube-style. Hidden for live streams (where seeking is disabled) and until metadata loads; decorative only for assistive tech (`aria-valuetext` already announces the position). The tooltip auto-flips above or below the progress bar based on the player's position in the viewport, so it stays visible when the player is placed at the top.

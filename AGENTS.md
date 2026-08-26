@@ -184,6 +184,8 @@ This applies to all work, not just documentation.
 
 ## CHANGELOG Maintenance Policy
 
+Every entry in `package/CHANGELOG.md` is written for the people who install the package. Read `agents/base/release.md` → **Changelog Audience** before writing one, including outside a release — it defines what belongs in an entry and what stays in the commit message.
+
 Whenever a breaking change is introduced, always record it in `package/CHANGELOG.md` under the target version's `### Breaking Changes` section.
 
 A breaking change includes any of the following:
