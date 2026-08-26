@@ -597,24 +597,30 @@ Components inside `AudioPlayer` can subscribe to only the state slice they need,
 
 ```tsx
 import {
-  usePlaybackContext, // curAudioState: { isPlaying, repeatType, volume, muted, isLoadedMetaData }
-  useTrackContext, // playList, curIdx, curPlayId
-  useUIContext, // activeUI, interfacePlacement, playListPlacement, playerPlacement, volumeSliderPlacement
+  usePlaybackContext, // isPlaying, volume, muted, repeatType, isLoadedMetaData, audioResetKey, playbackRate
+  useTimeContext, // currentTime, duration, seekRequestKey
+  useTrackContext, // playList, curPlayId, curIdx
+  useUIContext, // activeUI, playListPlacement, playerPlacement, interfacePlacement, volumeSliderPlacement, speedSelectorPlacement, timeTooltipPlacement, colorScheme, playListExpanded
   useResourceContext, // elementRefs, customIcons, coverImgsCss
+  useAudioAttrsContext, // native <audio> attributes passed via audioInitialState
+  useCurrentTrack, // current AudioData, derived from useTrackContext — not a direct context subscription
 } from "react-modern-audio-player";
 
 const MyComponent = () => {
-  const { curAudioState } = usePlaybackContext();
-  return <span>{curAudioState.isPlaying ? "Playing" : "Paused"}</span>;
+  const { isPlaying } = usePlaybackContext();
+  return <span>{isPlaying ? "Playing" : "Paused"}</span>;
 };
 ```
 
-| Hook                 | Returns                                                                                       |
-| -------------------- | --------------------------------------------------------------------------------------------- |
-| `usePlaybackContext` | `{ curAudioState: AudioState }`                                                               |
-| `useTrackContext`    | `{ playList, curIdx, curPlayId }`                                                             |
-| `useUIContext`       | `{ activeUI, interfacePlacement, playListPlacement, playerPlacement, volumeSliderPlacement }` |
-| `useResourceContext` | `{ elementRefs, customIcons, coverImgsCss }`                                                  |
+| Hook                   | Returns                                                                                                                                                                             |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `usePlaybackContext`   | `{ isPlaying, volume, muted, repeatType, isLoadedMetaData, audioResetKey, playbackRate }`                                                                                          |
+| `useTimeContext`       | `{ currentTime, duration, seekRequestKey }`                                                                                                                                        |
+| `useTrackContext`      | `{ playList, curPlayId, curIdx }`                                                                                                                                                  |
+| `useUIContext`         | `{ activeUI, playListPlacement, playerPlacement?, interfacePlacement?, volumeSliderPlacement?, speedSelectorPlacement?, timeTooltipPlacement?, colorScheme?, playListExpanded? }` |
+| `useResourceContext`   | `{ elementRefs?, customIcons?, coverImgsCss? }`                                                                                                                                    |
+| `useAudioAttrsContext` | native `<audio>` attributes from `audioInitialState`, minus every field the player manages itself (playback state, `volume`/`muted`, `playbackRate`, `curPlayId`, `playListExpanded`); the element's `src` always comes from the current track                                                                                     |
+| `useCurrentTrack`      | `AudioData \| undefined` — derived value, not a context subscription; finds the current track in `playList` by `curPlayId`                                                        |
 
 # Custom Component
 
