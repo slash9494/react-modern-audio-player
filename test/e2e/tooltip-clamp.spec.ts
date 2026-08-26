@@ -1,16 +1,10 @@
 import { test, expect } from "./fixtures/player.fixture";
+import { requireBoundingBox, type BoundingBox } from "./helpers/boundingBox";
 import type { Locator, Page } from "@playwright/test";
 
 const EDGE_INSET_PX = 2;
 const SUBPIXEL_EPSILON = 0.5;
 const DURATION_TIMEOUT_MS = 10000;
-
-interface BoundingBox {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-}
 
 // preload="metadata" makes duration finite without playback; ProgressTooltip
 // returns null until duration > 0, so the tooltip cannot render before this.
@@ -30,12 +24,6 @@ const waitForDurationLoaded = (page: Page) =>
     )
     .toBe(true);
 
-const requireBox = async (locator: Locator): Promise<BoundingBox> => {
-  const box = await locator.boundingBox();
-  expect(box).toBeTruthy();
-  return box as BoundingBox;
-};
-
 // The tooltip re-renders per mousemove, so its box is re-read after every move.
 const readTooltipBoxAtHover = async (
   page: Page,
@@ -45,7 +33,7 @@ const readTooltipBoxAtHover = async (
 ): Promise<BoundingBox> => {
   await page.mouse.move(x, y);
   await tooltip.waitFor({ state: "visible" });
-  return requireBox(tooltip);
+  return requireBoundingBox(tooltip);
 };
 
 const expectTooltipWithinWrapper = (
@@ -66,7 +54,7 @@ test.describe("Progress tooltip horizontal clamp", () => {
     await playerPageLazy.gotoWithConfig({ progressType: "bar" });
     await waitForDurationLoaded(page);
 
-    const wrapper = await requireBox(progressBar);
+    const wrapper = await requireBoundingBox(progressBar);
     const tooltip = page.locator(".rmap-progress-tooltip");
     const hoverCenterY = wrapper.y + wrapper.height / 2;
 

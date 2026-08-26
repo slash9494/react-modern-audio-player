@@ -1,0 +1,177 @@
+name: Update E2E Snapshots
+
+# Records the Layer 2 pixel baselines on the same runner images e2e.yml gates
+# them on. A locally generated set carries the developer's fonts and rendering
+# stack, so it can never match what CI produces.
+
+on:
+  workflow_dispatch:
+  # workflow_dispatch can only reach a workflow file that is already on the
+  # default branch, so a PR cannot record its own baselines that way. A
+  # pull_request run uses the file from the PR branch, which is what makes the
+  # label path work before this lands on main.
+  pull_request:
+    types: [labeled]
+
+concurrency:
+  # Keyed on the branch, not on github.ref: one branch is refs/heads/x under
+  # dispatch and refs/pull/N/merge under the label, so a ref-keyed group would
+  # let both paths push at the same time. `env` is not a context this key
+  # accepts, so the expression is repeated rather than shared with TARGET_BRANCH.
+  group: "${{ github.workflow }}-${{ github.event_name == 'pull_request' && github.event.pull_request.head.ref || github.ref_name }}"
+  cancel-in-progress: false
+
+env:
+  # `toHaveScreenshot` lives only in cross-browser-ui.spec.ts, so this is the
+  # whole baseline set. Named once: the recorders, the download and the commit
+  # must all agree on it or the wipe-and-replace below loses files.
+  SNAPSHOT_DIR: test/e2e/cross-browser-ui.spec.ts-snapshots
+  # On a pull_request event github.ref is refs/pull/N/merge — not a branch, and
+  # not something that can be pushed to. Both checkouts and the push use this.
+  TARGET_BRANCH: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.ref || github.ref_name }}
+
+jobs:
+  record:
+    name: record (${{ matrix.os }})
+    # PR Labeler puts `test` and `chore` on this repo's branches automatically and
+    # each one fires `labeled`, so the label name has to be checked, not just the
+    # event.
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      github.event.label.name == 'update-snapshots'
+    runs-on: ${{ matrix.os }}
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        # Mirrors the snapshot-carrying half of e2e.yml — same pinned images,
+        # same engine split. Windows records nothing and is absent here.
+        include:
+          - os: ubuntu-24.04
+            engines: chromium firefox
+            projects: --project=chromium --project=firefox
+            install_flags: --with-deps
+          - os: macos-15
+            engines: webkit
+            projects: --project=webkit
+            install_flags: ""
+    steps:
+      # A forked PR's token is read-only whatever `permissions` asks for, so the
+      # commit job could never push what this records. Say so up front rather
+      # than recording for ten minutes and failing at the push.
+      - name: Reject forked pull requests
+        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository
+        run: |
+          echo "::error::Baseline updates must run from a branch in ${{ github.repository }} — a forked pull request cannot push the result."
+          exit 1
+
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # pull_request checks out the PR's merge commit by default. Baselines
+          # must be recorded from the branch's own tree, which is where they land.
+          ref: ${{ env.TARGET_BRANCH }}
+
+      # Node must be on PATH before corepack, not after: `corepack enable` drops its
+      # shims next to whichever corepack `which` resolves, and setup-node prepends
+      # its own Node directory. Enabling first put the yarn shim behind the runner's
+      # global yarn 1 (C:\npm\prefix on Windows), which then won the lookup.
+      - name: Setup Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 20
+
+      # yarn 1 hard-errors on the packageManager pin without corepack
+      - name: Enable corepack (yarn berry)
+        run: corepack enable
+
+      # Second call is for the cache probe alone — it shells out to `yarn --version`
+      # and branches on the answer, so it has to see berry. Node itself is already
+      # in the tool cache by now, so this costs a lookup, not a download.
+      - name: Restore yarn cache
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 20
+          cache: "yarn"
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Install Playwright browsers
+        run: npx playwright install ${{ matrix.install_flags }} ${{ matrix.engines }}
+
+      # `--update-snapshots` rewrites and adds, but never removes. Starting from
+      # an empty directory makes the artifact below the exact set this runner's
+      # projects produce, so a renamed or deleted screenshot stops being carried.
+      - name: Clear checked-in baselines
+        run: rm -rf "$SNAPSHOT_DIR"
+
+      # Scoped to the one spec that owns baselines: the other suites fetch remote
+      # CDN audio, and a flake there must not cost us the recording.
+      - name: Record baselines
+        run: yarn test:e2e cross-browser-ui ${{ matrix.projects }} --update-snapshots
+        env:
+          E2E_SNAPSHOTS: "1"
+
+      - name: Upload recorded baselines
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        if: always()
+        with:
+          name: e2e-snapshots-${{ matrix.os }}
+          path: ${{ env.SNAPSHOT_DIR }}
+          retention-days: 1
+
+  commit:
+    name: commit baselines
+    # No `if: always()` here on purpose. The wipe-and-replace below is only safe
+    # when every recorder succeeded; gating on that keeps a half set from being
+    # committed as if it were the whole one.
+    needs: record
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # Same reason as the recorders: committing onto the detached merge
+          # commit would land the baselines on no branch at all.
+          ref: ${{ env.TARGET_BRANCH }}
+
+      - name: Clear checked-in baselines
+        run: rm -rf "$SNAPSHOT_DIR"
+
+      # The two runners write disjoint files but would race pushing them. They
+      # hand their output here instead, so the branch takes a single commit.
+      - name: Download recorded baselines
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          pattern: e2e-snapshots-*
+          merge-multiple: true
+          path: ${{ env.SNAPSHOT_DIR }}
+
+      - name: Commit updated baselines
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          # -A, so files the recorders no longer produce are staged as deletions.
+          git add -A test/e2e
+          if git diff --cached --quiet; then
+            echo "Baselines already match this branch — nothing to commit."
+            exit 0
+          fi
+
+          git commit -m "🧪 test(e2e): update cross-browser pixel baselines"
+
+          # Recording takes minutes; an ordinary commit landing on the branch in
+          # that window would otherwise discard both runners' output. concurrency
+          # only serialises this workflow against itself.
+          if ! git push origin "HEAD:$TARGET_BRANCH"; then
+            # Naming the remote and branch here is load-bearing: it lets rebase
+            # use the fork point, which is what keeps the default depth-1 clone
+            # correct after a force-push. A rewind leaves no merge base at that
+            # depth, so a bare `git rebase` would take the rewound commits as
+            # its replay range and either resurrect them or stop on a conflict.
+            git pull --rebase origin "$TARGET_BRANCH"
+            git push origin "HEAD:$TARGET_BRANCH"
+          fi
