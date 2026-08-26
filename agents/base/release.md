@@ -136,7 +136,8 @@ was told it existed, followed the documentation, and it failed. Reserve
 - [ ] `.claude/docs/repo-analysis/` reviewed, if that local cache is present
 - [ ] `yarn build` passes
 - [ ] `cd package && yarn test` passes
-- [ ] `cd package && yarn typeCheck` passes and `yarn lint` reports nothing new — no CI job covers these
+- [ ] `cd package && yarn typeCheck` passes — no CI job covers this
+- [ ] `yarn lint` reports nothing new, run from the repository root — no CI job covers this
 - [ ] CI green on the release branch
 - [ ] after pushing `main`, `release.yaml` succeeded and the `v<version>` tag exists
 

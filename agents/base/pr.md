@@ -45,9 +45,9 @@ type(scope): short description
 
 Examples:
 
-feat(player): add playlist support
-fix(volume): correct mute toggle behavior
-refactor(hooks): simplify useAudio logic
+✨ feat(player): add playlist support
+🐛 fix(volume): correct mute toggle behavior
+♻️ refactor(hooks): simplify useAudio logic
 
 ---
 
