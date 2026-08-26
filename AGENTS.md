@@ -94,6 +94,7 @@ The husky `pre-commit` hook runs prettier, eslint, and `yarn vitest run --change
 - **Do not edit the version in `package/package.json` outside `main`.** The husky `pre-commit` hook rejects it and `guard-version-bump.yml` fails the pull request.
 - **Do not publish by hand.** `release.yaml` publishes, tags, and drafts the release on push to `main`.
 - **Do not assume CI catches type, lint, or build errors.** See Definition of Done.
+- **`yarn lint` rewrites files.** It is `eslint --fix .` across every workspace, so running it from the root reformats unrelated files — `storybook/` in particular has never been prettier-formatted. Check `git status` afterwards and revert anything outside your change.
 - **Do not read every file under `agents/` unconditionally.** Load only what the trigger table below calls for.
 - **Do not add a file, component, or instruction before checking whether one already covers it.** See the Duplication Check Policy.
 
