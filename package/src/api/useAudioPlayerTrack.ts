@@ -15,6 +15,11 @@ export interface AudioPlayerTrackControls {
   prev: () => void;
 }
 
+/**
+ * Subscribes to both the track and resource slices — `prev` reads the live
+ * audio element to decide between restart and previous track. Must run inside
+ * a Client Component nested under the player provider, or the guard throws.
+ */
 export const useAudioPlayerTrack = (): AudioPlayerTrackControls => {
   const dispatch = useNonNullableContext(audioPlayerDispatchContext);
   const { playList, curIdx, curPlayId } = useTrackContext();

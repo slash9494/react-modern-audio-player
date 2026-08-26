@@ -9,6 +9,11 @@ export interface AudioPlayerTimeControls {
   seek: (time: number) => void;
 }
 
+/**
+ * Subscribes to the time slice, which advances on every `timeupdate` tick —
+ * the most re-render-heavy of the sub-hooks. Must run inside a Client
+ * Component nested under the player provider, or the context guard throws.
+ */
 export const useAudioPlayerTime = (): AudioPlayerTimeControls => {
   const dispatch = useNonNullableContext(audioPlayerDispatchContext);
   const { currentTime, duration } = useTimeContext();

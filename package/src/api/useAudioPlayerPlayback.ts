@@ -14,6 +14,11 @@ export interface AudioPlayerPlaybackControls {
   setPlaybackRate: (rate: number) => void;
 }
 
+/**
+ * Subscribes to the playback slice, so it re-renders only on play/pause,
+ * repeat, and rate changes. Must run inside a Client Component nested under
+ * the player provider, or the context guard throws.
+ */
 export const useAudioPlayerPlayback = (): AudioPlayerPlaybackControls => {
   const dispatch = useNonNullableContext(audioPlayerDispatchContext);
   const { isPlaying, repeatType, playbackRate } = usePlaybackContext();
