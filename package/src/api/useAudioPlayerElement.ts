@@ -6,11 +6,6 @@ export interface AudioPlayerElementControls {
   waveformInst: ElementRefs["waveformInst"] | undefined;
 }
 
-/**
- * Subscribes to the resource slice. Both refs stay `undefined` until the
- * player has mounted and attached them, so guard before use. Must run inside
- * a Client Component nested under the player provider, or the guard throws.
- */
 export const useAudioPlayerElement = (): AudioPlayerElementControls => {
   const { elementRefs } = useResourceContext();
 

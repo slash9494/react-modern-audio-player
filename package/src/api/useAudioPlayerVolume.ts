@@ -10,12 +10,6 @@ export interface AudioPlayerVolumeControls {
   toggleMute: () => void;
 }
 
-/**
- * Subscribes to the playback slice shared with `useAudioPlayerPlayback`, so it
- * re-renders on play/pause too. Volume is clamped to [0, 1], with non-finite
- * values falling back to 1. Must run inside a Client Component nested under
- * the player provider, or the guard throws.
- */
 export const useAudioPlayerVolume = (): AudioPlayerVolumeControls => {
   const dispatch = useNonNullableContext(audioPlayerDispatchContext);
   const { volume, muted } = usePlaybackContext();
