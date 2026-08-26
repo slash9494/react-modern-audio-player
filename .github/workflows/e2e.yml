@@ -11,17 +11,55 @@ on:
 
 jobs:
   e2e:
-    runs-on: ubuntu-latest
+    name: e2e (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
     permissions:
       contents: read
+    strategy:
+      # One failing OS must not hide the verdict of the other two.
+      fail-fast: false
+      matrix:
+        # Runner images are pinned to a version instead of `-latest`: pixel
+        # baselines are only valid on the image they were recorded on, and a
+        # `-latest` rollover changes the font stack under them all at once.
+        include:
+          - os: ubuntu-24.04
+            engines: chromium firefox
+            projects: --project=chromium --project=firefox
+            # `--with-deps` shells out to apt-get, so it is a Linux-only concept.
+            install_flags: --with-deps
+            snapshots: "1"
+          - os: macos-15
+            engines: webkit
+            projects: --project=webkit
+            install_flags: ""
+            snapshots: "1"
+          # Windows carries no baselines — it guards engine behaviour only.
+          - os: windows-2022
+            engines: chromium firefox
+            projects: --project=chromium --project=firefox
+            install_flags: ""
+            snapshots: ""
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      # Node must be on PATH before corepack, not after: `corepack enable` drops its
+      # shims next to whichever corepack `which` resolves, and setup-node prepends
+      # its own Node directory. Enabling first put the yarn shim behind the runner's
+      # global yarn 1 (C:\npm\prefix on Windows), which then won the lookup.
+      - name: Setup Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 20
 
       # yarn 1 hard-errors on the packageManager pin without corepack
       - name: Enable corepack (yarn berry)
         run: corepack enable
 
-      - name: Setup Node.js
+      # Second call is for the cache probe alone — it shells out to `yarn --version`
+      # and branches on the answer, so it has to see berry. Node itself is already
+      # in the tool cache by now, so this costs a lookup, not a download.
+      - name: Restore yarn cache
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: 20
@@ -31,26 +69,30 @@ jobs:
         run: yarn install --immutable
 
       - name: Install Playwright browsers
-        run: npx playwright install --with-deps chromium firefox webkit
+        run: npx playwright install ${{ matrix.install_flags }} ${{ matrix.engines }}
 
       - name: Run E2E tests
-        run: yarn test:e2e
+        run: yarn test:e2e ${{ matrix.projects }}
+        env:
+          E2E_SNAPSHOTS: ${{ matrix.snapshots }}
 
       - name: Upload test report
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         if: always()
         with:
-          name: playwright-report
+          name: playwright-report-${{ matrix.os }}
           path: test-results/
           retention-days: 7
 
+      # PR metadata is uploaded from one runner only: e2e-report.yml resolves the
+      # artifact by this exact name, so it must stay unique and unsuffixed.
       - name: Save PR number
-        if: always() && github.event_name == 'pull_request'
+        if: always() && github.event_name == 'pull_request' && matrix.os == 'ubuntu-24.04'
         run: echo "${{ github.event.pull_request.number }}" > pr_number.txt
 
       - name: Upload PR number
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
-        if: always() && github.event_name == 'pull_request'
+        if: always() && github.event_name == 'pull_request' && matrix.os == 'ubuntu-24.04'
         with:
           name: e2e-pr-meta
           path: pr_number.txt
