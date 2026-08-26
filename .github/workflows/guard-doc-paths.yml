@@ -29,13 +29,14 @@ jobs:
       - name: Check backtick-quoted repo paths
         run: |
           set -euo pipefail
+          TMP="${RUNNER_TEMP:-/tmp}/doc-paths.txt"
           missing=0
           # `|| true` on the chain: a grep that matches nothing exits 1, and
           # under pipefail that kills the script before it can report anything.
           grep -rhoE '`[^`]+`' AGENTS.md README.md agents/ conventions/ \
             | tr -d '`' \
             | grep -E '^(\.github|\.changeset|\.claude|agents|conventions|package|storybook|test)/' \
-            | sed 's:/$::' | sort -u > paths.txt || true
+            | sed 's:/$::' | sort -u > "$TMP" || true
           while read -r p; do
             # glob patterns describe a shape, not one file
             case "$p" in *"*"*) continue;; esac
@@ -46,15 +47,16 @@ jobs:
               echo "::error::path does not exist: $p"
               missing=1
             fi
-          done < paths.txt
-          echo "checked $(wc -l < paths.txt) quoted paths"
+          done < "$TMP"
+          echo "checked $(wc -l < "$TMP") quoted paths"
           exit $missing
 
       - name: Check relative links
         run: |
           set -euo pipefail
+          TMP="${RUNNER_TEMP:-/tmp}/doc-links.txt"
           broken=0
-          grep -rnoE '\]\([^)]+\)' AGENTS.md README.md agents/ conventions/ > links.txt || true
+          grep -rnoE '\]\([^)]+\)' AGENTS.md README.md agents/ conventions/ > "$TMP" || true
           while IFS= read -r hit; do
             file="${hit%%:*}"
             link=$(printf '%s' "${hit#*:}" | sed -E 's/.*\]\((.*)\)/\1/')
@@ -67,6 +69,6 @@ jobs:
               echo "::error file=$file::broken link: $link"
               broken=1
             fi
-          done < links.txt
-          echo "checked $(wc -l < links.txt) links"
+          done < "$TMP"
+          echo "checked $(wc -l < "$TMP") links"
           exit $broken
