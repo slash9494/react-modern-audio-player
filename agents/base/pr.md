@@ -104,8 +104,9 @@ Fixes #42
 - [ ] no unrelated changes included
 - [ ] build and tests pass locally
 - [ ] PR description is filled out
-- [ ] `package/README.md` reviewed and updated if the change affects public API, types, props, or user-facing behavior
-- [ ] `package/CHANGELOG.md` updated under the target version if the change includes any breaking changes
+- [ ] `package/README.md` reviewed — see the README Maintenance Policy in `AGENTS.md`
+- [ ] `package/CHANGELOG.md` updated — see the CHANGELOG Maintenance Policy in `AGENTS.md`
+- [ ] `yarn changeset` added, if the change affects the published package
 
 ---
 

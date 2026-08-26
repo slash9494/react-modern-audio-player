@@ -95,14 +95,15 @@ checks the same rule on pull requests.
 
 ## Pre-Release Checklist
 
-- [ ] version bumped correctly in package.json
-- [ ] CHANGELOG.md updated
-- [ ] README.md reviewed — updated if public API / props / user-facing behavior changed, explicit verification if not
-- [ ] `.claude/docs/repo-analysis/` reviewed — updated if module structure, top-level exports, public API, context/hook organization, patterns, or conventions changed, explicit verification if not
-- [ ] build passes
-- [ ] all tests pass
-- [ ] CI green on release branch
-- [ ] git tag created and pushed
+- [ ] `yarn version-packages` run on `main`, and `package/package.json` shows the expected version
+- [ ] `package/CHANGELOG.md` updated — see the CHANGELOG Maintenance Policy in `AGENTS.md`
+- [ ] `package/README.md` reviewed — see the README Maintenance Policy in `AGENTS.md`
+- [ ] `.claude/docs/repo-analysis/` reviewed, if that local cache is present
+- [ ] `yarn build` passes
+- [ ] `cd package && yarn test` passes
+- [ ] `cd package && yarn typeCheck` and `yarn lint` pass — no CI job covers these
+- [ ] CI green on the release branch
+- [ ] after pushing `main`, `release.yaml` succeeded and the `v<version>` tag exists
 
 ---
 

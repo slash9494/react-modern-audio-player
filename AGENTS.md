@@ -138,6 +138,8 @@ All development work must follow this loop:
 
 ANALYZE → PLAN → IMPLEMENT → TEST → CREATE PR → REVIEW → MERGE → REPEAT
 
+Per-step detail, and when steps may be skipped for direct commits → `agents/base/workflow.md`.
+
 ---
 
 ## Repo Analysis Load Policy

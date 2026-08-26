@@ -46,15 +46,8 @@ v*/docs/*
 
 Example: v2/ci/github-actions-pipeline
 
-Feature branches outside overhaul should follow:
-
-feat/*
-fix/*
-refactor/*
-test/*
-ci/*
-docs/*
-chore/*
+Feature branches outside overhaul use the same prefixes without the `v*/`
+segment — see Branch Prefix Types below.
 
 ---
 
@@ -106,18 +99,25 @@ refactor/88-player-hooks
 
 ## Branch Prefix Types
 
-feat → new feature
-fix → bug fix
-refactor → structural improvement
-test → tests
-ci → CI/CD configuration
-docs → documentation
-perf → performance improvements
-chore → maintenance work
+Used for both overhaul branches (`v*/<type>/*`) and normal branches (`<type>/*`).
+
+| Prefix   | Meaning                 |
+| -------- | ----------------------- |
+| feat     | new feature             |
+| fix      | bug fix                 |
+| refactor | structural improvement  |
+| perf     | performance improvement |
+| test     | tests                   |
+| ci       | CI/CD configuration     |
+| docs     | documentation           |
+| chore    | maintenance work        |
 
 ---
 
 ## Branch Creation Base
+
+This section covers which branch to create *from*. Which branch a pull request
+*targets* is a separate rule → [agents/base/pr.md](./pr.md), Base Branch Selection.
 
 Branches must be created from the current working branch.
 
