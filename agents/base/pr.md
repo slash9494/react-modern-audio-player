@@ -120,7 +120,7 @@ grep -oE '#[0-9]+' <body-file>   # every hit must be a real issue/PR you mean to
 - [ ] every step of Definition of Done in `AGENTS.md` passes locally
 - [ ] PR description is filled out
 - [ ] `package/README.md` reviewed — see the README Maintenance Policy in `AGENTS.md`
-- [ ] `package/CHANGELOG.md` updated — see the CHANGELOG Maintenance Policy in `AGENTS.md`
+- [ ] `package/CHANGELOG.md` reviewed, and updated if the policy calls for an entry — see the CHANGELOG Maintenance Policy in `AGENTS.md`
 - [ ] `yarn changeset` added, if the change affects the published package
 
 ---

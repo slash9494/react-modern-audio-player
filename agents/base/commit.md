@@ -22,16 +22,16 @@ Never create commits that break the build or tests.
 
 # Commit Message Format
 
-Use the Conventional Commit format.
+Use the Conventional Commit format, prefixed with the type's emoji.
 
-type(scope): summary
+<emoji> type(scope): summary
 
 Examples:
 
-feat(player): add playlist support  
-fix(volume): correct mute toggle behavior  
-refactor(hooks): simplify useAudio logic  
-test(player): add playback interaction tests
+✨ feat(player): add playlist support  
+🐛 fix(volume): correct mute toggle behavior  
+♻️ refactor(hooks): simplify useAudio logic  
+🧪 test(player): add playback interaction tests
 
 ---
 

@@ -72,7 +72,7 @@ Coverage targets, mock strategy, and per-layer rules → `agents/base/testing.md
 
 ## Definition of Done
 
-CI runs only integration tests (`integration.yml`) and end-to-end tests (`e2e.yml`). **Type errors, lint errors, and build failures will not be caught for you** — there is no CI job for them. Run them locally before opening a pull request.
+CI runs only integration tests (`.github/workflows/integration.yml`) and end-to-end tests (`.github/workflows/e2e.yml`). **Type errors, lint errors, and build failures will not be caught for you** — there is no CI job for them. Run them locally before opening a pull request.
 
 Before saying a change is done:
 
@@ -91,8 +91,8 @@ The husky `pre-commit` hook runs prettier, eslint, and `yarn vitest run --change
 ## Anti-Patterns
 
 - **Do not start long-running servers** — `yarn dev`, `yarn test:e2e:ui`, and the Storybook `sb` script never exit and are the wrong default for an agent. Use `yarn test:e2e` for a run that terminates.
-- **Do not edit the version in `package/package.json` outside `main`.** The husky `pre-commit` hook rejects it and `guard-version-bump.yml` fails the pull request.
-- **Do not publish by hand.** `release.yaml` publishes, tags, and drafts the release on push to `main`.
+- **Do not edit the version in `package/package.json` outside `main`.** The husky `pre-commit` hook rejects it and `.github/workflows/guard-version-bump.yml` fails the pull request.
+- **Do not publish by hand.** `.github/workflows/release.yaml` publishes, tags, and drafts the release on push to `main`.
 - **Do not assume CI catches type, lint, or build errors.** See Definition of Done.
 - **`yarn lint` rewrites files.** It is `eslint --fix .` across every workspace, so running it from the root reformats unrelated files — `storybook/` in particular has never been prettier-formatted. Check `git status` afterwards and revert anything outside your change.
 - **Do not read every file under `agents/` unconditionally.** Load only what the trigger table below calls for.
@@ -117,7 +117,7 @@ Load base agent files only when the task directly requires them. Do not read all
 | Writing or reviewing end-to-end tests | `agents/base/e2e.md` |
 | Performing overhaul-specific library analysis | `agents/overhaul/library-analysis.md` |
 
-If the branch starts with `v*/`, also load the matching file from `agents/overhaul/` — currently `v2.md` for `v2/*` branches.
+If the branch starts with `v*/`, also load the matching file from `agents/overhaul/` — currently `agents/overhaul/v2.md` for `v2/*` branches.
 
 ---
 
@@ -252,4 +252,4 @@ All identifiers must follow the conventions defined in the `conventions/` direct
 - Update it when commands, structure, workflows, or release flow change
 - Keep `CLAUDE.md` and any other agent entrypoint a thin reference to this file — never a copy
 - Do not restate a rule that already lives in `agents/` or `conventions/`; link to it instead
-- Every path quoted in this file and under `agents/` must resolve — a renamed directory or workflow is a documentation bug
+- Every path quoted in this file and under `agents/` must resolve — a renamed directory or workflow is a documentation bug. Write it as a full repo-relative path: `.github/workflows/guard-doc-paths.yml` only checks spans that start with a directory, so a bare filename goes unguarded

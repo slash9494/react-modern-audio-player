@@ -46,7 +46,7 @@ Done by a person or agent:
 3. On `main`, apply the changesets — `yarn version-packages`
    (bumps `package/package.json` and writes `package/CHANGELOG.md`)
 4. Verify the build — `yarn build`
-5. Commit the version bump — `🚀Deploy : bump version to v1.5.0`
+5. Commit the version bump — `🚀 release: bump version to v1.5.0`
 6. Push `main`
 
 Done by `release.yaml` on push to `main` touching `package/package.json`:
@@ -131,12 +131,12 @@ was told it existed, followed the documentation, and it failed. Reserve
 ## Pre-Release Checklist
 
 - [ ] `yarn version-packages` run on `main`, and `package/package.json` shows the expected version
-- [ ] `package/CHANGELOG.md` updated — see the CHANGELOG Maintenance Policy in `AGENTS.md`
+- [ ] `package/CHANGELOG.md` reviewed, and updated if the policy calls for an entry — see the CHANGELOG Maintenance Policy in `AGENTS.md`
 - [ ] `package/README.md` reviewed — see the README Maintenance Policy in `AGENTS.md`
 - [ ] `.claude/docs/repo-analysis/` reviewed, if that local cache is present
 - [ ] `yarn build` passes
 - [ ] `cd package && yarn test` passes
-- [ ] `cd package && yarn typeCheck` and `yarn lint` pass — no CI job covers these
+- [ ] `cd package && yarn typeCheck` passes and `yarn lint` reports nothing new — no CI job covers these
 - [ ] CI green on the release branch
 - [ ] after pushing `main`, `release.yaml` succeeded and the `v<version>` tag exists
 

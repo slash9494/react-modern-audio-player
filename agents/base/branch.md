@@ -40,9 +40,11 @@ Work branches under a specific overhaul version:
 v*/feat/*
 v*/fix/*
 v*/refactor/*
+v*/perf/*
 v*/test/*
 v*/ci/*
 v*/docs/*
+v*/chore/*
 
 Example: v2/ci/github-actions-pipeline
 
