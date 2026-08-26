@@ -77,7 +77,7 @@ CI runs only integration tests (`integration.yml`) and end-to-end tests (`e2e.ym
 Before saying a change is done:
 
 1. `cd package && yarn typeCheck` passes
-2. `yarn lint` passes
+2. `yarn lint` reports nothing new. It currently exits 1 on three pre-existing errors in `storybook/src/` (unused `React` imports, deprecated `ReactDOM.render`) — fix those only if you are already working in that workspace
 3. `cd package && yarn test` passes
 4. `yarn build` succeeds, if the change touches `package/src/`
 5. `yarn test:e2e` passes, if the change touches rendering, layout, or user interaction
