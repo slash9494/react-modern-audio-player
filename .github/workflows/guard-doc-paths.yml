@@ -1,0 +1,61 @@
+name: Guard doc paths
+
+# Agent instruction files accumulated references to files, directories, and
+# workflows that had been renamed or removed, because nothing checked them.
+# Fail the build when a repo-relative path or a relative markdown link in the
+# instruction set stops resolving.
+
+on:
+  pull_request:
+    paths:
+      - "AGENTS.md"
+      - "README.md"
+      - "agents/**"
+      - "conventions/**"
+      - ".github/workflows/guard-doc-paths.yml"
+  push:
+    branches: [main, develop]
+
+jobs:
+  check:
+    name: Resolve paths in instruction files
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Check backtick-quoted repo paths
+        run: |
+          set -euo pipefail
+          missing=0
+          grep -rhoE '`[^`]+`' AGENTS.md README.md agents/ conventions/ \
+            | tr -d '`' \
+            | grep -E '^(\.github|\.claude|\.changeset|agents|conventions|package|test|storybook)/' \
+            | sed 's:/$::' | sort -u > /tmp/doc-paths.txt
+          while read -r p; do
+            # skip glob patterns — they describe a shape, not one file
+            case "$p" in *"*"*) continue;; esac
+            # .claude is gitignored, so it is absent on a fresh checkout
+            case "$p" in .claude/*) continue;; esac
+            if [ ! -e "$p" ]; then
+              echo "::error::path does not exist: $p"
+              missing=1
+            fi
+          done < /tmp/doc-paths.txt
+          echo "checked $(wc -l < /tmp/doc-paths.txt) quoted paths"
+          exit $missing
+
+      - name: Check relative markdown links
+        run: |
+          set -euo pipefail
+          broken=0
+          while IFS= read -r hit; do
+            file="${hit%%:*}"
+            link=$(printf '%s' "${hit#*:}" | sed -E 's/.*\]\((.*)\)/\1/')
+            case "$link" in http*|"#"*) continue;; esac
+            target="$(dirname "$file")/$link"
+            if [ ! -e "$target" ]; then
+              echo "::error file=$file::broken link: $link"
+              broken=1
+            fi
+          done < <(grep -rnoE '\]\([^)]+\.md\)' AGENTS.md README.md agents/ conventions/)
+          exit $broken
