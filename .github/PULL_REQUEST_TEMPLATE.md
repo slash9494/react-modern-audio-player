@@ -9,16 +9,18 @@ Brief description of what this PR does and why.
 
 ## Test Results
 
-- [ ] build passes
-- [ ] lint passes
-- [ ] tests pass
+- [ ] `yarn build` passes
+- [ ] `cd package && yarn typeCheck` passes
+- [ ] `yarn lint` reports nothing new
+- [ ] `cd package && yarn test` passes
 
 ## Checklist
 
 - [ ] commit messages follow Conventional Commits format
 - [ ] no unrelated changes included
-- [ ] `package/README.md` reviewed and updated if the change affects public API, types, props, or user-facing behavior
-- [ ] `package/CHANGELOG.md` updated under the target version if the change includes any breaking changes
+- [ ] `package/README.md` reviewed — see the README Maintenance Policy in `AGENTS.md`
+- [ ] `package/CHANGELOG.md` updated — see the CHANGELOG Maintenance Policy in `AGENTS.md`
+- [ ] `yarn changeset` added, if the change affects the published package
 
 ## Related Issues
 
