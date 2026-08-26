@@ -619,7 +619,7 @@ const MyComponent = () => {
 | `useTrackContext`      | `{ playList, curPlayId, curIdx }`                                                                                                                                                  |
 | `useUIContext`         | `{ activeUI, playListPlacement, playerPlacement?, interfacePlacement?, volumeSliderPlacement?, speedSelectorPlacement?, timeTooltipPlacement?, colorScheme?, playListExpanded? }` |
 | `useResourceContext`   | `{ elementRefs?, customIcons?, coverImgsCss? }`                                                                                                                                    |
-| `useAudioAttrsContext` | native `<audio>` attributes passed via `audioInitialState` (excludes `volume`, `muted`, `src`)                                                                                     |
+| `useAudioAttrsContext` | native `<audio>` attributes from `audioInitialState`, minus every field the player manages itself (playback state, `volume`/`muted`, `playbackRate`, `curPlayId`, `playListExpanded`); the element's `src` always comes from the current track                                                                                     |
 | `useCurrentTrack`      | `AudioData \| undefined` — derived value, not a context subscription; finds the current track in `playList` by `curPlayId`                                                        |
 
 # Custom Component
