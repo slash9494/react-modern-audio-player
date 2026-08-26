@@ -9,10 +9,13 @@ name: Guard doc paths
 # touches none of the doc sources, so filtering on those would skip exactly the
 # PRs that break a reference. The check takes seconds, so it runs on every PR.
 #
-# Known gaps, both deliberate: a path quoted as a bare filename with no
+# Known gaps, all deliberate: a path quoted as a bare filename with no
 # directory (`package.json`, `playwright.config.ts`) is not resolvable without
 # guessing a directory, and the ASCII tree in AGENTS.md is plain text rather
 # than backtick spans. Quote the full repo-relative path to get coverage.
+# The link check reads inline links only, so a reference-style link
+# (`[text][ref]`) goes unchecked, and a `)` inside a target truncates the match
+# and reports a resolvable path as broken. Neither form appears in these files.
 
 on:
   pull_request:
@@ -40,11 +43,11 @@ jobs:
           # missing", so check the sources first. Without this, renaming
           # AGENTS.md drops it from the scan and the step still reports
           # success on the remaining half of the references.
-          for source in AGENTS.md README.md agents conventions; do
-            if [ ! -e "$source" ]; then
-              echo "::error::missing scan source: $source"
-              exit 1
-            fi
+          for source in AGENTS.md README.md agents/ conventions/; do
+            case "$source" in
+              */) [ -d "$source" ] || { echo "::error::missing scan source: $source"; exit 1; };;
+              *) [ -f "$source" ] || { echo "::error::missing scan source: $source"; exit 1; };;
+            esac
           done
           # `|| true` on the chain: a grep that matches nothing exits 1, and
           # under pipefail that kills the script before it can report anything.
@@ -75,11 +78,11 @@ jobs:
           # missing", so check the sources first. Without this, renaming
           # AGENTS.md drops it from the scan and the step still reports
           # success on the remaining half of the references.
-          for source in AGENTS.md README.md agents conventions; do
-            if [ ! -e "$source" ]; then
-              echo "::error::missing scan source: $source"
-              exit 1
-            fi
+          for source in AGENTS.md README.md agents/ conventions/; do
+            case "$source" in
+              */) [ -d "$source" ] || { echo "::error::missing scan source: $source"; exit 1; };;
+              *) [ -f "$source" ] || { echo "::error::missing scan source: $source"; exit 1; };;
+            esac
           done
           grep -rnoE '\]\([^)]+\)' AGENTS.md README.md agents/ conventions/ > "$TMP" || true
           while IFS= read -r hit; do
@@ -87,6 +90,8 @@ jobs:
             link=$(printf '%s' "${hit#*:}" | sed -E 's/.*\]\((.*)\)/\1/')
             # external and same-page links have no file to resolve
             case "$link" in http://*|https://*|"#"*|mailto:*) continue;; esac
+            # a link may carry a title — [text](path "title")
+            link="${link%% *}"
             # strip an anchor so pr.md#section resolves to pr.md
             link="${link%%#*}"
             [ -n "$link" ] || continue
