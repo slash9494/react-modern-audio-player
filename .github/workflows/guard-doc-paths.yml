@@ -4,15 +4,18 @@ name: Guard doc paths
 # workflows that had been renamed or removed, because nothing checked them.
 # Fail the build when a repo-relative path or a relative markdown link in the
 # instruction set stops resolving.
+#
+# No paths filter: a PR that renames a *target* (package/, test/, a workflow)
+# touches none of the doc sources, so filtering on those would skip exactly the
+# PRs that break a reference. The check takes seconds, so it runs on every PR.
+#
+# Known gaps, both deliberate: a path quoted as a bare filename with no
+# directory (`v2.md`, `guard-version-bump.yml`) is not resolvable without
+# guessing a directory, and the ASCII tree in AGENTS.md is plain text rather
+# than backtick spans. Quote the full repo-relative path to get coverage.
 
 on:
   pull_request:
-    paths:
-      - "AGENTS.md"
-      - "README.md"
-      - "agents/**"
-      - "conventions/**"
-      - ".github/workflows/guard-doc-paths.yml"
   push:
     branches: [main, develop]
 
@@ -27,35 +30,43 @@ jobs:
         run: |
           set -euo pipefail
           missing=0
+          # `|| true` on the chain: a grep that matches nothing exits 1, and
+          # under pipefail that kills the script before it can report anything.
           grep -rhoE '`[^`]+`' AGENTS.md README.md agents/ conventions/ \
             | tr -d '`' \
-            | grep -E '^(\.github|\.claude|\.changeset|agents|conventions|package|test|storybook)/' \
-            | sed 's:/$::' | sort -u > /tmp/doc-paths.txt
+            | grep -E '^(\.github|\.changeset|\.claude|agents|conventions|package|storybook|test)/' \
+            | sed 's:/$::' | sort -u > paths.txt || true
           while read -r p; do
-            # skip glob patterns — they describe a shape, not one file
+            # glob patterns describe a shape, not one file
             case "$p" in *"*"*) continue;; esac
-            # .claude is gitignored, so it is absent on a fresh checkout
-            case "$p" in .claude/*) continue;; esac
+            # .claude is gitignored, so it is absent on a fresh checkout.
+            # Match the bare directory too — `sed` above stripped its slash.
+            case "$p" in .claude|.claude/*) continue;; esac
             if [ ! -e "$p" ]; then
               echo "::error::path does not exist: $p"
               missing=1
             fi
-          done < /tmp/doc-paths.txt
-          echo "checked $(wc -l < /tmp/doc-paths.txt) quoted paths"
+          done < paths.txt
+          echo "checked $(wc -l < paths.txt) quoted paths"
           exit $missing
 
-      - name: Check relative markdown links
+      - name: Check relative links
         run: |
           set -euo pipefail
           broken=0
+          grep -rnoE '\]\([^)]+\)' AGENTS.md README.md agents/ conventions/ > links.txt || true
           while IFS= read -r hit; do
             file="${hit%%:*}"
             link=$(printf '%s' "${hit#*:}" | sed -E 's/.*\]\((.*)\)/\1/')
-            case "$link" in http*|"#"*) continue;; esac
-            target="$(dirname "$file")/$link"
-            if [ ! -e "$target" ]; then
+            # external and same-page links have no file to resolve
+            case "$link" in http*|"#"*|mailto:*) continue;; esac
+            # strip an anchor so pr.md#section resolves to pr.md
+            link="${link%%#*}"
+            [ -n "$link" ] || continue
+            if [ ! -e "$(dirname "$file")/$link" ]; then
               echo "::error file=$file::broken link: $link"
               broken=1
             fi
-          done < <(grep -rnoE '\]\([^)]+\.md\)' AGENTS.md README.md agents/ conventions/)
+          done < links.txt
+          echo "checked $(wc -l < links.txt) links"
           exit $broken
