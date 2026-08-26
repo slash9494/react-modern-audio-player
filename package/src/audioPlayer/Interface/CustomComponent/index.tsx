@@ -29,17 +29,16 @@ export const CustomComponent: FC<CustomComponentProps> = ({
   // children. The internal playbackContext was flattened in v2 — reconstruct
   // the legacy `curAudioState` shape here so external consumers continue to
   // see the nested object they were originally written against.
+  const { audioResetKey, ...playbackState } = playback;
   const audioPlayerState = {
+    // Spread, never a hand-written field list: the previous list silently
+    // dropped `playbackRate` when it was added to playbackContext.
     curAudioState: {
-      isPlaying: playback.isPlaying,
-      volume: playback.volume,
-      muted: playback.muted,
-      repeatType: playback.repeatType,
-      isLoadedMetaData: playback.isLoadedMetaData,
+      ...playbackState,
       currentTime: time.currentTime,
       duration: time.duration,
     },
-    audioResetKey: playback.audioResetKey,
+    audioResetKey,
     ...time,
     ...track,
     ...ui,
