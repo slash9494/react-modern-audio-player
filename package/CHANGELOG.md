@@ -1,10 +1,14 @@
 # React-modern-audio-player
 
-## v2.4.4 (Unreleased)
+## v2.4.4 - 2026-09-06
 
 ### 🐛 Fixed
 
 - **`playbackRate` reached custom components as `undefined`**: children of `AudioPlayer.CustomComponent` read `audioPlayerState.curAudioState.playbackRate` and always received `undefined`, so a custom component could not display or react to the current playback speed. It now carries the selected value, as does the rest of the playback state exposed on `curAudioState`.
+
+### 📝 Docs
+
+- **README context hook examples corrected**: the return shapes shown for `usePlaybackContext` and its sibling hooks were left over from an older, flattened context, so code copied from the README read fields that no longer exist. The examples now match what the hooks return.
 
 ## v2.4.3 - 2026-08-16
 
