@@ -1,5 +1,11 @@
 # React-modern-audio-player
 
+## v2.4.4 (Unreleased)
+
+### 🐛 Fixed
+
+- **`playbackRate` reached custom components as `undefined`**: children of `AudioPlayer.CustomComponent` read `audioPlayerState.curAudioState.playbackRate` and always received `undefined`, so a custom component could not display or react to the current playback speed. It now carries the selected value, as does the rest of the playback state exposed on `curAudioState`.
+
 ## v2.4.3 - 2026-08-16
 
 ### 🐛 Fixed
