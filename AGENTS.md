@@ -22,8 +22,6 @@ Requires Node.js 20+ and yarn 4. Run `corepack enable` first — yarn 1 hard-err
 | Type check | `yarn typeCheck` | `package/` |
 | Lint and fix | `yarn lint` | root |
 | End-to-end tests | `yarn test:e2e` | root |
-| Add a changeset | `yarn changeset` | root |
-| Apply changesets | `yarn version-packages` | root |
 
 Release steps and the publish workflow → `agents/base/release.md`.
 
@@ -82,7 +80,6 @@ Before saying a change is done:
 4. `yarn build` succeeds, if the change touches `package/src/`
 5. `yarn test:e2e` passes, if the change touches rendering, layout, or user interaction
 6. Public API changed? `package/README.md` and `package/CHANGELOG.md` updated per the policies below
-7. Change affects the published package? `yarn changeset` added
 
 The husky `pre-commit` hook runs prettier, eslint, and `yarn vitest run --changed` on staged files. Passing it is not the same as passing this list.
 

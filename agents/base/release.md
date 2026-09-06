@@ -37,26 +37,29 @@ Examples: `v1.5.0`, `v2.0.0`, `v2.1.3`
 
 ## Release Steps
 
-Releases run on changesets plus `.github/workflows/release.yaml`. Do not publish by hand.
+The version bump is made by hand on `main`; `.github/workflows/release.yaml` does
+the publishing. Do not publish by hand.
 
 Done by a person or agent:
 
-1. Add a changeset describing the change — `yarn changeset`
-2. Merge all target changes into `main`
-3. On `main`, apply the changesets — `yarn version-packages`
-   (bumps `package/package.json` and writes `package/CHANGELOG.md`)
+1. Merge all target changes into `main`
+2. Write the release section in `package/CHANGELOG.md` — see Changelog Format and
+   Changelog Audience below
+3. Raise the `version` field in `package/package.json` to the same version
 4. Verify the build — `yarn build`
-5. Commit the version bump — `🚀 release: bump version to v1.5.0`
+5. Commit both files — `🚀 release: bump version to v1.5.0`
 6. Push `main`
 
 Done by `release.yaml` on push to `main` touching `package/package.json`:
 
 - builds, then skips entirely if that version is already on npm
 - `npm publish ./package --provenance`, with dist-tag `next` for beta/rc/alpha versions and `latest` otherwise
-- creates the `v<version>` git tag and the GitHub Release
+- creates the `v<version>` git tag and the GitHub Release, taking the release body
+  from the matching `## vX.Y.Z` section of `package/CHANGELOG.md` — the workflow
+  fails if that section is missing
 
 The version bump must be committed on `main`. The husky `pre-commit` hook rejects a
-`package/package.json` version change on any other branch, and `guard-version-bump.yml`
+`package/package.json` version change on any other branch, and `.github/workflows/guard-version-bump.yml`
 checks the same rule on pull requests.
 
 ---

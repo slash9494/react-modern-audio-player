@@ -21,7 +21,6 @@ Brief description of what this PR does and why.
 - [ ] no unrelated changes included
 - [ ] `package/README.md` reviewed — see the README Maintenance Policy in `AGENTS.md`
 - [ ] `package/CHANGELOG.md` reviewed, and updated if the policy calls for an entry — see the CHANGELOG Maintenance Policy in `AGENTS.md`
-- [ ] `yarn changeset` added, if the change affects the published package
 
 ## Related Issues
 

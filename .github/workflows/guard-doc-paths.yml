@@ -53,7 +53,7 @@ jobs:
           # under pipefail that kills the script before it can report anything.
           grep -rhoE '`[^`]+`' AGENTS.md README.md agents/ conventions/ \
             | tr -d '`' \
-            | grep -E '^(\.github|\.changeset|\.claude|agents|conventions|package|storybook|test)/' \
+            | grep -E '^(\.github|\.claude|agents|conventions|package|storybook|test)/' \
             | sed 's:/$::' | sort -u > "$TMP" || true
           while read -r p; do
             # glob patterns describe a shape, not one file

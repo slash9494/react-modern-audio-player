@@ -60,8 +60,6 @@ Requires Node.js 20+ and yarn 4 (enable with `corepack enable`).
 
 Branch from `develop`, and follow the commit and pull request rules in [AGENTS.md](./AGENTS.md).
 
-Releases run on changesets — add one with `yarn changeset` when your change affects the published package.
-
 ## License
 
 MIT © [MAXX](https://github.com/slash9494)
