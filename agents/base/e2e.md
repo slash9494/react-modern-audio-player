@@ -1,6 +1,6 @@
 # E2E Test Rules
 
-- E2E tests live in: e2e/
+- E2E tests live in: `test/e2e/` (source of truth: `testDir` in `playwright.config.ts`)
 - File naming convention: `*.spec.ts`
 - Each spec file maps to one user flow
 - Tests must be independent — no shared state between tests

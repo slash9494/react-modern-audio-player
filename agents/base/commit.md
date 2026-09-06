@@ -22,66 +22,36 @@ Never create commits that break the build or tests.
 
 # Commit Message Format
 
-Use the Conventional Commit format.
+Use the Conventional Commit format, prefixed with the type's emoji.
 
-type(scope): summary
+<emoji> type(scope): summary
 
 Examples:
 
-feat(player): add playlist support  
-fix(volume): correct mute toggle behavior  
-refactor(hooks): simplify useAudio logic  
-test(player): add playback interaction tests
+✨ feat(player): add playlist support  
+🐛 fix(volume): correct mute toggle behavior  
+♻️ refactor(hooks): simplify useAudio logic  
+🧪 test(player): add playback interaction tests
 
 ---
 
 # Allowed Commit Types
 
-Use one of the following types.
+Use one of the following types, and always prefix the message with its emoji.
 
-feat  
-fix  
-refactor  
-test  
-docs  
-ci  
-chore  
-perf  
-build
-
-Definitions:
-
-feat → new feature
-fix → bug fix
-refactor → code structure improvement
-test → tests added or modified
-docs → documentation changes
-ci → CI/CD configuration
-chore → maintenance work
-perf → performance improvements
-build → build system changes
-release/deploy → release or deployment related changes
-breaking change → indicates a breaking API change
-
----
-
-## Emoji Prefix
-
-Always prefix the commit message with the corresponding emoji.
-
-| Type            | Emoji |
-| --------------- | ----- |
-| feat            | ✨    |
-| fix             | 🐛    |
-| refactor        | ♻️    |
-| perf            | ⚡️   |
-| docs            | 📝    |
-| test            | 🧪    |
-| ci              | 👷    |
-| chore           | 🔧    |
-| build           | 📦    |
-| release/deploy  | 🚀    |
-| breaking change | 💥    |
+| Type            | Emoji | Meaning                       |
+| --------------- | ----- | ----------------------------- |
+| feat            | ✨    | new feature                   |
+| fix             | 🐛    | bug fix                       |
+| refactor        | ♻️    | code structure improvement    |
+| perf            | ⚡️   | performance improvement       |
+| test            | 🧪    | tests added or modified       |
+| docs            | 📝    | documentation changes         |
+| ci              | 👷    | CI/CD configuration           |
+| chore           | 🔧    | maintenance work              |
+| build           | 📦    | build system changes          |
+| release/deploy  | 🚀    | release or deployment changes |
+| breaking change | 💥    | breaking API change           |
 
 Example:
 

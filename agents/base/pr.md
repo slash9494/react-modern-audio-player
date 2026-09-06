@@ -45,9 +45,9 @@ type(scope): short description
 
 Examples:
 
-feat(player): add playlist support
-fix(volume): correct mute toggle behavior
-refactor(hooks): simplify useAudio logic
+✨ feat(player): add playlist support
+🐛 fix(volume): correct mute toggle behavior
+♻️ refactor(hooks): simplify useAudio logic
 
 ---
 
@@ -117,10 +117,11 @@ grep -oE '#[0-9]+' <body-file>   # every hit must be a real issue/PR you mean to
 - [ ] commit messages follow Conventional Commits format
 - [ ] no unrelated changes included
 - [ ] no stray `#N` in the title/body/commits — every `#N` is a deliberate issue/PR link (see Issue Linking)
-- [ ] build and tests pass locally
+- [ ] every step of Definition of Done in `AGENTS.md` passes locally
 - [ ] PR description is filled out
-- [ ] `package/README.md` reviewed and updated if the change affects public API, types, props, or user-facing behavior
-- [ ] `package/CHANGELOG.md` updated under the target version if the change includes any breaking changes
+- [ ] `package/README.md` reviewed — see the README Maintenance Policy in `AGENTS.md`
+- [ ] `package/CHANGELOG.md` reviewed, and updated if the policy calls for an entry — see the CHANGELOG Maintenance Policy in `AGENTS.md`
+- [ ] `yarn changeset` added, if the change affects the published package
 
 ---
 
