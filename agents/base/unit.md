@@ -12,9 +12,13 @@
 
 Priority 1 — Pure utility functions (no dependencies, test immediately)
 
-- utils/getTimeWithPadStart: time formatting (e.g. 0 → "00:00", 90 → "01:30")
+- utils/getTime: time formatting (e.g. 0 → "00:00", 90 → "01:30")
 - utils/getRandomNumber: range validity, min/max boundary
-- utils/resetAudioValues: DOM ref mutation with and without restart flag
+- utils/safeRatio: division by zero, out-of-range input
+- utils/refs: DOM ref mutation helpers
+- utils/ssr: server-side rendering guards
+- utils/fetchWithTimeout: resolves before timeout, aborts after it
+- audioPlayer/utils/clampVolume: clamps below 0 and above 1
 
 Priority 2 — Reducer (core state logic, most critical)
 
@@ -57,11 +61,14 @@ Priority 3 — Custom hooks
 
 - hooks/useNonNullableContext: throws when context is null, returns value when valid
 - hooks/useClickOutside: calls handler on outside click, ignores inside click
-- hooks/useVolume: volume state transitions
+- hooks/useDidUpdateEffect: skips the mount run, fires on later updates
+- hooks/useVariableColor: derives colors from the active color scheme
+- api/useAudioPlayerVolume: volume state transitions
 
 Priority 4 — UI Components
 
-- Button components (PlayBtn, PrevNnextBtn, RepeatTypeBtn, VolumeTriggerBtn, PlayListTriggerBtn)
+- Transport buttons — `audioPlayer/Interface/Controller/Transport/`: PlayBtn, PrevBtn, NextBtn, RepeatTypeBtn
+- Volume — `audioPlayer/Interface/Controller/Volume/VolumeIcon.tsx`
 - Verify correct aria-label per state
 - Verify type="button" attribute
 - Verify dispatch is called on click

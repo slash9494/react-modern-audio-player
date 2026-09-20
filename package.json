@@ -14,8 +14,6 @@
   "private": true,
   "scripts": {
     "build": "cd package && yarn build",
-    "release": "changeset publish",
-    "version-packages": "changeset version",
     "prepare": "husky install",
     "lint": "eslint --fix .",
     "test:e2e": "playwright test",
@@ -39,7 +37,6 @@
     "typescript": "^4.7.4"
   },
   "dependencies": {
-    "@changesets/cli": "^2.24.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },

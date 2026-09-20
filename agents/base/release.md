@@ -37,15 +37,30 @@ Examples: `v1.5.0`, `v2.0.0`, `v2.1.3`
 
 ## Release Steps
 
-1. Confirm all target changes are merged into the release branch
-2. Bump version in `package.json`
-3. Update `CHANGELOG.md` with release notes
-4. Run build and verify output — `npm run build`
-5. Ensure CI passes
-6. Commit version bump — `🚀Deploy : bump version to v1.5.0`
-7. Create and push git tag — `git tag v1.5.0 && git push origin v1.5.0`
-8. Publish package — `npm publish`
-9. Create GitHub Release with changelog content as description
+The version bump is made by hand on `main`; `.github/workflows/release.yaml` does
+the publishing. Do not publish by hand.
+
+Done by a person or agent:
+
+1. Merge all target changes into `main`
+2. Write the release section in `package/CHANGELOG.md` — see Changelog Format and
+   Changelog Audience below
+3. Raise the `version` field in `package/package.json` to the same version
+4. Verify the build — `yarn build`
+5. Commit both files — `🚀 release: bump version to v1.5.0`
+6. Push `main`
+
+Done by `release.yaml` on push to `main` touching `package/package.json`:
+
+- builds, then skips entirely if that version is already on npm
+- `npm publish ./package --provenance`, with dist-tag `next` for beta/rc/alpha versions and `latest` otherwise
+- creates the `v<version>` git tag and the GitHub Release, taking the release body
+  from the matching `## vX.Y.Z` section of `package/CHANGELOG.md` — the workflow
+  fails if that section is missing
+
+The version bump must be committed on `main`. The husky `pre-commit` hook rejects a
+`package/package.json` version change on any other branch, and `.github/workflows/guard-version-bump.yml`
+checks the same rule on pull requests.
 
 ---
 
@@ -118,14 +133,16 @@ was told it existed, followed the documentation, and it failed. Reserve
 
 ## Pre-Release Checklist
 
-- [ ] version bumped correctly in package.json
-- [ ] CHANGELOG.md updated
-- [ ] README.md reviewed — updated if public API / props / user-facing behavior changed, explicit verification if not
-- [ ] `.claude/docs/repo-analysis/` reviewed — updated if module structure, top-level exports, public API, context/hook organization, patterns, or conventions changed, explicit verification if not
-- [ ] build passes
-- [ ] all tests pass
-- [ ] CI green on release branch
-- [ ] git tag created and pushed
+- [ ] `yarn version-packages` run on `main`, and `package/package.json` shows the expected version
+- [ ] `package/CHANGELOG.md` reviewed, and updated if the policy calls for an entry — see the CHANGELOG Maintenance Policy in `AGENTS.md`
+- [ ] `package/README.md` reviewed — see the README Maintenance Policy in `AGENTS.md`
+- [ ] `.claude/docs/repo-analysis/` reviewed, if that local cache is present
+- [ ] `yarn build` passes
+- [ ] `cd package && yarn test` passes
+- [ ] `cd package && yarn typeCheck` passes — no CI job covers this
+- [ ] `yarn lint` reports nothing new, run from the repository root — no CI job covers this
+- [ ] CI green on the release branch
+- [ ] after pushing `main`, `release.yaml` succeeded and the `v<version>` tag exists
 
 ---
 

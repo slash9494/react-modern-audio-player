@@ -1,2 +1,4 @@
 /node_modules
 /package/dist
+/test-results
+/.playwright-mcp

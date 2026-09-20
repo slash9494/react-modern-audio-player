@@ -26,7 +26,6 @@ reviews:
     - "!**/node_modules/**"
     - "!**/*.lock"
     - "!**/storybook-static/**"
-    - "!**/.changeset/**"
     - "!**/coverage/**"
 
   path_instructions:
