@@ -48,7 +48,7 @@ jobs:
       # its own Node directory. Enabling first put the yarn shim behind the runner's
       # global yarn 1 (C:\npm\prefix on Windows), which then won the lookup.
       - name: Setup Node.js
-        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: 20
 
@@ -60,7 +60,7 @@ jobs:
       # and branches on the answer, so it has to see berry. Node itself is already
       # in the tool cache by now, so this costs a lookup, not a download.
       - name: Restore yarn cache
-        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: 20
           cache: "yarn"
